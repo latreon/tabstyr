@@ -4,12 +4,13 @@
   --color-accent: #e2674a;
   --color-warn: #b0552f;
   --color-warn-bg: #fdf0ec;
+  --color-divider: #eee4dd;
   --radius: 10px;
 }
 
 body {
   margin: 0;
-  width: 280px;
+  min-width: 280px;
   font-family: system-ui, -apple-system, sans-serif;
   background: var(--color-surface);
   color: var(--color-ink);

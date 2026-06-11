@@ -9,24 +9,29 @@ import { dateKey, formatDuration } from '@/lib/time';
 const todaySeconds = ref(0);
 const topDomains = ref<Array<{ domain: string; seconds: number }>>([]);
 const staleCount = ref(0);
+const loadError = ref(false);
 
 onMounted(async () => {
-  const today = dateKey(Date.now());
-  const stats = await getStatsRange(today, today);
-  todaySeconds.value = stats.reduce((sum, s) => sum + s.seconds, 0);
-  topDomains.value = [...stats].sort((a, b) => b.seconds - a.seconds).slice(0, 3);
-
-  const [metas, settings, tabs] = await Promise.all([
-    getAllTabMeta(),
-    getSettings(),
-    browser.tabs.query({}),
-  ]);
-  const liveIds = new Set(tabs.flatMap((t) => (t.id ? [t.id] : [])));
-  staleCount.value = findStale(
-    metas.filter((m) => liveIds.has(m.tabId)),
-    Date.now(),
-    settings.staleDays,
-  ).length;
+  try {
+    const today = dateKey(Date.now());
+    const [stats, metas, settings, tabs] = await Promise.all([
+      getStatsRange(today, today),
+      getAllTabMeta(),
+      getSettings(),
+      browser.tabs.query({}),
+    ]);
+    todaySeconds.value = stats.reduce((sum, s) => sum + s.seconds, 0);
+    topDomains.value = [...stats].sort((a, b) => b.seconds - a.seconds).slice(0, 3);
+    const liveIds = new Set(tabs.flatMap((t) => (t.id ? [t.id] : [])));
+    staleCount.value = findStale(
+      metas.filter((m) => liveIds.has(m.tabId)),
+      Date.now(),
+      settings.staleDays,
+    ).length;
+  } catch (e) {
+    console.error('[popup] load failed', e);
+    loadError.value = true;
+  }
 });
 
 function openDashboard() {
@@ -40,14 +45,15 @@ function openDashboard() {
       <span class="label">Today</span>
       <span class="value">{{ formatDuration(todaySeconds) }}</span>
     </section>
-    <ul class="top" v-if="topDomains.length">
-      <li v-for="d in topDomains" :key="d.domain">
+    <p v-if="loadError" class="empty">Could not load stats — try reopening the popup.</p>
+    <ul class="top" aria-label="Top domains today" v-if="!loadError && topDomains.length">
+      <li v-for="d in topDomains" :key="d.domain" :aria-label="`${d.domain}: ${formatDuration(d.seconds)}`">
         <span class="domain">{{ d.domain }}</span>
         <strong>{{ formatDuration(d.seconds) }}</strong>
       </li>
     </ul>
-    <p v-else class="empty">No activity tracked yet today.</p>
-    <div class="stale" v-if="staleCount">{{ staleCount }} stale {{ staleCount === 1 ? 'tab' : 'tabs' }}</div>
+    <p v-else-if="!loadError" class="empty">No activity tracked yet today.</p>
+    <div class="stale" role="status" v-if="staleCount">{{ staleCount }} stale {{ staleCount === 1 ? 'tab' : 'tabs' }}</div>
     <button class="cta" @click="openDashboard">Open dashboard</button>
   </main>
 </template>
@@ -86,7 +92,7 @@ function openDashboard() {
   display: flex;
   justify-content: space-between;
   padding: 6px 2px;
-  border-bottom: 1px solid #eee4dd;
+  border-bottom: 1px solid var(--color-divider);
   font-size: 13px;
 }
 .domain {
@@ -120,5 +126,9 @@ function openDashboard() {
 }
 .cta:hover {
   filter: brightness(0.93);
+}
+.cta:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 </style>
