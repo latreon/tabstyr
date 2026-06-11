@@ -63,3 +63,12 @@ const actionApi = browser.action ?? (browser as any).browserAction;
 - [ ] Popup and dashboard open and show data
 - [ ] Badge shows stale count; notification fires at most once/day
 - [ ] Settings persist; wipe clears everything
+
+## Known limitations
+
+- After a browser restart, per-tab time in the "Open tabs by time" table starts
+  fresh: tab IDs are re-matched by URL for staleness tracking, but historical
+  sessions keep their old tab IDs. Per-site stats are unaffected.
+- The dashboard reads and writes IndexedDB directly (close/snooze actions);
+  only settings changes and data wipe go through the background worker.
+- Firefox requires version 115+ (storage.session).

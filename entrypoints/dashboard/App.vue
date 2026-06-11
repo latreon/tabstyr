@@ -22,7 +22,7 @@ onMounted(s.load);
     <p v-if="s.loading.value" class="label">Loading…</p>
     <p v-else-if="s.loadError.value" class="label">Could not load data — reload the page.</p>
     <section v-else class="bento" aria-label="Browser usage statistics">
-      <HeroTile :today-seconds="s.todaySeconds.value" :weekly-avg-seconds="s.weeklyAvgSeconds.value" />
+      <HeroTile :today-seconds="s.todaySeconds.value" :weekly-avg-seconds="s.weeklyAvgSeconds.value" :stats="s.stats.value" />
       <StatTile label="Open tabs" :value="String(s.openTabCount.value)" />
       <StatTile
         label="Stale tabs"

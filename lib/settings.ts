@@ -7,12 +7,14 @@ export const DEFAULT_SETTINGS: Settings = {
   audioEnabled: true,
 };
 
+const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
+
 function coerce(raw: unknown): Partial<Settings> {
   if (!raw || typeof raw !== 'object') return {};
   const r = raw as Record<string, unknown>;
   return {
-    ...(typeof r.staleDays === 'number' && { staleDays: r.staleDays }),
-    ...(typeof r.idleSeconds === 'number' && { idleSeconds: r.idleSeconds }),
+    ...(typeof r.staleDays === 'number' && { staleDays: clamp(r.staleDays, 1, 60) }),
+    ...(typeof r.idleSeconds === 'number' && { idleSeconds: clamp(r.idleSeconds, 15, 600) }),
     ...(typeof r.audioEnabled === 'boolean' && { audioEnabled: r.audioEnabled }),
   };
 }

@@ -108,7 +108,10 @@ export default defineBackground(() => {
     const eng = await getEngine();
     const now = Date.now();
     const tab = await browser.tabs.get(tabId).catch(() => null);
-    if (!tab?.url) return;
+    if (!tab?.url) {
+      await persist(eng, eng.handleBlur(now));
+      return;
+    }
     const closed = eng.handleFocus(tabId, tab.url, now);
     closed.push(...(await syncAudioSessions(eng, now)));
     await touchTab(tabId, now, tab);
@@ -123,7 +126,10 @@ export default defineBackground(() => {
       return;
     }
     const [tab] = await browser.tabs.query({ active: true, windowId });
-    if (!tab?.id || !tab.url) return;
+    if (!tab?.id || !tab.url) {
+      await persist(eng, eng.handleBlur(now));
+      return;
+    }
     const closed = eng.handleFocus(tab.id, tab.url, now);
     closed.push(...(await syncAudioSessions(eng, now)));
     await touchTab(tab.id, now);
@@ -217,6 +223,7 @@ export default defineBackground(() => {
     } else if (msg?.type === 'wipe-data') {
       await repo.wipeAll();
       await browser.storage.session.remove('engineState');
+      await browser.storage.local.remove('notifyState');
       enginePromise = null;
       await updateBadge();
     }

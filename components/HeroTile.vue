@@ -1,12 +1,22 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { formatDuration } from '@/lib/time';
+import { buildTrend } from '@/lib/trend';
+import type { DailyStat } from '@/lib/types';
 
-const props = defineProps<{ todaySeconds: number; weeklyAvgSeconds: number }>();
+const props = defineProps<{ todaySeconds: number; weeklyAvgSeconds: number; stats: DailyStat[] }>();
 
 const deltaPct = computed(() => {
   if (!props.weeklyAvgSeconds) return null;
   return Math.round(((props.todaySeconds - props.weeklyAvgSeconds) / props.weeklyAvgSeconds) * 100);
+});
+
+const sparkPoints = computed(() => {
+  const points = buildTrend(props.stats, 'day', Date.now());
+  const max = Math.max(1, ...points.map((p) => p.seconds));
+  return points
+    .map((p, i) => `${(i / (points.length - 1)) * 100},${28 - (p.seconds / max) * 26}`)
+    .join(' ');
 });
 </script>
 
@@ -19,6 +29,9 @@ const deltaPct = computed(() => {
       <span class="sr-only">{{ deltaPct > 0 ? 'Up' : 'Down' }}</span>
       {{ Math.abs(deltaPct) }}% vs weekly avg
     </span>
+    <svg viewBox="0 0 100 30" preserveAspectRatio="none" class="spark" aria-hidden="true">
+      <polyline :points="sparkPoints" fill="none" stroke="#e2674a" stroke-width="2" vector-effect="non-scaling-stroke" />
+    </svg>
   </div>
 </template>
 
@@ -47,6 +60,11 @@ const deltaPct = computed(() => {
 }
 .hero-delta.up {
   color: #f0a48f;
+}
+.spark {
+  width: 100%;
+  height: 34px;
+  margin-top: 6px;
 }
 .sr-only {
   position: absolute;

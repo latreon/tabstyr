@@ -29,4 +29,9 @@ describe('settings', () => {
     await fakeBrowser.storage.local.set({ settings: { staleDays: 'seven', audioEnabled: false } });
     expect(await getSettings()).toEqual({ ...DEFAULT_SETTINGS, audioEnabled: false });
   });
+
+  test('out-of-range stored numbers are clamped', async () => {
+    await fakeBrowser.storage.local.set({ settings: { staleDays: 0, idleSeconds: 99999 } });
+    expect(await getSettings()).toEqual({ ...DEFAULT_SETTINGS, staleDays: 1, idleSeconds: 600 });
+  });
 });
