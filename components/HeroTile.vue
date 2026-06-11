@@ -14,8 +14,10 @@ const deltaPct = computed(() => {
   <div class="hero-tile">
     <span class="label hero-label">Today</span>
     <span class="hero-value">{{ formatDuration(todaySeconds) }}</span>
-    <span v-if="deltaPct !== null" class="hero-delta" :class="{ up: deltaPct > 0 }">
-      {{ deltaPct > 0 ? '↑' : '↓' }} {{ Math.abs(deltaPct) }}% vs weekly avg
+    <span v-if="deltaPct !== null && deltaPct !== 0" class="hero-delta" :class="{ up: deltaPct > 0 }">
+      <span aria-hidden="true">{{ deltaPct > 0 ? '↑' : '↓' }}</span>
+      <span class="sr-only">{{ deltaPct > 0 ? 'Up' : 'Down' }}</span>
+      {{ Math.abs(deltaPct) }}% vs weekly avg
     </span>
   </div>
 </template>
@@ -45,5 +47,13 @@ const deltaPct = computed(() => {
 }
 .hero-delta.up {
   color: #f0a48f;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 </style>

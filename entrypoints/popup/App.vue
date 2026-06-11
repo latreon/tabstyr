@@ -103,7 +103,7 @@ function openDashboard() {
 }
 .empty {
   font-size: 12px;
-  color: #8a817a;
+  color: #6e6560;
   margin: 0;
 }
 .stale {

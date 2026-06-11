@@ -24,21 +24,21 @@ export function useStats() {
   const loading = ref(true);
   const loadError = ref(false);
 
-  const today = dateKey(Date.now());
+  const todayKey = ref(dateKey(Date.now()));
 
   const todaySeconds = computed(() =>
-    stats.value.filter((s) => s.date === today).reduce((sum, s) => sum + s.seconds, 0),
+    stats.value.filter((s) => s.date === todayKey.value).reduce((sum, s) => sum + s.seconds, 0),
   );
 
   const weeklyAvgSeconds = computed(() => {
-    const weekDays = new Set(Array.from({ length: 7 }, (_, i) => addDays(today, -(i + 1))));
+    const weekDays = new Set(Array.from({ length: 7 }, (_, i) => addDays(todayKey.value, -(i + 1))));
     const total = stats.value.filter((s) => weekDays.has(s.date)).reduce((sum, s) => sum + s.seconds, 0);
     return total / 7;
   });
 
   const todayByDomain = computed(() => {
     const map = new Map<string, { seconds: number; audioSeconds: number }>();
-    for (const s of stats.value.filter((s) => s.date === today)) {
+    for (const s of stats.value.filter((s) => s.date === todayKey.value)) {
       const cur = map.get(s.domain) ?? { seconds: 0, audioSeconds: 0 };
       map.set(s.domain, { seconds: cur.seconds + s.seconds, audioSeconds: cur.audioSeconds + s.audioSeconds });
     }
@@ -51,6 +51,8 @@ export function useStats() {
     loading.value = true;
     loadError.value = false;
     try {
+      todayKey.value = dateKey(Date.now());
+      const today = todayKey.value;
       const [loadedSettings, loadedStats, metas, secondsByTab, tabs] = await Promise.all([
         getSettings(),
         repo.getStatsRange(addDays(today, -90), today),
