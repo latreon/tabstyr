@@ -7,6 +7,7 @@ import TopSitesChart from '@/components/TopSitesChart.vue';
 import TrendChart from '@/components/TrendChart.vue';
 import TabTable from '@/components/TabTable.vue';
 import StaleList from '@/components/StaleList.vue';
+import SettingsPanel from '@/components/SettingsPanel.vue';
 
 const s = useStats();
 onMounted(s.load);
@@ -32,7 +33,7 @@ onMounted(s.load);
       <TrendChart :stats="s.stats.value" />
       <TabTable :rows="s.tabRows.value" />
       <StaleList :tabs="s.staleTabs.value" @close="s.closeTab" @snooze="s.snoozeTab" />
-      <!-- Task 14: <SettingsPanel @changed="s.load" /> -->
+      <SettingsPanel @changed="s.load" />
     </section>
   </main>
 </template>
