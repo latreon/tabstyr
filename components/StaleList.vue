@@ -18,8 +18,8 @@ function days(ts: number): number {
         <span class="title" :title="t.title">{{ t.title || t.url }}</span>
         <span class="meta">last active {{ days(t.lastActiveAt) }}d ago</span>
       </div>
-      <button class="keep" @click="emit('snooze', t.tabId)">Keep</button>
-      <button class="close" @click="emit('close', t.tabId)">Close</button>
+      <button class="keep" :aria-label="`Keep ${t.title || t.url}`" @click="emit('snooze', t.tabId)">Keep</button>
+      <button class="close" :aria-label="`Close ${t.title || t.url}`" @click="emit('close', t.tabId)">Close</button>
     </div>
   </div>
 </template>
