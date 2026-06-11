@@ -1,0 +1,33 @@
+:root {
+  --color-surface: #faf8f6;
+  --color-card: #ffffff;
+  --color-border: #ece4dd;
+  --color-ink: #1d1d1f;
+  --color-muted: #8a817a;
+  --color-accent: #e2674a;
+  --color-warn: #b0552f;
+  --color-warn-bg: #fdf0ec;
+  --color-warn-border: #f0cfc5;
+  --radius: 14px;
+  --space: 16px;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-muted);
+}
