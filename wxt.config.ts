@@ -6,5 +6,6 @@ export default defineConfig({
     name: 'Tab Time',
     description: 'Tab and browser time tracking with stale-tab nudges',
     permissions: ['tabs', 'storage', 'idle', 'alarms', 'notifications'],
+    action: { default_title: 'Tab Time' },
   },
 });

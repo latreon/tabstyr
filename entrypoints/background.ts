@@ -7,12 +7,18 @@ import * as repo from '@/lib/db/repo';
 import { addDays, dateKey } from '@/lib/time';
 import type { EngineState, Session } from '@/lib/types';
 
+// Firefox MV2 builds expose browserAction; Chromium MV3 exposes action.
+const actionApi = browser.action ?? (browser as unknown as { browserAction: typeof browser.action }).browserAction;
+
 const RETENTION_DAYS = 90;
 const DAY_MS = 86_400_000;
 
 export default defineBackground(() => {
   let enginePromise: Promise<TrackerEngine> | null = null;
 
+  // Single-threaded JS + the ??= singleton make concurrent listener access safe;
+  // interleaved awaits can at worst lose a sub-second session between events,
+  // which the 1-minute heartbeat checkpoint + reconcile bounds and repairs.
   function getEngine(): Promise<TrackerEngine> {
     enginePromise ??= (async () => {
       const { engineState } = await browser.storage.session.get('engineState');
@@ -42,8 +48,8 @@ export default defineBackground(() => {
     return eng.syncAudio(audible, now);
   }
 
-  async function touchTab(tabId: number, now: number): Promise<void> {
-    const tab = await browser.tabs.get(tabId).catch(() => null);
+  async function touchTab(tabId: number, now: number, prefetched?: Awaited<ReturnType<typeof browser.tabs.get>>): Promise<void> {
+    const tab = prefetched ?? (await browser.tabs.get(tabId).catch(() => null));
     if (!tab?.id) return;
     const existing = await repo.getTabMeta(tab.id);
     await repo.upsertTabMeta({
@@ -64,8 +70,8 @@ export default defineBackground(() => {
     ]);
     const liveIds = new Set(tabs.flatMap((t) => (t.id ? [t.id] : [])));
     const stale = findStale(metas.filter((m) => liveIds.has(m.tabId)), Date.now(), settings.staleDays);
-    await browser.action.setBadgeText({ text: stale.length ? String(stale.length) : '' });
-    await browser.action.setBadgeBackgroundColor({ color: '#b0552f' });
+    await actionApi.setBadgeText({ text: stale.length ? String(stale.length) : '' });
+    await actionApi.setBadgeBackgroundColor({ color: '#b0552f' });
   }
 
   async function runDailyMaintenance(now: number): Promise<void> {
@@ -105,7 +111,7 @@ export default defineBackground(() => {
     if (!tab?.url) return;
     const closed = eng.handleFocus(tabId, tab.url, now);
     closed.push(...(await syncAudioSessions(eng, now)));
-    await touchTab(tabId, now);
+    await touchTab(tabId, now, tab);
     await persist(eng, closed);
   });
 
@@ -145,7 +151,7 @@ export default defineBackground(() => {
     const closed: Session[] = [];
     if (changeInfo.url) {
       closed.push(...eng.handleUrlChange(tabId, changeInfo.url, now));
-      if (tab.active) await touchTab(tabId, now);
+      if (tab.active) await touchTab(tabId, now, tab);
     }
     if (changeInfo.audible !== undefined) {
       closed.push(...(await syncAudioSessions(eng, now)));
@@ -162,8 +168,17 @@ export default defineBackground(() => {
 
   // --- alarms ---
 
-  browser.alarms.create('heartbeat', { periodInMinutes: 1 });
-  browser.alarms.create('daily', { periodInMinutes: 60 * 24, when: Date.now() + 60_000 });
+  async function ensureAlarms(): Promise<void> {
+    // alarms.create with an existing name REPLACES it — re-running this on every
+    // worker wake would perpetually re-arm the 'daily' alarm. Create only if absent.
+    if (!(await browser.alarms.get('heartbeat'))) {
+      browser.alarms.create('heartbeat', { periodInMinutes: 1 });
+    }
+    if (!(await browser.alarms.get('daily'))) {
+      browser.alarms.create('daily', { periodInMinutes: 60 * 24, when: Date.now() + 60_000 });
+    }
+  }
+  void ensureAlarms();
 
   browser.alarms.onAlarm.addListener(async (alarm) => {
     const now = Date.now();
