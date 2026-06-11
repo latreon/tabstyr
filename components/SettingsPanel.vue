@@ -18,21 +18,31 @@ onMounted(async () => {
 });
 
 async function save() {
-  await saveSettings({
-    staleDays: Math.max(1, staleDays.value),
-    idleSeconds: Math.max(15, idleSeconds.value),
-    audioEnabled: audioEnabled.value,
-  });
-  await browser.runtime.sendMessage({ type: 'settings-changed' });
-  saved.value = true;
-  setTimeout(() => (saved.value = false), 2000);
-  emit('changed');
+  try {
+    staleDays.value = Math.max(1, staleDays.value);
+    idleSeconds.value = Math.max(15, idleSeconds.value);
+    await saveSettings({
+      staleDays: staleDays.value,
+      idleSeconds: idleSeconds.value,
+      audioEnabled: audioEnabled.value,
+    });
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    saved.value = true;
+    setTimeout(() => (saved.value = false), 2000);
+    emit('changed');
+  } catch (e) {
+    console.error('[settings] save failed', e);
+  }
 }
 
 async function wipe() {
   if (!confirm('Delete ALL tracked data? This cannot be undone.')) return;
-  await browser.runtime.sendMessage({ type: 'wipe-data' });
-  emit('changed');
+  try {
+    await browser.runtime.sendMessage({ type: 'wipe-data' });
+    emit('changed');
+  } catch (e) {
+    console.error('[settings] wipe failed', e);
+  }
 }
 </script>
 
