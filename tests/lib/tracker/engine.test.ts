@@ -80,3 +80,55 @@ describe('TrackerEngine reconcile', () => {
     expect(e.getState().focused?.tabId).toBe(1);
   });
 });
+
+describe('TrackerEngine boundary safety', () => {
+  test('getState returns copies — mutating them does not corrupt engine', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://a.com', T0);
+    const state = e.getState();
+    state.focused!.start = 0;
+    expect(e.getState().focused?.start).toBe(T0);
+  });
+
+  test('checkpoint keeps sub-1s elapsed time instead of discarding it', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://a.com', T0);
+    expect(e.checkpoint(T0 + 500)).toEqual([]); // nothing emitted
+    expect(e.getState().focused?.start).toBe(T0); // start NOT reset
+    const closed = e.checkpoint(T0 + 1500);
+    expect(closed).toHaveLength(1);
+    expect(closed[0].start).toBe(T0); // full elapsed window kept
+  });
+
+  test('same-tab refocus (navigation) closes old session and opens new url', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://a.com/x', T0);
+    const closed = e.handleFocus(1, 'https://a.com/y', T0 + 5_000);
+    expect(closed).toHaveLength(1);
+    expect(e.getState().focused?.url).toBe('https://a.com/y');
+  });
+
+  test('focusing a tab restored with a background audio session converts it', () => {
+    const e = new TrackerEngine({
+      focused: null,
+      audio: [{ tabId: 2, url: 'https://yt.com/v', domain: 'yt.com', start: T0, audio: true }],
+      isIdle: false,
+    });
+    const closed = e.handleFocus(2, 'https://yt.com/v', T0 + 60_000);
+    expect(closed).toHaveLength(1);
+    expect(closed[0].audio).toBe(true);
+    expect(e.getState().audio).toEqual([]);
+    expect(e.getState().focused?.tabId).toBe(2);
+  });
+
+  test('reconcile closes audio sessions for dead tabs', () => {
+    const e = new TrackerEngine({
+      focused: null,
+      audio: [{ tabId: 2, url: 'https://yt.com/v', domain: 'yt.com', start: T0, audio: true }],
+      isIdle: false,
+    });
+    const closed = e.reconcile(new Set([1]), T0 + 5_000);
+    expect(closed).toHaveLength(1);
+    expect(e.getState().audio).toEqual([]);
+  });
+});

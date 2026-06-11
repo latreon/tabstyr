@@ -9,13 +9,17 @@ export class TrackerEngine {
   private idle: boolean;
 
   constructor(state?: EngineState | null) {
-    this.focused = state?.focused ?? null;
-    this.audio = new Map((state?.audio ?? []).map((s) => [s.tabId, s]));
+    this.focused = state?.focused ? { ...state.focused } : null;
+    this.audio = new Map((state?.audio ?? []).map((s) => [s.tabId, { ...s }]));
     this.idle = state?.isIdle ?? false;
   }
 
   getState(): EngineState {
-    return { focused: this.focused, audio: [...this.audio.values()], isIdle: this.idle };
+    return {
+      focused: this.focused ? { ...this.focused } : null,
+      audio: [...this.audio.values()].map((s) => ({ ...s })),
+      isIdle: this.idle,
+    };
   }
 
   private closed(open: OpenSession, now: number): Session[] {
@@ -51,12 +55,14 @@ export class TrackerEngine {
   checkpoint(now: number): Session[] {
     const out: Session[] = [];
     if (this.focused) {
-      out.push(...this.closed(this.focused, now));
-      this.focused = { ...this.focused, start: now };
+      const emitted = this.closed(this.focused, now);
+      out.push(...emitted);
+      if (emitted.length) this.focused = { ...this.focused, start: now };
     }
     for (const [tabId, open] of this.audio) {
-      out.push(...this.closed(open, now));
-      this.audio.set(tabId, { ...open, start: now });
+      const emitted = this.closed(open, now);
+      out.push(...emitted);
+      if (emitted.length) this.audio.set(tabId, { ...open, start: now });
     }
     return out;
   }
