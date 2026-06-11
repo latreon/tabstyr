@@ -10,6 +10,7 @@ describe('domainOf', () => {
   test('returns protocol name for non-web urls', () => {
     expect(domainOf('chrome://settings')).toBe('chrome');
     expect(domainOf('about:blank')).toBe('about');
+    expect(domainOf('chrome-extension://abc/popup.html')).toBe('chrome-extension');
   });
 
   test('returns "other" for invalid urls', () => {

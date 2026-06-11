@@ -25,3 +25,14 @@ describe('addDays', () => {
     expect(addDays('2026-06-30', 1)).toBe('2026-07-01');
   });
 });
+
+test('clamps negative input to <1m', () => {
+  expect(formatDuration(-30)).toBe('<1m');
+});
+test('rounds to nearest minute at the 30-second boundary', () => {
+  expect(formatDuration(29)).toBe('<1m');
+  expect(formatDuration(30)).toBe('1m');
+});
+test('suppresses zero minutes on exact hours', () => {
+  expect(formatDuration(3600)).toBe('1h');
+});
