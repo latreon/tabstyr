@@ -81,4 +81,52 @@ export class TrackerEngine {
     }
     return out;
   }
+
+  syncAudio(audible: Array<{ tabId: number; url: string }>, now: number): Session[] {
+    const out: Session[] = [];
+    const keep = new Set<number>();
+    for (const { tabId, url } of audible) {
+      if (tabId === this.focused?.tabId) continue;
+      keep.add(tabId);
+      if (!this.audio.has(tabId)) {
+        this.audio.set(tabId, { tabId, url, domain: domainOf(url), start: now, audio: true });
+      }
+    }
+    for (const [tabId, open] of this.audio) {
+      if (!keep.has(tabId)) {
+        out.push(...this.closed(open, now));
+        this.audio.delete(tabId);
+      }
+    }
+    return out;
+  }
+
+  handleUrlChange(tabId: number, url: string, now: number): Session[] {
+    const out: Session[] = [];
+    const domain = domainOf(url);
+    if (this.focused?.tabId === tabId && this.focused.domain !== domain) {
+      out.push(...this.closed(this.focused, now));
+      this.focused = { tabId, url, domain, start: now, audio: false };
+    }
+    const a = this.audio.get(tabId);
+    if (a && a.domain !== domain) {
+      out.push(...this.closed(a, now));
+      this.audio.set(tabId, { tabId, url, domain, start: now, audio: true });
+    }
+    return out;
+  }
+
+  handleTabRemoved(tabId: number, now: number): Session[] {
+    const out: Session[] = [];
+    if (this.focused?.tabId === tabId) {
+      out.push(...this.closed(this.focused, now));
+      this.focused = null;
+    }
+    const a = this.audio.get(tabId);
+    if (a) {
+      out.push(...this.closed(a, now));
+      this.audio.delete(tabId);
+    }
+    return out;
+  }
 }
