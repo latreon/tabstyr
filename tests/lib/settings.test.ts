@@ -18,4 +18,15 @@ describe('settings', () => {
     await fakeBrowser.storage.local.set({ settings: { idleSeconds: 120 } });
     expect(await getSettings()).toEqual({ ...DEFAULT_SETTINGS, idleSeconds: 120 });
   });
+
+  test('successive saveSettings calls accumulate patches', async () => {
+    await saveSettings({ staleDays: 7 });
+    await saveSettings({ idleSeconds: 90 });
+    expect(await getSettings()).toEqual({ ...DEFAULT_SETTINGS, staleDays: 7, idleSeconds: 90 });
+  });
+
+  test('malformed stored values are ignored, defaults win', async () => {
+    await fakeBrowser.storage.local.set({ settings: { staleDays: 'seven', audioEnabled: false } });
+    expect(await getSettings()).toEqual({ ...DEFAULT_SETTINGS, audioEnabled: false });
+  });
 });
