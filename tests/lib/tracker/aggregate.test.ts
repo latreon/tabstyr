@@ -29,4 +29,12 @@ describe('rollup', () => {
   test('returns empty for no sessions', () => {
     expect(rollup([])).toEqual([]);
   });
+
+  test('attributes a cross-midnight session to the start date', () => {
+    const midnight = new Date(2026, 5, 11, 23, 59, 30).getTime();
+    const s = session({ start: midnight, end: midnight + 90_000 }); // ends next day
+    const out = rollup([s]);
+    expect(out).toHaveLength(1);
+    expect(out[0].date).toBe(dateKey(midnight)); // 2026-06-11, not 06-12
+  });
 });

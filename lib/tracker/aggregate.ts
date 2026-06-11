@@ -7,6 +7,9 @@ export function rollup(sessions: Session[]): DailyStat[] {
     const date = dateKey(s.start);
     const key = `${date}|${s.domain}`;
     const stat = map.get(key) ?? { date, domain: s.domain, seconds: 0, audioSeconds: 0 };
+    // Round per session (not total) so each stored value is already whole seconds.
+    // Sessions are pre-filtered by TrackerEngine (MIN_SESSION_MS guard), so
+    // zero/negative durations should not occur.
     const secs = Math.round((s.end - s.start) / 1000);
     const next = {
       ...stat,
