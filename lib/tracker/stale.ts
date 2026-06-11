@@ -9,7 +9,12 @@ export function findStale(metas: TabMeta[], now: number, thresholdDays: number):
 }
 
 export function rematchTabMeta(metas: TabMeta[], liveTabs: Array<{ id: number; url: string }>): TabMeta[] {
-  const byUrl = new Map(metas.map((m) => [m.url, m]));
+  // When multiple metas share a URL, keep the most recently active one.
+  const byUrl = new Map<string, TabMeta>();
+  for (const m of metas) {
+    const existing = byUrl.get(m.url);
+    if (!existing || m.lastActiveAt > existing.lastActiveAt) byUrl.set(m.url, m);
+  }
   const out: TabMeta[] = [];
   const used = new Set<string>();
   for (const tab of liveTabs) {
@@ -29,5 +34,6 @@ export function shouldNotify(
   today: string,
 ): boolean {
   if (lastNotifiedDate === today) return false;
-  return staleIds.some((id) => !prevNotifiedIds.includes(id));
+  const prev = new Set(prevNotifiedIds);
+  return staleIds.some((id) => !prev.has(id));
 }

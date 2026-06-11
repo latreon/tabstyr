@@ -23,6 +23,11 @@ describe('findStale', () => {
     const expired = meta({ tabId: 2, lastActiveAt: NOW - 5 * DAY, snoozedUntil: NOW - 1 });
     expect(findStale([snoozed, expired], NOW, 3).map((m) => m.tabId)).toEqual([2]);
   });
+
+  test('tab inactive for exactly the threshold is not flagged', () => {
+    const exact = meta({ tabId: 1, lastActiveAt: NOW - 3 * DAY });
+    expect(findStale([exact], NOW, 3)).toEqual([]);
+  });
 });
 
 describe('rematchTabMeta', () => {
@@ -42,6 +47,18 @@ describe('rematchTabMeta', () => {
     ]);
     expect(out).toHaveLength(1);
   });
+
+  test('duplicate metas for the same url keep the most recently active', () => {
+    const older = meta({ tabId: 10, url: 'https://a.com', lastActiveAt: NOW - 5 * DAY });
+    const newer = meta({ tabId: 11, url: 'https://a.com', lastActiveAt: NOW - DAY });
+    // Test both orderings to prove the result is not order-dependent
+    const outForward = rematchTabMeta([older, newer], [{ id: 5, url: 'https://a.com' }]);
+    expect(outForward).toHaveLength(1);
+    expect(outForward[0].lastActiveAt).toBe(NOW - DAY);
+    const outReverse = rematchTabMeta([newer, older], [{ id: 5, url: 'https://a.com' }]);
+    expect(outReverse).toHaveLength(1);
+    expect(outReverse[0].lastActiveAt).toBe(NOW - DAY);
+  });
 });
 
 describe('shouldNotify', () => {
@@ -56,5 +73,9 @@ describe('shouldNotify', () => {
   });
   test('does not notify when nothing is stale', () => {
     expect(shouldNotify([], [], '2026-06-10', '2026-06-11')).toBe(false);
+  });
+
+  test('suppresses even genuinely new stale ids on the same day (max one per day)', () => {
+    expect(shouldNotify([99], [1, 2], '2026-06-11', '2026-06-11')).toBe(false);
   });
 });
