@@ -45,6 +45,16 @@ describe('sessions + stats', () => {
     expect(stats).toHaveLength(1);
     expect(stats[0].date).toBe('2026-06-11');
   });
+
+  test('getStatsRange from==to returns all domains for that single day', async () => {
+    await repo.applyDailyStats([
+      { date: '2026-06-11', domain: 'a.com', seconds: 10, audioSeconds: 0 },
+      { date: '2026-06-11', domain: 'z.com', seconds: 20, audioSeconds: 0 },
+      { date: '2026-06-12', domain: 'a.com', seconds: 5, audioSeconds: 0 },
+    ]);
+    const stats = await repo.getStatsRange('2026-06-11', '2026-06-11');
+    expect(stats).toHaveLength(2);
+  });
 });
 
 describe('tabMeta', () => {
@@ -63,9 +73,23 @@ describe('tabMeta', () => {
     const all = await repo.getAllTabMeta();
     expect(all.map((m) => m.tabId)).toEqual([9]);
   });
+
+  test('replaceAllTabMeta with empty array clears the store', async () => {
+    await repo.upsertTabMeta(tabMeta({ tabId: 1 }));
+    await repo.replaceAllTabMeta([]);
+    expect(await repo.getAllTabMeta()).toEqual([]);
+  });
 });
 
 describe('prune + wipe', () => {
+  test('pruneBefore keeps records exactly at the cutoff', async () => {
+    await repo.addSessions([session({ start: T0, end: T0 + 60_000 })]);
+    await repo.applyDailyStats([{ date: '2026-03-13', domain: 'a.com', seconds: 10, audioSeconds: 0 }]);
+    await repo.pruneBefore('2026-03-13', T0);
+    expect((await repo.getSecondsByTab()).get(1)).toBe(60);
+    expect(await repo.getStatsRange('2026-03-13', '2026-03-13')).toHaveLength(1);
+  });
+
   test('pruneBefore removes old sessions and old daily stats', async () => {
     await repo.addSessions([session({ start: T0 - 100 * DAY, end: T0 - 100 * DAY + 60_000 }), session({})]);
     await repo.applyDailyStats([

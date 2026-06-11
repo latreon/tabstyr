@@ -69,23 +69,27 @@ export async function replaceAllTabMeta(metas: TabMeta[]): Promise<void> {
 
 export async function pruneBefore(cutoffDate: string, cutoffTs: number): Promise<void> {
   const db = await getDB();
-  const txS = db.transaction('sessions', 'readwrite');
-  let cur = await txS.store.index('by-start').openCursor(IDBKeyRange.upperBound(cutoffTs, true));
+  const tx = db.transaction(['sessions', 'dailyDomainStats'], 'readwrite');
+  let cur = await tx.objectStore('sessions').index('by-start').openCursor(IDBKeyRange.upperBound(cutoffTs, true));
   while (cur) {
     await cur.delete();
     cur = await cur.continue();
   }
-  await txS.done;
-  const txD = db.transaction('dailyDomainStats', 'readwrite');
-  let dcur = await txD.store.openCursor(IDBKeyRange.upperBound([cutoffDate, ''], true));
+  let dcur = await tx.objectStore('dailyDomainStats').openCursor(IDBKeyRange.upperBound([cutoffDate, ''], true));
   while (dcur) {
     await dcur.delete();
     dcur = await dcur.continue();
   }
-  await txD.done;
+  await tx.done;
 }
 
 export async function wipeAll(): Promise<void> {
   const db = await getDB();
-  await Promise.all([db.clear('sessions'), db.clear('dailyDomainStats'), db.clear('tabMeta')]);
+  const tx = db.transaction(['sessions', 'dailyDomainStats', 'tabMeta'], 'readwrite');
+  await Promise.all([
+    tx.objectStore('sessions').clear(),
+    tx.objectStore('dailyDomainStats').clear(),
+    tx.objectStore('tabMeta').clear(),
+  ]);
+  await tx.done;
 }
