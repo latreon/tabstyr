@@ -57,6 +57,25 @@ describe('TrackerEngine.handleUrlChange', () => {
     expect(e.handleUrlChange(1, 'https://github.com/b', T0 + 60_000)).toEqual([]);
     expect(e.getState().focused?.start).toBe(T0);
   });
+
+  test('domain change on audio tab closes audio session and opens new one', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://docs.com', T0);
+    e.syncAudio([{ tabId: 2, url: 'https://spotify.com/a' }], T0);
+    const closed = e.handleUrlChange(2, 'https://ads.com/redirect', T0 + 45_000);
+    expect(closed).toHaveLength(1);
+    expect(closed[0]).toMatchObject({ tabId: 2, domain: 'spotify.com', audio: true });
+    expect(e.getState().audio[0].domain).toBe('ads.com');
+    expect(e.getState().audio[0].start).toBe(T0 + 45_000);
+  });
+
+  test('same-domain navigation on audio tab does not split session', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://docs.com', T0);
+    e.syncAudio([{ tabId: 2, url: 'https://spotify.com/a' }], T0);
+    expect(e.handleUrlChange(2, 'https://spotify.com/b', T0 + 30_000)).toEqual([]);
+    expect(e.getState().audio[0].start).toBe(T0);
+  });
 });
 
 describe('TrackerEngine.handleTabRemoved', () => {

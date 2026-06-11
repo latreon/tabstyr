@@ -101,6 +101,8 @@ export class TrackerEngine {
     return out;
   }
 
+  // url in open sessions reflects the url at session-open time;
+  // same-domain navigations do not update it.
   handleUrlChange(tabId: number, url: string, now: number): Session[] {
     const out: Session[] = [];
     const domain = domainOf(url);
