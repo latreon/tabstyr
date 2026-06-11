@@ -5,6 +5,8 @@ import HeroTile from '@/components/HeroTile.vue';
 import StatTile from '@/components/StatTile.vue';
 import TopSitesChart from '@/components/TopSitesChart.vue';
 import TrendChart from '@/components/TrendChart.vue';
+import TabTable from '@/components/TabTable.vue';
+import StaleList from '@/components/StaleList.vue';
 
 const s = useStats();
 onMounted(s.load);
@@ -28,8 +30,8 @@ onMounted(s.load);
       />
       <TopSitesChart :domains="s.todayByDomain.value" />
       <TrendChart :stats="s.stats.value" />
-      <!-- Task 13: <TabTable :rows="s.tabRows.value" /> -->
-      <!-- Task 13: <StaleList :tabs="s.staleTabs.value" @close="s.closeTab" @snooze="s.snoozeTab" /> -->
+      <TabTable :rows="s.tabRows.value" />
+      <StaleList :tabs="s.staleTabs.value" @close="s.closeTab" @snooze="s.snoozeTab" />
       <!-- Task 14: <SettingsPanel @changed="s.load" /> -->
     </section>
   </main>
