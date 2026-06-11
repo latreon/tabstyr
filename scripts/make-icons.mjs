@@ -1,5 +1,9 @@
 import { deflateSync } from 'node:zlib';
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+
+const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 
 const CRC_TABLE = Array.from({ length: 256 }, (_, n) => {
   let c = n;
@@ -43,8 +47,8 @@ function png(size, [r, g, b]) {
   ]);
 }
 
-mkdirSync('public/icon', { recursive: true });
+mkdirSync(resolve(ROOT, 'public/icon'), { recursive: true });
 for (const size of [16, 32, 48, 96, 128]) {
-  writeFileSync(`public/icon/${size}.png`, png(size, [0xe2, 0x67, 0x4a]));
+  writeFileSync(resolve(ROOT, `public/icon/${size}.png`), png(size, [0xe2, 0x67, 0x4a]));
 }
 console.log('icons written to public/icon/');
