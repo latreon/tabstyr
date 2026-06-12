@@ -109,9 +109,14 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
 .trigger:hover { border-color: var(--accent); }
 .trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .chevron {
-  font-size: 10px;
-  color: var(--text-3);
+  font-size: 14px;
+  line-height: 1;
+  color: var(--text);
+  opacity: 0.7;
   transition: transform 150ms ease;
+}
+.trigger:hover .chevron {
+  opacity: 1;
 }
 .chevron.open { transform: rotate(180deg); }
 .menu {

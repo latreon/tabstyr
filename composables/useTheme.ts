@@ -7,7 +7,8 @@ export function resolveTheme(setting: ThemeSetting, systemPrefersDark: boolean):
   return setting;
 }
 
-const CYCLE: ThemeSetting[] = ['system', 'dark', 'light'];
+// "system" is the implicit default (when unset); the toggle only flips dark/light.
+const CYCLE: ThemeSetting[] = ['dark', 'light'];
 
 // Module-scope ref so all useTheme() instances share state
 const setting = ref<ThemeSetting>('system');
