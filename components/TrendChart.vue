@@ -20,9 +20,10 @@ function showTip(e: Event, p: TrendPoint) {
   const host = target.closest('.plot') as HTMLElement;
   const rect = target.getBoundingClientRect();
   const hostRect = host.getBoundingClientRect();
+  const halfW = 80;
   tooltip.value = {
     text: trendTooltip(p.key, mode.value, p.seconds),
-    x: rect.left - hostRect.left + rect.width / 2,
+    x: Math.max(halfW, Math.min(rect.left - hostRect.left + rect.width / 2, hostRect.width - halfW)),
   };
 }
 function hideTip() {
@@ -67,7 +68,7 @@ function hideTip() {
             <div class="bar-fill" :style="{ height: `${(p.seconds / chartMax) * 100}%` }" />
           </div>
         </div>
-        <div v-if="tooltip" class="tooltip" :style="{ left: `${tooltip.x}px` }" role="status">
+        <div v-if="tooltip" class="tooltip" :style="{ left: `${tooltip.x}px` }" aria-hidden="true">
           {{ tooltip.text }}
         </div>
       </div>
