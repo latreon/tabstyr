@@ -47,7 +47,7 @@ export interface BackupData {
 export function toJsonBackup(data: BackupData, now: number): string {
   return JSON.stringify(
     {
-      app: 'tab-time',
+      app: 'tabtelo',
       schemaVersion: 2,
       exportedAt: new Date(now).toISOString(),
       ...data,

@@ -4,16 +4,16 @@ export default defineConfig({
   outDir: 'dist',
   modules: ['@wxt-dev/module-vue'],
   manifest: ({ browser }) => ({
-    name: 'Tab Time',
-    description: 'Tab and browser time tracking with stale-tab nudges',
+    name: 'Tabtelo',
+    description: 'Private browsing-time insights — active time per site, trends, heatmaps, focus, and stale-tab nudges. All local.',
     permissions: [
       'tabs', 'storage', 'idle', 'alarms', 'notifications',
       ...(browser === 'firefox' ? [] : ['favicon']),
     ],
-    action: { default_title: 'Tab Time' },
+    action: { default_title: 'Tabtelo' },
     ...(browser === 'firefox' && {
       browser_specific_settings: {
-        gecko: { id: 'tab-time@example.com', strict_min_version: '115.0' },
+        gecko: { id: 'tabtelo@example.com', strict_min_version: '115.0' },
       },
     }),
   }),

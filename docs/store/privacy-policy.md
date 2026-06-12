@@ -1,16 +1,16 @@
-# Tab Time — Privacy Policy
+# Tabtelo — Privacy Policy
 
 _Last updated: 2026-06-12_
 
 ## Summary
 
-**Tab Time does not collect, transmit, or share any data.** Everything it records
+**Tabtelo does not collect, transmit, or share any data.** Everything it records
 stays on your device. There are no servers, no analytics, no accounts, and no
 network requests of any kind.
 
 ## What the extension stores
 
-To show you your usage statistics, Tab Time stores the following **locally**, in
+To show you your usage statistics, Tabtelo stores the following **locally**, in
 your browser's IndexedDB:
 
 - **Session records** — start/end timestamps, the page's domain, and whether the

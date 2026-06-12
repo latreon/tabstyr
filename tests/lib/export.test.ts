@@ -47,7 +47,7 @@ describe('toJsonBackup', () => {
       now,
     );
     const parsed = JSON.parse(json);
-    expect(parsed.app).toBe('tab-time');
+    expect(parsed.app).toBe('tabtelo');
     expect(parsed.schemaVersion).toBe(2);
     expect(parsed.exportedAt).toBe('2026-06-12T08:00:00.000Z');
     expect(parsed.settings).toEqual(SETTINGS);

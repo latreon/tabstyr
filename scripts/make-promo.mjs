@@ -54,9 +54,9 @@ function svg({ w, h, markR, title, titleSize, tagline, taglineSize, layout }) {
 const TAGLINE = 'See how you really use your browser · 100% local';
 
 const assets = [
-  { name: 'marquee-1400x560', w: 1400, h: 560, markR: 150, title: 'Tab Time', titleSize: 104, tagline: TAGLINE, taglineSize: 34, layout: 'side' },
-  { name: 'small-440x280', w: 440, h: 280, markR: 60, title: 'Tab Time', titleSize: 40, tagline: '100% local time tracker', taglineSize: 17, layout: 'stacked' },
-  { name: 'large-920x680', w: 920, h: 680, markR: 130, title: 'Tab Time', titleSize: 84, tagline: TAGLINE, taglineSize: 28, layout: 'stacked' },
+  { name: 'marquee-1400x560', w: 1400, h: 560, markR: 150, title: 'Tabtelo', titleSize: 104, tagline: TAGLINE, taglineSize: 34, layout: 'side' },
+  { name: 'small-440x280', w: 440, h: 280, markR: 60, title: 'Tabtelo', titleSize: 40, tagline: '100% local time tracker', taglineSize: 17, layout: 'stacked' },
+  { name: 'large-920x680', w: 920, h: 680, markR: 130, title: 'Tabtelo', titleSize: 84, tagline: TAGLINE, taglineSize: 28, layout: 'stacked' },
 ];
 
 for (const a of assets) {
