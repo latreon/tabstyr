@@ -1,7 +1,7 @@
 import { dateKey } from '../time';
-import type { DailyStat, Session } from '../types';
+import type { ClosedSession, DailyStat } from '../types';
 
-export function rollup(sessions: Session[]): DailyStat[] {
+export function rollup(sessions: ClosedSession[]): DailyStat[] {
   const map = new Map<string, DailyStat>();
   for (const s of sessions) {
     const date = dateKey(s.start);

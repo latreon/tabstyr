@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { formatDuration } from '@/lib/time';
-import { openDomain } from '@/lib/navigate';
 import FaviconChip from '@/components/FaviconChip.vue';
 
 const props = defineProps<{ domains: Array<{ domain: string; seconds: number; audioSeconds: number }> }>();
+const emit = defineEmits<{ select: [domain: string] }>();
 
 const top = computed(() => props.domains.slice(0, 6));
-const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds)));
+// Scale to active + audio so the two stacked segments fit the track.
+const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds + d.audioSeconds)));
 </script>
 
 <template>
@@ -18,8 +19,8 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds)));
       v-for="d in top"
       :key="d.domain"
       class="row"
-      :aria-label="`Open ${d.domain} — ${formatDuration(d.seconds)} today`"
-      @click="openDomain(d.domain)"
+      :aria-label="`View ${d.domain} details — ${formatDuration(d.seconds)} active today`"
+      @click="emit('select', d.domain)"
     >
       <FaviconChip :domain="d.domain" />
       <span class="name" :title="d.domain">{{ d.domain }}</span>
@@ -34,10 +35,11 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds)));
         <rect x="0" y="0" :width="(d.seconds / max) * 100" height="8" rx="2" fill="url(#siteBar)" />
         <rect
           v-if="d.audioSeconds"
-          x="0" y="0"
+          :x="(d.seconds / max) * 100"
+          y="0"
           :width="(d.audioSeconds / max) * 100"
           height="8" rx="2"
-          fill="#f0c6ff" opacity="0.7"
+          fill="#f0c6ff" opacity="0.75"
         />
       </svg>
       <span class="time">

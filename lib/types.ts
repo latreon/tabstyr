@@ -6,8 +6,14 @@ export interface OpenSession {
   audio: boolean;
 }
 
-export interface Session extends OpenSession {
+/** An open session that has been closed (gained an end), as emitted by the engine. */
+export interface ClosedSession extends OpenSession {
   end: number;
+}
+
+/** A closed session as persisted — carries the stable per-tab key for attribution. */
+export interface Session extends ClosedSession {
+  tabKey: string;
 }
 
 export interface EngineState {
@@ -24,7 +30,8 @@ export interface DailyStat {
 }
 
 export interface TabMeta {
-  tabId: number;
+  tabId: number; // volatile — reassigned by the browser across restarts
+  key: string; // stable identity, survives restart; used to attribute sessions
   url: string;
   title: string;
   lastActiveAt: number;
@@ -39,4 +46,6 @@ export interface Settings {
   idleSeconds: number;
   audioEnabled: boolean;
   theme: ThemeSetting;
+  /** User reassignments of domain → category, overriding the default rules. */
+  categoryOverrides: Record<string, import('./categories').Category>;
 }

@@ -15,6 +15,7 @@ defineProps<{ label: string; value: string; warn?: boolean }>();
   display: flex;
   flex-direction: column;
   gap: 4px;
+  align-self: start; /* stay compact — don't stretch to the hero's height */
 }
 .stat-tile.warn {
   background: var(--warn-bg);

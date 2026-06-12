@@ -20,7 +20,7 @@ describe('faviconUrl', () => {
     if (url !== null) {
       expect(url).toContain('/_favicon/');
       expect(url).toContain(encodeURIComponent('https://github.com/'));
-      expect(url).toContain('size=32');
+      expect(url).toContain('size=64');
     } else {
       // non-chromium runtime (fake browser may report moz-extension) — null is the contract
       expect(url).toBeNull();

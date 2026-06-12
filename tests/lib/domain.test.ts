@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { domainOf } from '@/lib/domain';
+import { domainOf, isWebDomain } from '@/lib/domain';
 
 describe('domainOf', () => {
   test('extracts hostname from http(s) urls', () => {
@@ -16,5 +16,22 @@ describe('domainOf', () => {
   test('returns "other" for invalid urls', () => {
     expect(domainOf('')).toBe('other');
     expect(domainOf('not a url')).toBe('other');
+  });
+});
+
+describe('isWebDomain', () => {
+  test('accepts real hostnames', () => {
+    expect(isWebDomain('github.com')).toBe(true);
+    expect(isWebDomain('sub.example.co.uk')).toBe(true);
+  });
+
+  test('rejects internal-scheme buckets from domainOf', () => {
+    for (const d of ['chrome', 'about', 'chrome-extension', 'file', 'other', 'newtab']) {
+      expect(isWebDomain(d)).toBe(false);
+    }
+  });
+
+  test('rejects the empty string', () => {
+    expect(isWebDomain('')).toBe(false);
   });
 });

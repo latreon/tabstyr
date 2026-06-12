@@ -1,0 +1,49 @@
+# Release QA Checklist
+
+Automated Chromium end-to-end coverage runs via `npm run e2e` (8 tests: popup,
+dashboard tiles, analytics tiles, export buttons, theme toggle, live tracking,
+tab focus, screenshots). Run it on every release.
+
+The items below must be checked **manually in each target browser**, because
+extension loading + the platform APIs can't be fully automated cross-browser.
+
+## Per-browser smoke (Chrome, Edge, Brave, Opera, Firefox)
+
+Load the build (`dist/chrome-mv3`, or `dist/firefox-mv2` for Firefox), then:
+
+- [ ] Browse a normal site for ~30s → it appears in **Open tabs by time** and **Top sites**.
+- [ ] Switch away / lock the screen → time stops accruing (idle).
+- [ ] Play background audio in another tab (audio counting on) → shows as `♪` separately; headline stays ≤ wall-clock.
+- [ ] **Popup** opens: today's active total, top sites, stale count.
+- [ ] **Dashboard** opens: every tile renders (hero, focus, category, top sites, trend, heatmap, work-log, tab table, settings).
+- [ ] Click a top-site → per-domain detail modal opens; Esc closes.
+- [ ] Change a site's category → category/focus update.
+- [ ] **Stale tabs**: badge shows the count; reminder fires at most once/day.
+- [ ] **Settings** persist across reopen; **Export** downloads JSON + CSV; **Wipe** clears everything.
+- [ ] Theme: system / dark / light all look correct; favicons (incl. monochrome like GitHub) are visible in both themes.
+- [ ] Reload the extension → data persists; no `VersionError` in the console.
+
+## Firefox-specific
+
+- [ ] Requires Firefox **115+** (uses `storage.session`).
+- [ ] Site icons fall back to colored letter chips (no `_favicon` API) — expected.
+- [ ] Toolbar button (`browserAction`) and badge work.
+
+## Safari (only if packaging for Safari)
+
+Conversion verified: `xcrun safari-web-extension-converter dist/chrome-mv3` succeeds.
+Safari ignores `idle`, `notifications`, and `favicon` — the code degrades safely
+(no idle-pause, no stale notification, letter-chip icons). Then:
+
+- [ ] Open the generated Xcode project; build & run.
+- [ ] Core tracking + dashboard + export work; no console errors at background startup.
+- [ ] Confirm `storage.session` (Safari 16.4+) and MV3 service-worker behave.
+- [ ] Test on a real build before submission.
+
+## Store submission
+
+- [ ] Screenshots regenerated (`npm run e2e` writes them to `e2e/__screenshots__/`).
+- [ ] Promo images generated (`node scripts/make-promo.mjs`).
+- [ ] Listing copy from `docs/store/listing.md`.
+- [ ] Privacy policy (`docs/store/privacy-policy.md`) hosted and linked.
+- [ ] Version bumped in `package.json` / manifest.

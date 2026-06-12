@@ -5,7 +5,7 @@ import { findStale, rematchTabMeta, shouldNotify } from '@/lib/tracker/stale';
 import { getSettings } from '@/lib/settings';
 import * as repo from '@/lib/db/repo';
 import { addDays, dateKey } from '@/lib/time';
-import type { EngineState, Session } from '@/lib/types';
+import type { ClosedSession, EngineState, Session } from '@/lib/types';
 
 // Firefox MV2 builds expose browserAction; Chromium MV3 exposes action.
 const actionApi = browser.action ?? (browser as unknown as { browserAction: typeof browser.action }).browserAction;
@@ -32,15 +32,35 @@ export default defineBackground(() => {
     return enginePromise;
   }
 
-  async function persist(eng: TrackerEngine, closed: Session[]): Promise<void> {
+  // Attach each closed session's stable tab key (from persisted tabMeta) so per-tab
+  // totals survive tabId reuse across restarts. Tabs that were focused/navigated
+  // always have a meta+key (see touchTab); audio-only tabs that never had a meta
+  // get a throwaway key — their sessions simply won't join any visible open tab.
+  async function stampKeys(closed: ClosedSession[]): Promise<Session[]> {
+    const keyByTab = new Map<number, string>();
+    const out: Session[] = [];
+    for (const s of closed) {
+      let key = keyByTab.get(s.tabId);
+      if (!key) {
+        const meta = await repo.getTabMeta(s.tabId);
+        key = meta?.key ?? crypto.randomUUID();
+        keyByTab.set(s.tabId, key);
+      }
+      out.push({ ...s, tabKey: key });
+    }
+    return out;
+  }
+
+  async function persist(eng: TrackerEngine, closed: ClosedSession[]): Promise<void> {
     if (closed.length) {
-      await repo.addSessions(closed);
-      await repo.applyDailyStats(rollup(closed));
+      const sessions = await stampKeys(closed);
+      // Sessions + their daily rollup committed atomically (single transaction).
+      await repo.commitSessions(sessions, rollup(sessions));
     }
     await browser.storage.session.set({ engineState: eng.getState() });
   }
 
-  async function syncAudioSessions(eng: TrackerEngine, now: number): Promise<Session[]> {
+  async function syncAudioSessions(eng: TrackerEngine, now: number): Promise<ClosedSession[]> {
     const settings = await getSettings();
     if (!settings.audioEnabled) return eng.syncAudio([], now);
     const audibleTabs = await browser.tabs.query({ audible: true });
@@ -48,12 +68,17 @@ export default defineBackground(() => {
     return eng.syncAudio(audible, now);
   }
 
-  async function touchTab(tabId: number, now: number, prefetched?: Awaited<ReturnType<typeof browser.tabs.get>>): Promise<void> {
+  async function touchTab(
+    tabId: number,
+    now: number,
+    prefetched?: { id?: number; url?: string; title?: string } | null,
+  ): Promise<void> {
     const tab = prefetched ?? (await browser.tabs.get(tabId).catch(() => null));
     if (!tab?.id) return;
     const existing = await repo.getTabMeta(tab.id);
     await repo.upsertTabMeta({
       tabId: tab.id,
+      key: existing?.key ?? crypto.randomUUID(),
       url: tab.url ?? '',
       title: tab.title ?? '',
       lastActiveAt: now,
@@ -88,7 +113,8 @@ export default defineBackground(() => {
 
     const { notifyState } = await browser.storage.local.get('notifyState');
     const prev = (notifyState as { lastDate: string; ids: number[] }) ?? { lastDate: '', ids: [] };
-    if (shouldNotify(stale.map((m) => m.tabId), prev.ids, prev.lastDate, today)) {
+    // browser.notifications is absent on some platforms (e.g. Safari) — skip gracefully.
+    if (browser.notifications && shouldNotify(stale.map((m) => m.tabId), prev.ids, prev.lastDate, today)) {
       await browser.notifications.create('tab-time-stale', {
         type: 'basic',
         iconUrl: browser.runtime.getURL('/icon/128.png'),
@@ -136,7 +162,9 @@ export default defineBackground(() => {
     await persist(eng, closed);
   });
 
-  browser.idle.onStateChanged.addListener(async (state) => {
+  // browser.idle is unavailable on some platforms (e.g. Safari). Without it,
+  // tracking simply isn't idle-paused; the MAX_SESSION_MS cap still bounds gaps.
+  browser.idle?.onStateChanged?.addListener(async (state) => {
     const eng = await getEngine();
     const now = Date.now();
     if (state === 'active') {
@@ -154,7 +182,7 @@ export default defineBackground(() => {
     if (changeInfo.url === undefined && changeInfo.audible === undefined) return;
     const eng = await getEngine();
     const now = Date.now();
-    const closed: Session[] = [];
+    const closed: ClosedSession[] = [];
     if (changeInfo.url) {
       closed.push(...eng.handleUrlChange(tabId, changeInfo.url, now));
       if (tab.active) await touchTab(tabId, now, tab);
@@ -186,6 +214,28 @@ export default defineBackground(() => {
   }
   void ensureAlarms();
 
+  // One-time backfill so per-tab totals include history recorded before the stable
+  // tab-key was introduced. Assigns each existing meta a key (if missing) and stamps
+  // its same-run keyless sessions. Guarded by a flag so it runs at most once.
+  async function migrateLegacySessionKeys(): Promise<void> {
+    try {
+      const { keyMigrationV2 } = await browser.storage.local.get('keyMigrationV2');
+      if (keyMigrationV2) return;
+      const metas = await repo.getAllTabMeta();
+      const tabIdToKey = new Map<number, string>();
+      for (const m of metas) {
+        const key = m.key ?? crypto.randomUUID();
+        if (!m.key) await repo.upsertTabMeta({ ...m, key });
+        tabIdToKey.set(m.tabId, key);
+      }
+      await repo.backfillKeylessSessions(tabIdToKey);
+      await browser.storage.local.set({ keyMigrationV2: true });
+    } catch (e) {
+      console.error('[tab-time] key migration failed', e);
+    }
+  }
+  void migrateLegacySessionKeys();
+
   browser.alarms.onAlarm.addListener(async (alarm) => {
     const now = Date.now();
     if (alarm.name === 'heartbeat') {
@@ -207,7 +257,7 @@ export default defineBackground(() => {
     await updateBadge();
   });
 
-  browser.notifications.onClicked.addListener(() => {
+  browser.notifications?.onClicked?.addListener(() => {
     void browser.tabs.create({ url: browser.runtime.getURL('/dashboard.html') });
   });
 
@@ -218,7 +268,7 @@ export default defineBackground(() => {
     const msg = message as { type?: string } | null | undefined;
     if (msg?.type === 'settings-changed') {
       const settings = await getSettings();
-      browser.idle.setDetectionInterval(settings.idleSeconds);
+      browser.idle?.setDetectionInterval?.(settings.idleSeconds);
       await updateBadge();
     } else if (msg?.type === 'wipe-data') {
       await repo.wipeAll();
@@ -229,5 +279,5 @@ export default defineBackground(() => {
     }
   });
 
-  void getSettings().then((s) => browser.idle.setDetectionInterval(s.idleSeconds));
+  void getSettings().then((s) => browser.idle?.setDetectionInterval?.(s.idleSeconds));
 });

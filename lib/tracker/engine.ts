@@ -1,7 +1,12 @@
 import { domainOf } from '../domain';
-import type { EngineState, OpenSession, Session } from '../types';
+import type { ClosedSession, EngineState, OpenSession } from '../types';
 
 const MIN_SESSION_MS = 1000;
+// Upper bound on a single session. The 1-minute heartbeat checkpoint splits all
+// active time into ≤1-minute chunks while the worker is alive, so this only ever
+// clamps a session that spanned a dormant gap — i.e. system sleep/suspend, where
+// no alarms fired. Without it, the whole sleep duration would be counted as use.
+const MAX_SESSION_MS = 10 * 60_000;
 
 export class TrackerEngine {
   private focused: OpenSession | null;
@@ -22,13 +27,16 @@ export class TrackerEngine {
     };
   }
 
-  private closed(open: OpenSession, now: number): Session[] {
-    return now - open.start >= MIN_SESSION_MS ? [{ ...open, end: now }] : [];
+  private closed(open: OpenSession, now: number): ClosedSession[] {
+    const dur = now - open.start;
+    if (dur < MIN_SESSION_MS) return [];
+    const end = dur > MAX_SESSION_MS ? open.start + MAX_SESSION_MS : now;
+    return [{ ...open, end }];
   }
 
-  handleFocus(tabId: number, url: string, now: number): Session[] {
+  handleFocus(tabId: number, url: string, now: number): ClosedSession[] {
     this.idle = false;
-    const out: Session[] = [];
+    const out: ClosedSession[] = [];
     if (this.focused) out.push(...this.closed(this.focused, now));
     const bgAudio = this.audio.get(tabId);
     if (bgAudio) {
@@ -39,21 +47,21 @@ export class TrackerEngine {
     return out;
   }
 
-  handleBlur(now: number): Session[] {
+  handleBlur(now: number): ClosedSession[] {
     const out = this.focused ? this.closed(this.focused, now) : [];
     this.focused = null;
     return out;
   }
 
-  handleIdle(now: number): Session[] {
+  handleIdle(now: number): ClosedSession[] {
     this.idle = true;
     const out = this.focused ? this.closed(this.focused, now) : [];
     this.focused = null;
     return out;
   }
 
-  checkpoint(now: number): Session[] {
-    const out: Session[] = [];
+  checkpoint(now: number): ClosedSession[] {
+    const out: ClosedSession[] = [];
     if (this.focused) {
       const emitted = this.closed(this.focused, now);
       out.push(...emitted);
@@ -67,8 +75,8 @@ export class TrackerEngine {
     return out;
   }
 
-  reconcile(liveTabIds: Set<number>, now: number): Session[] {
-    const out: Session[] = [];
+  reconcile(liveTabIds: Set<number>, now: number): ClosedSession[] {
+    const out: ClosedSession[] = [];
     if (this.focused && !liveTabIds.has(this.focused.tabId)) {
       out.push(...this.closed(this.focused, now));
       this.focused = null;
@@ -82,8 +90,8 @@ export class TrackerEngine {
     return out;
   }
 
-  syncAudio(audible: Array<{ tabId: number; url: string }>, now: number): Session[] {
-    const out: Session[] = [];
+  syncAudio(audible: Array<{ tabId: number; url: string }>, now: number): ClosedSession[] {
+    const out: ClosedSession[] = [];
     const keep = new Set<number>();
     for (const { tabId, url } of audible) {
       if (tabId === this.focused?.tabId) continue;
@@ -103,8 +111,8 @@ export class TrackerEngine {
 
   // url in open sessions reflects the url at session-open time;
   // same-domain navigations do not update it.
-  handleUrlChange(tabId: number, url: string, now: number): Session[] {
-    const out: Session[] = [];
+  handleUrlChange(tabId: number, url: string, now: number): ClosedSession[] {
+    const out: ClosedSession[] = [];
     const domain = domainOf(url);
     if (this.focused?.tabId === tabId && this.focused.domain !== domain) {
       out.push(...this.closed(this.focused, now));
@@ -118,8 +126,8 @@ export class TrackerEngine {
     return out;
   }
 
-  handleTabRemoved(tabId: number, now: number): Session[] {
-    const out: Session[] = [];
+  handleTabRemoved(tabId: number, now: number): ClosedSession[] {
+    const out: ClosedSession[] = [];
     if (this.focused?.tabId === tabId) {
       out.push(...this.closed(this.focused, now));
       this.focused = null;

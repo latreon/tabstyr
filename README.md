@@ -1,75 +1,105 @@
 # Tab Time
 
-Browser extension that tracks how you actually use your browser: active time
-per tab and per site, daily/weekly/monthly trends, and stale-tab nudges.
-All data stays on your machine (IndexedDB, 90-day rolling window). No remote calls.
+A privacy-first browser extension that shows how you actually use your browser —
+active time per tab and per site, trends, an activity heatmap, category and focus
+breakdowns, and gentle stale-tab nudges.
+
+**All data stays on your device** (IndexedDB, 90-day rolling window). No servers,
+no accounts, no network requests, no tracking.
+
+![Tab Time](docs/store/promo/marquee-1400x560.png)
 
 ## Features
 
-- Idle-aware, audio-aware active-time tracking per tab and domain
-- Bento dashboard: today hero, open/stale tab counts, top sites, trends,
-  per-tab table, stale-tab list with Close/Keep
-- Toolbar popup with today's total, top 5 sites (favicons) and stale count
-- Badge count + max-one-per-day notification for stale tabs
-- Dual theme: dark glass / light premium, system-aware with manual toggle
-- Settings: stale threshold, idle timeout, background-audio counting, data wipe
+- **Active-time tracking** — idle-aware and audio-aware, per tab and per domain.
+  The headline metric is *active foreground time*; background audio is shown
+  separately so totals never exceed wall-clock time.
+- **Dashboard** — today's total, open/stale tab counts, top sites, day/week/month
+  trend, **hourly activity heatmap**, **time-by-category** (Work/Dev/Social/Media/…),
+  **focus % + streak**, **per-tab table**, and a stale-tab list with Close/Keep.
+- **Per-domain detail** — click any site for its trend, sessions, share of time,
+  and its own hourly heatmap.
+- **"What did I work on?"** — pick any day, get a clean, copy-pasteable list of the
+  sites you were on. Handy for standups and invoices.
+- **Categories** — domains auto-grouped, fully re-classifiable per site.
+- **Export** — JSON backup + CSV (daily totals or raw session log).
+- **Toolbar popup** — today's active total, top sites, stale count.
+- **Stale-tab nudges** — badge count + at most one notification per day.
+- **Themes** — system-aware dark/light with a manual toggle.
+
+## Privacy
+
+Tab Time is 100% local. It stores activity in the browser's IndexedDB and never
+sends anything anywhere. See [PRIVACY.md](docs/store/privacy-policy.md).
+
+Permissions used: `tabs`, `storage`, `idle`, `alarms`, `notifications`, and
+`favicon` (Chromium only, for site icons). No host permissions.
+
+## Browser support
+
+| Browser | Status |
+|---|---|
+| Chrome, Edge, Brave, Opera, Vivaldi, Arc (Chromium MV3) | ✅ Supported |
+| Firefox 115+ (MV2 build) | ✅ Supported (favicons fall back to letter chips) |
+| Safari 16.4+ | ⚠️ Works after Xcode conversion, with reduced features (see below) |
+
+## Install (unpacked, for development)
+
+```bash
+npm install
+node scripts/make-icons.mjs   # generate icons (once)
+npm run build                 # Chrome/Edge  → dist/chrome-mv3
+npm run build:firefox         # Firefox      → dist/firefox-mv2
+```
+
+- **Chromium:** `chrome://extensions` → Developer mode → Load unpacked → `dist/chrome-mv3`
+- **Firefox:** `about:debugging` → This Firefox → Load Temporary Add-on → pick any file in `dist/firefox-mv2`
 
 ## Development
 
 ```bash
-npm install
-node scripts/make-icons.mjs   # once, generates placeholder icons
-npm run dev                   # Chromium with HMR
-npm run dev -- -b firefox     # Firefox
+npm run dev                 # Chromium with HMR
+npm run dev -- -b firefox   # Firefox with HMR
 ```
 
-## Build
+## Quality gates
 
 ```bash
-npm run build            # Chrome/Edge (.output/chrome-mv3)
-npm run build:firefox    # Firefox (.output/firefox-mv2)
-npm run zip              # store-ready zip
+npm run typecheck   # vue-tsc, zero errors
+npm test            # unit tests (Vitest)
+npm run e2e         # Playwright end-to-end in Chromium (run `npm run build` first)
 ```
 
-Load unpacked: chrome://extensions → Developer mode → Load unpacked → `.output/chrome-mv3`.
+## Safari
 
-## Tests
+Not built by WXT — convert the Chromium build:
 
 ```bash
-npm test                 # unit (Vitest)
-npm run e2e              # Playwright (requires npm run build first)
+xcrun safari-web-extension-converter dist/chrome-mv3
 ```
 
-## Firefox notes
+The conversion succeeds. Safari does **not** support three APIs the extension
+uses, which the code degrades gracefully around (verified):
 
-WXT targets **Manifest V2** for Firefox (`firefox-mv2`). Key manifest differences
-from the Chrome MV3 build:
+- **`idle`** — no idle-pause; the 10-minute per-session cap still bounds away-time.
+- **`notifications`** — no daily stale-tab reminder (the badge count still works).
+- **`favicon`** — site icons fall back to colored letter chips.
 
-| Feature | Chrome MV3 | Firefox MV2 |
-|---|---|---|
-| Manifest version | 3 | 2 |
-| Toolbar API | `action` | `browser_action` |
-| Background | `service_worker` | `scripts` array |
+Core tracking, the dashboard, categories, focus, export, and stale detection all
+work. Open the generated Xcode project, test on a real build, and distribute via
+the App Store or notarization (Apple Developer account required).
 
-`entrypoints/background.ts` handles this automatically via the `actionApi` shim
-on line 11:
-```ts
-const actionApi = browser.action ?? (browser as any).browserAction;
-```
+## Architecture
 
-## Release smoke checklist (Chrome + Edge + Firefox)
+- `entrypoints/background.ts` — the tracking engine driver (events, alarms,
+  persistence). Handles Chrome MV3 `action` vs Firefox MV2 `browserAction`.
+- `lib/tracker/` — pure session state machine + rollup/stale logic.
+- `lib/db/` — IndexedDB (idb) repository; per-tab time attributed by a stable key
+  so totals survive tab-ID reuse across restarts.
+- `lib/` — pure, unit-tested helpers (time, trend, heatmap, categories,
+  productivity, worklog, export, metrics).
+- `components/`, `entrypoints/{popup,dashboard}` — Vue 3 UI.
 
-- [ ] Tracking accrues time while browsing; pauses when idle/unfocused
-- [ ] Background YouTube audio counts (when enabled)
-- [ ] Popup and dashboard open and show data
-- [ ] Badge shows stale count; notification fires at most once/day
-- [ ] Settings persist; wipe clears everything
+## License
 
-## Known limitations
-
-- After a browser restart, per-tab time in the "Open tabs by time" table starts
-  fresh: tab IDs are re-matched by URL for staleness tracking, but historical
-  sessions keep their old tab IDs. Per-site stats are unaffected.
-- The dashboard reads and writes IndexedDB directly (close/snooze actions);
-  only settings changes and data wipe go through the background worker.
-- Firefox requires version 115+ (storage.session).
+[MIT](LICENSE) © 2026 Farda Karimov

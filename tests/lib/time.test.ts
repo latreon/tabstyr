@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { addDays, dateKey, formatDuration } from '@/lib/time';
+import { addDays, dateKey, dayLabel, formatDuration, monthLabel } from '@/lib/time';
 
 describe('formatDuration', () => {
   test('formats sub-minute as <1m', () => {
@@ -26,8 +26,9 @@ describe('addDays', () => {
   });
 });
 
-test('clamps negative input to <1m', () => {
-  expect(formatDuration(-30)).toBe('<1m');
+test('zero and negative input render as 0m', () => {
+  expect(formatDuration(0)).toBe('0m');
+  expect(formatDuration(-30)).toBe('0m');
 });
 test('rounds to nearest minute at the 30-second boundary', () => {
   expect(formatDuration(29)).toBe('<1m');
@@ -35,4 +36,18 @@ test('rounds to nearest minute at the 30-second boundary', () => {
 });
 test('suppresses zero minutes on exact hours', () => {
   expect(formatDuration(3600)).toBe('1h');
+});
+
+describe('dayLabel', () => {
+  test('formats a YYYY-MM-DD key as "Mon D"', () => {
+    expect(dayLabel('2026-06-11')).toBe('Jun 11');
+    expect(dayLabel('2026-01-05')).toBe('Jan 5');
+  });
+});
+
+describe('monthLabel', () => {
+  test('formats a YYYY-MM key as the short month name', () => {
+    expect(monthLabel('2026-06')).toBe('Jun');
+    expect(monthLabel('2026-12')).toBe('Dec');
+  });
 });

@@ -1,4 +1,4 @@
-import { addDays, dateKey } from './time';
+import { addDays, dateKey, dayLabel, monthLabel } from './time';
 import type { DailyStat } from './types';
 
 export type TrendMode = 'day' | 'week' | 'month';
@@ -22,7 +22,7 @@ export function buildTrend(stats: DailyStat[], mode: TrendMode, now: number): Tr
 
 function buildFrom(byDate: Map<string, number>, mode: TrendMode, today: string): TrendPoint[] {
   if (mode === 'day') {
-    return rangeDays(today, 14).map((d) => ({ key: d, label: d.slice(5), seconds: byDate.get(d) ?? 0 }));
+    return rangeDays(today, 14).map((d) => ({ key: d, label: dayLabel(d), seconds: byDate.get(d) ?? 0 }));
   }
   if (mode === 'week') {
     const days = rangeDays(today, 84);
@@ -31,7 +31,7 @@ function buildFrom(byDate: Map<string, number>, mode: TrendMode, today: string):
       const chunk = days.slice(i, i + 7);
       out.push({
         key: chunk[0],
-        label: chunk[0].slice(5),
+        label: dayLabel(chunk[0]),
         seconds: chunk.reduce((sum, d) => sum + (byDate.get(d) ?? 0), 0),
       });
     }
@@ -42,5 +42,5 @@ function buildFrom(byDate: Map<string, number>, mode: TrendMode, today: string):
     const key = d.slice(0, 7);
     months.set(key, (months.get(key) ?? 0) + (byDate.get(d) ?? 0));
   }
-  return [...months.entries()].map(([key, seconds]) => ({ key, label: key, seconds }));
+  return [...months.entries()].map(([key, seconds]) => ({ key, label: monthLabel(key), seconds }));
 }

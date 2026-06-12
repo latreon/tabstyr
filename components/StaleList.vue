@@ -30,8 +30,6 @@ function days(ts: number): number {
 
 <style scoped>
 .stale-tile {
-  background: var(--warn-bg);
-  border-color: var(--warn-border);
   padding: 16px;
   display: flex;
   flex-direction: column;

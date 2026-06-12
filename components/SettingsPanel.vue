@@ -3,7 +3,19 @@ import { onMounted, ref } from 'vue';
 import { browser } from 'wxt/browser';
 import { getSettings, saveSettings } from '@/lib/settings';
 import { useTheme } from '@/composables/useTheme';
+import * as repo from '@/lib/db/repo';
+import { dailyStatsToCsv, downloadFile, sessionsToCsv, toJsonBackup } from '@/lib/export';
+import { dateKey } from '@/lib/time';
 import type { ThemeSetting } from '@/lib/types';
+import SelectBox from '@/components/ui/SelectBox.vue';
+import ToggleSwitch from '@/components/ui/ToggleSwitch.vue';
+import NumberStepper from '@/components/ui/NumberStepper.vue';
+
+const THEME_OPTIONS = [
+  { value: 'system', label: 'System' },
+  { value: 'dark', label: 'Dark' },
+  { value: 'light', label: 'Light' },
+];
 
 const emit = defineEmits<{ changed: [] }>();
 const theme = useTheme();
@@ -41,6 +53,34 @@ async function save() {
   }
 }
 
+const exporting = ref(false);
+
+async function exportData(kind: 'json' | 'daily' | 'sessions') {
+  if (exporting.value) return;
+  exporting.value = true;
+  try {
+    const stamp = dateKey(Date.now());
+    if (kind === 'json') {
+      const [dailyStats, sessions, tabMeta, settings] = await Promise.all([
+        repo.getAllDailyStats(),
+        repo.getAllSessions(),
+        repo.getAllTabMeta(),
+        getSettings(),
+      ]);
+      const json = toJsonBackup({ dailyStats, sessions, tabMeta, settings }, Date.now());
+      downloadFile(`tab-time-backup-${stamp}.json`, json, 'application/json');
+    } else if (kind === 'daily') {
+      downloadFile(`tab-time-daily-${stamp}.csv`, dailyStatsToCsv(await repo.getAllDailyStats()), 'text/csv');
+    } else {
+      downloadFile(`tab-time-sessions-${stamp}.csv`, sessionsToCsv(await repo.getAllSessions()), 'text/csv');
+    }
+  } catch (e) {
+    console.error('[settings] export failed', e);
+  } finally {
+    exporting.value = false;
+  }
+}
+
 async function wipe() {
   if (!confirm('Delete ALL tracked data? This cannot be undone.')) return;
   try {
@@ -55,29 +95,39 @@ async function wipe() {
 <template>
   <div class="tile settings-tile">
     <span class="label">Settings</span>
-    <label>
-      Theme
-      <select v-model="themeChoice">
-        <option value="system">System</option>
-        <option value="dark">Dark</option>
-        <option value="light">Light</option>
-      </select>
-    </label>
-    <label>
-      Stale after (days)
-      <input v-model.number="staleDays" type="number" min="1" max="60" />
-    </label>
-    <label>
-      Idle timeout (seconds)
-      <input v-model.number="idleSeconds" type="number" min="15" max="600" />
-    </label>
-    <label class="check">
-      <input v-model="audioEnabled" type="checkbox" />
-      Count background audio
-    </label>
+    <div class="field">
+      <span class="field-label">Theme</span>
+      <SelectBox
+        :model-value="themeChoice"
+        :options="THEME_OPTIONS"
+        label="Theme"
+        @update:model-value="themeChoice = $event as ThemeSetting"
+      />
+    </div>
+    <div class="field">
+      <span class="field-label">Stale after (days)</span>
+      <NumberStepper v-model="staleDays" :min="1" :max="60" label="Stale after (days)" />
+    </div>
+    <div class="field">
+      <span class="field-label">Idle timeout (seconds)</span>
+      <NumberStepper v-model="idleSeconds" :min="15" :max="600" :step="15" label="Idle timeout (seconds)" />
+    </div>
+    <div class="field check">
+      <span class="field-label">Count background audio</span>
+      <ToggleSwitch v-model="audioEnabled" label="Count background audio" />
+    </div>
     <div class="actions">
       <button class="save" @click="save">{{ saved ? 'Saved ✓' : 'Save' }}</button>
       <button class="wipe" @click="wipe">Wipe all data</button>
+    </div>
+
+    <div class="export">
+      <span class="field-label">Export</span>
+      <div class="export-btns">
+        <button :disabled="exporting" @click="exportData('json')">JSON backup</button>
+        <button :disabled="exporting" @click="exportData('daily')">CSV · daily</button>
+        <button :disabled="exporting" @click="exportData('sessions')">CSV · sessions</button>
+      </div>
     </div>
   </div>
 </template>
@@ -89,29 +139,16 @@ async function wipe() {
   flex-direction: column;
   gap: 10px;
 }
-label {
+.field {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 13px;
   gap: 10px;
+  min-height: 32px;
+}
+.field-label {
   color: var(--text-2);
-}
-input[type='number'],
-select {
-  border: 1px solid var(--border);
-  background: var(--card-strong);
-  color: var(--text);
-  border-radius: 7px;
-  padding: 5px 8px;
-  font-size: 13px;
-  font-family: inherit;
-}
-input[type='number'] {
-  width: 70px;
-}
-.check {
-  justify-content: flex-start;
 }
 .actions {
   display: flex;
@@ -139,5 +176,34 @@ button:focus-visible {
   background: transparent;
   color: var(--warn);
   border: 1px solid var(--warn-border);
+}
+.export {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--divider);
+}
+.export-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.export-btns button {
+  flex: 1;
+  min-width: 96px;
+  background: var(--card-strong);
+  color: var(--text-2);
+  border: 1px solid var(--border);
+  font-weight: 600;
+}
+.export-btns button:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.export-btns button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>

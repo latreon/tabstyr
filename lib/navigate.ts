@@ -1,6 +1,9 @@
 import { browser } from 'wxt/browser';
+import { isWebDomain } from './domain';
 
 export function openDomain(domain: string): void {
+  // Never build `https://chrome/` etc. from an internal-scheme bucket.
+  if (!isWebDomain(domain)) return;
   void browser.tabs.create({ url: `https://${domain}/` });
 }
 

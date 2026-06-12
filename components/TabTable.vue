@@ -8,11 +8,27 @@ import type { TabRow } from '@/composables/useStats';
 const props = defineProps<{ rows: TabRow[] }>();
 
 type SortKey = 'seconds' | 'lastActiveAt';
+type SortDir = 'asc' | 'desc';
 const sortKey = ref<SortKey>('seconds');
-const sorted = computed(() => [...props.rows].sort((a, b) => b[sortKey.value] - a[sortKey.value]));
+const sortDir = ref<SortDir>('desc');
+const sorted = computed(() => {
+  const sign = sortDir.value === 'desc' ? 1 : -1;
+  return [...props.rows].sort((a, b) => sign * (b[sortKey.value] - a[sortKey.value]));
+});
+
+function setSort(key: SortKey) {
+  if (sortKey.value === key) {
+    sortDir.value = sortDir.value === 'desc' ? 'asc' : 'desc';
+  } else {
+    sortKey.value = key;
+    sortDir.value = 'desc';
+  }
+}
 
 function ago(ts: number): string {
+  if (!ts) return '—'; // tab open but never focused
   const mins = Math.round((Date.now() - ts) / 60_000);
+  if (mins < 1) return 'just now';
   if (mins < 60) return `${mins}m ago`;
   if (mins < 1440) return `${Math.round(mins / 60)}h ago`;
   return `${Math.round(mins / 1440)}d ago`;
@@ -21,7 +37,10 @@ function ago(ts: number): string {
 
 <template>
   <div class="tile table-tile">
-    <span class="label">Open tabs by time</span>
+    <div class="tt-head">
+      <span class="label">Open tabs by time</span>
+      <span class="tt-sub">Total tracked per tab · last 90 days</span>
+    </div>
     <table>
       <thead>
         <tr>
@@ -29,16 +48,28 @@ function ago(ts: number): string {
           <th
             scope="col"
             :class="{ active: sortKey === 'seconds' }"
-            :aria-sort="sortKey === 'seconds' ? 'descending' : 'none'"
+            :aria-sort="sortKey === 'seconds' ? (sortDir === 'desc' ? 'descending' : 'ascending') : 'none'"
           >
-            <button @click="sortKey = 'seconds'">Time</button>
+            <button @click="setSort('seconds')">
+              Tracked
+              <svg class="caret" viewBox="0 0 12 14" aria-hidden="true">
+                <path class="up" :class="{ on: sortKey === 'seconds' && sortDir === 'asc' }" d="M6 1.5 9.5 6 2.5 6 Z" />
+                <path class="down" :class="{ on: sortKey === 'seconds' && sortDir === 'desc' }" d="M2.5 8 9.5 8 6 12.5 Z" />
+              </svg>
+            </button>
           </th>
           <th
             scope="col"
             :class="{ active: sortKey === 'lastActiveAt' }"
-            :aria-sort="sortKey === 'lastActiveAt' ? 'descending' : 'none'"
+            :aria-sort="sortKey === 'lastActiveAt' ? (sortDir === 'desc' ? 'descending' : 'ascending') : 'none'"
           >
-            <button @click="sortKey = 'lastActiveAt'">Last active</button>
+            <button @click="setSort('lastActiveAt')">
+              Last active
+              <svg class="caret" viewBox="0 0 12 14" aria-hidden="true">
+                <path class="up" :class="{ on: sortKey === 'lastActiveAt' && sortDir === 'asc' }" d="M6 1.5 9.5 6 2.5 6 Z" />
+                <path class="down" :class="{ on: sortKey === 'lastActiveAt' && sortDir === 'desc' }" d="M2.5 8 9.5 8 6 12.5 Z" />
+              </svg>
+            </button>
           </th>
         </tr>
       </thead>
@@ -72,6 +103,21 @@ function ago(ts: number): string {
   padding: 16px;
   grid-column: span 2;
 }
+.tt-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tt-head .label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--text-2);
+}
+.tt-sub {
+  font-size: 11px;
+  color: var(--text-3);
+}
 table {
   width: 100%;
   border-collapse: collapse;
@@ -90,6 +136,26 @@ th button {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+th button:hover {
+  color: var(--text-2);
+}
+.caret {
+  width: 11px;
+  height: 13px;
+  flex: none;
+}
+.caret path {
+  fill: var(--text-3);
+  opacity: 0.4;
+  transition: fill 120ms ease, opacity 120ms ease;
+}
+.caret path.on {
+  fill: var(--accent-a);
+  opacity: 1;
 }
 th.plain {
   font-size: 11px;

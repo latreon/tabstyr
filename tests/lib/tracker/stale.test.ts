@@ -6,7 +6,7 @@ const DAY = 86_400_000;
 const NOW = 1_000_000_000_000;
 
 function meta(partial: Partial<TabMeta>): TabMeta {
-  return { tabId: 1, url: 'https://a.com', title: 'A', lastActiveAt: NOW, createdAt: NOW - 10 * DAY, ...partial };
+  return { tabId: 1, key: `k${partial.tabId ?? 1}`, url: 'https://a.com', title: 'A', lastActiveAt: NOW, createdAt: NOW - 10 * DAY, ...partial };
 }
 
 describe('findStale', () => {
@@ -58,6 +58,24 @@ describe('rematchTabMeta', () => {
     const outReverse = rematchTabMeta([newer, older], [{ id: 5, url: 'https://a.com' }]);
     expect(outReverse).toHaveLength(1);
     expect(outReverse[0].lastActiveAt).toBe(NOW - DAY);
+  });
+
+  test('N live tabs sharing a url each claim their own meta (no collapse)', () => {
+    const older = meta({ tabId: 10, key: 'kOld', url: 'https://a.com', lastActiveAt: NOW - 5 * DAY });
+    const newer = meta({ tabId: 11, key: 'kNew', url: 'https://a.com', lastActiveAt: NOW - DAY });
+    const out = rematchTabMeta(
+      [older, newer],
+      [
+        { id: 5, url: 'https://a.com' },
+        { id: 6, url: 'https://a.com' },
+      ],
+    );
+    expect(out).toHaveLength(2);
+    expect(out.map((m) => m.tabId).sort()).toEqual([5, 6]);
+    // distinct metas preserved (keys not collapsed onto one)
+    expect(new Set(out.map((m) => m.key))).toEqual(new Set(['kOld', 'kNew']));
+    // most-recent meta assigned to the first live tab
+    expect(out[0].key).toBe('kNew');
   });
 });
 

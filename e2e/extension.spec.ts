@@ -3,7 +3,7 @@ declare const chrome: any;
 import { test as base, chromium, expect, type BrowserContext } from '@playwright/test';
 import path from 'node:path';
 
-const EXT_PATH = path.resolve('.output/chrome-mv3');
+const EXT_PATH = path.resolve('dist/chrome-mv3');
 
 const test = base.extend<{ context: BrowserContext; extensionId: string }>({
   // eslint-disable-next-line no-empty-pattern
@@ -36,6 +36,25 @@ test('dashboard renders bento tiles', async ({ context, extensionId }) => {
   await expect(page.locator('.hero-tile')).toBeVisible();
   await expect(page.getByText('Open tabs', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('Stale tabs', { exact: true }).first()).toBeVisible();
+});
+
+test('dashboard renders all analytics tiles', async ({ context, extensionId }) => {
+  const page = await context.newPage();
+  await page.goto(`chrome-extension://${extensionId}/dashboard.html`);
+  await expect(page.getByText('Focus today')).toBeVisible();
+  await expect(page.getByText('Today by category')).toBeVisible();
+  await expect(page.getByText('Activity heatmap')).toBeVisible();
+  await expect(page.getByText('Trend')).toBeVisible();
+  await expect(page.getByText('What did I work on?')).toBeVisible();
+  await expect(page.getByText('Open tabs by time')).toBeVisible();
+  await expect(page.getByText('Settings')).toBeVisible();
+});
+
+test('settings export buttons are present', async ({ context, extensionId }) => {
+  const page = await context.newPage();
+  await page.goto(`chrome-extension://${extensionId}/dashboard.html`);
+  await expect(page.getByRole('button', { name: 'JSON backup' })).toBeVisible();
+  await expect(page.getByRole('button', { name: /CSV/ }).first()).toBeVisible();
 });
 
 test('theme toggle flips data-theme', async ({ context, extensionId }) => {

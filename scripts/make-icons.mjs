@@ -13,8 +13,8 @@ const SMALL = `<?xml version="1.0" encoding="UTF-8"?>
   <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#60a5fa"/></linearGradient></defs>
   <circle cx="32" cy="32" r="22" fill="none" stroke="#3a3a4a" stroke-width="11"/>
   <path d="M 32 10 A 22 22 0 1 1 13.4 43" fill="none" stroke="url(#g)" stroke-width="11" stroke-linecap="round"/>
-  <line x1="32" y1="32" x2="32" y2="18" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
-  <line x1="32" y1="32" x2="42" y2="38" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
+  <line x1="32" y1="32" x2="32" y2="18" stroke="#7c5cf0" stroke-width="7" stroke-linecap="round"/>
+  <line x1="32" y1="32" x2="42" y2="38" stroke="#7c5cf0" stroke-width="7" stroke-linecap="round"/>
 </svg>`;
 
 mkdirSync(resolve(ROOT, 'public/icon'), { recursive: true });

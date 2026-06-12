@@ -44,4 +44,21 @@ describe('settings', () => {
     await saveSettings({ theme: 'dark' });
     expect((await getSettings()).theme).toBe('dark');
   });
+
+  test('category overrides round-trip and drop invalid entries', async () => {
+    await fakeBrowser.storage.local.set({
+      settings: { categoryOverrides: { 'a.com': 'Work', 'b.com': 'Nonsense', 'c.com': 'Social' } },
+    });
+    expect((await getSettings()).categoryOverrides).toEqual({ 'a.com': 'Work', 'c.com': 'Social' });
+  });
+
+  test('non-object categoryOverrides is ignored', async () => {
+    await fakeBrowser.storage.local.set({ settings: { categoryOverrides: 'nope' } });
+    expect((await getSettings()).categoryOverrides).toEqual({});
+  });
+
+  test('saveSettings persists a category override', async () => {
+    await saveSettings({ categoryOverrides: { 'x.com': 'Dev' } });
+    expect((await getSettings()).categoryOverrides).toEqual({ 'x.com': 'Dev' });
+  });
 });

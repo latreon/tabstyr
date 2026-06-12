@@ -100,6 +100,22 @@ describe('TrackerEngine boundary safety', () => {
     expect(closed[0].start).toBe(T0); // full elapsed window kept
   });
 
+  test('caps an absurdly long session (system sleep/suspend) at the 10-minute bound', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://a.com', T0);
+    const closed = e.handleBlur(T0 + 8 * 60 * 60_000); // "focused" across an 8h sleep
+    expect(closed).toHaveLength(1);
+    expect(closed[0].end - closed[0].start).toBe(10 * 60_000); // not 8 hours
+  });
+
+  test('caps a long audio session at the bound too', () => {
+    const e = new TrackerEngine();
+    e.syncAudio([{ tabId: 2, url: 'https://music.com/x' }], T0);
+    const closed = e.checkpoint(T0 + 60 * 60_000); // 1h with no heartbeat (asleep)
+    expect(closed).toHaveLength(1);
+    expect(closed[0].end - closed[0].start).toBe(10 * 60_000);
+  });
+
   test('same-tab refocus (navigation) closes old session and opens new url', () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://a.com/x', T0);

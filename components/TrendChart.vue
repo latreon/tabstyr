@@ -90,7 +90,13 @@ function hideTip() {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
+}
+.trend-head .label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--text-2);
 }
 .toggle {
   display: flex;
@@ -120,6 +126,7 @@ function hideTip() {
 .chart {
   display: flex;
   gap: 8px;
+  padding: 24px 0;
 }
 .y-axis {
   display: flex;

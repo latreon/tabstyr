@@ -5,6 +5,8 @@ import { getAllTabMeta, getStatsRange } from '@/lib/db/repo';
 import { findStale } from '@/lib/tracker/stale';
 import { getSettings } from '@/lib/settings';
 import { addDays, dateKey, formatDuration } from '@/lib/time';
+import { isWebDomain } from '@/lib/domain';
+import { activeSeconds as active } from '@/lib/metrics';
 import { openDomain } from '@/lib/navigate';
 import FaviconChip from '@/components/FaviconChip.vue';
 import RingLogo from '@/components/RingLogo.vue';
@@ -12,6 +14,7 @@ import ThemeToggle from '@/components/ThemeToggle.vue';
 
 const todaySeconds = ref(0);
 const weeklyAvgSeconds = ref(0);
+const weeklyActiveDays = ref(0);
 const topDomains = ref<Array<{ domain: string; seconds: number }>>([]);
 const tabCount = ref(0);
 const staleCount = ref(0);
@@ -19,7 +22,7 @@ const loading = ref(true);
 const loadError = ref(false);
 
 const deltaPct = computed(() => {
-  if (!weeklyAvgSeconds.value) return null;
+  if (!weeklyAvgSeconds.value || weeklyActiveDays.value < 3) return null;
   const pct = Math.round(((todaySeconds.value - weeklyAvgSeconds.value) / weeklyAvgSeconds.value) * 100);
   return pct === 0 ? null : pct;
 });
@@ -35,16 +38,26 @@ onMounted(async () => {
       getSettings(),
       browser.tabs.query({}),
     ]);
-    todaySeconds.value = stats.reduce((sum, s) => sum + s.seconds, 0);
-    weeklyAvgSeconds.value = weekStats.reduce((sum, s) => sum + s.seconds, 0) / 7;
+    const webToday = stats.filter((s) => isWebDomain(s.domain));
+    const webWeek = weekStats.filter((s) => isWebDomain(s.domain));
+    todaySeconds.value = webToday.reduce((sum, s) => sum + active(s), 0);
+    // Average over days with data, not a flat ÷7 (see useStats.weeklyAvgSeconds).
+    weeklyActiveDays.value = new Set(webWeek.map((s) => s.date)).size;
+    weeklyAvgSeconds.value = weeklyActiveDays.value
+      ? webWeek.reduce((sum, s) => sum + active(s), 0) / weeklyActiveDays.value
+      : 0;
     const byDomain = new Map<string, number>();
-    for (const s of stats) byDomain.set(s.domain, (byDomain.get(s.domain) ?? 0) + s.seconds);
+    for (const s of webToday) {
+      byDomain.set(s.domain, (byDomain.get(s.domain) ?? 0) + active(s));
+    }
     topDomains.value = [...byDomain.entries()]
       .map(([domain, seconds]) => ({ domain, seconds }))
       .sort((a, b) => b.seconds - a.seconds)
       .slice(0, 5);
-    tabCount.value = tabs.length;
-    const liveIds = new Set(tabs.flatMap((t) => (t.id ? [t.id] : [])));
+    const ownPrefix = browser.runtime.getURL('');
+    const realTabs = tabs.filter((t) => t.url && !t.url.startsWith(ownPrefix));
+    tabCount.value = realTabs.length;
+    const liveIds = new Set(realTabs.flatMap((t) => (t.id ? [t.id] : [])));
     staleCount.value = findStale(
       metas.filter((m) => liveIds.has(m.tabId)),
       Date.now(),

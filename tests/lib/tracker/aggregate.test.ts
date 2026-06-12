@@ -7,7 +7,7 @@ const T0 = new Date(2026, 5, 11, 10, 0).getTime();
 const DATE = dateKey(T0);
 
 function session(partial: Partial<Session>): Session {
-  return { tabId: 1, url: 'https://a.com/x', domain: 'a.com', start: T0, end: T0 + 60_000, audio: false, ...partial };
+  return { tabId: 1, tabKey: 'k1', url: 'https://a.com/x', domain: 'a.com', start: T0, end: T0 + 60_000, audio: false, ...partial };
 }
 
 describe('rollup', () => {

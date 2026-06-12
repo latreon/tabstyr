@@ -9,6 +9,7 @@
     "build:firefox": "wxt build -b firefox",
     "zip": "wxt zip",
     "postinstall": "wxt prepare",
+    "typecheck": "vue-tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "e2e": "playwright test"
@@ -28,6 +29,7 @@
     "sharp": "^0.35.1",
     "typescript": "^5.7.0",
     "vitest": "^3.0.0",
+    "vue-tsc": "^2.2.0",
     "wxt": "^0.20.0"
   }
 }

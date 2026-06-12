@@ -7,3 +7,13 @@ export function domainOf(url: string): string {
     return 'other';
   }
 }
+
+/**
+ * True only for real, openable web hostnames (e.g. `github.com`). Excludes the
+ * scheme-word buckets `domainOf` returns for internal pages (`chrome`, `extension`,
+ * `file`, `other`, …), which must not be rendered as clickable sites nor reopened
+ * as `https://<scheme>/`.
+ */
+export function isWebDomain(domain: string): boolean {
+  return /\./.test(domain) && !/\s/.test(domain);
+}
