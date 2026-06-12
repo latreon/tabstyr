@@ -3,7 +3,8 @@ export interface OpenSession {
   url: string;
   domain: string;
   start: number;
-  audio: boolean;
+  audio: boolean; // a background-audio session (not the focused tab)
+  audible?: boolean; // the focused tab is currently playing media — keeps the cap off
 }
 
 /** An open session that has been closed (gained an end), as emitted by the engine. */

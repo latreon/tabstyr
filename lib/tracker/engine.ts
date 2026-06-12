@@ -2,12 +2,12 @@ import { domainOf, isWebDomain } from '../domain';
 import type { ClosedSession, EngineState, OpenSession } from '../types';
 
 const MIN_SESSION_MS = 1000;
-// Upper bound on a single session, as a backstop against sleep/suspend inflating
-// time. The 1-minute heartbeat normally splits active time into ≤1-minute chunks,
-// but Chrome can throttle MV3 alarms / evict the worker during long PASSIVE use
-// (e.g. watching a video with no input), letting a single legitimate session grow.
-// The cap must therefore be generous enough not to clip real continuous viewing —
-// 30 minutes — while still bounding a multi-hour sleep gap.
+// Sleep/suspend backstop. The heartbeat normally splits active time into ≤1-minute
+// chunks, but Chrome can throttle MV3 alarms during long PASSIVE use. We therefore
+// only cap sessions that are NOT playing media — a focused tab playing audio/video
+// (or a background-audio tab) is genuine continuous use and is counted in full, so
+// a 2-hour video watched without input still reports ~2 hours. A non-playing tab
+// that spans a long gap (e.g. the machine slept) is capped.
 const MAX_SESSION_MS = 30 * 60_000;
 
 export class TrackerEngine {
@@ -29,14 +29,17 @@ export class TrackerEngine {
     };
   }
 
-  private closed(open: OpenSession, now: number): ClosedSession[] {
+  // forceCap = the close happens because the user is away (idle/locked/sleep), so
+  // even a media session must be bounded. Otherwise media sessions are never capped.
+  private closed(open: OpenSession, now: number, forceCap = false): ClosedSession[] {
     const dur = now - open.start;
     if (dur < MIN_SESSION_MS) return [];
-    const end = dur > MAX_SESSION_MS ? open.start + MAX_SESSION_MS : now;
+    const cappable = forceCap || (!open.audio && !open.audible);
+    const end = cappable && dur > MAX_SESSION_MS ? open.start + MAX_SESSION_MS : now;
     return [{ ...open, end }];
   }
 
-  handleFocus(tabId: number, url: string, now: number): ClosedSession[] {
+  handleFocus(tabId: number, url: string, now: number, audible = false): ClosedSession[] {
     this.idle = false;
     const out: ClosedSession[] = [];
     if (this.focused) out.push(...this.closed(this.focused, now));
@@ -45,11 +48,16 @@ export class TrackerEngine {
       out.push(...this.closed(bgAudio, now));
       this.audio.delete(tabId);
     }
-    // Only track real web pages — internal pages (chrome://, newtab, the extension's
-    // own dashboard) are never counted, so they neither add time nor session rows.
+    // Only track real web pages — internal pages (chrome://, newtab, the dashboard)
+    // are never counted.
     const domain = domainOf(url);
-    this.focused = isWebDomain(domain) ? { tabId, url, domain, start: now, audio: false } : null;
+    this.focused = isWebDomain(domain) ? { tabId, url, domain, start: now, audio: false, audible } : null;
     return out;
+  }
+
+  /** Update whether the focused tab is currently playing media (keeps the cap off). */
+  setFocusedAudible(audible: boolean): void {
+    if (this.focused) this.focused.audible = audible;
   }
 
   handleBlur(now: number): ClosedSession[] {
@@ -58,15 +66,30 @@ export class TrackerEngine {
     return out;
   }
 
+  /**
+   * No user input. If the focused tab is playing media, the user is watching, so
+   * keep counting. Otherwise stop. Background audio is stopped either way (you're
+   * away from it).
+   */
   handleIdle(now: number): ClosedSession[] {
-    this.idle = true;
     const out: ClosedSession[] = [];
-    if (this.focused) out.push(...this.closed(this.focused, now));
-    this.focused = null;
-    // Stop background audio too — time while you're away shouldn't accrue, and an
-    // always-"audible" tab left open would otherwise rack up hours.
     for (const open of this.audio.values()) out.push(...this.closed(open, now));
     this.audio.clear();
+    if (this.focused?.audible) return out; // still watching — keep the session open
+    if (this.focused) out.push(...this.closed(this.focused, now));
+    this.focused = null;
+    this.idle = true;
+    return out;
+  }
+
+  /** Screen locked / system asleep — definitely away. Close everything, capped. */
+  handleLocked(now: number): ClosedSession[] {
+    const out: ClosedSession[] = [];
+    if (this.focused) out.push(...this.closed(this.focused, now, true));
+    this.focused = null;
+    for (const open of this.audio.values()) out.push(...this.closed(open, now, true));
+    this.audio.clear();
+    this.idle = true;
     return out;
   }
 
@@ -127,9 +150,9 @@ export class TrackerEngine {
     const domain = domainOf(url);
     const web = isWebDomain(domain);
     if (this.focused?.tabId === tabId && this.focused.domain !== domain) {
+      const wasAudible = this.focused.audible;
       out.push(...this.closed(this.focused, now));
-      // Navigated to an internal page → stop tracking this tab.
-      this.focused = web ? { tabId, url, domain, start: now, audio: false } : null;
+      this.focused = web ? { tabId, url, domain, start: now, audio: false, audible: wasAudible } : null;
     }
     const a = this.audio.get(tabId);
     if (a && a.domain !== domain) {

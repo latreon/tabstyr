@@ -142,7 +142,7 @@ export default defineBackground(() => {
       await persist(eng, eng.handleBlur(now));
       return;
     }
-    const closed = eng.handleFocus(tabId, tab.url, now);
+    const closed = eng.handleFocus(tabId, tab.url, now, !!tab.audible);
     closed.push(...(await syncAudioSessions(eng, now)));
     await touchTab(tabId, now, tab);
     await persist(eng, closed);
@@ -160,7 +160,7 @@ export default defineBackground(() => {
       await persist(eng, eng.handleBlur(now));
       return;
     }
-    const closed = eng.handleFocus(tab.id, tab.url, now);
+    const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible);
     closed.push(...(await syncAudioSessions(eng, now)));
     await touchTab(tab.id, now);
     await persist(eng, closed);
@@ -174,11 +174,15 @@ export default defineBackground(() => {
     if (state === 'active') {
       const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
       if (!tab?.id || !tab.url) return;
-      const closed = eng.handleFocus(tab.id, tab.url, now);
+      const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible);
       closed.push(...(await syncAudioSessions(eng, now))); // resume audio after idle
       await touchTab(tab.id, now);
       await persist(eng, closed);
+    } else if (state === 'locked') {
+      // Screen locked / system asleep — definitely away; close everything (capped).
+      await persist(eng, eng.handleLocked(now));
     } else {
+      // No input. A focused tab playing media keeps counting; otherwise we stop.
       await persist(eng, eng.handleIdle(now));
     }
   });
@@ -193,6 +197,7 @@ export default defineBackground(() => {
       if (tab.active) await touchTab(tabId, now, tab);
     }
     if (changeInfo.audible !== undefined) {
+      if (tab.active) eng.setFocusedAudible(changeInfo.audible); // focused tab started/stopped media
       closed.push(...(await syncAudioSessions(eng, now)));
     }
     await persist(eng, closed);
@@ -245,6 +250,9 @@ export default defineBackground(() => {
     const now = Date.now();
     if (alarm.name === 'heartbeat') {
       const eng = await getEngine();
+      // Refresh the focused tab's media state so an ongoing video keeps counting.
+      const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
+      if (tab) eng.setFocusedAudible(!!tab.audible);
       await persist(eng, eng.checkpoint(now));
       await updateBadge();
     } else if (alarm.name === 'daily') {

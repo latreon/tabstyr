@@ -9,7 +9,7 @@ describe('TrackerEngine focus/blur', () => {
     expect(e.handleFocus(1, 'https://github.com/a', T0)).toEqual([]);
     const closed = e.handleFocus(2, 'https://youtube.com/b', T0 + 60_000);
     expect(closed).toEqual([
-      { tabId: 1, url: 'https://github.com/a', domain: 'github.com', start: T0, end: T0 + 60_000, audio: false },
+      { tabId: 1, url: 'https://github.com/a', domain: 'github.com', start: T0, end: T0 + 60_000, audio: false, audible: false },
     ]);
   });
 
@@ -112,28 +112,45 @@ describe('TrackerEngine boundary safety', () => {
     expect(e.getState().focused).toBeNull();
   });
 
-  test('caps an absurdly long session (system sleep/suspend) at the 30-minute bound', () => {
+  test('caps a long NON-media session at the 30-minute bound (likely sleep)', () => {
     const e = new TrackerEngine();
-    e.handleFocus(1, 'https://a.com', T0);
+    e.handleFocus(1, 'https://a.com', T0); // not audible
     const closed = e.handleBlur(T0 + 8 * 60 * 60_000); // "focused" across an 8h sleep
     expect(closed).toHaveLength(1);
     expect(closed[0].end - closed[0].start).toBe(30 * 60_000); // not 8 hours
   });
 
-  test('does NOT clip a 25-minute continuous session (e.g. watching a video)', () => {
+  test('counts a long video watched without input in full (audible, uncapped)', () => {
     const e = new TrackerEngine();
-    e.handleFocus(1, 'https://youtube.com/watch', T0);
-    const closed = e.handleBlur(T0 + 25 * 60_000); // 25 min, no heartbeat in between
+    e.handleFocus(1, 'https://youtube.com/watch', T0, true); // audible = playing media
+    const closed = e.handleBlur(T0 + 2 * 60 * 60_000); // a 2h movie, no events in between
     expect(closed).toHaveLength(1);
-    expect(closed[0].end - closed[0].start).toBe(25 * 60_000); // counted in full
+    expect(closed[0].end - closed[0].start).toBe(2 * 60 * 60_000); // full 2 hours
   });
 
-  test('caps a multi-hour audio session at the bound too', () => {
+  test('keeps an audible (media) tab counting through idle', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://youtube.com/watch', T0, true);
+    const closed = e.handleIdle(T0 + 5 * 60_000);
+    expect(closed).toEqual([]); // still watching — not closed
+    expect(e.getState().focused?.tabId).toBe(1);
+  });
+
+  test('continuous background audio is not capped while it keeps playing', () => {
     const e = new TrackerEngine();
     e.syncAudio([{ tabId: 2, url: 'https://music.com/x' }], T0);
-    const closed = e.checkpoint(T0 + 3 * 60 * 60_000); // 3h with no heartbeat (asleep)
-    expect(closed).toHaveLength(1);
-    expect(closed[0].end - closed[0].start).toBe(30 * 60_000);
+    const closed = e.checkpoint(T0 + 60 * 60_000); // 1h of continuous playback
+    expect(closed[0].end - closed[0].start).toBe(60 * 60_000); // full hour
+  });
+
+  test('lock/sleep caps everything, even media sessions', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://youtube.com/watch', T0, true);
+    e.syncAudio([{ tabId: 2, url: 'https://music.com/x' }], T0);
+    const closed = e.handleLocked(T0 + 3 * 60 * 60_000); // screen locked for 3h
+    for (const s of closed) expect(s.end - s.start).toBe(30 * 60_000);
+    expect(e.getState().focused).toBeNull();
+    expect(e.getState().audio).toEqual([]);
   });
 
   test('same-tab refocus (navigation) closes old session and opens new url', () => {
