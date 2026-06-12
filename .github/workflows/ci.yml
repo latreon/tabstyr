@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    name: Type-check · test · build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: node scripts/make-icons.mjs
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm run build:firefox
+
+  e2e:
+    name: End-to-end (Chromium)
+    runs-on: ubuntu-latest
+    # Extension e2e needs a headed browser via xvfb; keep it non-blocking so
+    # environment quirks never gate a merge. The check job is the gate.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: node scripts/make-icons.mjs
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: xvfb-run -a npm run e2e
