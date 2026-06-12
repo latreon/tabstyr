@@ -5,6 +5,7 @@ import { findStale, rematchTabMeta, shouldNotify } from '@/lib/tracker/stale';
 import { getSettings } from '@/lib/settings';
 import * as repo from '@/lib/db/repo';
 import { addDays, dateKey } from '@/lib/time';
+import { domainOf, isWebDomain } from '@/lib/domain';
 import type { ClosedSession, EngineState, Session } from '@/lib/types';
 
 // Firefox MV2 builds expose browserAction; Chromium MV3 exposes action.
@@ -75,6 +76,9 @@ export default defineBackground(() => {
   ): Promise<void> {
     const tab = prefetched ?? (await browser.tabs.get(tabId).catch(() => null));
     if (!tab?.id) return;
+    // Only record metadata for real web pages — internal pages aren't "sites" and
+    // shouldn't appear in the tab list or stale tracking.
+    if (!isWebDomain(domainOf(tab.url ?? ''))) return;
     const existing = await repo.getTabMeta(tab.id);
     await repo.upsertTabMeta({
       tabId: tab.id,
@@ -171,6 +175,7 @@ export default defineBackground(() => {
       const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
       if (!tab?.id || !tab.url) return;
       const closed = eng.handleFocus(tab.id, tab.url, now);
+      closed.push(...(await syncAudioSessions(eng, now))); // resume audio after idle
       await touchTab(tab.id, now);
       await persist(eng, closed);
     } else {

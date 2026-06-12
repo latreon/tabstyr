@@ -1,4 +1,4 @@
-import { domainOf } from '../domain';
+import { domainOf, isWebDomain } from '../domain';
 import type { ClosedSession, EngineState, OpenSession } from '../types';
 
 const MIN_SESSION_MS = 1000;
@@ -43,7 +43,10 @@ export class TrackerEngine {
       out.push(...this.closed(bgAudio, now));
       this.audio.delete(tabId);
     }
-    this.focused = { tabId, url, domain: domainOf(url), start: now, audio: false };
+    // Only track real web pages — internal pages (chrome://, newtab, the extension's
+    // own dashboard) are never counted, so they neither add time nor session rows.
+    const domain = domainOf(url);
+    this.focused = isWebDomain(domain) ? { tabId, url, domain, start: now, audio: false } : null;
     return out;
   }
 
@@ -55,8 +58,13 @@ export class TrackerEngine {
 
   handleIdle(now: number): ClosedSession[] {
     this.idle = true;
-    const out = this.focused ? this.closed(this.focused, now) : [];
+    const out: ClosedSession[] = [];
+    if (this.focused) out.push(...this.closed(this.focused, now));
     this.focused = null;
+    // Stop background audio too — time while you're away shouldn't accrue, and an
+    // always-"audible" tab left open would otherwise rack up hours.
+    for (const open of this.audio.values()) out.push(...this.closed(open, now));
+    this.audio.clear();
     return out;
   }
 
@@ -95,6 +103,7 @@ export class TrackerEngine {
     const keep = new Set<number>();
     for (const { tabId, url } of audible) {
       if (tabId === this.focused?.tabId) continue;
+      if (!isWebDomain(domainOf(url))) continue; // ignore audio from internal pages
       keep.add(tabId);
       if (!this.audio.has(tabId)) {
         this.audio.set(tabId, { tabId, url, domain: domainOf(url), start: now, audio: true });
@@ -114,14 +123,17 @@ export class TrackerEngine {
   handleUrlChange(tabId: number, url: string, now: number): ClosedSession[] {
     const out: ClosedSession[] = [];
     const domain = domainOf(url);
+    const web = isWebDomain(domain);
     if (this.focused?.tabId === tabId && this.focused.domain !== domain) {
       out.push(...this.closed(this.focused, now));
-      this.focused = { tabId, url, domain, start: now, audio: false };
+      // Navigated to an internal page → stop tracking this tab.
+      this.focused = web ? { tabId, url, domain, start: now, audio: false } : null;
     }
     const a = this.audio.get(tabId);
     if (a && a.domain !== domain) {
       out.push(...this.closed(a, now));
-      this.audio.set(tabId, { tabId, url, domain, start: now, audio: true });
+      if (web) this.audio.set(tabId, { tabId, url, domain, start: now, audio: true });
+      else this.audio.delete(tabId);
     }
     return out;
   }

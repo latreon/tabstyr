@@ -32,12 +32,20 @@ describe('TrackerEngine.syncAudio', () => {
     expect(e.getState().audio).toEqual([]);
   });
 
-  test('audio sessions survive idle', () => {
+  test('idle stops background audio too', () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://docs.com', T0);
     e.syncAudio([{ tabId: 2, url: 'https://youtube.com/v' }], T0);
-    e.handleIdle(T0 + 30_000);
-    expect(e.getState().audio).toHaveLength(1);
+    const closed = e.handleIdle(T0 + 30_000);
+    expect(e.getState().audio).toEqual([]);
+    expect(closed.some((s) => s.audio)).toBe(true);
+  });
+
+  test('ignores audio from internal pages', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://docs.com', T0);
+    e.syncAudio([{ tabId: 2, url: 'chrome://newtab' }], T0);
+    expect(e.getState().audio).toEqual([]);
   });
 });
 

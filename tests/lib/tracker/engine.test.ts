@@ -100,6 +100,18 @@ describe('TrackerEngine boundary safety', () => {
     expect(closed[0].start).toBe(T0); // full elapsed window kept
   });
 
+  test('does not track internal pages (chrome://, newtab, extension)', () => {
+    const e = new TrackerEngine();
+    expect(e.handleFocus(1, 'chrome://settings', T0)).toEqual([]);
+    expect(e.getState().focused).toBeNull();
+    // focusing a web page then an internal one closes the web session and stops
+    e.handleFocus(2, 'https://a.com', T0);
+    const closed = e.handleFocus(3, 'chrome://newtab', T0 + 60_000);
+    expect(closed).toHaveLength(1);
+    expect(closed[0].domain).toBe('a.com');
+    expect(e.getState().focused).toBeNull();
+  });
+
   test('caps an absurdly long session (system sleep/suspend) at the 10-minute bound', () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://a.com', T0);
