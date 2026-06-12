@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { formatDuration } from '@/lib/time';
+import { focusTab } from '@/lib/navigate';
+import FaviconChip from '@/components/FaviconChip.vue';
 import type { TabRow } from '@/composables/useStats';
 
 const props = defineProps<{ rows: TabRow[] }>();
@@ -23,10 +25,9 @@ function ago(ts: number): string {
     <table>
       <thead>
         <tr>
-          <th scope="col">Tab</th>
+          <th scope="col" class="plain">Tab</th>
           <th
             scope="col"
-            class="sortable"
             :class="{ active: sortKey === 'seconds' }"
             :aria-sort="sortKey === 'seconds' ? 'descending' : 'none'"
           >
@@ -34,7 +35,6 @@ function ago(ts: number): string {
           </th>
           <th
             scope="col"
-            class="sortable"
             :class="{ active: sortKey === 'lastActiveAt' }"
             :aria-sort="sortKey === 'lastActiveAt' ? 'descending' : 'none'"
           >
@@ -43,9 +43,18 @@ function ago(ts: number): string {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="r in sorted" :key="r.tabId">
+        <tr
+          v-for="r in sorted"
+          :key="r.tabId"
+          class="tab-row"
+          tabindex="0"
+          :aria-label="`Go to tab: ${r.title}`"
+          @click="focusTab(r.tabId)"
+          @keydown.enter="focusTab(r.tabId)"
+        >
           <td class="title" :title="r.title">
-            {{ r.title }}
+            <FaviconChip :domain="r.domain" />
+            <span class="title-text">{{ r.title }}</span>
             <span class="domain">{{ r.domain }}</span>
           </td>
           <td>{{ formatDuration(r.seconds) }}</td>
@@ -58,10 +67,7 @@ function ago(ts: number): string {
 </template>
 
 <style scoped>
-.tile {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+.table-tile {
   padding: 16px;
   grid-column: span 2;
 }
@@ -74,7 +80,7 @@ table {
 th {
   text-align: left;
   padding: 6px 8px;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--border);
 }
 th button {
   all: unset;
@@ -82,25 +88,36 @@ th button {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: var(--color-muted);
+  color: var(--text-3);
 }
-th:first-child {
+th.plain {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: var(--color-muted);
+  color: var(--text-3);
+  font-weight: 600;
 }
 th.active button {
-  color: var(--color-accent);
+  color: var(--accent-a);
 }
 th button:focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 td {
-  padding: 7px 8px;
-  border-bottom: 1px solid var(--color-border);
+  padding: 8px;
+  border-bottom: 1px solid var(--divider);
   white-space: nowrap;
+}
+.tab-row {
+  cursor: pointer;
+}
+.tab-row:hover td {
+  background: var(--row-hover);
+}
+.tab-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
 }
 td.title {
   max-width: 0;
@@ -108,8 +125,15 @@ td.title {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+td.title .favicon {
+  vertical-align: -4px;
+  margin-right: 8px;
+}
+.title-text {
+  color: var(--text);
+}
 .domain {
-  color: var(--color-muted);
+  color: var(--text-3);
   font-size: 11px;
   margin-left: 6px;
 }
