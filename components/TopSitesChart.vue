@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { formatDuration } from '@/lib/time';
+import { openDomain } from '@/lib/navigate';
+import FaviconChip from '@/components/FaviconChip.vue';
 
 const props = defineProps<{ domains: Array<{ domain: string; seconds: number; audioSeconds: number }> }>();
 
@@ -12,48 +14,67 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds)));
   <div class="tile top-sites">
     <span class="label">Top sites today</span>
     <p v-if="!top.length" class="label">Nothing yet.</p>
-    <div v-for="d in top" :key="d.domain" class="row">
+    <button
+      v-for="d in top"
+      :key="d.domain"
+      class="row"
+      :aria-label="`Open ${d.domain} — ${formatDuration(d.seconds)} today`"
+      @click="openDomain(d.domain)"
+    >
+      <FaviconChip :domain="d.domain" />
       <span class="name" :title="d.domain">{{ d.domain }}</span>
       <svg :viewBox="`0 0 100 8`" preserveAspectRatio="none" class="bar" aria-hidden="true">
-        <rect x="0" y="0" :width="(d.seconds / max) * 100" height="8" rx="2" fill="var(--color-accent)" />
+        <defs>
+          <linearGradient id="siteBar" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#a78bfa" />
+            <stop offset="1" stop-color="#60a5fa" />
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="100" height="8" rx="2" fill="var(--bar-track)" />
+        <rect x="0" y="0" :width="(d.seconds / max) * 100" height="8" rx="2" fill="url(#siteBar)" />
         <rect
           v-if="d.audioSeconds"
           x="0" y="0"
           :width="(d.audioSeconds / max) * 100"
           height="8" rx="2"
-          fill="#f0a48f"
+          fill="#f0c6ff" opacity="0.7"
         />
       </svg>
       <span class="time">
         {{ formatDuration(d.seconds) }}
-        <em v-if="d.audioSeconds" class="audio">({{ formatDuration(d.audioSeconds) }} audio)</em>
+        <em v-if="d.audioSeconds" class="audio">♪ {{ formatDuration(d.audioSeconds) }}</em>
       </span>
-    </div>
+    </button>
   </div>
 </template>
 
 <style scoped>
-.tile {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+.top-sites {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   grid-column: span 2;
 }
 .row {
+  all: unset;
+  box-sizing: border-box;
   display: grid;
-  grid-template-columns: 140px 1fr 120px;
+  grid-template-columns: 18px 130px 1fr 120px;
   align-items: center;
   gap: 10px;
   font-size: 13px;
+  padding: 5px 6px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
 }
+.row:hover { background: var(--row-hover); }
+.row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--text-2);
 }
 .bar {
   width: 100%;
@@ -65,7 +86,7 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds)));
   font-size: 12px;
 }
 .audio {
-  color: var(--color-muted);
+  color: var(--text-3);
   font-style: normal;
   font-weight: 400;
 }
