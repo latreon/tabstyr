@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { buildTrend, type TrendMode } from '@/lib/trend';
-import { formatDuration } from '@/lib/time';
+import { buildTrend, type TrendMode, type TrendPoint } from '@/lib/trend';
+import { trendTooltip, xTickEvery, yTicks } from '@/lib/chart-scale';
 import type { DailyStat } from '@/lib/types';
 
 const props = defineProps<{ stats: DailyStat[] }>();
@@ -9,7 +9,25 @@ const mode = ref<TrendMode>('day');
 const MODES: TrendMode[] = ['day', 'week', 'month'];
 
 const points = computed(() => buildTrend(props.stats, mode.value, Date.now()));
-const max = computed(() => Math.max(1, ...points.value.map((p) => p.seconds)));
+const ticks = computed(() => yTicks(Math.max(1, ...points.value.map((p) => p.seconds))));
+const chartMax = computed(() => ticks.value[2].seconds);
+const labelEvery = computed(() => xTickEvery(mode.value));
+
+const tooltip = ref<{ text: string; x: number } | null>(null);
+
+function showTip(e: Event, p: TrendPoint) {
+  const target = e.currentTarget as HTMLElement;
+  const host = target.closest('.plot') as HTMLElement;
+  const rect = target.getBoundingClientRect();
+  const hostRect = host.getBoundingClientRect();
+  tooltip.value = {
+    text: trendTooltip(p.key, mode.value, p.seconds),
+    x: rect.left - hostRect.left + rect.width / 2,
+  };
+}
+function hideTip() {
+  tooltip.value = null;
+}
 </script>
 
 <template>
@@ -27,24 +45,43 @@ const max = computed(() => Math.max(1, ...points.value.map((p) => p.seconds)));
         >{{ m }}</button>
       </div>
     </div>
-    <div class="bars">
-      <div
-        v-for="p in points"
-        :key="p.label"
-        class="bar-col"
-        :title="`${p.label}: ${formatDuration(p.seconds)}`"
-      >
-        <div class="bar-fill" :style="{ height: `${(p.seconds / max) * 100}%` }" />
+    <div class="chart">
+      <div class="y-axis" aria-hidden="true">
+        <span v-for="t in [...ticks].reverse()" :key="t.seconds" class="y-label">{{ t.label }}</span>
+        <span class="y-label">0</span>
       </div>
+      <div class="plot">
+        <div v-for="t in ticks" :key="t.seconds" class="gridline" :style="{ bottom: `${(t.seconds / chartMax) * 100}%` }" aria-hidden="true" />
+        <div class="bars">
+          <div
+            v-for="p in points"
+            :key="p.key"
+            class="bar-col"
+            tabindex="0"
+            :aria-label="trendTooltip(p.key, mode, p.seconds)"
+            @mouseenter="showTip($event, p)"
+            @mouseleave="hideTip"
+            @focus="showTip($event, p)"
+            @blur="hideTip"
+          >
+            <div class="bar-fill" :style="{ height: `${(p.seconds / chartMax) * 100}%` }" />
+          </div>
+        </div>
+        <div v-if="tooltip" class="tooltip" :style="{ left: `${tooltip.x}px` }" role="status">
+          {{ tooltip.text }}
+        </div>
+      </div>
+    </div>
+    <div class="x-axis" aria-hidden="true">
+      <span v-for="(p, i) in points" :key="p.key" class="x-label">
+        {{ i % labelEvery === 0 ? p.label : '' }}
+      </span>
     </div>
   </div>
 </template>
 
 <style scoped>
-.tile {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+.trend {
   padding: 16px;
   grid-column: span 3;
 }
@@ -59,40 +96,116 @@ const max = computed(() => Math.max(1, ...points.value.map((p) => p.seconds)));
   gap: 4px;
 }
 .toggle button {
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border);
   background: transparent;
+  color: var(--text-2);
   border-radius: 7px;
   padding: 3px 10px;
   font-size: 12px;
   cursor: pointer;
   text-transform: capitalize;
+  font-family: inherit;
 }
 .toggle button.active {
-  background: var(--color-ink);
-  color: #fff;
-  border-color: var(--color-ink);
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  border-color: transparent;
+  font-weight: 700;
 }
 .toggle button:focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+.chart {
+  display: flex;
+  gap: 8px;
+}
+.y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 130px;
+  flex: none;
+  width: 38px;
+  text-align: right;
+}
+.y-label {
+  font-size: 10px;
+  color: var(--text-3);
+  line-height: 1;
+  transform: translateY(-50%);
+}
+.y-axis .y-label:last-child {
+  transform: translateY(0);
+}
+.plot {
+  position: relative;
+  flex: 1;
+  height: 130px;
+}
+.gridline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed var(--divider);
+}
 .bars {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: flex-end;
   gap: 4px;
-  height: 110px;
 }
 .bar-col {
   flex: 1;
   height: 100%;
   display: flex;
   align-items: flex-end;
+  cursor: default;
+  border-radius: 3px 3px 0 0;
+}
+.bar-col:hover .bar-fill,
+.bar-col:focus-visible .bar-fill {
+  filter: brightness(1.25);
+}
+.bar-col:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 .bar-fill {
   width: 100%;
-  background: var(--color-accent);
+  background: var(--accent-gradient);
   border-radius: 3px 3px 0 0;
   min-height: 2px;
   opacity: 0.9;
+}
+.tooltip {
+  position: absolute;
+  top: -34px;
+  transform: translateX(-50%);
+  background: var(--card-strong);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 9px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: var(--shadow);
+  z-index: 2;
+}
+.x-axis {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+  padding-left: 46px;
+}
+.x-label {
+  flex: 1;
+  font-size: 9px;
+  color: var(--text-3);
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
 }
 </style>
