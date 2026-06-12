@@ -81,19 +81,37 @@ test('clicking a tab row focuses that tab', async ({ context, extensionId }) => 
 
 test('screenshots for visual review', async ({ context, extensionId }) => {
   for (const theme of ['dark', 'light'] as const) {
+    // ── Dashboard ──────────────────────────────────────────────────────────
     const dash = await context.newPage();
     await dash.goto(`chrome-extension://${extensionId}/dashboard.html`);
+    // Wait for the Vue app to mount and useTheme's async getSettings().then(apply)
+    // to settle BEFORE forcing the theme, otherwise onMounted overwrites it back.
+    await dash.waitForSelector('.bento, .label', { state: 'visible' });
+    await dash.waitForTimeout(400);
     await dash.evaluate((t) => {
       document.documentElement.dataset.theme = t;
     }, theme);
-    await dash.waitForTimeout(300);
+    // Poll until the attribute is actually set (guards against any residual async flush).
+    await expect
+      .poll(() => dash.evaluate(() => document.documentElement.dataset.theme))
+      .toBe(theme);
+    await dash.waitForTimeout(200);
     await dash.screenshot({ path: `e2e/__screenshots__/dashboard-${theme}.png`, fullPage: true });
+
+    // ── Popup ──────────────────────────────────────────────────────────────
     const pop = await context.newPage();
+    // Set the popup viewport to realistic extension dimensions before navigating.
+    await pop.setViewportSize({ width: 360, height: 620 });
     await pop.goto(`chrome-extension://${extensionId}/popup.html`);
+    await pop.waitForSelector('.total, .cta', { state: 'visible' });
+    await pop.waitForTimeout(400);
     await pop.evaluate((t) => {
       document.documentElement.dataset.theme = t;
     }, theme);
-    await pop.waitForTimeout(300);
+    await expect
+      .poll(() => pop.evaluate(() => document.documentElement.dataset.theme))
+      .toBe(theme);
+    await pop.waitForTimeout(200);
     await pop.screenshot({ path: `e2e/__screenshots__/popup-${theme}.png` });
   }
 });
