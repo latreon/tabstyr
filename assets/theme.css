@@ -57,7 +57,7 @@
   --shadow: 0 1px 3px rgba(16, 16, 32, 0.05), 0 8px 24px rgba(16, 16, 32, 0.06);
   --row-hover: #f6f6f9;
   --bar-track: #ececf3;
-  --on-accent: #ffffff;
+  --on-accent: #1e1e3f;
 }
 
 body {
