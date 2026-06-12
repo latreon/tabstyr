@@ -32,8 +32,11 @@ export interface TabMeta {
   snoozedUntil?: number;
 }
 
+export type ThemeSetting = 'system' | 'dark' | 'light';
+
 export interface Settings {
   staleDays: number;
   idleSeconds: number;
   audioEnabled: boolean;
+  theme: ThemeSetting;
 }

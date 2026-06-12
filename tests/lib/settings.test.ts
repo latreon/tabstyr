@@ -34,4 +34,14 @@ describe('settings', () => {
     await fakeBrowser.storage.local.set({ settings: { staleDays: 0, idleSeconds: 99999 } });
     expect(await getSettings()).toEqual({ ...DEFAULT_SETTINGS, staleDays: 1, idleSeconds: 600 });
   });
+
+  test('invalid theme value is ignored, default wins', async () => {
+    await fakeBrowser.storage.local.set({ settings: { theme: 'neon' } });
+    expect((await getSettings()).theme).toBe('system');
+  });
+
+  test('valid theme value round-trips', async () => {
+    await saveSettings({ theme: 'dark' });
+    expect((await getSettings()).theme).toBe('dark');
+  });
 });

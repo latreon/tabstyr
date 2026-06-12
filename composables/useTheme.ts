@@ -1,0 +1,40 @@
+import { onMounted, onUnmounted, ref } from 'vue';
+import { getSettings, saveSettings } from '@/lib/settings';
+import type { ThemeSetting } from '@/lib/types';
+
+export function resolveTheme(setting: ThemeSetting, systemPrefersDark: boolean): 'dark' | 'light' {
+  if (setting === 'system') return systemPrefersDark ? 'dark' : 'light';
+  return setting;
+}
+
+const CYCLE: ThemeSetting[] = ['system', 'dark', 'light'];
+
+export function useTheme() {
+  const setting = ref<ThemeSetting>('system');
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function apply() {
+    document.documentElement.dataset.theme = resolveTheme(setting.value, media.matches);
+  }
+
+  async function cycle() {
+    setting.value = CYCLE[(CYCLE.indexOf(setting.value) + 1) % CYCLE.length];
+    await saveSettings({ theme: setting.value });
+    apply();
+  }
+
+  async function set(next: ThemeSetting) {
+    setting.value = next;
+    await saveSettings({ theme: next });
+    apply();
+  }
+
+  onMounted(async () => {
+    setting.value = (await getSettings()).theme;
+    apply();
+    media.addEventListener('change', apply);
+  });
+  onUnmounted(() => media.removeEventListener('change', apply));
+
+  return { setting, cycle, set };
+}

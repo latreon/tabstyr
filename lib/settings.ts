@@ -5,6 +5,7 @@ export const DEFAULT_SETTINGS: Settings = {
   staleDays: 3,
   idleSeconds: 60,
   audioEnabled: true,
+  theme: 'system',
 };
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
@@ -16,6 +17,7 @@ function coerce(raw: unknown): Partial<Settings> {
     ...(typeof r.staleDays === 'number' && { staleDays: clamp(r.staleDays, 1, 60) }),
     ...(typeof r.idleSeconds === 'number' && { idleSeconds: clamp(r.idleSeconds, 15, 600) }),
     ...(typeof r.audioEnabled === 'boolean' && { audioEnabled: r.audioEnabled }),
+    ...((r.theme === 'system' || r.theme === 'dark' || r.theme === 'light') && { theme: r.theme }),
   };
 }
 
