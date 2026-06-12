@@ -2,12 +2,16 @@
 import { onMounted, ref } from 'vue';
 import { browser } from 'wxt/browser';
 import { getSettings, saveSettings } from '@/lib/settings';
+import { useTheme } from '@/composables/useTheme';
+import type { ThemeSetting } from '@/lib/types';
 
 const emit = defineEmits<{ changed: [] }>();
+const theme = useTheme();
 
 const staleDays = ref(3);
 const idleSeconds = ref(60);
 const audioEnabled = ref(true);
+const themeChoice = ref<ThemeSetting>('system');
 const saved = ref(false);
 
 onMounted(async () => {
@@ -15,6 +19,7 @@ onMounted(async () => {
   staleDays.value = s.staleDays;
   idleSeconds.value = s.idleSeconds;
   audioEnabled.value = s.audioEnabled;
+  themeChoice.value = s.theme;
 });
 
 async function save() {
@@ -26,6 +31,7 @@ async function save() {
       idleSeconds: idleSeconds.value,
       audioEnabled: audioEnabled.value,
     });
+    await theme.set(themeChoice.value);
     await browser.runtime.sendMessage({ type: 'settings-changed' });
     saved.value = true;
     setTimeout(() => (saved.value = false), 2000);
@@ -50,6 +56,14 @@ async function wipe() {
   <div class="tile settings-tile">
     <span class="label">Settings</span>
     <label>
+      Theme
+      <select v-model="themeChoice">
+        <option value="system">System</option>
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+      </select>
+    </label>
+    <label>
       Stale after (days)
       <input v-model.number="staleDays" type="number" min="1" max="60" />
     </label>
@@ -69,10 +83,7 @@ async function wipe() {
 </template>
 
 <style scoped>
-.tile {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+.settings-tile {
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -84,13 +95,20 @@ label {
   align-items: center;
   font-size: 13px;
   gap: 10px;
+  color: var(--text-2);
 }
-input[type='number'] {
-  width: 70px;
-  border: 1px solid var(--color-border);
+input[type='number'],
+select {
+  border: 1px solid var(--border);
+  background: var(--card-strong);
+  color: var(--text);
   border-radius: 7px;
   padding: 5px 8px;
   font-size: 13px;
+  font-family: inherit;
+}
+input[type='number'] {
+  width: 70px;
 }
 .check {
   justify-content: flex-start;
@@ -107,18 +125,19 @@ button {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  font-family: inherit;
 }
 button:focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 .save {
-  background: var(--color-ink);
-  color: #fff;
+  background: var(--accent-gradient);
+  color: var(--on-accent);
 }
 .wipe {
   background: transparent;
-  color: var(--color-warn);
-  border: 1px solid var(--color-warn-border);
+  color: var(--warn);
+  border: 1px solid var(--warn-border);
 }
 </style>
