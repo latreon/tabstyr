@@ -10,7 +10,8 @@ export const CHIP_COLORS: readonly string[] = [
  * Returns null on non-Chromium runtimes — caller falls back to letterChip.
  */
 export function faviconUrl(domain: string): string | null {
-  const base = browser.runtime?.getURL?.('/_favicon/');
+  const getURL = browser.runtime?.getURL as ((path: string) => string) | undefined;
+  const base = getURL?.('/_favicon/');
   if (!base || !base.startsWith('chrome-extension://')) return null;
   return `${base}?pageUrl=${encodeURIComponent(`https://${domain}/`)}&size=32`;
 }

@@ -9,8 +9,10 @@ export function resolveTheme(setting: ThemeSetting, systemPrefersDark: boolean):
 
 const CYCLE: ThemeSetting[] = ['system', 'dark', 'light'];
 
+// Module-scope ref so all useTheme() instances share state
+const setting = ref<ThemeSetting>('system');
+
 export function useTheme() {
-  const setting = ref<ThemeSetting>('system');
   const media = window.matchMedia('(prefers-color-scheme: dark)');
 
   function apply() {

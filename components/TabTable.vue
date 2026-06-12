@@ -51,6 +51,7 @@ function ago(ts: number): string {
           :aria-label="`Go to tab: ${r.title}`"
           @click="focusTab(r.tabId)"
           @keydown.enter="focusTab(r.tabId)"
+          @keydown.space.prevent="focusTab(r.tabId)"
         >
           <td class="title" :title="r.title">
             <FaviconChip :domain="r.domain" />
