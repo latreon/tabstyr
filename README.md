@@ -13,6 +13,23 @@ breakdowns, and gentle stale-tab nudges. Every byte stays on your device.
 [How metrics work](#how-the-metrics-work) · [Development](#development) ·
 [Architecture](#architecture)
 
+<br/>
+
+[![CI](https://github.com/latreon/tabstyr/actions/workflows/ci.yml/badge.svg)](https://github.com/latreon/tabstyr/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+![Version](https://img.shields.io/badge/version-1.0.0-7c5cf0)
+![Data: 100% local](https://img.shields.io/badge/data-100%25%20local-3fb27f)
+
+<br/>
+
+![Vue 3](https://img.shields.io/badge/Vue_3-42b883?logo=vuedotjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178c6?logo=typescript&logoColor=white)
+![WXT](https://img.shields.io/badge/WXT-67d55b?logo=wxt&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646cff?logo=vite&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-6e9f18?logo=vitest&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-2ead33?logo=playwright&logoColor=white)
+![IndexedDB](https://img.shields.io/badge/IndexedDB-local-f59e0b)
+
 </div>
 
 ---
@@ -217,8 +234,19 @@ docs/store/       listing copy, privacy policy, QA checklist, promo, screenshots
 
 ### Tech stack
 
-[WXT](https://wxt.dev) · Vue 3 · TypeScript · IndexedDB (idb) · Vitest ·
-Playwright. No runtime dependencies beyond `vue` and `idb`.
+| Layer | Tooling |
+|---|---|
+| Framework | [WXT](https://wxt.dev) (cross-browser extension framework) |
+| UI | [Vue 3](https://vuejs.org) + `<script setup>`, scoped CSS |
+| Language | [TypeScript](https://www.typescriptlang.org) (strict) |
+| Build | [Vite](https://vitejs.dev) (via WXT) |
+| Storage | [IndexedDB](https://developer.mozilla.org/docs/Web/API/IndexedDB_API) via [idb](https://github.com/jakearchibald/idb) |
+| Unit tests | [Vitest](https://vitest.dev) + fake-indexeddb |
+| E2E | [Playwright](https://playwright.dev) (loads the real extension in Chromium) |
+| Type-check | [vue-tsc](https://github.com/vuejs/language-tools) |
+| CI | GitHub Actions |
+
+Runtime dependencies are just **`vue`** and **`idb`** — everything else is dev-only.
 
 ## Testing
 

@@ -2,11 +2,13 @@ import { domainOf, isWebDomain } from '../domain';
 import type { ClosedSession, EngineState, OpenSession } from '../types';
 
 const MIN_SESSION_MS = 1000;
-// Upper bound on a single session. The 1-minute heartbeat checkpoint splits all
-// active time into ≤1-minute chunks while the worker is alive, so this only ever
-// clamps a session that spanned a dormant gap — i.e. system sleep/suspend, where
-// no alarms fired. Without it, the whole sleep duration would be counted as use.
-const MAX_SESSION_MS = 10 * 60_000;
+// Upper bound on a single session, as a backstop against sleep/suspend inflating
+// time. The 1-minute heartbeat normally splits active time into ≤1-minute chunks,
+// but Chrome can throttle MV3 alarms / evict the worker during long PASSIVE use
+// (e.g. watching a video with no input), letting a single legitimate session grow.
+// The cap must therefore be generous enough not to clip real continuous viewing —
+// 30 minutes — while still bounding a multi-hour sleep gap.
+const MAX_SESSION_MS = 30 * 60_000;
 
 export class TrackerEngine {
   private focused: OpenSession | null;

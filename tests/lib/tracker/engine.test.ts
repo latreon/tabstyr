@@ -112,20 +112,28 @@ describe('TrackerEngine boundary safety', () => {
     expect(e.getState().focused).toBeNull();
   });
 
-  test('caps an absurdly long session (system sleep/suspend) at the 10-minute bound', () => {
+  test('caps an absurdly long session (system sleep/suspend) at the 30-minute bound', () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://a.com', T0);
     const closed = e.handleBlur(T0 + 8 * 60 * 60_000); // "focused" across an 8h sleep
     expect(closed).toHaveLength(1);
-    expect(closed[0].end - closed[0].start).toBe(10 * 60_000); // not 8 hours
+    expect(closed[0].end - closed[0].start).toBe(30 * 60_000); // not 8 hours
   });
 
-  test('caps a long audio session at the bound too', () => {
+  test('does NOT clip a 25-minute continuous session (e.g. watching a video)', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://youtube.com/watch', T0);
+    const closed = e.handleBlur(T0 + 25 * 60_000); // 25 min, no heartbeat in between
+    expect(closed).toHaveLength(1);
+    expect(closed[0].end - closed[0].start).toBe(25 * 60_000); // counted in full
+  });
+
+  test('caps a multi-hour audio session at the bound too', () => {
     const e = new TrackerEngine();
     e.syncAudio([{ tabId: 2, url: 'https://music.com/x' }], T0);
-    const closed = e.checkpoint(T0 + 60 * 60_000); // 1h with no heartbeat (asleep)
+    const closed = e.checkpoint(T0 + 3 * 60 * 60_000); // 3h with no heartbeat (asleep)
     expect(closed).toHaveLength(1);
-    expect(closed[0].end - closed[0].start).toBe(10 * 60_000);
+    expect(closed[0].end - closed[0].start).toBe(30 * 60_000);
   });
 
   test('same-tab refocus (navigation) closes old session and opens new url', () => {
