@@ -9,8 +9,9 @@ All data stays on your machine (IndexedDB, 90-day rolling window). No remote cal
 - Idle-aware, audio-aware active-time tracking per tab and domain
 - Bento dashboard: today hero, open/stale tab counts, top sites, trends,
   per-tab table, stale-tab list with Close/Keep
-- Toolbar popup with today's total and top 3 sites
+- Toolbar popup with today's total, top 5 sites (favicons) and stale count
 - Badge count + max-one-per-day notification for stale tabs
+- Dual theme: dark glass / light premium, system-aware with manual toggle
 - Settings: stale threshold, idle timeout, background-audio counting, data wipe
 
 ## Development
