@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { faviconUrl, letterChip } from '@/lib/favicon';
 
 const props = defineProps<{ domain: string }>();
 const failed = ref(false);
 const src = computed(() => faviconUrl(props.domain));
 const chip = computed(() => letterChip(props.domain));
+
+watch(() => props.domain, () => {
+  failed.value = false;
+});
 </script>
 
 <template>
