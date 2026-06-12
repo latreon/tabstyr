@@ -34,7 +34,7 @@ onMounted(async () => {
   <div class="glow" aria-hidden="true" />
   <main class="dashboard">
     <header class="head">
-      <h1 class="brand"><RingLogo :size="24" /> Tabtelo</h1>
+      <h1 class="brand"><RingLogo :size="24" /> TabStyr</h1>
       <div class="head-right">
         <span class="label">Local only · last 90 days</span>
         <ThemeToggle />

@@ -1,4 +1,4 @@
-# Tabtelo
+# TabStyr
 
 A privacy-first browser extension that shows how you actually use your browser —
 active time per tab and per site, trends, an activity heatmap, category and focus
@@ -7,7 +7,7 @@ breakdowns, and gentle stale-tab nudges.
 **All data stays on your device** (IndexedDB, 90-day rolling window). No servers,
 no accounts, no network requests, no tracking.
 
-![Tabtelo](docs/store/promo/marquee-1400x560.png)
+![TabStyr](docs/store/promo/marquee-1400x560.png)
 
 ## Features
 
@@ -29,7 +29,7 @@ no accounts, no network requests, no tracking.
 
 ## Privacy
 
-Tabtelo is 100% local. It stores activity in the browser's IndexedDB and never
+TabStyr is 100% local. It stores activity in the browser's IndexedDB and never
 sends anything anywhere. See [PRIVACY.md](docs/store/privacy-policy.md).
 
 Permissions used: `tabs`, `storage`, `idle`, `alarms`, `notifications`, and

@@ -32,7 +32,7 @@ test('popup renders gradient total and dashboard button', async ({ context, exte
 test('dashboard renders bento tiles', async ({ context, extensionId }) => {
   const page = await context.newPage();
   await page.goto(`chrome-extension://${extensionId}/dashboard.html`);
-  await expect(page.locator('h1')).toContainText('Tabtelo');
+  await expect(page.locator('h1')).toContainText('TabStyr');
   await expect(page.locator('.hero-tile')).toBeVisible();
   await expect(page.getByText('Open tabs', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('Stale tabs', { exact: true }).first()).toBeVisible();

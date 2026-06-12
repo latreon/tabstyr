@@ -1,16 +1,16 @@
-# Tabtelo — Privacy Policy
+# TabStyr — Privacy Policy
 
 _Last updated: 2026-06-12_
 
 ## Summary
 
-**Tabtelo does not collect, transmit, or share any data.** Everything it records
+**TabStyr does not collect, transmit, or share any data.** Everything it records
 stays on your device. There are no servers, no analytics, no accounts, and no
 network requests of any kind.
 
 ## What the extension stores
 
-To show you your usage statistics, Tabtelo stores the following **locally**, in
+To show you your usage statistics, TabStyr stores the following **locally**, in
 your browser's IndexedDB:
 
 - **Session records** — start/end timestamps, the page's domain, and whether the

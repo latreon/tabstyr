@@ -80,7 +80,7 @@ function openDashboard(hash = '') {
   <main class="popup">
     <div class="glow" aria-hidden="true" />
     <header class="head">
-      <span class="brand"><RingLogo :size="18" /> Tabtelo</span>
+      <span class="brand"><RingLogo :size="18" /> TabStyr</span>
       <span class="counts">
         {{ tabCount }} tabs
         <template v-if="staleCount"> · <span class="stale-count">{{ staleCount }} stale</span></template>

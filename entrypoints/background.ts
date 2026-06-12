@@ -118,7 +118,7 @@ export default defineBackground(() => {
       await browser.notifications.create('tab-time-stale', {
         type: 'basic',
         iconUrl: browser.runtime.getURL('/icon/128.png'),
-        title: 'Tabtelo',
+        title: 'TabStyr',
         message: `${stale.length} tabs untouched for ${settings.staleDays}+ days`,
       });
       await browser.storage.local.set({

@@ -1,11 +1,11 @@
-# Tabtelo — Store Listing Copy
+# TabStyr — Store Listing Copy
 
 Copy/paste into the Chrome Web Store, Edge Add-ons, and Firefox AMO listings.
 Adjust lengths per store limits where noted.
 
 ## Name
 
-Tabtelo — Local Browsing Time Tracker
+TabStyr — Local Browsing Time Tracker
 
 ## Short description (≤132 chars, Chrome)
 
@@ -14,13 +14,13 @@ and focus. 100% private, all data stays local.
 
 ## Summary (Firefox AMO, ≤250 chars)
 
-Tabtelo tracks your active time per tab and site and turns it into trends, an
+TabStyr tracks your active time per tab and site and turns it into trends, an
 hourly heatmap, category and focus breakdowns, and gentle stale-tab nudges.
 Everything stays on your device — no servers, no accounts, no tracking.
 
 ## Detailed description
 
-Tabtelo shows how you actually spend time in your browser — and keeps every
+TabStyr shows how you actually spend time in your browser — and keeps every
 byte of it on your own machine.
 
 WHAT YOU GET
@@ -60,7 +60,7 @@ privacy, local, heatmap, website usage
 
 ## Single purpose (Chrome Web Store requirement)
 
-Tabtelo measures and displays the time you spend on browser tabs and websites,
+TabStyr measures and displays the time you spend on browser tabs and websites,
 entirely on your own device, to help you understand and manage your browsing.
 
 ## Permission justifications (Chrome Web Store review)
