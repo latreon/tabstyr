@@ -11,60 +11,63 @@ const deltaPct = computed(() => {
   return Math.round(((props.todaySeconds - props.weeklyAvgSeconds) / props.weeklyAvgSeconds) * 100);
 });
 
-const sparkPoints = computed(() => {
+const sparkArea = computed(() => {
   const points = buildTrend(props.stats, 'day', Date.now());
   const max = Math.max(1, ...points.map((p) => p.seconds));
-  return points
-    .map((p, i) => `${(i / (points.length - 1)) * 100},${28 - (p.seconds / max) * 26}`)
-    .join(' ');
+  const coords = points.map(
+    (p, i) => `${(i / (points.length - 1)) * 100},${28 - (p.seconds / max) * 26}`,
+  );
+  return { line: coords.join(' '), area: `0,30 ${coords.join(' ')} 100,30` };
 });
 </script>
 
 <template>
-  <div class="hero-tile">
-    <span class="label hero-label">Today</span>
-    <span class="hero-value">{{ formatDuration(todaySeconds) }}</span>
-    <span v-if="deltaPct !== null && deltaPct !== 0" class="hero-delta" :class="{ up: deltaPct > 0 }">
+  <div class="tile hero-tile">
+    <span class="label">Today</span>
+    <span class="hero-value gradient-text">{{ formatDuration(todaySeconds) }}</span>
+    <span v-if="deltaPct !== null && deltaPct !== 0" class="hero-delta" :class="deltaPct > 0 ? 'up' : 'down'">
       <span aria-hidden="true">{{ deltaPct > 0 ? '↑' : '↓' }}</span>
       <span class="sr-only">{{ deltaPct > 0 ? 'Up' : 'Down' }}</span>
       {{ Math.abs(deltaPct) }}% vs weekly avg
     </span>
     <svg viewBox="0 0 100 30" preserveAspectRatio="none" class="spark" aria-hidden="true">
-      <polyline :points="sparkPoints" fill="none" stroke="#e2674a" stroke-width="2" vector-effect="non-scaling-stroke" />
+      <defs>
+        <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#a78bfa" stop-opacity="0.45" />
+          <stop offset="1" stop-color="#60a5fa" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      <polygon :points="sparkArea.area" fill="url(#sparkFill)" />
+      <polyline :points="sparkArea.line" fill="none" stroke="#a78bfa" stroke-width="1.5" vector-effect="non-scaling-stroke" />
     </svg>
   </div>
 </template>
 
 <style scoped>
 .hero-tile {
-  background: var(--color-ink);
-  color: #fff;
-  border-radius: var(--radius);
+  background: var(--card-strong);
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 4px;
   grid-row: span 2;
 }
-.hero-label {
-  color: rgba(255, 255, 255, 0.55);
-}
 .hero-value {
-  font-size: 44px;
+  font-size: 46px;
   font-weight: 800;
   line-height: 1.05;
+  letter-spacing: -1.5px;
 }
 .hero-delta {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
 }
-.hero-delta.up {
-  color: #f0a48f;
-}
+.hero-delta.up { color: var(--positive); }
+.hero-delta.down { color: var(--negative); }
 .spark {
   width: 100%;
-  height: 34px;
-  margin-top: 6px;
+  height: 44px;
+  margin-top: 10px;
 }
 .sr-only {
   position: absolute;

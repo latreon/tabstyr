@@ -8,21 +8,36 @@ import TrendChart from '@/components/TrendChart.vue';
 import TabTable from '@/components/TabTable.vue';
 import StaleList from '@/components/StaleList.vue';
 import SettingsPanel from '@/components/SettingsPanel.vue';
+import RingLogo from '@/components/RingLogo.vue';
+import ThemeToggle from '@/components/ThemeToggle.vue';
 
 const s = useStats();
-onMounted(s.load);
+onMounted(async () => {
+  await s.load();
+  if (location.hash === '#stale') {
+    document.getElementById('stale-section')?.scrollIntoView({ behavior: 'smooth' });
+  }
+});
 </script>
 
 <template>
+  <div class="glow" aria-hidden="true" />
   <main class="dashboard">
     <header class="head">
-      <h1>Tab Time</h1>
-      <span class="label">Local data only — last 90 days</span>
+      <h1 class="brand"><RingLogo :size="24" /> TabTime</h1>
+      <div class="head-right">
+        <span class="label">Local only · last 90 days</span>
+        <ThemeToggle />
+      </div>
     </header>
     <p v-if="s.loading.value" class="label">Loading…</p>
     <p v-else-if="s.loadError.value" class="label">Could not load data — reload the page.</p>
     <section v-else class="bento" aria-label="Browser usage statistics">
-      <HeroTile :today-seconds="s.todaySeconds.value" :weekly-avg-seconds="s.weeklyAvgSeconds.value" :stats="s.stats.value" />
+      <HeroTile
+        :today-seconds="s.todaySeconds.value"
+        :weekly-avg-seconds="s.weeklyAvgSeconds.value"
+        :stats="s.stats.value"
+      />
       <StatTile label="Open tabs" :value="String(s.openTabCount.value)" />
       <StatTile
         label="Stale tabs"
@@ -39,16 +54,33 @@ onMounted(s.load);
 </template>
 
 <style scoped>
+.glow {
+  position: fixed;
+  inset: 0;
+  background: var(--surface-glow);
+  pointer-events: none;
+}
 .dashboard {
-  max-width: 1080px;
+  position: relative;
+  max-width: 1120px;
   margin: 0 auto;
   padding: 28px var(--space);
 }
 .head {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.head-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 .bento {
   display: grid;
