@@ -39,7 +39,9 @@ onMounted(async () => {
       browser.tabs.query({}),
     ]);
     const webToday = stats.filter((s) => isWebDomain(s.domain));
-    const webWeek = weekStats.filter((s) => isWebDomain(s.domain));
+    // Exclude days with no active time (e.g. background-audio-only) so they don't
+    // count as "active days" and dilute the weekly average (matches useStats).
+    const webWeek = weekStats.filter((s) => isWebDomain(s.domain) && active(s) > 0);
     todaySeconds.value = webToday.reduce((sum, s) => sum + active(s), 0);
     // Average over days with data, not a flat ÷7 (see useStats.weeklyAvgSeconds).
     weeklyActiveDays.value = new Set(webWeek.map((s) => s.date)).size;

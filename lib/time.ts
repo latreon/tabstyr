@@ -4,8 +4,14 @@ export function formatDuration(seconds: number): string {
   if (m < 1) return '<1m';
   if (m < 60) return `${m}m`;
   const h = Math.floor(m / 60);
-  const rem = m % 60;
-  return rem === 0 ? `${h}h` : `${h}h ${rem}m`;
+  if (h < 24) {
+    const rem = m % 60;
+    return rem === 0 ? `${h}h` : `${h}h ${rem}m`;
+  }
+  // Roll hours into days so large totals stay legible ("41d 3h", not "987h").
+  const d = Math.floor(h / 24);
+  const remH = h % 24;
+  return remH === 0 ? `${d}d` : `${d}d ${remH}h`;
 }
 
 export function dateKey(ts: number): string {

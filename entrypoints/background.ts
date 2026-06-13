@@ -17,6 +17,18 @@ const DAY_MS = 86_400_000;
 export default defineBackground(() => {
   let enginePromise: Promise<TrackerEngine> | null = null;
 
+  // Wrap an async event listener so a thrown error is logged, not left as an
+  // unhandled rejection that silently stops tracking for this worker.
+  function guard<A extends unknown[]>(fn: (...a: A) => Promise<unknown>): (...a: A) => Promise<void> {
+    return async (...a: A) => {
+      try {
+        await fn(...a);
+      } catch (e) {
+        console.error('[tab-time] handler failed', e);
+      }
+    };
+  }
+
   // Single-threaded JS + the ??= singleton make concurrent listener access safe;
   // interleaved awaits can at worst lose a sub-second session between events,
   // which the 1-minute heartbeat checkpoint + reconcile bounds and repairs.
@@ -29,7 +41,12 @@ export default defineBackground(() => {
       const closed = eng.reconcile(liveIds, Date.now());
       await persist(eng, closed);
       return eng;
-    })();
+    })().catch((e) => {
+      // A failed init must not stick as a permanently-rejected promise (??= would
+      // never retry it) — clear it so the next event rebuilds the engine.
+      enginePromise = null;
+      throw e;
+    });
     return enginePromise;
   }
 
@@ -65,17 +82,21 @@ export default defineBackground(() => {
     const settings = await getSettings();
     if (!settings.audioEnabled) return eng.syncAudio([], now);
     const audibleTabs = await browser.tabs.query({ audible: true });
-    const audible = audibleTabs.flatMap((t) => (t.id && t.url ? [{ tabId: t.id, url: t.url }] : []));
+    const audible = audibleTabs.flatMap((t) =>
+      t.id && t.url && !t.incognito ? [{ tabId: t.id, url: t.url }] : [],
+    );
     return eng.syncAudio(audible, now);
   }
 
   async function touchTab(
     tabId: number,
     now: number,
-    prefetched?: { id?: number; url?: string; title?: string } | null,
+    prefetched?: { id?: number; url?: string; title?: string; incognito?: boolean } | null,
   ): Promise<void> {
     const tab = prefetched ?? (await browser.tabs.get(tabId).catch(() => null));
     if (!tab?.id) return;
+    // Never persist anything about private windows.
+    if (tab.incognito) return;
     // Only record metadata for real web pages — internal pages aren't "sites" and
     // shouldn't appear in the tab list or stale tracking.
     if (!isWebDomain(domainOf(tab.url ?? ''))) return;
@@ -134,11 +155,11 @@ export default defineBackground(() => {
 
   // --- tracking events ---
 
-  browser.tabs.onActivated.addListener(async ({ tabId }) => {
+  browser.tabs.onActivated.addListener(guard(async ({ tabId }) => {
     const eng = await getEngine();
     const now = Date.now();
     const tab = await browser.tabs.get(tabId).catch(() => null);
-    if (!tab?.url) {
+    if (!tab?.url || tab.incognito) {
       await persist(eng, eng.handleBlur(now));
       return;
     }
@@ -146,9 +167,9 @@ export default defineBackground(() => {
     closed.push(...(await syncAudioSessions(eng, now)));
     await touchTab(tabId, now, tab);
     await persist(eng, closed);
-  });
+  }));
 
-  browser.windows.onFocusChanged.addListener(async (windowId) => {
+  browser.windows.onFocusChanged.addListener(guard(async (windowId) => {
     const eng = await getEngine();
     const now = Date.now();
     if (windowId === browser.windows.WINDOW_ID_NONE) {
@@ -156,7 +177,7 @@ export default defineBackground(() => {
       return;
     }
     const [tab] = await browser.tabs.query({ active: true, windowId });
-    if (!tab?.id || !tab.url) {
+    if (!tab?.id || !tab.url || tab.incognito) {
       await persist(eng, eng.handleBlur(now));
       return;
     }
@@ -164,16 +185,16 @@ export default defineBackground(() => {
     closed.push(...(await syncAudioSessions(eng, now)));
     await touchTab(tab.id, now);
     await persist(eng, closed);
-  });
+  }));
 
   // browser.idle is unavailable on some platforms (e.g. Safari). Without it,
   // tracking simply isn't idle-paused; the MAX_SESSION_MS cap still bounds gaps.
-  browser.idle?.onStateChanged?.addListener(async (state) => {
+  browser.idle?.onStateChanged?.addListener(guard(async (state) => {
     const eng = await getEngine();
     const now = Date.now();
     if (state === 'active') {
       const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
-      if (!tab?.id || !tab.url) return;
+      if (!tab?.id || !tab.url || tab.incognito) return;
       const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible);
       closed.push(...(await syncAudioSessions(eng, now))); // resume audio after idle
       await touchTab(tab.id, now);
@@ -185,15 +206,25 @@ export default defineBackground(() => {
       // No input. A focused tab playing media keeps counting; otherwise we stop.
       await persist(eng, eng.handleIdle(now));
     }
-  });
+  }));
 
-  browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  browser.tabs.onUpdated.addListener(guard(async (tabId, changeInfo, tab) => {
     if (changeInfo.url === undefined && changeInfo.audible === undefined) return;
+    if (tab.incognito) return; // never track private windows
     const eng = await getEngine();
     const now = Date.now();
     const closed: ClosedSession[] = [];
     if (changeInfo.url) {
-      closed.push(...eng.handleUrlChange(tabId, changeInfo.url, now));
+      const focusedTabId = eng.getState().focused?.tabId;
+      if (tab.active && focusedTabId !== tabId && isWebDomain(domainOf(changeInfo.url))) {
+        // The active tab navigated from an untracked page (new-tab/internal/redirect)
+        // to a real web page. The engine isn't tracking it yet, and no onActivated
+        // will fire for an in-tab navigation — so start the session here. Without
+        // this, "open browser → type a URL → read it" records zero time.
+        closed.push(...eng.handleFocus(tabId, changeInfo.url, now, !!tab.audible));
+      } else {
+        closed.push(...eng.handleUrlChange(tabId, changeInfo.url, now));
+      }
       if (tab.active) await touchTab(tabId, now, tab);
     }
     if (changeInfo.audible !== undefined) {
@@ -201,14 +232,14 @@ export default defineBackground(() => {
       closed.push(...(await syncAudioSessions(eng, now)));
     }
     await persist(eng, closed);
-  });
+  }));
 
-  browser.tabs.onRemoved.addListener(async (tabId) => {
+  browser.tabs.onRemoved.addListener(guard(async (tabId) => {
     const eng = await getEngine();
     await persist(eng, eng.handleTabRemoved(tabId, Date.now()));
     await repo.removeTabMeta(tabId);
     await updateBadge();
-  });
+  }));
 
   // --- alarms ---
 
@@ -246,7 +277,7 @@ export default defineBackground(() => {
   }
   void migrateLegacySessionKeys();
 
-  browser.alarms.onAlarm.addListener(async (alarm) => {
+  browser.alarms.onAlarm.addListener(guard(async (alarm) => {
     const now = Date.now();
     if (alarm.name === 'heartbeat') {
       const eng = await getEngine();
@@ -258,17 +289,17 @@ export default defineBackground(() => {
     } else if (alarm.name === 'daily') {
       await runDailyMaintenance(now);
     }
-  });
+  }));
 
   // --- lifecycle + UI commands ---
 
-  browser.runtime.onStartup.addListener(async () => {
+  browser.runtime.onStartup.addListener(guard(async () => {
     // Tab IDs reset on browser restart: re-match saved tabMeta to live tabs by URL.
     const [metas, tabs] = await Promise.all([repo.getAllTabMeta(), browser.tabs.query({})]);
-    const live = tabs.flatMap((t) => (t.id && t.url ? [{ id: t.id, url: t.url }] : []));
+    const live = tabs.flatMap((t) => (t.id && t.url && !t.incognito ? [{ id: t.id, url: t.url }] : []));
     await repo.replaceAllTabMeta(rematchTabMeta(metas, live));
     await updateBadge();
-  });
+  }));
 
   browser.notifications?.onClicked?.addListener(() => {
     void browser.tabs.create({ url: browser.runtime.getURL('/dashboard.html') });
@@ -277,20 +308,26 @@ export default defineBackground(() => {
   // Adaptation: onMessage listener receives (message: unknown, sender: MessageSender).
   // The async variant (OnMessageListenerAsync) matches this shape and returns Promise<unknown>.
   // We narrow the message type inline instead of declaring the param as { type?: string }.
-  browser.runtime.onMessage.addListener(async (message) => {
+  browser.runtime.onMessage.addListener(guard(async (message, sender) => {
+    // Only act on messages from this extension's own pages — never a web page or
+    // another extension (defense in depth; wipe-data is destructive).
+    if ((sender as { id?: string })?.id !== browser.runtime.id) return;
     const msg = message as { type?: string } | null | undefined;
     if (msg?.type === 'settings-changed') {
       const settings = await getSettings();
       browser.idle?.setDetectionInterval?.(settings.idleSeconds);
+      // Apply audio on/off immediately rather than waiting for the next heartbeat.
+      const eng = await getEngine();
+      await persist(eng, await syncAudioSessions(eng, Date.now()));
       await updateBadge();
     } else if (msg?.type === 'wipe-data') {
       await repo.wipeAll();
       await browser.storage.session.remove('engineState');
-      await browser.storage.local.remove('notifyState');
+      await browser.storage.local.remove(['notifyState', 'keyMigrationV2']);
       enginePromise = null;
       await updateBadge();
     }
-  });
+  }));
 
   void getSettings().then((s) => browser.idle?.setDetectionInterval?.(s.idleSeconds));
 });

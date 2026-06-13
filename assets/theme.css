@@ -21,6 +21,7 @@
   color-scheme: light;
   --accent-a: #7c5cf0;
   --accent-b: #4f86f7;
+  --accent: #6d5cf0; /* darker on light surfaces so focus outlines meet 3:1 contrast */
   --surface: #fbfbfd;
   --surface-glow: none;
   --card: #ffffff;
@@ -95,6 +96,7 @@
   color-scheme: light;
   --accent-a: #7c5cf0;
   --accent-b: #4f86f7;
+  --accent: #6d5cf0; /* darker on light surfaces so focus outlines meet 3:1 contrast */
   --surface: #fbfbfd;
   --surface-glow: none;
   --card: #ffffff;
@@ -122,6 +124,18 @@ body {
   background: var(--surface);
   color: var(--text);
   font-feature-settings: 'tnum';
+}
+
+/* Respect users who ask for less motion: near-instant transitions/animations. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 .label {

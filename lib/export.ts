@@ -2,7 +2,11 @@ import { dateKey } from './time';
 import type { DailyStat, Session, Settings, TabMeta } from './types';
 
 function csvCell(value: string | number): string {
-  const s = String(value);
+  // Neutralize spreadsheet formula injection: a leading =,+,-,@,tab,CR makes Excel/
+  // Sheets evaluate the cell. CSV-quoting alone does NOT stop that, so prefix a
+  // single quote (the spreadsheet text-escape) before quoting for separators.
+  let s = String(value);
+  if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 

@@ -15,5 +15,7 @@ export function domainOf(url: string): string {
  * as `https://<scheme>/`.
  */
 export function isWebDomain(domain: string): boolean {
+  // `localhost` has no dot but is a real, trackable dev host (and a Dev category rule).
+  if (domain === 'localhost') return true;
   return /\./.test(domain) && !/\s/.test(domain);
 }

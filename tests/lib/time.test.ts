@@ -37,6 +37,11 @@ test('rounds to nearest minute at the 30-second boundary', () => {
 test('suppresses zero minutes on exact hours', () => {
   expect(formatDuration(3600)).toBe('1h');
 });
+test('rolls large hour totals into days', () => {
+  expect(formatDuration(24 * 3600)).toBe('1d'); // exactly one day
+  expect(formatDuration(27 * 3600)).toBe('1d 3h'); // 1 day 3 hours
+  expect(formatDuration(50 * 3600)).toBe('2d 2h');
+});
 
 describe('dayLabel', () => {
   test('formats a YYYY-MM-DD key as "Mon D"', () => {

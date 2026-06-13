@@ -24,6 +24,26 @@ describe('dailyStatsToCsv', () => {
     const csv = dailyStatsToCsv([{ date: '2026-06-11', domain: 'a,"b".com', seconds: 1, audioSeconds: 0 }]);
     expect(csv.split('\n')[1]).toBe('2026-06-11,"a,""b"".com",1,0');
   });
+
+  test('neutralizes spreadsheet formula injection in the domain cell', () => {
+    const csv = dailyStatsToCsv([{ date: '2026-06-11', domain: '=cmd|/c calc', seconds: 1, audioSeconds: 0 }]);
+    // leading "=" prefixed with ' so the spreadsheet treats it as text (no comma → unquoted)
+    expect(csv.split('\n')[1]).toBe(`2026-06-11,'=cmd|/c calc,1,0`);
+  });
+
+  test('quotes AND prefixes when a formula lead also contains a separator', () => {
+    const csv = dailyStatsToCsv([{ date: '2026-06-11', domain: '=a,b', seconds: 1, audioSeconds: 0 }]);
+    expect(csv.split('\n')[1]).toBe(`2026-06-11,"'=a,b",1,0`);
+  });
+
+  test('prefixes other formula-trigger leads (+, -, @) without altering safe values', () => {
+    const csv = dailyStatsToCsv([
+      { date: '2026-06-11', domain: '@x.com', seconds: 1, audioSeconds: 0 },
+      { date: '2026-06-12', domain: 'safe.com', seconds: 2, audioSeconds: 0 },
+    ]).split('\n');
+    expect(csv[1]).toBe(`2026-06-11,'@x.com,1,0`);
+    expect(csv[2]).toBe('2026-06-12,safe.com,2,0');
+  });
 });
 
 describe('sessionsToCsv', () => {

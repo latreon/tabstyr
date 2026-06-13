@@ -27,7 +27,9 @@ export function useStats() {
   const staleTabs = ref<TabMeta[]>([]);
   const openTabCount = ref(0);
   const settings = ref<Settings | null>(null);
-  const heatmap = ref<HeatmapData>({ grid: [], max: 1, total: 0 });
+  // Seed with a real 7×24 zero grid (not []) so any pre-load template read of
+  // grid[row][col] is safe before the first load() resolves.
+  const heatmap = ref<HeatmapData>(buildHourlyHeatmap([]));
   const recentSessions = ref<Session[]>([]); // last 90 days, for per-domain detail
   const loading = ref(true);
   const loadError = ref(false);

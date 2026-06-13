@@ -34,4 +34,8 @@ describe('isWebDomain', () => {
   test('rejects the empty string', () => {
     expect(isWebDomain('')).toBe(false);
   });
+
+  test('accepts localhost (dotless but a real dev host)', () => {
+    expect(isWebDomain('localhost')).toBe(true);
+  });
 });

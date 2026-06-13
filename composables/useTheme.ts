@@ -1,5 +1,6 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 import { getSettings, saveSettings } from '@/lib/settings';
+import { cacheTheme } from '@/lib/theme-cache';
 import type { ThemeSetting } from '@/lib/types';
 
 export function resolveTheme(setting: ThemeSetting, systemPrefersDark: boolean): 'dark' | 'light' {
@@ -18,6 +19,7 @@ export function useTheme() {
 
   function apply() {
     document.documentElement.dataset.theme = resolveTheme(setting.value, media.matches);
+    cacheTheme(setting.value); // keep the sync pre-paint mirror current
   }
 
   async function cycle() {
