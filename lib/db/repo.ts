@@ -79,7 +79,11 @@ export async function getSecondsForKeys(keys: string[]): Promise<Map<string, num
   await Promise.all(
     [...new Set(keys)].map(async (key) => {
       const sessions = await index.getAll(key);
-      const total = sessions.reduce((sum, s) => sum + Math.round((s.end - s.start) / 1000), 0);
+      // Foreground only — exclude background-audio sessions so per-tab time matches
+      // the active-time metric used everywhere else in the app.
+      const total = sessions
+        .filter((s) => !s.audio)
+        .reduce((sum, s) => sum + Math.round((s.end - s.start) / 1000), 0);
       if (total) map.set(key, total);
     }),
   );

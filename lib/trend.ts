@@ -7,6 +7,7 @@ export interface TrendPoint {
   key: string;   // YYYY-MM-DD (day/week start) or YYYY-MM (month)
   label: string;
   seconds: number;
+  partial?: boolean; // month bucket only partly inside the window (don't compare as full)
 }
 
 function rangeDays(today: string, count: number): string[] {
@@ -37,10 +38,21 @@ function buildFrom(byDate: Map<string, number>, mode: TrendMode, today: string):
     }
     return out;
   }
+  const days = rangeDays(today, 90);
+  // The oldest bucket only includes the tail of its month if the window didn't
+  // start on the 1st; the newest bucket is the current month, still in progress.
+  const startPartial = !days[0].endsWith('-01');
+  const firstMonth = days[0].slice(0, 7);
+  const lastMonth = today.slice(0, 7);
   const months = new Map<string, number>();
-  for (const d of rangeDays(today, 90)) {
+  for (const d of days) {
     const key = d.slice(0, 7);
     months.set(key, (months.get(key) ?? 0) + (byDate.get(d) ?? 0));
   }
-  return [...months.entries()].map(([key, seconds]) => ({ key, label: monthLabel(key), seconds }));
+  return [...months.entries()].map(([key, seconds]) => ({
+    key,
+    label: monthLabel(key),
+    seconds,
+    partial: (key === firstMonth && startPartial) || key === lastMonth,
+  }));
 }

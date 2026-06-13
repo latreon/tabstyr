@@ -35,6 +35,7 @@ export function buildHourlyHeatmap(sessions: Array<{ start: number; end: number 
       const hour = d.getHours();
       const boundary = new Date(d.getFullYear(), d.getMonth(), d.getDate(), hour + 1, 0, 0, 0).getTime();
       const segEnd = Math.min(s.end, boundary);
+      if (segEnd <= cursor) break; // guard against clock edge cases (e.g. DST)
       const secs = (segEnd - cursor) / 1000;
       grid[dow][hour] += secs;
       total += secs;

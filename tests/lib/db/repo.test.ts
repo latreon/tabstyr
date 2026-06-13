@@ -46,6 +46,14 @@ describe('sessions + stats', () => {
     expect(await repo.getSecondsForKeys([])).toEqual(new Map());
   });
 
+  test('getSecondsForKeys excludes background-audio sessions', async () => {
+    await repo.addSessions([
+      session({}), // 60s foreground
+      session({ start: T0 + 100_000, end: T0 + 130_000, audio: true }), // 30s audio → ignored
+    ]);
+    expect((await repo.getSecondsForKeys(['k1'])).get('k1')).toBe(60);
+  });
+
   test('commitSessions writes sessions and stats in one transaction', async () => {
     await repo.commitSessions(
       [session({}), session({ tabKey: 'k2', tabId: 2 })],

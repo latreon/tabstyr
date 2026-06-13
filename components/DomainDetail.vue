@@ -2,6 +2,7 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { buildTrend } from '@/lib/trend';
 import { buildHourlyHeatmap } from '@/lib/heatmap';
+import { coalesceSessions } from '@/lib/sessionize';
 import { formatDuration } from '@/lib/time';
 import { openDomain } from '@/lib/navigate';
 import { isWebDomain } from '@/lib/domain';
@@ -35,12 +36,15 @@ const sharePct = computed(() =>
   grandTotal.value ? Math.round((totalSeconds.value / grandTotal.value) * 100) : 0,
 );
 const daysActive = computed(() => new Set(domainStats.value.map((s) => s.date)).size);
-const sessionCount = computed(() => domainSessions.value.length);
+// Stitch the 1-minute heartbeat rows back into real visits so these counts reflect
+// actual browsing, not how many checkpoints fired.
+const visits = computed(() => coalesceSessions(domainSessions.value));
+const sessionCount = computed(() => visits.value.length);
 const avgSession = computed(() =>
   sessionCount.value ? Math.round(totalSeconds.value / sessionCount.value) : 0,
 );
 const longestSession = computed(() =>
-  domainSessions.value.reduce((max, s) => Math.max(max, Math.round((s.end - s.start) / 1000)), 0),
+  visits.value.reduce((max, v) => Math.max(max, Math.round((v.end - v.start) / 1000)), 0),
 );
 
 const trend = computed(() => buildTrend(domainStats.value, 'day', props.now));

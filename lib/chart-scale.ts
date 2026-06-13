@@ -19,11 +19,12 @@ export function xTickEvery(mode: TrendMode): number {
   return mode === 'day' ? 2 : 1;
 }
 
-export function trendTooltip(key: string, mode: TrendMode, seconds: number): string {
+export function trendTooltip(key: string, mode: TrendMode, seconds: number, partial = false): string {
+  const suffix = `${formatDuration(seconds)}${partial ? ' · partial' : ''}`;
   if (mode === 'month') {
     const [y, m] = key.split('-').map(Number);
     const name = new Date(y, m - 1, 1).toLocaleString('en-US', { month: 'long' });
-    return `${name} ${y} — ${formatDuration(seconds)}`;
+    return `${name} ${y} — ${suffix}`;
   }
   const [y, m, d] = key.split('-').map(Number);
   const human = new Date(y, m - 1, d).toLocaleString('en-US', {
@@ -32,5 +33,5 @@ export function trendTooltip(key: string, mode: TrendMode, seconds: number): str
     day: 'numeric',
   });
   const prefix = mode === 'week' ? `Week of ${human}` : human;
-  return `${prefix} — ${formatDuration(seconds)}`;
+  return `${prefix} — ${suffix}`;
 }

@@ -30,11 +30,18 @@ describe('rollup', () => {
     expect(rollup([])).toEqual([]);
   });
 
-  test('attributes a cross-midnight session to the start date', () => {
-    const midnight = new Date(2026, 5, 11, 23, 59, 30).getTime();
-    const s = session({ start: midnight, end: midnight + 90_000 }); // ends next day
+  test('splits a cross-midnight session across both days', () => {
+    const start = new Date(2026, 5, 11, 23, 59, 30).getTime();
+    const s = session({ start, end: start + 90_000 }); // 30s before midnight, 60s after
     const out = rollup([s]);
-    expect(out).toHaveLength(1);
-    expect(out[0].date).toBe(dateKey(midnight)); // 2026-06-11, not 06-12
+    expect(out).toContainEqual({ date: '2026-06-11', domain: 'a.com', seconds: 30, audioSeconds: 0 });
+    expect(out).toContainEqual({ date: '2026-06-12', domain: 'a.com', seconds: 60, audioSeconds: 0 });
+  });
+
+  test('splits audio seconds across midnight too', () => {
+    const start = new Date(2026, 5, 11, 23, 59, 30).getTime();
+    const out = rollup([session({ start, end: start + 90_000, audio: true })]);
+    expect(out).toContainEqual({ date: '2026-06-11', domain: 'a.com', seconds: 30, audioSeconds: 30 });
+    expect(out).toContainEqual({ date: '2026-06-12', domain: 'a.com', seconds: 60, audioSeconds: 60 });
   });
 });

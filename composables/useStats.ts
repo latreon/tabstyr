@@ -50,9 +50,11 @@ export function useStats() {
   const todayAudioSeconds = computed(() => todayStats.value.reduce((sum, s) => sum + s.audioSeconds, 0));
 
   // Prior 7 days, averaged over days that actually have data (not a flat ÷7).
+  // Drop rows with no active time (e.g. background-audio-only) so an audio-only day
+  // isn't counted as an "active day" and doesn't dilute the average.
   const weekStats = computed(() => {
     const days = new Set(Array.from({ length: 7 }, (_, i) => addDays(todayKey.value, -(i + 1))));
-    return activeStats.value.filter((s) => days.has(s.date));
+    return activeStats.value.filter((s) => days.has(s.date) && s.seconds > 0);
   });
   const weeklyActiveDays = computed(() => new Set(weekStats.value.map((s) => s.date)).size);
   const weeklyAvgSeconds = computed(() => {
@@ -68,6 +70,7 @@ export function useStats() {
     }
     return [...map.entries()]
       .map(([domain, v]) => ({ domain, ...v }))
+      .filter((d) => d.seconds > 0) // hide domains with no active time (audio-only)
       .sort((a, b) => b.seconds - a.seconds);
   });
 

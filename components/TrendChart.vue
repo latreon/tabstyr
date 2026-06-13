@@ -22,7 +22,7 @@ function showTip(e: Event, p: TrendPoint) {
   const hostRect = host.getBoundingClientRect();
   const halfW = 80;
   tooltip.value = {
-    text: trendTooltip(p.key, mode.value, p.seconds),
+    text: trendTooltip(p.key, mode.value, p.seconds, p.partial),
     x: Math.max(halfW, Math.min(rect.left - hostRect.left + rect.width / 2, hostRect.width - halfW)),
   };
 }
@@ -59,13 +59,13 @@ function hideTip() {
             :key="p.key"
             class="bar-col"
             tabindex="0"
-            :aria-label="trendTooltip(p.key, mode, p.seconds)"
+            :aria-label="trendTooltip(p.key, mode, p.seconds, p.partial)"
             @mouseenter="showTip($event, p)"
             @mouseleave="hideTip"
             @focus="showTip($event, p)"
             @blur="hideTip"
           >
-            <div class="bar-fill" :style="{ height: `${(p.seconds / chartMax) * 100}%` }" />
+            <div class="bar-fill" :class="{ partial: p.partial }" :style="{ height: `${(p.seconds / chartMax) * 100}%` }" />
           </div>
         </div>
         <div v-if="tooltip" class="tooltip" :style="{ left: `${tooltip.x}px` }" aria-hidden="true">
@@ -186,6 +186,18 @@ function hideTip() {
   border-radius: 3px 3px 0 0;
   min-height: 2px;
   opacity: 0.9;
+}
+/* Partial (in-progress / clipped) period: hatched + dimmed so it isn't read as a full month. */
+.bar-fill.partial {
+  opacity: 0.55;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 3px,
+    rgba(255, 255, 255, 0.35) 3px,
+    rgba(255, 255, 255, 0.35) 6px
+  );
+  background-blend-mode: overlay;
 }
 .tooltip {
   position: absolute;

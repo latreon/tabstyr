@@ -48,6 +48,13 @@ export function focusStreak(byDate: Map<string, DayFocus>, todayKey: string, tar
       break;
     }
     allowEmpty = false;
+    // A day spent only on neutral sites (no productive or distracting time) has
+    // nothing to judge — treat it as transparent so it neither breaks nor extends
+    // the streak rather than scoring it 0% and resetting unfairly.
+    if (f.productive + f.distracting === 0) {
+      cursor = addDays(cursor, -1);
+      continue;
+    }
     if (f.focusPct >= target) {
       streak++;
       cursor = addDays(cursor, -1);

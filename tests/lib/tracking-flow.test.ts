@@ -51,14 +51,14 @@ describe('end-to-end per-tab time attribution', () => {
     expect(byKey.get('kY')).toBe(60); // reused id does NOT inherit it
   });
 
-  test('audio session time is attributed to its own tab key, separate from the focused tab', async () => {
+  test('per-tab time counts foreground only, excluding background audio', async () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://docs.com', T0);
     e.syncAudio([{ tabId: 2, url: 'https://music.com' }], T0);
     await persist(e.checkpoint(T0 + 60_000), { 1: 'kDocs', 2: 'kMusic' });
 
     const byKey = await repo.getSecondsForKeys(['kDocs', 'kMusic']);
-    expect(byKey.get('kDocs')).toBe(60);
-    expect(byKey.get('kMusic')).toBe(60);
+    expect(byKey.get('kDocs')).toBe(60); // foreground engagement
+    expect(byKey.has('kMusic')).toBe(false); // background audio not counted as active time
   });
 });

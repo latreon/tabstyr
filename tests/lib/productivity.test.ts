@@ -51,6 +51,15 @@ describe('focusStreak', () => {
     const map = dailyFocus([stat('2026-06-11', 'github.com', 10), stat('2026-06-11', 'youtube.com', 90)]);
     expect(focusStreak(map, '2026-06-11', target)).toBe(0);
   });
+
+  test('a neutral-only day is transparent and does not break the streak', () => {
+    const map = dailyFocus([
+      stat('2026-06-11', 'github.com', 70), stat('2026-06-11', 'youtube.com', 30), // 70%
+      stat('2026-06-10', 'cnn.com', 100), // neutral only → no judgement
+      stat('2026-06-09', 'github.com', 80), stat('2026-06-09', 'youtube.com', 20), // 80%
+    ]);
+    expect(focusStreak(map, '2026-06-11', target)).toBe(2);
+  });
 });
 
 describe('summarizeProductivity', () => {
