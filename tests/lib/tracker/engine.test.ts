@@ -184,4 +184,50 @@ describe('TrackerEngine boundary safety', () => {
     expect(closed).toHaveLength(1);
     expect(e.getState().audio).toEqual([]);
   });
+
+  // A heartbeat that fires far past the cap (alarm throttled) emits only the
+  // capped slice and resets start to now — time beyond the cap is intentionally
+  // dropped (treated as a likely sleep gap, not real use).
+  test('checkpoint past the cap emits the 30-minute slice and resets start', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://a.com', T0); // non-media
+    const closed = e.checkpoint(T0 + 45 * 60_000);
+    expect(closed).toHaveLength(1);
+    expect(closed[0].end - closed[0].start).toBe(30 * 60_000);
+    expect(e.getState().focused?.start).toBe(T0 + 45 * 60_000); // start advanced to now
+    // The next minute then accrues normally from the new start.
+    const next = e.checkpoint(T0 + 46 * 60_000);
+    expect(next[0].end - next[0].start).toBe(60_000);
+  });
+});
+
+describe('TrackerEngine onReplaced (tabId remap)', () => {
+  test('remaps the focused session to the new id and keeps counting', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://a.com', T0);
+    expect(e.handleTabReplaced(1, 99, T0 + 10_000)).toEqual([]); // continuous — nothing closed
+    expect(e.getState().focused?.tabId).toBe(99);
+    // Closing later credits the FULL duration to the new id, uninterrupted.
+    const closed = e.handleTabRemoved(99, T0 + 60_000);
+    expect(closed).toHaveLength(1);
+    expect(closed[0].tabId).toBe(99);
+    expect(closed[0].end - closed[0].start).toBe(60_000);
+  });
+
+  test('remaps a background-audio session to the new id', () => {
+    const e = new TrackerEngine({
+      focused: null,
+      audio: [{ tabId: 2, url: 'https://yt.com/v', domain: 'yt.com', start: T0, audio: true }],
+      isIdle: false,
+    });
+    e.handleTabReplaced(2, 77, T0 + 5_000);
+    expect(e.getState().audio.map((a) => a.tabId)).toEqual([77]);
+  });
+
+  test('is a no-op for an untracked id', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://a.com', T0);
+    expect(e.handleTabReplaced(5, 6, T0 + 1_000)).toEqual([]);
+    expect(e.getState().focused?.tabId).toBe(1); // unchanged
+  });
 });

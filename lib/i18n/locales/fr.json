@@ -188,7 +188,8 @@
     "wiped": "Toutes les données effacées",
     "wipeFailed": "Échec de l'effacement",
     "confirmWipeAria": "Confirmer l'effacement de toutes les données",
-    "languageAuto": "Automatique"
+    "languageAuto": "Automatique",
+    "idleHint": "Le suivi se met en pause après ce délai sans activité souris ou clavier. Augmentez-le si vous lisez sans faire défiler."
   },
   "onboarding": {
     "title": "Bienvenue dans TabStyr",

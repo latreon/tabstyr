@@ -188,7 +188,8 @@
     "wiped": "所有数据已清除",
     "wipeFailed": "清除失败",
     "confirmWipeAria": "确认清除所有数据",
-    "languageAuto": "自动"
+    "languageAuto": "自动",
+    "idleHint": "在此时长内没有鼠标或键盘输入时将暂停计时。如果阅读时不滚动，请调高此值。"
   },
   "onboarding": {
     "title": "欢迎使用 TabStyr",

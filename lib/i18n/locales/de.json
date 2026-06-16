@@ -188,7 +188,8 @@
     "wiped": "Alle Daten gelöscht",
     "wipeFailed": "Löschen fehlgeschlagen",
     "confirmWipeAria": "Löschen aller Daten bestätigen",
-    "languageAuto": "Automatisch"
+    "languageAuto": "Automatisch",
+    "idleHint": "Die Erfassung pausiert nach dieser Zeit ohne Maus- oder Tastatureingabe. Erhöhe den Wert, wenn du ohne Scrollen liest."
   },
   "onboarding": {
     "title": "Willkommen bei TabStyr",

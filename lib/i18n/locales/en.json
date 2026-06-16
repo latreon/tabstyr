@@ -188,7 +188,8 @@
     "wiped": "All data wiped",
     "wipeFailed": "Wipe failed",
     "confirmWipeAria": "Confirm wipe all data",
-    "languageAuto": "Automatic"
+    "languageAuto": "Automatic",
+    "idleHint": "Tracking pauses after this long without mouse or keyboard input. Raise it if you read without scrolling."
   },
   "onboarding": {
     "title": "Welcome to TabStyr",

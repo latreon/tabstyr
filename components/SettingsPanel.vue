@@ -346,6 +346,7 @@ async function confirmWipe() {
       <span class="field-label">{{ t('settings.idleSeconds') }}</span>
       <NumberStepper v-model="idleSeconds" :min="15" :max="600" :step="15" :label="t('settings.idleSeconds')" />
     </div>
+    <p class="field-hint">{{ t('settings.idleHint') }}</p>
     <div class="field check">
       <span class="field-label">{{ t('settings.countAudio') }}</span>
       <ToggleSwitch v-model="audioEnabled" :label="t('settings.countAudio')" />
@@ -480,6 +481,12 @@ async function confirmWipe() {
 }
 .field-label {
   color: var(--text-2);
+}
+.field-hint {
+  margin: -4px 0 2px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-3);
 }
 .actions {
   display: flex;

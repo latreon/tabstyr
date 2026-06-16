@@ -8,7 +8,9 @@ const MAX_PATTERN_LEN = 100;
 
 export const DEFAULT_SETTINGS: Settings = {
   staleDays: 3,
-  idleSeconds: 60,
+  // 3 minutes: long enough that reading without mouse/keyboard input still counts,
+  // short enough that walking away isn't over-counted by much. User-adjustable.
+  idleSeconds: 180,
   audioEnabled: true,
   theme: 'system',
   categoryOverrides: {},

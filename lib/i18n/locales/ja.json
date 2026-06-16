@@ -188,7 +188,8 @@
     "wiped": "すべてのデータを消去しました",
     "wipeFailed": "消去に失敗しました",
     "confirmWipeAria": "すべてのデータ消去を確認",
-    "languageAuto": "自動"
+    "languageAuto": "自動",
+    "idleHint": "マウスやキーボードの操作がこの時間続かないと計測が一時停止します。スクロールせずに読む場合は長くしてください。"
   },
   "onboarding": {
     "title": "TabStyrへようこそ",

@@ -188,7 +188,8 @@
     "wiped": "Todos los datos borrados",
     "wipeFailed": "El borrado falló",
     "confirmWipeAria": "Confirmar borrado de todos los datos",
-    "languageAuto": "Automático"
+    "languageAuto": "Automático",
+    "idleHint": "El seguimiento se pausa tras este tiempo sin actividad de ratón o teclado. Auméntalo si lees sin desplazarte."
   },
   "onboarding": {
     "title": "Te damos la bienvenida a TabStyr",

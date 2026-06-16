@@ -163,6 +163,23 @@ export class TrackerEngine {
     return out;
   }
 
+  /**
+   * The browser swapped a tab's id while keeping its content (prerender
+   * activation, discard/restore) — `tabs.onReplaced`. Remap any open session
+   * from the old id to the new one so time keeps accruing continuously instead
+   * of being orphaned (and later mis-closed by reconcile). No session is closed.
+   * `now` is unused but kept for signature symmetry with the other handlers.
+   */
+  handleTabReplaced(removedTabId: number, addedTabId: number, _now: number): ClosedSession[] {
+    if (this.focused?.tabId === removedTabId) this.focused.tabId = addedTabId;
+    const a = this.audio.get(removedTabId);
+    if (a) {
+      this.audio.delete(removedTabId);
+      this.audio.set(addedTabId, { ...a, tabId: addedTabId });
+    }
+    return [];
+  }
+
   handleTabRemoved(tabId: number, now: number): ClosedSession[] {
     const out: ClosedSession[] = [];
     if (this.focused?.tabId === tabId) {

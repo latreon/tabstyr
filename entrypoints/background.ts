@@ -242,6 +242,20 @@ export default defineBackground(() => {
     await updateBadge();
   }));
 
+  // The browser kept a tab's content but changed its id (prerender activation,
+  // discard/restore). Remap the live session and the stored tabMeta to the new
+  // id so time keeps accruing and the stable per-tab key is preserved.
+  browser.tabs.onReplaced.addListener(guard(async (addedTabId, removedTabId) => {
+    const eng = await getEngine();
+    eng.handleTabReplaced(removedTabId, addedTabId, Date.now());
+    const meta = await repo.getTabMeta(removedTabId);
+    if (meta) {
+      await repo.upsertTabMeta({ ...meta, tabId: addedTabId });
+      await repo.removeTabMeta(removedTabId);
+    }
+    await persist(eng, []);
+  }));
+
   // --- alarms ---
 
   async function ensureAlarms(): Promise<void> {
@@ -304,6 +318,22 @@ export default defineBackground(() => {
 
   browser.notifications?.onClicked?.addListener(() => {
     void browser.tabs.create({ url: browser.runtime.getURL('/dashboard.html') });
+  });
+
+  // Before the service worker unloads (idle eviction or browser close), flush the
+  // open session's elapsed time so the ≤1-minute tail since the last heartbeat
+  // isn't lost. Best-effort: the write may not finish if the worker is killed
+  // immediately, but it's strictly better than dropping the tail every time.
+  browser.runtime.onSuspend?.addListener(() => {
+    if (!enginePromise) return; // engine never woke this session — nothing open
+    void (async () => {
+      try {
+        const eng = await enginePromise!;
+        await persist(eng, eng.checkpoint(Date.now()));
+      } catch (e) {
+        console.error('[tab-time] suspend flush failed', e);
+      }
+    })();
   });
 
   // Adaptation: onMessage listener receives (message: unknown, sender: MessageSender).
