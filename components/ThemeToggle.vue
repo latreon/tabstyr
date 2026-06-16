@@ -19,18 +19,22 @@ const icon = computed(() => (setting.value === 'system' ? '◐' : setting.value 
 
 <style scoped>
 .theme-toggle {
-  background: transparent;
+  /* Match the privacy badge sitting next to it: same surface, border, and
+     pill shape, with an accent border on hover. */
+  background: var(--card-strong);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius);
   color: var(--text-2);
   width: 28px;
   height: 28px;
   cursor: pointer;
   font-size: 14px;
   line-height: 1;
+  transition: border-color 120ms ease, color 120ms ease;
 }
 .theme-toggle:hover {
-  background: var(--row-hover);
+  border-color: var(--accent);
+  color: var(--text);
 }
 .theme-toggle:focus-visible {
   outline: 2px solid var(--accent);

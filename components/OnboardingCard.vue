@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
 import { CATEGORIES, CATEGORY_META } from '@/lib/categories';
+import { useFocusTrap } from '@/composables/useFocusTrap';
 
 const emit = defineEmits<{ dismiss: [] }>();
 
 const legend = CATEGORIES.map((c) => ({ category: c, color: CATEGORY_META[c].color }));
+const panel = ref<HTMLElement | null>(null);
 const ctaBtn = ref<HTMLButtonElement | null>(null);
+
+useFocusTrap(panel);
 
 // Dismiss persists (onboarded flag), so any close path means "never show again".
 function close() {
@@ -27,7 +31,7 @@ onUnmounted(() => {
 
 <template>
   <div class="backdrop" @click.self="close">
-    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="onboard-title">
+    <section ref="panel" class="modal" role="dialog" aria-modal="true" aria-labelledby="onboard-title">
       <button class="close" aria-label="Close" @click="close">✕</button>
 
       <h2 id="onboard-title" class="title">Welcome to TabStyr</h2>

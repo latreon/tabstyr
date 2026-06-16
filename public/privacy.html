@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TabStyr — Privacy</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #fbfbfd; --card: #fff; --text: #18181b; --text-2: #44444c; --text-3: #6e6e78;
+      --border: #ececf1; --accent: #6d5cf0; --good-bg: #ecfdf5; --good-fg: #047857; --good-bd: #a7f3d0;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0a0a0f; --card: #16161d; --text: #f1f1f7; --text-2: #c0c0d0; --text-3: #9a9aad;
+        --border: rgba(255,255,255,.1); --accent: #a78bfa; --good-bg: rgba(16,185,129,.12); --good-fg: #4ade80; --good-bd: rgba(16,185,129,.3);
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 15px/1.6 system-ui, -apple-system, Segoe UI, sans-serif;
+      padding: 40px 20px;
+    }
+    main { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 28px; letter-spacing: -0.5px; margin: 0 0 4px; }
+    h2 { font-size: 18px; margin: 32px 0 10px; }
+    .updated { color: var(--text-3); font-size: 13px; margin: 0 0 24px; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--good-bg); color: var(--good-fg); border: 1px solid var(--good-bd);
+      border-radius: 999px; padding: 8px 16px; font-weight: 700; font-size: 14px; margin-bottom: 24px;
+    }
+    .badge svg {
+      width: 16px; height: 16px; fill: none; stroke: var(--good-fg);
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; }
+    p, li { color: var(--text-2); }
+    strong { color: var(--text); }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-3); font-weight: 600; }
+    code { background: var(--border); padding: 1px 6px; border-radius: 5px; font-size: 13px; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>TabStyr — Privacy</h1>
+    <p class="updated">Last updated: 2026-06-12</p>
+    <div class="badge" role="status">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3l7 3v5.5c0 4-3 7-7 8.5-4-1.5-7-4.5-7-8.5V6z" />
+        <path d="M9 12l2 2 4-4.5" />
+      </svg>
+      0 bytes leave your device
+    </div>
+
+    <div class="card">
+      <p><strong>TabStyr does not collect, transmit, or share any data.</strong> Everything it
+      records stays on your device. There are no servers, no analytics, no accounts, and no
+      network requests of any kind.</p>
+
+      <h2>What the extension stores (locally, in your browser's IndexedDB)</h2>
+      <ul>
+        <li><strong>Session records</strong> — start/end timestamps, the page's domain, and whether the tab was playing audio.</li>
+        <li><strong>Daily per-domain totals</strong> — aggregated seconds per site per day.</li>
+        <li><strong>Open-tab metadata</strong> — title, URL, last-active time, and a randomly generated local identifier used to attribute time correctly.</li>
+        <li><strong>Settings</strong> — your preferences (stale threshold, idle timeout, theme, background-audio counting, category overrides and rules).</li>
+      </ul>
+      <p>Data is kept for a rolling <strong>90-day window</strong>; older data is pruned automatically.</p>
+
+      <h2>What it does NOT do</h2>
+      <ul>
+        <li>Does <strong>not</strong> send any data off your device.</li>
+        <li>Does <strong>not</strong> use remote servers, cloud sync, or third-party analytics.</li>
+        <li>Does <strong>not</strong> contain ads or trackers.</li>
+        <li>Does <strong>not</strong> read page contents — only tab metadata (URL/title) from the browser's standard extension APIs.</li>
+      </ul>
+
+      <h2>Permissions and why they're needed</h2>
+      <table>
+        <thead><tr><th>Permission</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>tabs</code></td><td>See which tab is active and its URL/title to attribute time</td></tr>
+          <tr><td><code>storage</code></td><td>Save your stats and settings locally</td></tr>
+          <tr><td><code>idle</code></td><td>Pause tracking when you step away</td></tr>
+          <tr><td><code>alarms</code></td><td>Periodic checkpoints and daily maintenance</td></tr>
+          <tr><td><code>notifications</code></td><td>Optional once-a-day stale-tab reminder</td></tr>
+          <tr><td><code>favicon</code> (Chromium)</td><td>Show site icons in lists</td></tr>
+        </tbody>
+      </table>
+      <p>No host permissions are requested; the extension cannot access the content of the pages you visit.</p>
+
+      <h2>Your control over your data</h2>
+      <ul>
+        <li><strong>Export</strong> your full history any time (JSON or CSV), optionally <strong>passphrase-encrypted</strong>, from Settings.</li>
+        <li><strong>Restore</strong> from a backup file on this or another device.</li>
+        <li><strong>Wipe all data</strong> with one click; this permanently deletes everything stored locally.</li>
+        <li>Removing the extension deletes its local storage.</li>
+      </ul>
+    </div>
+  </main>
+</body>
+</html>

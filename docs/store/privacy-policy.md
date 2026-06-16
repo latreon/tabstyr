@@ -19,7 +19,7 @@ your browser's IndexedDB:
 - **Open-tab metadata** — for tabs you've visited: title, URL, last-active time,
   and a randomly generated local identifier used to attribute time correctly.
 - **Settings** — your preferences (stale threshold, idle timeout, theme,
-  background-audio counting, category overrides).
+  background-audio counting, category overrides and custom rules).
 
 This data is kept for a rolling **90-day window** and older data is pruned
 automatically.
@@ -49,6 +49,11 @@ pages you visit.
 ## Your control over your data
 
 - **Export** your full history any time (JSON or CSV) from Settings.
+- **Encrypted backup** — optionally protect a JSON backup with a passphrase
+  (AES-256-GCM, key derived via PBKDF2). The passphrase never leaves your device
+  and cannot be recovered.
+- **Restore** from a backup file (plain or encrypted), on this or another device —
+  portability with no server involved.
 - **Wipe all data** with one click in Settings; this permanently deletes
   everything stored locally.
 - Removing the extension deletes its local storage.

@@ -11,6 +11,7 @@ import type { DailyStat, Session } from '@/lib/types';
 import FaviconChip from '@/components/FaviconChip.vue';
 import HeatmapTile from '@/components/HeatmapTile.vue';
 import SelectBox from '@/components/ui/SelectBox.vue';
+import { useFocusTrap } from '@/composables/useFocusTrap';
 
 const props = defineProps<{
   domain: string;
@@ -26,6 +27,9 @@ const CATEGORY_OPTIONS = CATEGORIES.map((c) => ({ value: c, label: c }));
 const currentCategory = computed(() => categorize(props.domain, props.overrides, props.rules ?? []));
 
 const closeBtn = ref<HTMLButtonElement | null>(null);
+const panel = ref<HTMLElement | null>(null);
+
+useFocusTrap(panel);
 
 const domainStats = computed(() => props.stats.filter((s) => s.domain === props.domain));
 const domainSessions = computed(() => props.sessions.filter((s) => s.domain === props.domain));
@@ -93,7 +97,7 @@ onUnmounted(() => {
 
 <template>
   <div class="backdrop" @click.self="emit('close')">
-    <div class="panel tile" role="dialog" aria-modal="true" :aria-label="`Details for ${domain}`">
+    <div ref="panel" class="panel tile" role="dialog" aria-modal="true" :aria-label="`Details for ${domain}`">
       <header class="head">
         <FaviconChip :domain="domain" />
         <h2 class="title">{{ displayDomain(domain) }}</h2>

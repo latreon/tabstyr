@@ -27,7 +27,8 @@ onMounted(async () => {
   await s.load();
   if (location.hash === '#stale') {
     const el = document.getElementById('stale-section');
-    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
     // Brief pulse so the jump is obvious — the stale count is a small tile.
     el?.classList.add('flash');
     setTimeout(() => el?.classList.remove('flash'), 1600);
@@ -41,7 +42,14 @@ onMounted(async () => {
     <header class="head">
       <h1 class="brand"><RingLogo :size="24" /> TabStyr</h1>
       <div class="head-right">
-        <span class="label">Local only · last 90 days</span>
+        <a class="privacy-badge" href="/privacy.html" target="_blank" rel="noopener"
+           title="No servers, no accounts, no network requests. Click for the privacy policy.">
+          <svg class="shield" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3l7 3v5.5c0 4-3 7-7 8.5-4-1.5-7-4.5-7-8.5V6z" />
+            <path d="M9 12l2 2 4-4.5" />
+          </svg>
+          0 bytes leave your device
+        </a>
         <ThemeToggle />
       </div>
     </header>
@@ -122,6 +130,37 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+.privacy-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--card-strong);
+  color: var(--text-2);
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.privacy-badge:hover { border-color: var(--accent); color: var(--text); }
+.privacy-badge:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.privacy-badge .shield {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  fill: none;
+  stroke: var(--positive);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+@media (max-width: 760px) {
+  .privacy-badge { display: none; } /* keep the compact header clean on phones */
 }
 .bento {
   display: grid;

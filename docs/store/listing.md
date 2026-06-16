@@ -27,21 +27,24 @@ WHAT YOU GET
 • Today at a glance — active time, vs your weekly average, with a sparkline.
 • Trends — day, week, and month views.
 • Activity heatmap — see which hours of which days you browse most.
-• Time by category — Work, Dev, Social, Media, News, Shopping. Re-classify any
-  site to fit how you work.
+• Time by category — Work, Dev, Finance, Social, Media, News, Shopping. Hundreds
+  of sites recognized worldwide; re-classify any site or add your own rules.
 • Focus — a daily focus % (productive vs distracting time) and a streak.
 • Top sites & per-tab table — with a detail view for any site.
 • "What did I work on?" — pick a day and copy a tidy list of sites, perfect for
   standups and invoices.
 • Stale-tab nudges — a badge count and an optional once-a-day reminder for tabs
   you've forgotten.
-• Export — JSON backup or CSV (daily totals or raw sessions).
+• Week-over-week & month-over-month comparison, with per-category deltas.
+• Export — JSON or CSV, plus passphrase-encrypted backups you can restore on any device.
 
-PRIVACY FIRST
+PRIVACY FIRST — 0 BYTES LEAVE YOUR DEVICE
 • 100% local. Stored in your browser (IndexedDB), pruned to a 90-day window.
-• No servers, no accounts, no analytics, no ads, no network requests.
+• No servers, no accounts, no analytics, no ads, no network requests — none.
 • Doesn't read page content — only the tab info the browser already provides.
-• One-click wipe, and full export, any time.
+• Your data is portable without a cloud: passphrase-encrypted backup (AES-256-GCM),
+  restore on any device, or wipe everything in one click.
+• Unlike cloud trackers, nothing is ever uploaded — there's no backend to upload to.
 
 HONEST METRICS
 The headline number is your active foreground time. Background audio is counted
@@ -83,5 +86,6 @@ entirely on your own device, to help you understand and manage your browsing.
 
 ## Privacy policy URL
 
-Host `docs/store/privacy-policy.md` (e.g. on the repo or a GitHub Pages site) and
-link it here.
+The policy also ships inside the extension at `/privacy.html` (linked from the
+popup and dashboard). For the store listing, host `docs/store/privacy-policy.md`
+(e.g. on the repo or a GitHub Pages site) and link it here.

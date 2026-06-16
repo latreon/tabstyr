@@ -1,0 +1,64 @@
+import 'fake-indexeddb/auto';
+import { IDBFactory } from 'fake-indexeddb';
+import { beforeEach, describe, expect, test } from 'vitest';
+import { resetDBConnection } from '@/lib/db/db';
+import * as repo from '@/lib/db/repo';
+import { parseBackup, restoreBackup } from '@/lib/restore';
+import { toJsonBackup } from '@/lib/export';
+import { DEFAULT_SETTINGS } from '@/lib/settings';
+
+beforeEach(() => {
+  globalThis.indexedDB = new IDBFactory();
+  resetDBConnection();
+});
+
+const backupText = () =>
+  toJsonBackup(
+    {
+      dailyStats: [{ date: '2026-06-16', domain: 'github.com', seconds: 120, audioSeconds: 0 }],
+      sessions: [
+        { tabId: 1, tabKey: 'k1', url: 'https://github.com', domain: 'github.com', start: 1000, end: 61000, audio: false },
+      ],
+      tabMeta: [{ tabId: 1, key: 'k1', url: 'https://github.com', title: 'GH', lastActiveAt: 1000, createdAt: 1000 }],
+      settings: { ...DEFAULT_SETTINGS, staleDays: 7 },
+    },
+    Date.now(),
+  );
+
+describe('parseBackup', () => {
+  test('rejects non-TabStyr / invalid JSON', () => {
+    expect(() => parseBackup('nope')).toThrow(/valid JSON/i);
+    expect(() => parseBackup('{"app":"other"}')).toThrow(/TabStyr backup/i);
+  });
+
+  test('parses valid backup and drops malformed records', () => {
+    const text = JSON.stringify({
+      app: 'tabstyr',
+      dailyStats: [
+        { date: '2026-06-16', domain: 'a.com', seconds: 10, audioSeconds: 0 },
+        { date: 5, domain: 'bad' }, // malformed → dropped
+      ],
+      sessions: [],
+      tabMeta: [],
+    });
+    const parsed = parseBackup(text);
+    expect(parsed.dailyStats).toHaveLength(1);
+    expect(parsed.sessions).toEqual([]);
+  });
+});
+
+describe('restoreBackup', () => {
+  test('replaces all data with the backup contents', async () => {
+    // Seed some pre-existing data that restore must clear.
+    await repo.applyDailyStats([{ date: '2020-01-01', domain: 'old.com', seconds: 999, audioSeconds: 0 }]);
+
+    const res = await restoreBackup(parseBackup(backupText()));
+    expect(res).toEqual({ dailyStats: 1, sessions: 1, tabMeta: 1 });
+
+    const stats = await repo.getAllDailyStats();
+    expect(stats).toEqual([{ date: '2026-06-16', domain: 'github.com', seconds: 120, audioSeconds: 0 }]);
+    const metas = await repo.getAllTabMeta();
+    expect(metas).toHaveLength(1);
+    expect(metas[0].key).toBe('k1');
+  });
+});

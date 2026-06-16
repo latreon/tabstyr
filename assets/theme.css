@@ -31,7 +31,7 @@
   --text-2: #44444c;
   --text-3: #6e6e78;
   --divider: #ececf1;
-  --warn: #ea580c;
+  --warn: #c2410c; /* orange-700 — AA contrast on white for the Wipe action text */
   --warn-bg: #fff7ed;
   --warn-border: #fed7aa;
   --positive: #16a34a;
@@ -106,7 +106,7 @@
   --text-2: #44444c;
   --text-3: #6e6e78;
   --divider: #ececf1;
-  --warn: #ea580c;
+  --warn: #c2410c; /* orange-700 — AA contrast on white for the Wipe action text */
   --warn-bg: #fff7ed;
   --warn-border: #fed7aa;
   --positive: #16a34a;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { longDateLabel } from '@/lib/time';
 
 const props = defineProps<{ modelValue: string; min: string; max: string }>();
@@ -9,9 +9,47 @@ const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
 const open = ref(false);
 const root = ref<HTMLElement | null>(null);
+const grid = ref<HTMLElement | null>(null);
+const trigger = ref<HTMLButtonElement | null>(null);
+// The day that holds keyboard focus (roving tabindex). Starts at the selection.
+const focusKey = ref(props.modelValue);
 
 const pad = (n: number) => String(n).padStart(2, '0');
 const keyOf = (y: number, m: number, d: number) => `${y}-${pad(m + 1)}-${pad(d)}`;
+const clampKey = (key: string) => (key < props.min ? props.min : key > props.max ? props.max : key);
+
+function addDaysKey(key: string, days: number): string {
+  const [y, m, d] = key.split('-').map(Number);
+  const next = new Date(y, m - 1, d + days);
+  return keyOf(next.getFullYear(), next.getMonth(), next.getDate());
+}
+
+async function focusDay(key: string) {
+  const clamped = clampKey(key);
+  focusKey.value = clamped;
+  // Switch the visible month if the target is outside it.
+  const [y, m] = clamped.split('-').map(Number);
+  if (y !== view.value.y || m - 1 !== view.value.m) view.value = { y, m: m - 1 };
+  await nextTick();
+  grid.value?.querySelector<HTMLButtonElement>(`[data-key="${clamped}"]`)?.focus();
+}
+
+function onGridKey(e: KeyboardEvent) {
+  const deltas: Record<string, number> = {
+    ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7,
+  };
+  if (e.key in deltas) {
+    e.preventDefault();
+    void focusDay(addDaysKey(focusKey.value, deltas[e.key]));
+  } else if (e.key === 'Home') {
+    e.preventDefault();
+    void focusDay(props.min > focusKey.value ? props.min : keyOf(view.value.y, view.value.m, 1));
+  } else if (e.key === 'End') {
+    e.preventDefault();
+    const last = new Date(view.value.y, view.value.m + 1, 0);
+    void focusDay(keyOf(last.getFullYear(), last.getMonth(), last.getDate()));
+  }
+}
 
 // Month currently shown in the grid (independent of the selected day).
 const view = ref({ y: 2000, m: 0 });
@@ -51,17 +89,28 @@ function stepMonth(delta: number) {
 }
 function choose(key: string) {
   emit('update:modelValue', key);
+  closeAndReturn();
+}
+function closeAndReturn() {
   open.value = false;
+  trigger.value?.focus(); // return focus to the trigger, not lost to <body>
 }
 function toggle() {
   open.value = !open.value;
-  if (open.value) syncView();
+  if (open.value) {
+    syncView();
+    focusKey.value = clampKey(props.modelValue);
+    void nextTick(() => grid.value?.querySelector<HTMLButtonElement>(`[data-key="${focusKey.value}"]`)?.focus());
+  }
 }
 function onClickOutside(e: MouseEvent) {
   if (root.value && !root.value.contains(e.target as Node)) open.value = false;
 }
 function onKey(e: KeyboardEvent) {
-  if (e.key === 'Escape') open.value = false;
+  if (e.key === 'Escape' && open.value) {
+    e.preventDefault();
+    closeAndReturn();
+  }
 }
 
 onMounted(() => {
@@ -77,6 +126,7 @@ onBeforeUnmount(() => {
 <template>
   <div ref="root" class="datepicker">
     <button
+      ref="trigger"
       type="button"
       class="trigger"
       :aria-expanded="open"
@@ -100,7 +150,7 @@ onBeforeUnmount(() => {
       <div class="weekdays" aria-hidden="true">
         <span v-for="(w, i) in WEEKDAYS" :key="i">{{ w }}</span>
       </div>
-      <div class="grid">
+      <div ref="grid" class="grid" role="grid" @keydown="onGridKey">
         <template v-for="(c, i) in cells" :key="i">
           <span v-if="!c" class="empty" />
           <button
@@ -108,6 +158,8 @@ onBeforeUnmount(() => {
             type="button"
             class="day"
             :class="{ selected: c.key === modelValue }"
+            :data-key="c.key"
+            :tabindex="c.key === focusKey ? 0 : -1"
             :disabled="c.disabled"
             :aria-current="c.key === modelValue ? 'date' : undefined"
             @click="choose(c.key)"

@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { browser } from 'wxt/browser';
 import { getSettings, saveSettings } from '@/lib/settings';
 import { CATEGORIES, type Category, type CategoryRule } from '@/lib/categories';
 import { useTheme } from '@/composables/useTheme';
+import { useFocusTrap } from '@/composables/useFocusTrap';
 import * as repo from '@/lib/db/repo';
 import { dailyStatsToCsv, downloadFile, toJsonBackup } from '@/lib/export';
+import { encryptToEnvelope, isEncryptedEnvelope, decryptFromEnvelope } from '@/lib/crypto';
+import { parseBackup, restoreBackup, type ParsedBackup } from '@/lib/restore';
 import { dateKey } from '@/lib/time';
 import type { ThemeSetting } from '@/lib/types';
 import SelectBox from '@/components/ui/SelectBox.vue';
@@ -137,8 +140,153 @@ async function exportData(kind: 'json' | 'csv') {
   }
 }
 
+// --- Encrypted backup ---
+const showEncrypt = ref(false);
+const encPass = ref('');
+const encPass2 = ref('');
+const encError = ref('');
+
+async function buildBackupJson(): Promise<string> {
+  const [dailyStats, sessions, tabMeta, settings] = await Promise.all([
+    repo.getAllDailyStats(),
+    repo.getAllSessions(),
+    repo.getAllTabMeta(),
+    getSettings(),
+  ]);
+  return toJsonBackup({ dailyStats, sessions, tabMeta, settings }, Date.now());
+}
+
+async function exportEncrypted() {
+  encError.value = '';
+  if (encPass.value.length < 6) {
+    encError.value = 'Use at least 6 characters.';
+    return;
+  }
+  if (encPass.value !== encPass2.value) {
+    encError.value = 'Passphrases do not match.';
+    return;
+  }
+  if (exporting.value) return;
+  exporting.value = true;
+  try {
+    const envelope = await encryptToEnvelope(await buildBackupJson(), encPass.value);
+    downloadFile(`tabstyr-backup-${dateKey(Date.now())}.enc.json`, envelope, 'application/json');
+    showToast('Exported encrypted backup');
+    showEncrypt.value = false;
+    encPass.value = '';
+    encPass2.value = '';
+  } catch (e) {
+    console.error('[settings] encrypted export failed', e);
+    showToast('Encryption failed');
+  } finally {
+    exporting.value = false;
+  }
+}
+
+// --- Restore ---
+const fileInput = ref<HTMLInputElement | null>(null);
+const restoreRaw = ref<string | null>(null); // encrypted text awaiting a passphrase
+const restorePass = ref('');
+const restoreError = ref('');
+const pendingRestore = ref<ParsedBackup | null>(null); // parsed, awaiting confirm
+const restoring = ref(false);
+
+function pickRestoreFile() {
+  restoreError.value = '';
+  fileInput.value?.click();
+}
+
+function stageParsed(text: string) {
+  try {
+    pendingRestore.value = parseBackup(text);
+  } catch (e) {
+    restoreError.value = (e as Error).message || 'Invalid backup file.';
+  }
+}
+
+async function onRestoreFile(e: Event) {
+  const input = e.target as HTMLInputElement;
+  const file = input.files?.[0];
+  input.value = ''; // let the same file be picked again later
+  if (!file) return;
+  restoreError.value = '';
+  restoreRaw.value = null;
+  restorePass.value = '';
+  pendingRestore.value = null;
+  try {
+    const text = await file.text();
+    if (isEncryptedEnvelope(text)) restoreRaw.value = text; // prompt for passphrase
+    else stageParsed(text);
+  } catch (e) {
+    console.error('[settings] read backup failed', e);
+    restoreError.value = 'Could not read that file.';
+  }
+}
+
+async function decryptRestore() {
+  restoreError.value = '';
+  if (!restoreRaw.value) return;
+  try {
+    const json = await decryptFromEnvelope(restoreRaw.value, restorePass.value);
+    stageParsed(json);
+    if (pendingRestore.value) {
+      restoreRaw.value = null;
+      restorePass.value = '';
+    }
+  } catch (e) {
+    restoreError.value = (e as Error).message;
+  }
+}
+
+function cancelRestore() {
+  restoreRaw.value = null;
+  restorePass.value = '';
+  pendingRestore.value = null;
+  restoreError.value = '';
+}
+
+async function confirmRestore() {
+  if (!pendingRestore.value || restoring.value) return;
+  restoring.value = true;
+  try {
+    const res = await restoreBackup(pendingRestore.value);
+    pendingRestore.value = null;
+    rules.value = (await getSettings()).categoryRules; // reflect any restored rules
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    emit('changed');
+    showToast(`Restored ${res.dailyStats} days · ${res.sessions} sessions`);
+  } catch (e) {
+    console.error('[settings] restore failed', e);
+    showToast('Restore failed');
+  } finally {
+    restoring.value = false;
+  }
+}
+
 const showWipeModal = ref(false);
 const wiping = ref(false);
+const wipeModalEl = ref<HTMLElement | null>(null);
+const cancelBtn = ref<HTMLButtonElement | null>(null);
+const restoreModalEl = ref<HTMLElement | null>(null);
+const showRestoreConfirm = computed(() => !!pendingRestore.value);
+
+useFocusTrap(wipeModalEl, showWipeModal);
+useFocusTrap(restoreModalEl, showRestoreConfirm);
+
+// Focus the safe (Cancel) action when the destructive dialog opens, and allow Esc to close.
+watch(showWipeModal, async (open) => {
+  if (open) {
+    await nextTick();
+    cancelBtn.value?.focus();
+  }
+});
+function onModalKey(e: KeyboardEvent) {
+  if (e.key !== 'Escape') return;
+  if (showWipeModal.value && !wiping.value) showWipeModal.value = false;
+  else if ((pendingRestore.value || restoreRaw.value) && !restoring.value) cancelRestore();
+}
+onMounted(() => document.addEventListener('keydown', onModalKey));
+onBeforeUnmount(() => document.removeEventListener('keydown', onModalKey));
 
 async function confirmWipe() {
   if (wiping.value) return;
@@ -220,23 +368,67 @@ async function confirmWipe() {
     </div>
 
     <div class="export">
-      <span class="field-label">Export</span>
+      <span class="field-label">Backup &amp; restore</span>
       <div class="export-btns">
         <button :disabled="exporting" @click="exportData('json')">Export JSON</button>
         <button :disabled="exporting" @click="exportData('csv')">Export CSV</button>
+        <button :disabled="exporting" :aria-expanded="showEncrypt" @click="showEncrypt = !showEncrypt">Encrypted…</button>
+        <button :disabled="exporting" @click="pickRestoreFile">Restore…</button>
+      </div>
+      <input ref="fileInput" type="file" accept="application/json,.json" class="sr-only" aria-hidden="true" tabindex="-1" @change="onRestoreFile" />
+
+      <form v-if="showEncrypt" class="enc-form" @submit.prevent="exportEncrypted">
+        <p class="rules-hint">Encrypts a full JSON backup with a passphrase (AES-256-GCM). Keep it safe — it can't be recovered.</p>
+        <input v-model="encPass" type="password" class="rule-input" placeholder="Passphrase" autocomplete="new-password" />
+        <input v-model="encPass2" type="password" class="rule-input" placeholder="Confirm passphrase" autocomplete="new-password" />
+        <div class="enc-actions">
+          <button type="submit" class="rule-add-btn" :disabled="exporting">Download encrypted</button>
+          <button type="button" class="cancel-link" @click="showEncrypt = false">Cancel</button>
+        </div>
+        <p v-if="encError" class="rule-error">{{ encError }}</p>
+      </form>
+
+      <form v-if="restoreRaw" class="enc-form" @submit.prevent="decryptRestore">
+        <p class="rules-hint">This backup is encrypted. Enter its passphrase to continue.</p>
+        <input v-model="restorePass" type="password" class="rule-input" placeholder="Passphrase" autocomplete="off" />
+        <div class="enc-actions">
+          <button type="submit" class="rule-add-btn">Decrypt</button>
+          <button type="button" class="cancel-link" @click="cancelRestore">Cancel</button>
+        </div>
+        <p v-if="restoreError" class="rule-error">{{ restoreError }}</p>
+      </form>
+      <p v-else-if="restoreError" class="rule-error">{{ restoreError }}</p>
+    </div>
+
+    <!-- Restore confirmation (destructive) -->
+    <div v-if="pendingRestore" class="backdrop" @click.self="cancelRestore">
+      <div ref="restoreModalEl" class="modal" role="dialog" aria-modal="true" aria-label="Confirm restore">
+        <h3 class="modal-title">Replace all data?</h3>
+        <p class="modal-body">
+          This deletes the data currently stored on this device and restores
+          <strong>{{ pendingRestore.dailyStats.length }}</strong> daily records and
+          <strong>{{ pendingRestore.sessions.length }}</strong> sessions{{ pendingRestore.exportedAt ? ` from the backup dated ${new Date(pendingRestore.exportedAt).toLocaleDateString()}` : '' }}.
+          This cannot be undone.
+        </p>
+        <div class="modal-actions">
+          <button class="cancel" :disabled="restoring" @click="cancelRestore">Cancel</button>
+          <button class="danger" :disabled="restoring" @click="confirmRestore">
+            {{ restoring ? 'Restoring…' : 'Replace data' }}
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Wipe confirmation -->
     <div v-if="showWipeModal" class="backdrop" @click.self="showWipeModal = false">
-      <div class="modal" role="dialog" aria-modal="true" aria-label="Confirm wipe all data">
+      <div ref="wipeModalEl" class="modal" role="dialog" aria-modal="true" aria-label="Confirm wipe all data">
         <h3 class="modal-title">Delete all data?</h3>
         <p class="modal-body">
           This permanently removes every session, daily total, and tab record stored on this
           device. Settings are kept. This cannot be undone.
         </p>
         <div class="modal-actions">
-          <button class="cancel" :disabled="wiping" @click="showWipeModal = false">Cancel</button>
+          <button ref="cancelBtn" class="cancel" :disabled="wiping" @click="showWipeModal = false">Cancel</button>
           <button class="danger" :disabled="wiping" @click="confirmWipe">
             {{ wiping ? 'Wiping…' : 'Delete everything' }}
           </button>
@@ -257,6 +449,9 @@ async function confirmWipe() {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  /* Size to our own content instead of stretching to the tile beside us
+     (Open tabs by time) in the same bento row. */
+  align-self: start;
 }
 .field {
   display: flex;
@@ -437,6 +632,44 @@ button:focus-visible {
   opacity: 0.5;
   cursor: not-allowed;
 }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.enc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 12px;
+  background: var(--card-strong);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.enc-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cancel-link {
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 4px;
+}
+.cancel-link:hover { color: var(--text); }
+.cancel-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* Wipe modal */
 .backdrop {

@@ -76,6 +76,11 @@ onMounted(async () => {
 function openDashboard(hash = '') {
   void browser.tabs.create({ url: browser.runtime.getURL(`/dashboard.html${hash}`) });
 }
+function openPrivacy() {
+  // getURL is typed to known entrypoints; privacy.html is a public/ asset.
+  const url = (browser.runtime.getURL as (p: string) => string)('/privacy.html');
+  void browser.tabs.create({ url });
+}
 </script>
 
 <template>
@@ -126,6 +131,15 @@ function openDashboard(hash = '') {
         <button class="cta" @click="openDashboard()">Dashboard</button>
         <button v-if="staleCount" class="stale-btn" @click="openDashboard('#stale')">{{ staleCount }} stale</button>
       </footer>
+
+      <button class="privacy" aria-label="0 bytes leave your device — view privacy policy" @click="openPrivacy">
+        <svg class="shield" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3l7 3v5.5c0 4-3 7-7 8.5-4-1.5-7-4.5-7-8.5V6z" />
+          <path d="M9 12l2 2 4-4.5" />
+        </svg>
+        <span>0&nbsp;bytes leave your device</span>
+        <span class="privacy-arrow" aria-hidden="true">↗</span>
+      </button>
     </template>
   </main>
 </template>
@@ -265,6 +279,36 @@ function openDashboard(hash = '') {
   font-family: inherit;
 }
 .stale-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.privacy {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  margin-top: 2px;
+  padding: 8px 10px;
+  background: var(--row-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-2);
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+.privacy:hover { border-color: var(--accent); color: var(--text); }
+.privacy:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.privacy .shield {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  fill: none;
+  stroke: var(--positive);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.privacy .privacy-arrow { margin-left: auto; color: var(--accent); font-weight: 700; }
 .empty, .error { position: relative; margin: 0; }
 .skeleton { position: relative; display: flex; flex-direction: column; gap: 8px; }
 .sk {
