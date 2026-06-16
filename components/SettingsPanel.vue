@@ -4,7 +4,7 @@ import { browser } from 'wxt/browser';
 import { getSettings, saveSettings } from '@/lib/settings';
 import { useTheme } from '@/composables/useTheme';
 import * as repo from '@/lib/db/repo';
-import { dailyStatsToCsv, downloadFile, toJsonBackup } from '@/lib/export';
+import { dailyStatsToCsv, sessionsToCsv, downloadFile, toJsonBackup } from '@/lib/export';
 import { dateKey } from '@/lib/time';
 import type { ThemeSetting } from '@/lib/types';
 import SelectBox from '@/components/ui/SelectBox.vue';
@@ -66,7 +66,7 @@ async function save() {
 
 const exporting = ref(false);
 
-async function exportData(kind: 'json' | 'csv') {
+async function exportData(kind: 'json' | 'csv' | 'sessions') {
   if (exporting.value) return;
   exporting.value = true;
   try {
@@ -81,10 +81,14 @@ async function exportData(kind: 'json' | 'csv') {
       const json = toJsonBackup({ dailyStats, sessions, tabMeta, settings }, Date.now());
       downloadFile(`tabstyr-backup-${stamp}.json`, json, 'application/json');
       showToast('Exported JSON backup');
+    } else if (kind === 'sessions') {
+      const csv = sessionsToCsv(await repo.getAllSessions());
+      downloadFile(`tabstyr-sessions-${stamp}.csv`, csv, 'text/csv');
+      showToast('Exported sessions CSV');
     } else {
       const csv = dailyStatsToCsv(await repo.getAllDailyStats());
-      downloadFile(`tabstyr-${stamp}.csv`, csv, 'text/csv');
-      showToast('Exported CSV');
+      downloadFile(`tabstyr-daily-${stamp}.csv`, csv, 'text/csv');
+      showToast('Exported daily CSV');
     }
   } catch (e) {
     console.error('[settings] export failed', e);
@@ -146,8 +150,9 @@ async function confirmWipe() {
     <div class="export">
       <span class="field-label">Export</span>
       <div class="export-btns">
-        <button :disabled="exporting" @click="exportData('json')">Export JSON</button>
-        <button :disabled="exporting" @click="exportData('csv')">Export CSV</button>
+        <button :disabled="exporting" @click="exportData('json')">JSON backup</button>
+        <button :disabled="exporting" @click="exportData('csv')">Daily CSV</button>
+        <button :disabled="exporting" @click="exportData('sessions')">Sessions CSV</button>
       </div>
     </div>
 
@@ -239,7 +244,11 @@ button:focus-visible {
 }
 .export-btns {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
+}
+.export-btns button {
+  min-width: 96px;
 }
 .export-btns button {
   flex: 1;

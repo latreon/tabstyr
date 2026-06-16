@@ -24,7 +24,11 @@ function openDetail(domain: string) {
 onMounted(async () => {
   await s.load();
   if (location.hash === '#stale') {
-    document.getElementById('stale-section')?.scrollIntoView({ behavior: 'smooth' });
+    const el = document.getElementById('stale-section');
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Brief pulse so the jump is obvious — the stale count is a small tile.
+    el?.classList.add('flash');
+    setTimeout(() => el?.classList.remove('flash'), 1600);
   }
 });
 </script>
@@ -51,6 +55,7 @@ onMounted(async () => {
       />
       <StatTile label="Open tabs" :value="String(s.openTabCount.value)" />
       <StatTile
+        id="stale-section"
         label="Stale tabs"
         :value="String(s.staleTabs.value.length)"
         :warn="s.staleTabs.value.length > 0"
@@ -121,5 +126,19 @@ onMounted(async () => {
   .bento {
     grid-template-columns: 1fr;
   }
+}
+</style>
+
+<!-- Unscoped: targets the StatTile root by id, which scoped styles can't reach. -->
+<style>
+#stale-section.flash {
+  animation: stale-flash 1.6s ease;
+}
+@keyframes stale-flash {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  20% { box-shadow: 0 0 0 3px var(--warn, #b0552f); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #stale-section.flash { animation: none; }
 }
 </style>

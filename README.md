@@ -173,8 +173,9 @@ What each number actually means:
   days) and haven't snoozed.
 - **Per-tab time** = total tracked for that specific tab over the retained window,
   attributed by a stable key so it stays correct even after a browser restart.
-- **Sessions** are split every minute by a heartbeat and capped at 10 minutes, so a
-  sleeping/suspended machine can't inflate your totals.
+- **Sessions** are split every minute by a heartbeat and capped at 30 minutes, so a
+  sleeping/suspended machine can't inflate your totals. (Media playback is exempt from
+  the cap so a long video still reports its full watch time.)
 
 ## Development
 
