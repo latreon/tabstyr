@@ -14,7 +14,7 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "check:version": "node scripts/sync-readme-version.mjs",
-    "version": "node scripts/sync-readme-version.mjs --write && git add README.md"
+    "version": "node scripts/sync-readme-version.mjs --write && git add .github/badges/version.svg"
   },
   "dependencies": {
     "idb": "^8.0.0",
