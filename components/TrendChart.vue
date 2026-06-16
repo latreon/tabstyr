@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { buildTrend, type TrendMode, type TrendPoint } from '@/lib/trend';
 import { trendTooltip, xTickEvery, yTicks } from '@/lib/chart-scale';
 import type { DailyStat } from '@/lib/types';
 
 const props = defineProps<{ stats: DailyStat[] }>();
+const { t } = useI18n();
 const mode = ref<TrendMode>('day');
 const MODES: TrendMode[] = ['day', 'week', 'month'];
 
@@ -34,8 +36,8 @@ function hideTip() {
 <template>
   <div class="tile trend">
     <div class="trend-head">
-      <span class="label">Trend</span>
-      <div class="toggle" role="tablist" aria-label="Trend granularity">
+      <span class="label">{{ t('trend.title') }}</span>
+      <div class="toggle" role="tablist" :aria-label="t('trend.granularityAria')">
         <button
           v-for="m in MODES"
           :key="m"
@@ -43,7 +45,7 @@ function hideTip() {
           :aria-selected="mode === m"
           :class="{ active: mode === m }"
           @click="mode = m"
-        >{{ m }}</button>
+        >{{ t(`trend.${m}`) }}</button>
       </div>
     </div>
     <div class="chart">

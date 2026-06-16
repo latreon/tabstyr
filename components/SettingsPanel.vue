@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { browser } from 'wxt/browser';
 import { getSettings, saveSettings } from '@/lib/settings';
 import { CATEGORIES, type Category, type CategoryRule } from '@/lib/categories';
 import { useTheme } from '@/composables/useTheme';
+import { useLocale } from '@/composables/useLocale';
 import { useFocusTrap } from '@/composables/useFocusTrap';
+import { SUPPORTED_LOCALES } from '@/lib/i18n';
 import * as repo from '@/lib/db/repo';
 import { dailyStatsToCsv, downloadFile, toJsonBackup } from '@/lib/export';
 import { encryptToEnvelope, isEncryptedEnvelope, decryptFromEnvelope } from '@/lib/crypto';
@@ -15,11 +18,20 @@ import SelectBox from '@/components/ui/SelectBox.vue';
 import ToggleSwitch from '@/components/ui/ToggleSwitch.vue';
 import NumberStepper from '@/components/ui/NumberStepper.vue';
 
+const { t } = useI18n();
+const locale = useLocale();
+
 // Only explicit choices are offered; "system" stays the default until the user picks.
-const THEME_OPTIONS = [
-  { value: 'light', label: 'Light' },
-  { value: 'dark', label: 'Dark' },
-];
+const THEME_OPTIONS = computed(() => [
+  { value: 'light', label: t('settings.light') },
+  { value: 'dark', label: t('settings.dark') },
+]);
+
+// 'auto' (follow the browser) + each supported locale, shown in its own script.
+const LANGUAGE_OPTIONS = computed(() => [
+  { value: 'auto', label: t('settings.languageAuto') },
+  ...SUPPORTED_LOCALES.map((l) => ({ value: l.code, label: l.label })),
+]);
 
 const emit = defineEmits<{ changed: [] }>();
 const theme = useTheme();
@@ -29,7 +41,7 @@ const idleSeconds = ref(60);
 const audioEnabled = ref(true);
 const themeChoice = ref<'light' | 'dark'>('light');
 
-const CATEGORY_OPTIONS = CATEGORIES.map((c) => ({ value: c, label: c }));
+const CATEGORY_OPTIONS = computed(() => CATEGORIES.map((c) => ({ value: c, label: t(`categories.${c}`) })));
 const rules = ref<CategoryRule[]>([]);
 const newPattern = ref('');
 const newCategory = ref<Category>('Work');
@@ -62,7 +74,7 @@ async function addRule() {
   ruleError.value = '';
   if (!pattern) return;
   if (rules.value.some((r) => r.pattern === pattern)) {
-    ruleError.value = 'That pattern already has a rule.';
+    ruleError.value = t('settings.ruleExists');
     return;
   }
   const next = [...rules.value, { pattern, category: newCategory.value }];
@@ -72,10 +84,10 @@ async function addRule() {
     newPattern.value = '';
     await browser.runtime.sendMessage({ type: 'settings-changed' });
     emit('changed');
-    showToast('Rule added');
+    showToast(t('settings.ruleAdded'));
   } catch (e) {
     console.error('[settings] add rule failed', e);
-    showToast('Could not add rule');
+    showToast(t('settings.ruleAddFailed'));
   }
 }
 
@@ -88,7 +100,7 @@ async function removeRule(pattern: string) {
     emit('changed');
   } catch (e) {
     console.error('[settings] remove rule failed', e);
-    showToast('Could not remove rule');
+    showToast(t('settings.ruleRemoveFailed'));
   }
 }
 
@@ -103,10 +115,10 @@ async function save() {
     });
     await theme.set(themeChoice.value);
     await browser.runtime.sendMessage({ type: 'settings-changed' });
-    showToast('Settings saved');
+    showToast(t('settings.saved'));
   } catch (e) {
     console.error('[settings] save failed', e);
-    showToast('Could not save settings');
+    showToast(t('settings.saveFailed'));
   }
 }
 
@@ -126,15 +138,15 @@ async function exportData(kind: 'json' | 'csv') {
       ]);
       const json = toJsonBackup({ dailyStats, sessions, tabMeta, settings }, Date.now());
       downloadFile(`tabstyr-backup-${stamp}.json`, json, 'application/json');
-      showToast('Exported JSON backup');
+      showToast(t('settings.exportedJson'));
     } else {
       const csv = dailyStatsToCsv(await repo.getAllDailyStats());
       downloadFile(`tabstyr-${stamp}.csv`, csv, 'text/csv');
-      showToast('Exported CSV');
+      showToast(t('settings.exportedCsv'));
     }
   } catch (e) {
     console.error('[settings] export failed', e);
-    showToast('Export failed');
+    showToast(t('settings.exportFailed'));
   } finally {
     exporting.value = false;
   }
@@ -159,11 +171,11 @@ async function buildBackupJson(): Promise<string> {
 async function exportEncrypted() {
   encError.value = '';
   if (encPass.value.length < 6) {
-    encError.value = 'Use at least 6 characters.';
+    encError.value = t('settings.passTooShort');
     return;
   }
   if (encPass.value !== encPass2.value) {
-    encError.value = 'Passphrases do not match.';
+    encError.value = t('settings.passMismatch');
     return;
   }
   if (exporting.value) return;
@@ -171,13 +183,13 @@ async function exportEncrypted() {
   try {
     const envelope = await encryptToEnvelope(await buildBackupJson(), encPass.value);
     downloadFile(`tabstyr-backup-${dateKey(Date.now())}.enc.json`, envelope, 'application/json');
-    showToast('Exported encrypted backup');
+    showToast(t('settings.exportedEncrypted'));
     showEncrypt.value = false;
     encPass.value = '';
     encPass2.value = '';
   } catch (e) {
     console.error('[settings] encrypted export failed', e);
-    showToast('Encryption failed');
+    showToast(t('settings.encryptionFailed'));
   } finally {
     exporting.value = false;
   }
@@ -219,7 +231,7 @@ async function onRestoreFile(e: Event) {
     else stageParsed(text);
   } catch (e) {
     console.error('[settings] read backup failed', e);
-    restoreError.value = 'Could not read that file.';
+    restoreError.value = t('settings.restoreReadFailed');
   }
 }
 
@@ -254,10 +266,10 @@ async function confirmRestore() {
     rules.value = (await getSettings()).categoryRules; // reflect any restored rules
     await browser.runtime.sendMessage({ type: 'settings-changed' });
     emit('changed');
-    showToast(`Restored ${res.dailyStats} days · ${res.sessions} sessions`);
+    showToast(t('settings.restored', { days: res.dailyStats, sessions: res.sessions }));
   } catch (e) {
     console.error('[settings] restore failed', e);
-    showToast('Restore failed');
+    showToast(t('settings.restoreFailed'));
   } finally {
     restoring.value = false;
   }
@@ -294,11 +306,11 @@ async function confirmWipe() {
   try {
     await browser.runtime.sendMessage({ type: 'wipe-data' });
     showWipeModal.value = false;
-    showToast('All data wiped');
+    showToast(t('settings.wiped'));
     emit('changed'); // reload the dashboard so the cleared state shows
   } catch (e) {
     console.error('[settings] wipe failed', e);
-    showToast('Wipe failed');
+    showToast(t('settings.wipeFailed'));
   } finally {
     wiping.value = false;
   }
@@ -307,43 +319,52 @@ async function confirmWipe() {
 
 <template>
   <div class="tile settings-tile">
-    <span class="label">Settings</span>
+    <span class="label">{{ t('settings.title') }}</span>
     <div class="field">
-      <span class="field-label">Theme</span>
+      <span class="field-label">{{ t('settings.language') }}</span>
+      <SelectBox
+        :model-value="locale.language.value"
+        :options="LANGUAGE_OPTIONS"
+        :label="t('settings.language')"
+        @update:model-value="locale.setLanguage($event)"
+      />
+    </div>
+    <div class="field">
+      <span class="field-label">{{ t('settings.theme') }}</span>
       <SelectBox
         :model-value="themeChoice"
         :options="THEME_OPTIONS"
-        label="Theme"
+        :label="t('settings.theme')"
         @update:model-value="themeChoice = $event as 'light' | 'dark'"
       />
     </div>
     <div class="field">
-      <span class="field-label">Stale after (days)</span>
-      <NumberStepper v-model="staleDays" :min="1" :max="60" label="Stale after (days)" />
+      <span class="field-label">{{ t('settings.staleDays') }}</span>
+      <NumberStepper v-model="staleDays" :min="1" :max="60" :label="t('settings.staleDays')" />
     </div>
     <div class="field">
-      <span class="field-label">Idle timeout (seconds)</span>
-      <NumberStepper v-model="idleSeconds" :min="15" :max="600" :step="15" label="Idle timeout (seconds)" />
+      <span class="field-label">{{ t('settings.idleSeconds') }}</span>
+      <NumberStepper v-model="idleSeconds" :min="15" :max="600" :step="15" :label="t('settings.idleSeconds')" />
     </div>
     <div class="field check">
-      <span class="field-label">Count background audio</span>
-      <ToggleSwitch v-model="audioEnabled" label="Count background audio" />
+      <span class="field-label">{{ t('settings.countAudio') }}</span>
+      <ToggleSwitch v-model="audioEnabled" :label="t('settings.countAudio')" />
     </div>
     <div class="actions">
-      <button class="save" @click="save">Save</button>
-      <button class="wipe" @click="showWipeModal = true">Wipe all data</button>
+      <button class="save" @click="save">{{ t('settings.save') }}</button>
+      <button class="wipe" @click="showWipeModal = true">{{ t('settings.wipe') }}</button>
     </div>
 
     <div class="rules">
-      <span class="field-label">Custom category rules</span>
-      <p class="rules-hint">Most popular sites are recognized automatically. Add a rule only for one we don't classify yet: any address containing your text goes to that category (checked before the built-in rules).</p>
+      <span class="field-label">{{ t('settings.customRules') }}</span>
+      <p class="rules-hint">{{ t('settings.rulesHint') }}</p>
 
       <ul v-if="rules.length" class="rule-list">
         <li v-for="r in rules" :key="r.pattern" class="rule">
           <code class="rule-pattern">{{ r.pattern }}</code>
           <span class="rule-arrow" aria-hidden="true">→</span>
-          <span class="rule-cat">{{ r.category }}</span>
-          <button class="rule-del" :aria-label="`Remove rule for ${r.pattern}`" @click="removeRule(r.pattern)">✕</button>
+          <span class="rule-cat">{{ t(`categories.${r.category}`) }}</span>
+          <button class="rule-del" :aria-label="t('settings.removeRuleAria', { pattern: r.pattern })" @click="removeRule(r.pattern)">✕</button>
         </li>
       </ul>
 
@@ -352,48 +373,48 @@ async function confirmWipe() {
           v-model="newPattern"
           class="rule-input"
           type="text"
-          placeholder="e.g. yandex"
-          aria-label="Domain contains"
+          :placeholder="t('settings.rulePlaceholder')"
+          :aria-label="t('settings.customRules')"
           maxlength="100"
         />
         <SelectBox
           :model-value="newCategory"
           :options="CATEGORY_OPTIONS"
-          label="Category for rule"
+          :label="t('settings.categoryForRuleAria')"
           @update:model-value="newCategory = $event as Category"
         />
-        <button type="submit" class="rule-add-btn" :disabled="!newPattern.trim()">Add</button>
+        <button type="submit" class="rule-add-btn" :disabled="!newPattern.trim()">{{ t('settings.add') }}</button>
       </form>
       <p v-if="ruleError" class="rule-error">{{ ruleError }}</p>
     </div>
 
     <div class="export">
-      <span class="field-label">Backup &amp; restore</span>
+      <span class="field-label">{{ t('settings.backupRestore') }}</span>
       <div class="export-btns">
-        <button :disabled="exporting" @click="exportData('json')">Export JSON</button>
-        <button :disabled="exporting" @click="exportData('csv')">Export CSV</button>
-        <button :disabled="exporting" :aria-expanded="showEncrypt" @click="showEncrypt = !showEncrypt">Encrypted…</button>
-        <button :disabled="exporting" @click="pickRestoreFile">Restore…</button>
+        <button :disabled="exporting" @click="exportData('json')">{{ t('settings.exportJson') }}</button>
+        <button :disabled="exporting" @click="exportData('csv')">{{ t('settings.exportCsv') }}</button>
+        <button :disabled="exporting" :aria-expanded="showEncrypt" @click="showEncrypt = !showEncrypt">{{ t('settings.encrypted') }}</button>
+        <button :disabled="exporting" @click="pickRestoreFile">{{ t('settings.restore') }}</button>
       </div>
       <input ref="fileInput" type="file" accept="application/json,.json" class="sr-only" aria-hidden="true" tabindex="-1" @change="onRestoreFile" />
 
       <form v-if="showEncrypt" class="enc-form" @submit.prevent="exportEncrypted">
-        <p class="rules-hint">Encrypts a full JSON backup with a passphrase (AES-256-GCM). Keep it safe — it can't be recovered.</p>
-        <input v-model="encPass" type="password" class="rule-input" placeholder="Passphrase" autocomplete="new-password" />
-        <input v-model="encPass2" type="password" class="rule-input" placeholder="Confirm passphrase" autocomplete="new-password" />
+        <p class="rules-hint">{{ t('settings.encHint') }}</p>
+        <input v-model="encPass" type="password" class="rule-input" :placeholder="t('settings.passphrase')" autocomplete="new-password" />
+        <input v-model="encPass2" type="password" class="rule-input" :placeholder="t('settings.confirmPassphrase')" autocomplete="new-password" />
         <div class="enc-actions">
-          <button type="submit" class="rule-add-btn" :disabled="exporting">Download encrypted</button>
-          <button type="button" class="cancel-link" @click="showEncrypt = false">Cancel</button>
+          <button type="submit" class="rule-add-btn" :disabled="exporting">{{ t('settings.downloadEncrypted') }}</button>
+          <button type="button" class="cancel-link" @click="showEncrypt = false">{{ t('settings.cancel') }}</button>
         </div>
         <p v-if="encError" class="rule-error">{{ encError }}</p>
       </form>
 
       <form v-if="restoreRaw" class="enc-form" @submit.prevent="decryptRestore">
-        <p class="rules-hint">This backup is encrypted. Enter its passphrase to continue.</p>
-        <input v-model="restorePass" type="password" class="rule-input" placeholder="Passphrase" autocomplete="off" />
+        <p class="rules-hint">{{ t('settings.restoreEncryptedPrompt') }}</p>
+        <input v-model="restorePass" type="password" class="rule-input" :placeholder="t('settings.passphrase')" autocomplete="off" />
         <div class="enc-actions">
-          <button type="submit" class="rule-add-btn">Decrypt</button>
-          <button type="button" class="cancel-link" @click="cancelRestore">Cancel</button>
+          <button type="submit" class="rule-add-btn">{{ t('settings.decrypt') }}</button>
+          <button type="button" class="cancel-link" @click="cancelRestore">{{ t('settings.cancel') }}</button>
         </div>
         <p v-if="restoreError" class="rule-error">{{ restoreError }}</p>
       </form>
@@ -402,18 +423,17 @@ async function confirmWipe() {
 
     <!-- Restore confirmation (destructive) -->
     <div v-if="pendingRestore" class="backdrop" @click.self="cancelRestore">
-      <div ref="restoreModalEl" class="modal" role="dialog" aria-modal="true" aria-label="Confirm restore">
-        <h3 class="modal-title">Replace all data?</h3>
-        <p class="modal-body">
-          This deletes the data currently stored on this device and restores
-          <strong>{{ pendingRestore.dailyStats.length }}</strong> daily records and
-          <strong>{{ pendingRestore.sessions.length }}</strong> sessions{{ pendingRestore.exportedAt ? ` from the backup dated ${new Date(pendingRestore.exportedAt).toLocaleDateString()}` : '' }}.
-          This cannot be undone.
-        </p>
+      <div ref="restoreModalEl" class="modal" role="dialog" aria-modal="true" :aria-label="t('settings.confirmRestoreAria')">
+        <h3 class="modal-title">{{ t('settings.replaceTitle') }}</h3>
+        <p class="modal-body">{{ t('settings.replaceBody', {
+          days: pendingRestore.dailyStats.length,
+          sessions: pendingRestore.sessions.length,
+          from: pendingRestore.exportedAt ? t('settings.replaceBodyFrom', { date: new Date(pendingRestore.exportedAt).toLocaleDateString() }) : '',
+        }) }}</p>
         <div class="modal-actions">
-          <button class="cancel" :disabled="restoring" @click="cancelRestore">Cancel</button>
+          <button class="cancel" :disabled="restoring" @click="cancelRestore">{{ t('settings.cancel') }}</button>
           <button class="danger" :disabled="restoring" @click="confirmRestore">
-            {{ restoring ? 'Restoring…' : 'Replace data' }}
+            {{ restoring ? t('settings.restoring') : t('settings.replaceData') }}
           </button>
         </div>
       </div>
@@ -421,16 +441,13 @@ async function confirmWipe() {
 
     <!-- Wipe confirmation -->
     <div v-if="showWipeModal" class="backdrop" @click.self="showWipeModal = false">
-      <div ref="wipeModalEl" class="modal" role="dialog" aria-modal="true" aria-label="Confirm wipe all data">
-        <h3 class="modal-title">Delete all data?</h3>
-        <p class="modal-body">
-          This permanently removes every session, daily total, and tab record stored on this
-          device. Settings are kept. This cannot be undone.
-        </p>
+      <div ref="wipeModalEl" class="modal" role="dialog" aria-modal="true" :aria-label="t('settings.confirmWipeAria')">
+        <h3 class="modal-title">{{ t('settings.wipeTitle') }}</h3>
+        <p class="modal-body">{{ t('settings.wipeBody') }}</p>
         <div class="modal-actions">
-          <button ref="cancelBtn" class="cancel" :disabled="wiping" @click="showWipeModal = false">Cancel</button>
+          <button ref="cancelBtn" class="cancel" :disabled="wiping" @click="showWipeModal = false">{{ t('settings.cancel') }}</button>
           <button class="danger" :disabled="wiping" @click="confirmWipe">
-            {{ wiping ? 'Wiping…' : 'Delete everything' }}
+            {{ wiping ? t('settings.wiping') : t('settings.deleteEverything') }}
           </button>
         </div>
       </div>

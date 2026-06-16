@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { buildComparison, type ComparePeriod } from '@/lib/comparison';
 import { CATEGORY_META, type Category, type CategoryRule } from '@/lib/categories';
 import { formatDuration } from '@/lib/time';
@@ -12,22 +13,16 @@ const props = defineProps<{
   rules?: CategoryRule[];
 }>();
 
+const { t } = useI18n();
 const period = ref<ComparePeriod>('week');
-const MODES: Array<{ value: ComparePeriod; label: string }> = [
-  { value: 'week', label: 'Week' },
-  { value: 'month', label: 'Month' },
-];
+const MODES: ComparePeriod[] = ['week', 'month'];
 
 const cmp = computed(() =>
   buildComparison(props.stats, props.todayKey, period.value, props.overrides, props.rules ?? []),
 );
 
-const title = computed(() => (period.value === 'week' ? 'This week vs last week' : 'This month vs last month'));
-const subtitle = computed(() =>
-  period.value === 'week'
-    ? 'Last 7 days vs the 7 before · today still counting'
-    : 'Last 30 days vs the 30 before · today still counting',
-);
+const title = computed(() => (period.value === 'week' ? t('comparison.weekTitle') : t('comparison.monthTitle')));
+const subtitle = computed(() => (period.value === 'week' ? t('comparison.weekSub') : t('comparison.monthSub')));
 
 const hasData = computed(() => cmp.value.currentSeconds > 0 || cmp.value.previousSeconds > 0);
 
@@ -45,38 +40,38 @@ const dir = (pct: number | null) => (pct === null ? '' : pct > 0 ? 'up' : pct < 
         <span class="label">{{ title }}</span>
         <span class="sub">{{ subtitle }}</span>
       </div>
-      <div class="toggle" role="tablist" aria-label="Comparison period">
+      <div class="toggle" role="tablist" :aria-label="t('comparison.periodAria')">
         <button
           v-for="m in MODES"
-          :key="m.value"
+          :key="m"
           role="tab"
-          :aria-selected="period === m.value"
-          :class="{ active: period === m.value }"
-          @click="period = m.value"
-        >{{ m.label }}</button>
+          :aria-selected="period === m"
+          :class="{ active: period === m }"
+          @click="period = m"
+        >{{ t(`comparison.${m}`) }}</button>
       </div>
     </div>
 
-    <p v-if="!hasData" class="empty">Not enough history yet — check back after a few days.</p>
+    <p v-if="!hasData" class="empty">{{ t('comparison.notEnough') }}</p>
 
     <template v-else>
       <div class="headline">
         <span class="total">{{ formatDuration(cmp.currentSeconds) }}</span>
         <span v-if="cmp.deltaPct !== null" class="delta" :class="dir(cmp.deltaPct)">
-          <template v-if="cmp.deltaPct === 0">no change</template>
+          <template v-if="cmp.deltaPct === 0">{{ t('comparison.noChange') }}</template>
           <template v-else>
             <span aria-hidden="true">{{ cmp.deltaPct > 0 ? '↑' : '↓' }}</span>
             {{ Math.abs(cmp.deltaPct) }}%
           </template>
         </span>
-        <span class="prev">vs {{ formatDuration(cmp.previousSeconds) }} before</span>
+        <span class="prev">{{ t('comparison.vsBefore', { time: formatDuration(cmp.previousSeconds) }) }}</span>
       </div>
 
       <ul class="rows">
         <li v-for="c in cmp.categories" :key="c.category" class="row">
           <span class="dot" :style="{ background: CATEGORY_META[c.category].color }" aria-hidden="true" />
-          <span class="name">{{ c.category }}</span>
-          <span class="bars" :aria-label="`${c.category}: ${formatDuration(c.current)} now vs ${formatDuration(c.previous)} before`">
+          <span class="name">{{ t(`categories.${c.category}`) }}</span>
+          <span class="bars" :aria-label="`${t(`categories.${c.category}`)}: ${formatDuration(c.current)} / ${formatDuration(c.previous)}`">
             <span class="bar now" :style="{ width: `${(c.current / maxCat) * 100}%`, background: CATEGORY_META[c.category].color }" />
           </span>
           <span class="time">{{ formatDuration(c.current) }}</span>

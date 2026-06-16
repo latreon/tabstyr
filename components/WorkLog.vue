@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { buildWorkLog, workLogText } from '@/lib/worklog';
 import { CATEGORIES, CATEGORY_META, type Category, type CategoryRule } from '@/lib/categories';
 import { addDays, dateKey, formatDuration, longDateLabel } from '@/lib/time';
@@ -15,6 +16,7 @@ const props = defineProps<{
   now: number;
 }>();
 const emit = defineEmits<{ select: [domain: string] }>();
+const { t } = useI18n();
 
 const today = dateKey(props.now);
 const minDate = addDays(today, -89);
@@ -51,39 +53,38 @@ async function copy() {
 <template>
   <div class="tile worklog-tile">
     <div class="wl-head">
-      <span class="label">What did I work on?</span>
+      <span class="label">{{ t('worklog.title') }}</span>
       <div class="wl-controls">
-        <button class="nav" :disabled="!canPrev" aria-label="Previous day" @click="step(-1)">‹</button>
+        <button class="nav" :disabled="!canPrev" :aria-label="t('worklog.prevDay')" @click="step(-1)">‹</button>
         <DatePicker v-model="selected" :min="minDate" :max="today" />
-        <button class="nav" :disabled="!canNext" aria-label="Next day" @click="step(1)">›</button>
-        <button class="copy" :disabled="!log.total" @click="copy">{{ copied ? 'Copied ✓' : 'Copy' }}</button>
+        <button class="nav" :disabled="!canNext" :aria-label="t('worklog.nextDay')" @click="step(1)">›</button>
+        <button class="copy" :disabled="!log.total" @click="copy">{{ copied ? t('worklog.copied') : t('worklog.copy') }}</button>
       </div>
     </div>
 
     <p class="wl-line">
-      <strong>{{ isToday ? 'Today' : longDateLabel(selected) }}</strong>
+      <strong>{{ isToday ? t('common.today') : longDateLabel(selected) }}</strong>
       <template v-if="log.total">
-        — you spent <strong class="accent">{{ formatDuration(log.total) }}</strong>
-        across {{ log.domains.length }} {{ log.domains.length === 1 ? 'site' : 'sites' }}.
+        {{ t('worklog.summary', { time: formatDuration(log.total), count: log.domains.length }, log.domains.length) }}
       </template>
-      <template v-else>— nothing tracked.</template>
+      <template v-else>{{ t('worklog.nothingTracked') }}</template>
     </p>
 
     <ol v-if="log.total" class="sites">
       <li v-for="d in log.domains" :key="d.domain">
-        <button class="site" :aria-label="`View ${displayDomain(d.domain)} details — ${d.category}`" @click="emit('select', d.domain)">
+        <button class="site" :aria-label="t('worklog.viewSiteAria', { domain: displayDomain(d.domain), category: t(`categories.${d.category}`) })" @click="emit('select', d.domain)">
           <FaviconChip :domain="d.domain" />
           <span class="site-name">{{ displayDomain(d.domain) }}</span>
-          <span class="dot" :style="{ background: CATEGORY_META[d.category].color }" :title="`Category: ${d.category}`" aria-hidden="true" />
+          <span class="dot" :style="{ background: CATEGORY_META[d.category].color }" :title="t('worklog.categoryTitle', { category: t(`categories.${d.category}`) })" aria-hidden="true" />
           <span class="site-time">{{ formatDuration(d.seconds) }}</span>
         </button>
       </li>
     </ol>
 
-    <ul v-if="log.total" class="legend" aria-label="Dot colour key">
+    <ul v-if="log.total" class="legend" :aria-label="t('worklog.legendAria')">
       <li v-for="l in legend" :key="l.category">
         <span class="dot" :style="{ background: l.color }" aria-hidden="true" />
-        {{ l.category }}
+        {{ t(`categories.${l.category}`) }}
       </li>
     </ul>
   </div>

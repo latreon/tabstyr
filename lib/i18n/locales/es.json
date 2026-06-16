@@ -1,0 +1,213 @@
+{
+  "common": {
+    "loading": "Cargando…",
+    "loadError": "No se pudieron cargar los datos: recarga la página.",
+    "today": "Hoy",
+    "nothingYet": "Nada todavía.",
+    "nothingTracked": "Nada registrado todavía.",
+    "noActivity": "Aún no se ha registrado actividad."
+  },
+  "privacy": {
+    "badge": "0 bytes salen de tu dispositivo",
+    "badgeTitle": "Sin servidores, sin cuentas, sin solicitudes de red. Haz clic para ver la política de privacidad.",
+    "viewPolicy": "0 bytes salen de tu dispositivo: ver política de privacidad"
+  },
+  "popup": {
+    "tabs": "{count} pestañas",
+    "stale": "{count} obsoletas",
+    "activeToday": "activo hoy · frente al promedio semanal",
+    "noActivityToday": "Aún no se ha registrado actividad hoy.",
+    "dashboard": "Panel",
+    "loadError": "No se pudieron cargar las estadísticas: prueba a reabrir la ventana.",
+    "topSitesAria": "Sitios principales de hoy",
+    "openAria": "Abrir {domain} — {time} hoy"
+  },
+  "hero": {
+    "todayActive": "Hoy · activo",
+    "vsWeeklyAvg": "{pct}% frente al promedio semanal",
+    "up": "Sube",
+    "down": "Baja",
+    "backgroundAudio": "♪ +{time} audio en segundo plano"
+  },
+  "stat": {
+    "openTabs": "Pestañas abiertas",
+    "staleTabs": "Pestañas obsoletas"
+  },
+  "categories": {
+    "Work": "Trabajo",
+    "Dev": "Desarrollo",
+    "Finance": "Finanzas",
+    "Social": "Social",
+    "Media": "Multimedia",
+    "News": "Noticias",
+    "Shopping": "Compras",
+    "Other": "Otros"
+  },
+  "category": {
+    "title": "Hoy por categoría",
+    "shareAria": "Proporción de tiempo por categoría",
+    "segTitle": "{category} · {time} · {pct}%"
+  },
+  "focus": {
+    "title": "Concentración hoy",
+    "streak": "🔥 racha de {count} días",
+    "streakTitle": "{count} días con concentración del {target}%+",
+    "ariaFocus": "Concentración {pct}%",
+    "productive": "Productivo",
+    "distracting": "Distracción",
+    "note": "Productivo ÷ (productivo + distracción). Trabajo y Desarrollo cuentan como productivos; objetivo {target}%. Cambia la categoría de un sitio para reclasificarlo."
+  },
+  "topSites": {
+    "title": "Sitios principales de hoy",
+    "viewDetailsAria": "Ver detalles de {domain} — {time} activo hoy"
+  },
+  "trend": {
+    "title": "Tendencia",
+    "day": "Día",
+    "week": "Semana",
+    "month": "Mes",
+    "granularityAria": "Granularidad de la tendencia"
+  },
+  "heatmap": {
+    "title": "Mapa de calor de actividad",
+    "peak": "Pico · {label}",
+    "gridAria": "Actividad de navegación por día de la semana y hora del día",
+    "less": "Menos",
+    "more": "Más",
+    "cellLabel": "{weekday} {hour} — {time}"
+  },
+  "comparison": {
+    "weekTitle": "Esta semana frente a la anterior",
+    "monthTitle": "Este mes frente al anterior",
+    "weekSub": "Últimos 7 días frente a los 7 anteriores · hoy aún en curso",
+    "monthSub": "Últimos 30 días frente a los 30 anteriores · hoy aún en curso",
+    "notEnough": "Aún no hay suficiente historial: vuelve a consultar tras unos días.",
+    "week": "Semana",
+    "month": "Mes",
+    "periodAria": "Período de comparación",
+    "noChange": "sin cambios",
+    "vsBefore": "frente a {time} antes"
+  },
+  "worklog": {
+    "title": "¿En qué trabajé?",
+    "prevDay": "Día anterior",
+    "nextDay": "Día siguiente",
+    "copy": "Copiar",
+    "copied": "Copiado ✓",
+    "summary": "— pasaste {time} en ningún sitio. | — pasaste {time} en {count} sitio. | — pasaste {time} en {count} sitios.",
+    "nothingTracked": "— nada registrado.",
+    "legendAria": "Leyenda de colores de los puntos",
+    "viewSiteAria": "Ver detalles de {domain} — {category}",
+    "categoryTitle": "Categoría: {category}"
+  },
+  "tabTable": {
+    "title": "Pestañas abiertas por tiempo",
+    "sub": "Total registrado por pestaña · últimos 90 días",
+    "tab": "Pestaña",
+    "tracked": "Registrado",
+    "lastActive": "Última actividad",
+    "noTabs": "Aún no hay pestañas registradas.",
+    "goToTabAria": "Ir a la pestaña: {title}",
+    "justNow": "ahora mismo",
+    "minsAgo": "hace {count} min",
+    "hoursAgo": "hace {count} h",
+    "daysAgo": "hace {count} d",
+    "never": "—"
+  },
+  "domainDetail": {
+    "detailsForAria": "Detalles de {domain}",
+    "open": "Abrir ↗",
+    "close": "Cerrar detalles",
+    "category": "Categoría",
+    "last14": "Últimos 14 días",
+    "last14Aria": "Tiempo diario, últimos 14 días",
+    "byHourAria": "Actividad por hora",
+    "total90d": "Total (90 d)",
+    "shareOfAll": "Proporción del tiempo total",
+    "sessions": "Sesiones",
+    "avgSession": "Sesión media",
+    "longestSession": "Sesión más larga",
+    "activeDays": "Días activos",
+    "audio": "Audio"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "theme": "Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "language": "Idioma",
+    "staleDays": "Obsoleta tras (días)",
+    "idleSeconds": "Tiempo de inactividad (segundos)",
+    "countAudio": "Contar audio en segundo plano",
+    "save": "Guardar",
+    "wipe": "Borrar todos los datos",
+    "saved": "Ajustes guardados",
+    "saveFailed": "No se pudieron guardar los ajustes",
+    "customRules": "Reglas de categoría personalizadas",
+    "rulesHint": "La mayoría de los sitios populares se reconocen automáticamente. Añade una regla solo para uno que aún no clasifiquemos: cualquier dirección que contenga tu texto irá a esa categoría (se comprueba antes que las reglas integradas).",
+    "rulePlaceholder": "p. ej. yandex",
+    "add": "Añadir",
+    "ruleExists": "Ese patrón ya tiene una regla.",
+    "ruleAdded": "Regla añadida",
+    "ruleAddFailed": "No se pudo añadir la regla",
+    "ruleRemoveFailed": "No se pudo eliminar la regla",
+    "removeRuleAria": "Eliminar regla para {pattern}",
+    "categoryForRuleAria": "Categoría para la regla",
+    "backupRestore": "Copia de seguridad y restauración",
+    "exportJson": "Exportar JSON",
+    "exportCsv": "Exportar CSV",
+    "encrypted": "Cifrado…",
+    "restore": "Restaurar…",
+    "encHint": "Cifra una copia de seguridad JSON completa con una frase de contraseña (AES-256-GCM). Guárdala bien: no se puede recuperar.",
+    "passphrase": "Frase de contraseña",
+    "confirmPassphrase": "Confirmar frase de contraseña",
+    "downloadEncrypted": "Descargar cifrado",
+    "cancel": "Cancelar",
+    "decrypt": "Descifrar",
+    "passTooShort": "Usa al menos 6 caracteres.",
+    "passMismatch": "Las frases de contraseña no coinciden.",
+    "exportedJson": "Copia de seguridad JSON exportada",
+    "exportedCsv": "CSV exportado",
+    "exportedEncrypted": "Copia de seguridad cifrada exportada",
+    "encryptionFailed": "El cifrado falló",
+    "exportFailed": "La exportación falló",
+    "restoreEncryptedPrompt": "Esta copia de seguridad está cifrada. Introduce su frase de contraseña para continuar.",
+    "restoreReadFailed": "No se pudo leer ese archivo.",
+    "replaceTitle": "¿Reemplazar todos los datos?",
+    "replaceBody": "Esto elimina los datos almacenados actualmente en este dispositivo y restaura {days} registros diarios y {sessions} sesiones{from}. Esto no se puede deshacer.",
+    "replaceBodyFrom": " de la copia de seguridad con fecha {date}",
+    "replaceData": "Reemplazar datos",
+    "restoring": "Restaurando…",
+    "restored": "Restaurados {days} días · {sessions} sesiones",
+    "restoreFailed": "La restauración falló",
+    "confirmRestoreAria": "Confirmar restauración",
+    "wipeTitle": "¿Eliminar todos los datos?",
+    "wipeBody": "Esto elimina permanentemente todas las sesiones, totales diarios y registros de pestañas almacenados en este dispositivo. Los ajustes se conservan. Esto no se puede deshacer.",
+    "deleteEverything": "Eliminar todo",
+    "wiping": "Borrando…",
+    "wiped": "Todos los datos borrados",
+    "wipeFailed": "El borrado falló",
+    "confirmWipeAria": "Confirmar borrado de todos los datos",
+    "languageAuto": "Automático"
+  },
+  "onboarding": {
+    "title": "Te damos la bienvenida a TabStyr",
+    "lede": "Una imagen tranquila de adónde va realmente tu tiempo de navegación. Esto es lo esencial:",
+    "trackTitle": "Qué registra",
+    "trackBody": "El tiempo activo en primer plano de cada sitio: la pestaña que realmente estás viendo. El audio en segundo plano se cuenta por separado.",
+    "privateTitle": "100% privado",
+    "privateBody": "Todo permanece en este navegador. Sin cuenta, sin servidores, sin llamadas de red. Exporta o borra tus datos en cualquier momento.",
+    "categorizedTitle": "Categorizado automáticamente",
+    "categorizedBody": "Los sitios se ordenan en las categorías de abajo: los puntos de colores de todo el panel las usan. Reclasifica cualquier sitio o añade tus propias reglas en Ajustes.",
+    "legendAria": "Leyenda de colores de categorías",
+    "gotIt": "Entendido",
+    "close": "Cerrar",
+    "dialogAria": "Bienvenida y cómo funciona TabStyr"
+  },
+  "dashboard": {
+    "statsAria": "Estadísticas de uso del navegador"
+  },
+  "notification": {
+    "stale": "{count} pestañas sin tocar durante más de {days} días"
+  }
+}

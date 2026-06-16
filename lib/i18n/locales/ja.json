@@ -1,0 +1,213 @@
+{
+  "common": {
+    "loading": "読み込み中…",
+    "loadError": "データを読み込めませんでした — ページを再読み込みしてください。",
+    "today": "今日",
+    "nothingYet": "まだ何もありません。",
+    "nothingTracked": "まだ何も記録されていません。",
+    "noActivity": "まだアクティビティは記録されていません。"
+  },
+  "privacy": {
+    "badge": "デバイスから出るのは0バイト",
+    "badgeTitle": "サーバーなし、アカウントなし、ネットワークリクエストなし。クリックでプライバシーポリシーを表示。",
+    "viewPolicy": "デバイスから出るのは0バイト — プライバシーポリシーを表示"
+  },
+  "popup": {
+    "tabs": "{count}個のタブ",
+    "stale": "{count}個が古い",
+    "activeToday": "今日のアクティブ時間 · 週平均との比較",
+    "noActivityToday": "今日はまだアクティビティが記録されていません。",
+    "dashboard": "ダッシュボード",
+    "loadError": "統計を読み込めませんでした — ポップアップを開き直してください。",
+    "topSitesAria": "今日のトップサイト",
+    "openAria": "{domain}を開く — 今日{time}"
+  },
+  "hero": {
+    "todayActive": "今日 · アクティブ",
+    "vsWeeklyAvg": "週平均比{pct}%",
+    "up": "増加",
+    "down": "減少",
+    "backgroundAudio": "♪ +{time}のバックグラウンド音声"
+  },
+  "stat": {
+    "openTabs": "開いているタブ",
+    "staleTabs": "古いタブ"
+  },
+  "categories": {
+    "Work": "仕事",
+    "Dev": "開発",
+    "Finance": "金融",
+    "Social": "ソーシャル",
+    "Media": "メディア",
+    "News": "ニュース",
+    "Shopping": "ショッピング",
+    "Other": "その他"
+  },
+  "category": {
+    "title": "今日のカテゴリ別",
+    "shareAria": "カテゴリ別の時間の割合",
+    "segTitle": "{category} · {time} · {pct}%"
+  },
+  "focus": {
+    "title": "今日の集中度",
+    "streak": "🔥 {count}日連続",
+    "streakTitle": "集中度{target}%以上が{count}日間",
+    "ariaFocus": "集中度{pct}%",
+    "productive": "生産的",
+    "distracting": "気が散る",
+    "note": "生産的 ÷（生産的 + 気が散る）。仕事と開発は生産的としてカウントされます。目標は{target}%。サイトのカテゴリを変更すると再分類できます。"
+  },
+  "topSites": {
+    "title": "今日のトップサイト",
+    "viewDetailsAria": "{domain}の詳細を表示 — 今日{time}アクティブ"
+  },
+  "trend": {
+    "title": "トレンド",
+    "day": "日",
+    "week": "週",
+    "month": "月",
+    "granularityAria": "トレンドの粒度"
+  },
+  "heatmap": {
+    "title": "アクティビティヒートマップ",
+    "peak": "ピーク · {label}",
+    "gridAria": "曜日と時間帯別の閲覧アクティビティ",
+    "less": "少",
+    "more": "多",
+    "cellLabel": "{weekday} {hour} — {time}"
+  },
+  "comparison": {
+    "weekTitle": "今週と先週の比較",
+    "monthTitle": "今月と先月の比較",
+    "weekSub": "直近7日間とその前の7日間の比較 · 今日はまだ集計中",
+    "monthSub": "直近30日間とその前の30日間の比較 · 今日はまだ集計中",
+    "notEnough": "履歴がまだ十分ではありません — 数日後にもう一度ご確認ください。",
+    "week": "週",
+    "month": "月",
+    "periodAria": "比較期間",
+    "noChange": "変化なし",
+    "vsBefore": "以前の{time}との比較"
+  },
+  "worklog": {
+    "title": "何に取り組んだ？",
+    "prevDay": "前の日",
+    "nextDay": "次の日",
+    "copy": "コピー",
+    "copied": "コピーしました ✓",
+    "summary": "— {time}を費やしましたが、対象サイトはありません。 | — {time}を{count}個のサイトに費やしました。 | — {time}を{count}個のサイトに費やしました。",
+    "nothingTracked": "— 何も記録されていません。",
+    "legendAria": "ドットの色の凡例",
+    "viewSiteAria": "{domain}の詳細を表示 — {category}",
+    "categoryTitle": "カテゴリ：{category}"
+  },
+  "tabTable": {
+    "title": "時間別の開いているタブ",
+    "sub": "タブごとの合計記録時間 · 直近90日間",
+    "tab": "タブ",
+    "tracked": "記録時間",
+    "lastActive": "最終アクティブ",
+    "noTabs": "まだ記録されたタブはありません。",
+    "goToTabAria": "タブに移動：{title}",
+    "justNow": "たった今",
+    "minsAgo": "{count}分前",
+    "hoursAgo": "{count}時間前",
+    "daysAgo": "{count}日前",
+    "never": "—"
+  },
+  "domainDetail": {
+    "detailsForAria": "{domain}の詳細",
+    "open": "開く ↗",
+    "close": "詳細を閉じる",
+    "category": "カテゴリ",
+    "last14": "直近14日間",
+    "last14Aria": "日別の時間、直近14日間",
+    "byHourAria": "時間帯別のアクティビティ",
+    "total90d": "合計（90日）",
+    "shareOfAll": "全体に占める割合",
+    "sessions": "セッション",
+    "avgSession": "平均セッション",
+    "longestSession": "最長セッション",
+    "activeDays": "アクティブ日数",
+    "audio": "音声"
+  },
+  "settings": {
+    "title": "設定",
+    "theme": "テーマ",
+    "light": "ライト",
+    "dark": "ダーク",
+    "language": "言語",
+    "staleDays": "古いと見なすまで（日数）",
+    "idleSeconds": "アイドルタイムアウト（秒）",
+    "countAudio": "バックグラウンド音声をカウント",
+    "save": "保存",
+    "wipe": "すべてのデータを消去",
+    "saved": "設定を保存しました",
+    "saveFailed": "設定を保存できませんでした",
+    "customRules": "カスタムカテゴリルール",
+    "rulesHint": "人気のあるサイトは自動的に認識されます。まだ分類できていないサイトにのみルールを追加してください：入力したテキストを含むアドレスはそのカテゴリに分類されます（組み込みルールより先に確認されます）。",
+    "rulePlaceholder": "例：yandex",
+    "add": "追加",
+    "ruleExists": "そのパターンには既にルールがあります。",
+    "ruleAdded": "ルールを追加しました",
+    "ruleAddFailed": "ルールを追加できませんでした",
+    "ruleRemoveFailed": "ルールを削除できませんでした",
+    "removeRuleAria": "{pattern}のルールを削除",
+    "categoryForRuleAria": "ルールのカテゴリ",
+    "backupRestore": "バックアップと復元",
+    "exportJson": "JSONをエクスポート",
+    "exportCsv": "CSVをエクスポート",
+    "encrypted": "暗号化…",
+    "restore": "復元…",
+    "encHint": "完全なJSONバックアップをパスフレーズで暗号化します（AES-256-GCM）。大切に保管してください — 復元できなくなります。",
+    "passphrase": "パスフレーズ",
+    "confirmPassphrase": "パスフレーズの確認",
+    "downloadEncrypted": "暗号化してダウンロード",
+    "cancel": "キャンセル",
+    "decrypt": "復号",
+    "passTooShort": "6文字以上を使用してください。",
+    "passMismatch": "パスフレーズが一致しません。",
+    "exportedJson": "JSONバックアップをエクスポートしました",
+    "exportedCsv": "CSVをエクスポートしました",
+    "exportedEncrypted": "暗号化バックアップをエクスポートしました",
+    "encryptionFailed": "暗号化に失敗しました",
+    "exportFailed": "エクスポートに失敗しました",
+    "restoreEncryptedPrompt": "このバックアップは暗号化されています。続行するにはパスフレーズを入力してください。",
+    "restoreReadFailed": "そのファイルを読み込めませんでした。",
+    "replaceTitle": "すべてのデータを置き換えますか？",
+    "replaceBody": "このデバイスに現在保存されているデータを削除し、{days}件の日別記録と{sessions}件のセッション{from}を復元します。この操作は取り消せません。",
+    "replaceBodyFrom": "（{date}付けのバックアップから）",
+    "replaceData": "データを置き換える",
+    "restoring": "復元中…",
+    "restored": "{days}日分 · {sessions}件のセッションを復元しました",
+    "restoreFailed": "復元に失敗しました",
+    "confirmRestoreAria": "復元を確認",
+    "wipeTitle": "すべてのデータを削除しますか？",
+    "wipeBody": "このデバイスに保存されているすべてのセッション、日別合計、タブ記録を完全に削除します。設定は保持されます。この操作は取り消せません。",
+    "deleteEverything": "すべて削除",
+    "wiping": "消去中…",
+    "wiped": "すべてのデータを消去しました",
+    "wipeFailed": "消去に失敗しました",
+    "confirmWipeAria": "すべてのデータ消去を確認",
+    "languageAuto": "自動"
+  },
+  "onboarding": {
+    "title": "TabStyrへようこそ",
+    "lede": "ブラウザの時間が実際にどこに使われているかを、静かに映し出します。要点はこちら：",
+    "trackTitle": "記録する内容",
+    "trackBody": "各サイトでのアクティブな前面表示時間 — 実際に見ているタブです。バックグラウンド音声は別途カウントされます。",
+    "privateTitle": "100%プライベート",
+    "privateBody": "すべてがこのブラウザ内に留まります。アカウントなし、サーバーなし、ネットワーク通信なし。データはいつでもエクスポートまたは消去できます。",
+    "categorizedTitle": "自動分類",
+    "categorizedBody": "サイトは以下のカテゴリに分類されます — ダッシュボード全体の色付きのドットはこれを使用しています。任意のサイトを再分類したり、設定で独自のルールを追加できます。",
+    "legendAria": "カテゴリの色の凡例",
+    "gotIt": "了解",
+    "close": "閉じる",
+    "dialogAria": "ようこそとTabStyrの仕組み"
+  },
+  "dashboard": {
+    "statsAria": "ブラウザ使用統計"
+  },
+  "notification": {
+    "stale": "{count} 個のタブが {days} 日以上未使用です"
+  }
+}

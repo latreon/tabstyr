@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { formatDuration } from '@/lib/time';
 import { buildTrend } from '@/lib/trend';
 import type { DailyStat } from '@/lib/types';
@@ -11,6 +12,8 @@ const props = defineProps<{
   todayAudioSeconds: number;
   stats: DailyStat[];
 }>();
+
+const { t } = useI18n();
 
 // Hide the comparison until there are at least 3 days of history — a 1–2 day
 // baseline produces wild, misleading percentages.
@@ -32,14 +35,14 @@ const sparkArea = computed(() => {
 
 <template>
   <div class="tile hero-tile">
-    <span class="label">Today · active</span>
+    <span class="label">{{ t('hero.todayActive') }}</span>
     <span class="hero-value gradient-text">{{ formatDuration(todaySeconds) }}</span>
     <span v-if="deltaPct !== null" class="hero-delta" :class="deltaPct > 0 ? 'up' : 'down'">
       <span aria-hidden="true">{{ deltaPct > 0 ? '↑' : '↓' }}</span>
-      <span class="sr-only">{{ deltaPct > 0 ? 'Up' : 'Down' }}</span>
-      {{ Math.abs(deltaPct) }}% vs weekly avg
+      <span class="sr-only">{{ deltaPct > 0 ? t('hero.up') : t('hero.down') }}</span>
+      {{ t('hero.vsWeeklyAvg', { pct: Math.abs(deltaPct) }) }}
     </span>
-    <span v-if="todayAudioSeconds > 0" class="hero-audio">♪ +{{ formatDuration(todayAudioSeconds) }} background audio</span>
+    <span v-if="todayAudioSeconds > 0" class="hero-audio">{{ t('hero.backgroundAudio', { time: formatDuration(todayAudioSeconds) }) }}</span>
     <svg viewBox="0 0 100 30" preserveAspectRatio="none" class="spark" aria-hidden="true">
       <defs>
         <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">

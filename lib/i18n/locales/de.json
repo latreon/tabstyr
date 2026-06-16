@@ -1,0 +1,213 @@
+{
+  "common": {
+    "loading": "Wird geladen…",
+    "loadError": "Daten konnten nicht geladen werden — Seite neu laden.",
+    "today": "Heute",
+    "nothingYet": "Noch nichts.",
+    "nothingTracked": "Noch nichts erfasst.",
+    "noActivity": "Noch keine Aktivität erfasst."
+  },
+  "privacy": {
+    "badge": "0 Bytes verlassen dein Gerät",
+    "badgeTitle": "Keine Server, keine Konten, keine Netzwerkanfragen. Klicken für die Datenschutzerklärung.",
+    "viewPolicy": "0 Bytes verlassen dein Gerät — Datenschutzerklärung ansehen"
+  },
+  "popup": {
+    "tabs": "{count} Tabs",
+    "stale": "{count} veraltet",
+    "activeToday": "heute aktiv · vs. Wochendurchschnitt",
+    "noActivityToday": "Heute noch keine Aktivität erfasst.",
+    "dashboard": "Dashboard",
+    "loadError": "Statistiken konnten nicht geladen werden — Popup erneut öffnen.",
+    "topSitesAria": "Top-Seiten heute",
+    "openAria": "{domain} öffnen — {time} heute"
+  },
+  "hero": {
+    "todayActive": "Heute · aktiv",
+    "vsWeeklyAvg": "{pct}% vs. Wochendurchschnitt",
+    "up": "Hoch",
+    "down": "Runter",
+    "backgroundAudio": "♪ +{time} Hintergrund-Audio"
+  },
+  "stat": {
+    "openTabs": "Offene Tabs",
+    "staleTabs": "Veraltete Tabs"
+  },
+  "categories": {
+    "Work": "Arbeit",
+    "Dev": "Entwicklung",
+    "Finance": "Finanzen",
+    "Social": "Soziales",
+    "Media": "Medien",
+    "News": "Nachrichten",
+    "Shopping": "Einkaufen",
+    "Other": "Sonstiges"
+  },
+  "category": {
+    "title": "Heute nach Kategorie",
+    "shareAria": "Zeitanteil nach Kategorie",
+    "segTitle": "{category} · {time} · {pct}%"
+  },
+  "focus": {
+    "title": "Fokus heute",
+    "streak": "🔥 {count}-Tage-Serie",
+    "streakTitle": "{count} Tage mit {target}%+ Fokus",
+    "ariaFocus": "Fokus {pct}%",
+    "productive": "Produktiv",
+    "distracting": "Ablenkend",
+    "note": "Produktiv ÷ (produktiv + ablenkend). Arbeit & Entwicklung zählen als produktiv; Ziel {target}%. Ändere die Kategorie einer Seite, um sie neu einzustufen."
+  },
+  "topSites": {
+    "title": "Top-Seiten heute",
+    "viewDetailsAria": "Details zu {domain} ansehen — {time} heute aktiv"
+  },
+  "trend": {
+    "title": "Trend",
+    "day": "Tag",
+    "week": "Woche",
+    "month": "Monat",
+    "granularityAria": "Trend-Granularität"
+  },
+  "heatmap": {
+    "title": "Aktivitäts-Heatmap",
+    "peak": "Spitze · {label}",
+    "gridAria": "Browser-Aktivität nach Wochentag und Tageszeit",
+    "less": "Weniger",
+    "more": "Mehr",
+    "cellLabel": "{weekday} {hour} — {time}"
+  },
+  "comparison": {
+    "weekTitle": "Diese Woche vs. letzte Woche",
+    "monthTitle": "Dieser Monat vs. letzter Monat",
+    "weekSub": "Letzte 7 Tage vs. die 7 davor · heute zählt noch",
+    "monthSub": "Letzte 30 Tage vs. die 30 davor · heute zählt noch",
+    "notEnough": "Noch nicht genug Verlauf — schau in ein paar Tagen wieder vorbei.",
+    "week": "Woche",
+    "month": "Monat",
+    "periodAria": "Vergleichszeitraum",
+    "noChange": "keine Änderung",
+    "vsBefore": "vs. {time} davor"
+  },
+  "worklog": {
+    "title": "Woran habe ich gearbeitet?",
+    "prevDay": "Vorheriger Tag",
+    "nextDay": "Nächster Tag",
+    "copy": "Kopieren",
+    "copied": "Kopiert ✓",
+    "summary": "— du hast {time} auf keinen Seiten verbracht. | — du hast {time} auf {count} Seite verbracht. | — du hast {time} auf {count} Seiten verbracht.",
+    "nothingTracked": "— nichts erfasst.",
+    "legendAria": "Legende der Punktfarben",
+    "viewSiteAria": "Details zu {domain} ansehen — {category}",
+    "categoryTitle": "Kategorie: {category}"
+  },
+  "tabTable": {
+    "title": "Offene Tabs nach Zeit",
+    "sub": "Gesamt erfasst pro Tab · letzte 90 Tage",
+    "tab": "Tab",
+    "tracked": "Erfasst",
+    "lastActive": "Zuletzt aktiv",
+    "noTabs": "Noch keine erfassten Tabs.",
+    "goToTabAria": "Zum Tab wechseln: {title}",
+    "justNow": "gerade eben",
+    "minsAgo": "vor {count} Min.",
+    "hoursAgo": "vor {count} Std.",
+    "daysAgo": "vor {count} T.",
+    "never": "—"
+  },
+  "domainDetail": {
+    "detailsForAria": "Details für {domain}",
+    "open": "Öffnen ↗",
+    "close": "Details schließen",
+    "category": "Kategorie",
+    "last14": "Letzte 14 Tage",
+    "last14Aria": "Tägliche Zeit, letzte 14 Tage",
+    "byHourAria": "Aktivität nach Stunde",
+    "total90d": "Gesamt (90 T.)",
+    "shareOfAll": "Anteil an der Gesamtzeit",
+    "sessions": "Sitzungen",
+    "avgSession": "Ø Sitzung",
+    "longestSession": "Längste Sitzung",
+    "activeDays": "Aktive Tage",
+    "audio": "Audio"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "theme": "Design",
+    "light": "Hell",
+    "dark": "Dunkel",
+    "language": "Sprache",
+    "staleDays": "Veraltet nach (Tagen)",
+    "idleSeconds": "Leerlauf-Zeitlimit (Sekunden)",
+    "countAudio": "Hintergrund-Audio zählen",
+    "save": "Speichern",
+    "wipe": "Alle Daten löschen",
+    "saved": "Einstellungen gespeichert",
+    "saveFailed": "Einstellungen konnten nicht gespeichert werden",
+    "customRules": "Eigene Kategorieregeln",
+    "rulesHint": "Die meisten beliebten Seiten werden automatisch erkannt. Füge nur dann eine Regel hinzu, wenn wir eine noch nicht klassifizieren: jede Adresse, die deinen Text enthält, kommt in diese Kategorie (wird vor den eingebauten Regeln geprüft).",
+    "rulePlaceholder": "z. B. yandex",
+    "add": "Hinzufügen",
+    "ruleExists": "Für dieses Muster gibt es bereits eine Regel.",
+    "ruleAdded": "Regel hinzugefügt",
+    "ruleAddFailed": "Regel konnte nicht hinzugefügt werden",
+    "ruleRemoveFailed": "Regel konnte nicht entfernt werden",
+    "removeRuleAria": "Regel für {pattern} entfernen",
+    "categoryForRuleAria": "Kategorie für Regel",
+    "backupRestore": "Sichern & Wiederherstellen",
+    "exportJson": "JSON exportieren",
+    "exportCsv": "CSV exportieren",
+    "encrypted": "Verschlüsselt…",
+    "restore": "Wiederherstellen…",
+    "encHint": "Verschlüsselt eine vollständige JSON-Sicherung mit einer Passphrase (AES-256-GCM). Bewahre sie sicher auf — sie kann nicht wiederhergestellt werden.",
+    "passphrase": "Passphrase",
+    "confirmPassphrase": "Passphrase bestätigen",
+    "downloadEncrypted": "Verschlüsselt herunterladen",
+    "cancel": "Abbrechen",
+    "decrypt": "Entschlüsseln",
+    "passTooShort": "Verwende mindestens 6 Zeichen.",
+    "passMismatch": "Passphrasen stimmen nicht überein.",
+    "exportedJson": "JSON-Sicherung exportiert",
+    "exportedCsv": "CSV exportiert",
+    "exportedEncrypted": "Verschlüsselte Sicherung exportiert",
+    "encryptionFailed": "Verschlüsselung fehlgeschlagen",
+    "exportFailed": "Export fehlgeschlagen",
+    "restoreEncryptedPrompt": "Diese Sicherung ist verschlüsselt. Gib ihre Passphrase ein, um fortzufahren.",
+    "restoreReadFailed": "Diese Datei konnte nicht gelesen werden.",
+    "replaceTitle": "Alle Daten ersetzen?",
+    "replaceBody": "Dies löscht die aktuell auf diesem Gerät gespeicherten Daten und stellt {days} Tagesdatensätze und {sessions} Sitzungen{from} wieder her. Dies kann nicht rückgängig gemacht werden.",
+    "replaceBodyFrom": " aus der Sicherung vom {date}",
+    "replaceData": "Daten ersetzen",
+    "restoring": "Wird wiederhergestellt…",
+    "restored": "{days} Tage · {sessions} Sitzungen wiederhergestellt",
+    "restoreFailed": "Wiederherstellung fehlgeschlagen",
+    "confirmRestoreAria": "Wiederherstellung bestätigen",
+    "wipeTitle": "Alle Daten löschen?",
+    "wipeBody": "Dies entfernt dauerhaft jede Sitzung, jede Tagessumme und jeden Tab-Datensatz, die auf diesem Gerät gespeichert sind. Einstellungen bleiben erhalten. Dies kann nicht rückgängig gemacht werden.",
+    "deleteEverything": "Alles löschen",
+    "wiping": "Wird gelöscht…",
+    "wiped": "Alle Daten gelöscht",
+    "wipeFailed": "Löschen fehlgeschlagen",
+    "confirmWipeAria": "Löschen aller Daten bestätigen",
+    "languageAuto": "Automatisch"
+  },
+  "onboarding": {
+    "title": "Willkommen bei TabStyr",
+    "lede": "Ein ruhiges Bild davon, wohin deine Browser-Zeit wirklich geht. Hier das Wesentliche:",
+    "trackTitle": "Was erfasst wird",
+    "trackBody": "Aktive Vordergrundzeit auf jeder Seite — der Tab, den du tatsächlich ansiehst. Hintergrund-Audio wird separat gezählt.",
+    "privateTitle": "100% privat",
+    "privateBody": "Alles bleibt in diesem Browser. Kein Konto, keine Server, keine Netzwerkaufrufe. Exportiere oder lösche deine Daten jederzeit.",
+    "categorizedTitle": "Automatisch kategorisiert",
+    "categorizedBody": "Seiten werden in die untenstehenden Kategorien einsortiert — die farbigen Punkte im gesamten Dashboard verwenden diese. Stufe jede Seite neu ein oder füge eigene Regeln in den Einstellungen hinzu.",
+    "legendAria": "Legende der Kategoriefarben",
+    "gotIt": "Verstanden",
+    "close": "Schließen",
+    "dialogAria": "Willkommen und wie TabStyr funktioniert"
+  },
+  "dashboard": {
+    "statsAria": "Browser-Nutzungsstatistiken"
+  },
+  "notification": {
+    "stale": "{count} Tabs seit über {days} Tagen unberührt"
+  }
+}

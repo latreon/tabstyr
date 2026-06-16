@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { formatDuration } from '@/lib/time';
 import { focusTab } from '@/lib/navigate';
 import { displayDomain } from '@/lib/domain';
@@ -7,6 +8,7 @@ import FaviconChip from '@/components/FaviconChip.vue';
 import type { TabRow } from '@/composables/useStats';
 
 const props = defineProps<{ rows: TabRow[] }>();
+const { t } = useI18n();
 
 type SortKey = 'seconds' | 'lastActiveAt';
 type SortDir = 'asc' | 'desc';
@@ -27,32 +29,32 @@ function setSort(key: SortKey) {
 }
 
 function ago(ts: number): string {
-  if (!ts) return '—'; // tab open but never focused
+  if (!ts) return t('tabTable.never'); // tab open but never focused
   const mins = Math.round((Date.now() - ts) / 60_000);
-  if (mins < 1) return 'just now';
-  if (mins < 60) return `${mins}m ago`;
-  if (mins < 1440) return `${Math.round(mins / 60)}h ago`;
-  return `${Math.round(mins / 1440)}d ago`;
+  if (mins < 1) return t('tabTable.justNow');
+  if (mins < 60) return t('tabTable.minsAgo', { count: mins });
+  if (mins < 1440) return t('tabTable.hoursAgo', { count: Math.round(mins / 60) });
+  return t('tabTable.daysAgo', { count: Math.round(mins / 1440) });
 }
 </script>
 
 <template>
   <div class="tile table-tile">
     <div class="tt-head">
-      <span class="label">Open tabs by time</span>
-      <span class="tt-sub">Total tracked per tab · last 90 days</span>
+      <span class="label">{{ t('tabTable.title') }}</span>
+      <span class="tt-sub">{{ t('tabTable.sub') }}</span>
     </div>
     <table>
       <thead>
         <tr>
-          <th scope="col" class="plain">Tab</th>
+          <th scope="col" class="plain">{{ t('tabTable.tab') }}</th>
           <th
             scope="col"
             :class="{ active: sortKey === 'seconds' }"
             :aria-sort="sortKey === 'seconds' ? (sortDir === 'desc' ? 'descending' : 'ascending') : 'none'"
           >
             <button @click="setSort('seconds')">
-              Tracked
+              {{ t('tabTable.tracked') }}
               <svg class="caret" viewBox="0 0 12 14" aria-hidden="true">
                 <path class="up" :class="{ on: sortKey === 'seconds' && sortDir === 'asc' }" d="M6 1.5 9.5 6 2.5 6 Z" />
                 <path class="down" :class="{ on: sortKey === 'seconds' && sortDir === 'desc' }" d="M2.5 8 9.5 8 6 12.5 Z" />
@@ -65,7 +67,7 @@ function ago(ts: number): string {
             :aria-sort="sortKey === 'lastActiveAt' ? (sortDir === 'desc' ? 'descending' : 'ascending') : 'none'"
           >
             <button @click="setSort('lastActiveAt')">
-              Last active
+              {{ t('tabTable.lastActive') }}
               <svg class="caret" viewBox="0 0 12 14" aria-hidden="true">
                 <path class="up" :class="{ on: sortKey === 'lastActiveAt' && sortDir === 'asc' }" d="M6 1.5 9.5 6 2.5 6 Z" />
                 <path class="down" :class="{ on: sortKey === 'lastActiveAt' && sortDir === 'desc' }" d="M2.5 8 9.5 8 6 12.5 Z" />
@@ -80,7 +82,7 @@ function ago(ts: number): string {
           :key="r.tabId"
           class="tab-row"
           tabindex="0"
-          :aria-label="`Go to tab: ${r.title}`"
+          :aria-label="t('tabTable.goToTabAria', { title: r.title })"
           @click="focusTab(r.tabId)"
           @keydown.enter="focusTab(r.tabId)"
           @keydown.space.prevent="focusTab(r.tabId)"
@@ -95,7 +97,7 @@ function ago(ts: number): string {
         </tr>
       </tbody>
     </table>
-    <p v-if="!rows.length" class="label">No tracked tabs yet.</p>
+    <p v-if="!rows.length" class="label">{{ t('tabTable.noTabs') }}</p>
   </div>
 </template>
 

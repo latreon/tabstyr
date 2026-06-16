@@ -38,16 +38,24 @@ test('dashboard renders bento tiles', async ({ context, extensionId }) => {
   await expect(page.getByText('Stale tabs', { exact: true }).first()).toBeVisible();
 });
 
+// The first-run onboarding modal overlays the dashboard; dismiss it so it
+// doesn't intercept clicks or duplicate text matches.
+async function dismissOnboarding(page: import('@playwright/test').Page) {
+  const got = page.getByRole('button', { name: 'Got it' });
+  if (await got.count()) await got.click();
+}
+
 test('dashboard renders all analytics tiles', async ({ context, extensionId }) => {
   const page = await context.newPage();
   await page.goto(`chrome-extension://${extensionId}/dashboard.html`);
+  await dismissOnboarding(page);
   await expect(page.getByText('Focus today')).toBeVisible();
   await expect(page.getByText('Today by category')).toBeVisible();
   await expect(page.getByText('Activity heatmap')).toBeVisible();
-  await expect(page.getByText('Trend')).toBeVisible();
+  await expect(page.getByText('Trend', { exact: true })).toBeVisible();
   await expect(page.getByText('What did I work on?')).toBeVisible();
   await expect(page.getByText('Open tabs by time')).toBeVisible();
-  await expect(page.getByText('Settings')).toBeVisible();
+  await expect(page.getByText('Settings', { exact: true })).toBeVisible();
 });
 
 test('settings export buttons are present', async ({ context, extensionId }) => {
@@ -60,6 +68,7 @@ test('settings export buttons are present', async ({ context, extensionId }) => 
 test('theme toggle flips data-theme', async ({ context, extensionId }) => {
   const page = await context.newPage();
   await page.goto(`chrome-extension://${extensionId}/dashboard.html`);
+  await dismissOnboarding(page);
   const before = await page.evaluate(() => document.documentElement.dataset.theme);
   await page.locator('.theme-toggle').first().click(); // system -> dark
   await expect.poll(() => page.evaluate(() => document.documentElement.dataset.theme)).toBe('dark');
@@ -83,6 +92,7 @@ test('clicking a tab row focuses that tab', async ({ context, extensionId }) => 
   await page.waitForTimeout(2_000);
   const dash = await context.newPage();
   await dash.goto(`chrome-extension://${extensionId}/dashboard.html`);
+  await dismissOnboarding(dash);
   const row = dash.locator('.tab-row', { hasText: 'example.com' }).first();
   await expect(row).toBeVisible({ timeout: 10_000 });
   await row.click();

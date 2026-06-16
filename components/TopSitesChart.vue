@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { formatDuration } from '@/lib/time';
 import { displayDomain } from '@/lib/domain';
 import FaviconChip from '@/components/FaviconChip.vue';
 
 const props = defineProps<{ domains: Array<{ domain: string; seconds: number; audioSeconds: number }> }>();
 const emit = defineEmits<{ select: [domain: string] }>();
+const { t } = useI18n();
 
 const top = computed(() => props.domains.slice(0, 6));
 // Scale to active + audio so the two stacked segments fit the track.
@@ -14,13 +16,13 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds + d.aud
 
 <template>
   <div class="tile top-sites">
-    <span class="label">Top sites today</span>
-    <p v-if="!top.length" class="label">Nothing yet.</p>
+    <span class="label">{{ t('topSites.title') }}</span>
+    <p v-if="!top.length" class="label">{{ t('common.nothingYet') }}</p>
     <button
       v-for="d in top"
       :key="d.domain"
       class="row"
-      :aria-label="`View ${d.domain} details — ${formatDuration(d.seconds)} active today`"
+      :aria-label="t('topSites.viewDetailsAria', { domain: displayDomain(d.domain), time: formatDuration(d.seconds) })"
       @click="emit('select', d.domain)"
     >
       <FaviconChip :domain="d.domain" />

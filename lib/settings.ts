@@ -14,6 +14,7 @@ export const DEFAULT_SETTINGS: Settings = {
   categoryOverrides: {},
   categoryRules: [],
   onboarded: false,
+  language: 'auto',
 };
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
@@ -57,6 +58,7 @@ function coerce(raw: unknown): Partial<Settings> {
     ...(overrides && { categoryOverrides: overrides }),
     ...(rules && { categoryRules: rules }),
     ...(typeof r.onboarded === 'boolean' && { onboarded: r.onboarded }),
+    ...(typeof r.language === 'string' && { language: r.language.slice(0, 20) }),
   };
 }
 

@@ -1,11 +1,28 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { longDateLabel } from '@/lib/time';
+import { getDateLocale } from '@/lib/locale';
 
 const props = defineProps<{ modelValue: string; min: string; max: string }>();
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>();
 
-const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+const { locale } = useI18n();
+
+// Narrow weekday initials in the active locale, Sunday-first (the grid starts on
+// getDay() === 0). 2023-01-01 was a Sunday. Reactive to a language switch.
+const WEEKDAYS = computed(() => {
+  void locale.value;
+  const loc = getDateLocale();
+  return Array.from({ length: 7 }, (_, i) =>
+    new Date(2023, 0, 1 + i).toLocaleString(loc, { weekday: 'narrow' }),
+  );
+});
+// Recompute (and thus re-render) the trigger label when the locale changes.
+const triggerLabel = computed(() => {
+  void locale.value;
+  return longDateLabel(props.modelValue);
+});
 
 const open = ref(false);
 const root = ref<HTMLElement | null>(null);
@@ -60,9 +77,10 @@ function syncView() {
 syncView();
 watch(() => props.modelValue, syncView);
 
-const monthTitle = computed(() =>
-  new Date(view.value.y, view.value.m, 1).toLocaleString('en-US', { month: 'long', year: 'numeric' }),
-);
+const monthTitle = computed(() => {
+  void locale.value;
+  return new Date(view.value.y, view.value.m, 1).toLocaleString(getDateLocale(), { month: 'long', year: 'numeric' });
+});
 
 const cells = computed(() => {
   const { y, m } = view.value;
@@ -138,7 +156,7 @@ onBeforeUnmount(() => {
         <rect x="3" y="5" width="18" height="16" rx="2" />
         <path d="M3 9h18M8 3v4M16 3v4" />
       </svg>
-      <span>{{ longDateLabel(modelValue) }}</span>
+      <span>{{ triggerLabel }}</span>
     </button>
 
     <div v-if="open" class="cal" role="dialog" aria-label="Choose a date">
@@ -148,7 +166,7 @@ onBeforeUnmount(() => {
         <button type="button" class="mnav" :disabled="!canNext" aria-label="Next month" @click="stepMonth(1)">›</button>
       </div>
       <div class="weekdays" aria-hidden="true">
-        <span v-for="(w, i) in WEEKDAYS" :key="i">{{ w }}</span>
+        <span v-for="(w, i) in WEEKDAYS" :key="i">{{ w }}</span><!-- localized initials -->
       </div>
       <div ref="grid" class="grid" role="grid" @keydown="onGridKey">
         <template v-for="(c, i) in cells" :key="i">

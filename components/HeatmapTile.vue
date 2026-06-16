@@ -1,12 +1,25 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { WEEKDAYS, WEEK_ORDER, peakHour, type HeatmapData } from '@/lib/heatmap';
+import { useI18n } from 'vue-i18n';
+import { WEEK_ORDER, peakHour, type HeatmapData } from '@/lib/heatmap';
 import { formatDuration } from '@/lib/time';
+import { getDateLocale } from '@/lib/locale';
 
 const props = defineProps<{ data: HeatmapData }>();
+const { t, locale } = useI18n();
 
 const HOURS = Array.from({ length: 24 }, (_, h) => h);
 const pad = (n: number) => String(n).padStart(2, '0');
+
+// Localized short weekday names indexed by getDay() (0 = Sunday). 2023-01-01 was
+// a Sunday; referencing locale.value keeps this reactive to a language switch.
+const weekdays = computed(() => {
+  void locale.value;
+  const loc = getDateLocale();
+  return Array.from({ length: 7 }, (_, i) =>
+    new Date(2023, 0, 1 + i).toLocaleString(loc, { weekday: 'short' }),
+  );
+});
 
 const tooltip = ref<{ text: string; x: number; y: number } | null>(null);
 
@@ -31,7 +44,7 @@ const peak = computed(() => peakHour(props.data));
 const peakLabel = computed(() => {
   const p = peak.value;
   if (!p) return null;
-  return `${WEEKDAYS[p.day]} ${pad(p.hour)}:00 · ${formatDuration(p.seconds)}`;
+  return `${weekdays.value[p.day]} ${pad(p.hour)}:00 · ${formatDuration(p.seconds)}`;
 });
 
 function seconds(day: number, hour: number): number {
@@ -47,7 +60,7 @@ function cellStyle(day: number, hour: number): Record<string, string> {
 }
 
 function cellLabel(day: number, hour: number): string {
-  return `${WEEKDAYS[day]} ${pad(hour)}:00–${pad(hour + 1)}:00 · ${formatDuration(seconds(day, hour))}`;
+  return `${weekdays.value[day]} ${pad(hour)}:00–${pad(hour + 1)}:00 · ${formatDuration(seconds(day, hour))}`;
 }
 
 const LEGEND = [0, 25, 50, 75, 100];
@@ -56,16 +69,16 @@ const LEGEND = [0, 25, 50, 75, 100];
 <template>
   <div class="tile heatmap-tile">
     <div class="hm-head">
-      <span class="label">Activity heatmap</span>
-      <span v-if="peakLabel" class="peak">Peak · {{ peakLabel }}</span>
+      <span class="label">{{ t('heatmap.title') }}</span>
+      <span v-if="peakLabel" class="peak">{{ t('heatmap.peak', { label: peakLabel }) }}</span>
     </div>
 
-    <p v-if="data.total === 0" class="label empty">No activity tracked yet.</p>
+    <p v-if="data.total === 0" class="label empty">{{ t('common.noActivity') }}</p>
 
     <template v-else>
-      <div class="hm-grid" role="img" aria-label="Browsing activity by weekday and hour of day">
+      <div class="hm-grid" role="img" :aria-label="t('heatmap.gridAria')">
         <template v-for="day in WEEK_ORDER" :key="day">
-          <span class="hm-row-label">{{ WEEKDAYS[day] }}</span>
+          <span class="hm-row-label">{{ weekdays[day] }}</span>
           <span
             v-for="h in HOURS"
             :key="`${day}-${h}`"
@@ -83,14 +96,14 @@ const LEGEND = [0, 25, 50, 75, 100];
       </div>
 
       <div class="hm-legend" aria-hidden="true">
-        <span>Less</span>
+        <span>{{ t('heatmap.less') }}</span>
         <span
           v-for="p in LEGEND"
           :key="p"
           class="hm-swatch"
           :style="{ background: p === 0 ? 'var(--bar-track)' : `color-mix(in oklab, var(--accent) ${Math.max(12, p)}%, transparent)` }"
         />
-        <span>More</span>
+        <span>{{ t('heatmap.more') }}</span>
       </div>
 
       <div v-if="tooltip" class="hm-tooltip" :style="{ left: `${tooltip.x}px`, top: `${tooltip.y}px` }" aria-hidden="true">

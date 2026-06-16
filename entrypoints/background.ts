@@ -2,6 +2,7 @@ import { browser } from 'wxt/browser';
 import { TrackerEngine } from '@/lib/tracker/engine';
 import { rollup } from '@/lib/tracker/aggregate';
 import { findStale, rematchTabMeta, shouldNotify } from '@/lib/tracker/stale';
+import { staleNotification } from '@/lib/i18n/notify';
 import { getSettings } from '@/lib/settings';
 import * as repo from '@/lib/db/repo';
 import { addDays, dateKey } from '@/lib/time';
@@ -144,7 +145,7 @@ export default defineBackground(() => {
         type: 'basic',
         iconUrl: browser.runtime.getURL('/icon/128.png'),
         title: 'TabStyr',
-        message: `${stale.length} tabs untouched for ${settings.staleDays}+ days`,
+        message: staleNotification(settings.language, stale.length, settings.staleDays),
       });
       await browser.storage.local.set({
         notifyState: { lastDate: today, ids: stale.map((m) => m.tabId) },

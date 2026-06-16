@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { CATEGORY_META, type CategorySlice } from '@/lib/categories';
 import { formatDuration } from '@/lib/time';
 
 const props = defineProps<{ slices: CategorySlice[] }>();
+const { t } = useI18n();
 
 const total = computed(() => props.slices.reduce((sum, s) => sum + s.seconds, 0));
 
@@ -22,27 +24,27 @@ const items = computed(() =>
 <template>
   <div class="tile cat-tile">
     <div class="cat-head">
-      <span class="label">Today by category</span>
+      <span class="label">{{ t('category.title') }}</span>
       <span class="cat-total">{{ formatDuration(total) }}</span>
     </div>
 
-    <p v-if="!total" class="empty">Nothing tracked yet.</p>
+    <p v-if="!total" class="empty">{{ t('common.nothingTracked') }}</p>
 
     <template v-else>
-      <div class="stack" role="img" aria-label="Share of time by category">
+      <div class="stack" role="img" :aria-label="t('category.shareAria')">
         <span
           v-for="i in items"
           :key="i.category"
           class="seg"
           :style="{ width: `${i.pct}%`, background: i.color }"
-          :title="`${i.category} · ${formatDuration(i.seconds)} · ${i.pct}%`"
+          :title="t('category.segTitle', { category: t(`categories.${i.category}`), time: formatDuration(i.seconds), pct: i.pct })"
         />
       </div>
 
       <ul class="chips">
         <li v-for="i in items" :key="i.category">
           <span class="dot" :style="{ background: i.color }" aria-hidden="true" />
-          <span class="chip-name">{{ i.category }}</span>
+          <span class="chip-name">{{ t(`categories.${i.category}`) }}</span>
           <span class="chip-time">{{ formatDuration(i.seconds) }}</span>
         </li>
       </ul>

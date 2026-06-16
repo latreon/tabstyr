@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { CATEGORIES, CATEGORY_META } from '@/lib/categories';
 import { useFocusTrap } from '@/composables/useFocusTrap';
 
 const emit = defineEmits<{ dismiss: [] }>();
+const { t } = useI18n();
 
 const legend = CATEGORIES.map((c) => ({ category: c, color: CATEGORY_META[c].color }));
 const panel = ref<HTMLElement | null>(null);
@@ -31,11 +33,11 @@ onUnmounted(() => {
 
 <template>
   <div class="backdrop" @click.self="close">
-    <section ref="panel" class="modal" role="dialog" aria-modal="true" aria-labelledby="onboard-title">
-      <button class="close" aria-label="Close" @click="close">✕</button>
+    <section ref="panel" class="modal" role="dialog" aria-modal="true" aria-labelledby="onboard-title" :aria-label="t('onboarding.dialogAria')">
+      <button class="close" :aria-label="t('onboarding.close')" @click="close">✕</button>
 
-      <h2 id="onboard-title" class="title">Welcome to TabStyr</h2>
-      <p class="lede">A quiet picture of where your browser time actually goes. Here's the gist:</p>
+      <h2 id="onboard-title" class="title">{{ t('onboarding.title') }}</h2>
+      <p class="lede">{{ t('onboarding.lede') }}</p>
 
       <div class="points">
         <div class="point">
@@ -43,8 +45,8 @@ onUnmounted(() => {
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3.5 2" /></svg>
           </span>
           <div>
-            <h3>What it tracks</h3>
-            <p>Active foreground time on each site — the tab you're actually looking at. Background audio is counted separately.</p>
+            <h3>{{ t('onboarding.trackTitle') }}</h3>
+            <p>{{ t('onboarding.trackBody') }}</p>
           </div>
         </div>
         <div class="point">
@@ -52,8 +54,8 @@ onUnmounted(() => {
             <svg viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4-3 7-7 8.5-4-1.5-7-4.5-7-8.5V6z" /><path d="M9 12l2 2 4-4.5" /></svg>
           </span>
           <div>
-            <h3>100% private</h3>
-            <p>Everything stays in this browser. No account, no servers, no network calls. Export or wipe your data anytime.</p>
+            <h3>{{ t('onboarding.privateTitle') }}</h3>
+            <p>{{ t('onboarding.privateBody') }}</p>
           </div>
         </div>
         <div class="point">
@@ -61,21 +63,21 @@ onUnmounted(() => {
             <svg viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0l-7-7A2 2 0 0 1 3 12.2V5a2 2 0 0 1 2-2h7.2a2 2 0 0 1 1.4.6l7 7a2 2 0 0 1 0 2.8z" /><circle cx="7.6" cy="7.6" r="1.4" /></svg>
           </span>
           <div>
-            <h3>Auto-categorized</h3>
-            <p>Sites are sorted into the categories below — the colored dots across the dashboard use these. Reclassify any site, or add your own rules in Settings.</p>
+            <h3>{{ t('onboarding.categorizedTitle') }}</h3>
+            <p>{{ t('onboarding.categorizedBody') }}</p>
           </div>
         </div>
       </div>
 
-      <ul class="legend" aria-label="Category colour key">
+      <ul class="legend" :aria-label="t('onboarding.legendAria')">
         <li v-for="l in legend" :key="l.category">
           <span class="dot" :style="{ background: l.color }" aria-hidden="true" />
-          {{ l.category }}
+          {{ t(`categories.${l.category}`) }}
         </li>
       </ul>
 
       <div class="actions">
-        <button ref="ctaBtn" class="cta" @click="close">Got it</button>
+        <button ref="ctaBtn" class="cta" @click="close">{{ t('onboarding.gotIt') }}</button>
       </div>
     </section>
   </div>

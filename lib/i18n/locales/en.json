@@ -1,0 +1,213 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "loadError": "Could not load data — reload the page.",
+    "today": "Today",
+    "nothingYet": "Nothing yet.",
+    "nothingTracked": "Nothing tracked yet.",
+    "noActivity": "No activity tracked yet."
+  },
+  "privacy": {
+    "badge": "0 bytes leave your device",
+    "badgeTitle": "No servers, no accounts, no network requests. Click for the privacy policy.",
+    "viewPolicy": "0 bytes leave your device — view privacy policy"
+  },
+  "popup": {
+    "tabs": "{count} tabs",
+    "stale": "{count} stale",
+    "activeToday": "active today · vs weekly average",
+    "noActivityToday": "No activity tracked yet today.",
+    "dashboard": "Dashboard",
+    "loadError": "Could not load stats — try reopening the popup.",
+    "topSitesAria": "Top sites today",
+    "openAria": "Open {domain} — {time} today"
+  },
+  "hero": {
+    "todayActive": "Today · active",
+    "vsWeeklyAvg": "{pct}% vs weekly avg",
+    "up": "Up",
+    "down": "Down",
+    "backgroundAudio": "♪ +{time} background audio"
+  },
+  "stat": {
+    "openTabs": "Open tabs",
+    "staleTabs": "Stale tabs"
+  },
+  "categories": {
+    "Work": "Work",
+    "Dev": "Dev",
+    "Finance": "Finance",
+    "Social": "Social",
+    "Media": "Media",
+    "News": "News",
+    "Shopping": "Shopping",
+    "Other": "Other"
+  },
+  "category": {
+    "title": "Today by category",
+    "shareAria": "Share of time by category",
+    "segTitle": "{category} · {time} · {pct}%"
+  },
+  "focus": {
+    "title": "Focus today",
+    "streak": "🔥 {count}-day streak",
+    "streakTitle": "{count} days at {target}%+ focus",
+    "ariaFocus": "Focus {pct}%",
+    "productive": "Productive",
+    "distracting": "Distracting",
+    "note": "Productive ÷ (productive + distracting). Work & Dev count as productive; target {target}%. Change a site's category to reclassify it."
+  },
+  "topSites": {
+    "title": "Top sites today",
+    "viewDetailsAria": "View {domain} details — {time} active today"
+  },
+  "trend": {
+    "title": "Trend",
+    "day": "Day",
+    "week": "Week",
+    "month": "Month",
+    "granularityAria": "Trend granularity"
+  },
+  "heatmap": {
+    "title": "Activity heatmap",
+    "peak": "Peak · {label}",
+    "gridAria": "Browsing activity by weekday and hour of day",
+    "less": "Less",
+    "more": "More",
+    "cellLabel": "{weekday} {hour} — {time}"
+  },
+  "comparison": {
+    "weekTitle": "This week vs last week",
+    "monthTitle": "This month vs last month",
+    "weekSub": "Last 7 days vs the 7 before · today still counting",
+    "monthSub": "Last 30 days vs the 30 before · today still counting",
+    "notEnough": "Not enough history yet — check back after a few days.",
+    "week": "Week",
+    "month": "Month",
+    "periodAria": "Comparison period",
+    "noChange": "no change",
+    "vsBefore": "vs {time} before"
+  },
+  "worklog": {
+    "title": "What did I work on?",
+    "prevDay": "Previous day",
+    "nextDay": "Next day",
+    "copy": "Copy",
+    "copied": "Copied ✓",
+    "summary": "— you spent {time} across no sites. | — you spent {time} across {count} site. | — you spent {time} across {count} sites.",
+    "nothingTracked": "— nothing tracked.",
+    "legendAria": "Dot colour key",
+    "viewSiteAria": "View {domain} details — {category}",
+    "categoryTitle": "Category: {category}"
+  },
+  "tabTable": {
+    "title": "Open tabs by time",
+    "sub": "Total tracked per tab · last 90 days",
+    "tab": "Tab",
+    "tracked": "Tracked",
+    "lastActive": "Last active",
+    "noTabs": "No tracked tabs yet.",
+    "goToTabAria": "Go to tab: {title}",
+    "justNow": "just now",
+    "minsAgo": "{count}m ago",
+    "hoursAgo": "{count}h ago",
+    "daysAgo": "{count}d ago",
+    "never": "—"
+  },
+  "domainDetail": {
+    "detailsForAria": "Details for {domain}",
+    "open": "Open ↗",
+    "close": "Close details",
+    "category": "Category",
+    "last14": "Last 14 days",
+    "last14Aria": "Daily time, last 14 days",
+    "byHourAria": "Activity by hour",
+    "total90d": "Total (90d)",
+    "shareOfAll": "Share of all time",
+    "sessions": "Sessions",
+    "avgSession": "Avg session",
+    "longestSession": "Longest session",
+    "activeDays": "Active days",
+    "audio": "Audio"
+  },
+  "settings": {
+    "title": "Settings",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "language": "Language",
+    "staleDays": "Stale after (days)",
+    "idleSeconds": "Idle timeout (seconds)",
+    "countAudio": "Count background audio",
+    "save": "Save",
+    "wipe": "Wipe all data",
+    "saved": "Settings saved",
+    "saveFailed": "Could not save settings",
+    "customRules": "Custom category rules",
+    "rulesHint": "Most popular sites are recognized automatically. Add a rule only for one we don't classify yet: any address containing your text goes to that category (checked before the built-in rules).",
+    "rulePlaceholder": "e.g. yandex",
+    "add": "Add",
+    "ruleExists": "That pattern already has a rule.",
+    "ruleAdded": "Rule added",
+    "ruleAddFailed": "Could not add rule",
+    "ruleRemoveFailed": "Could not remove rule",
+    "removeRuleAria": "Remove rule for {pattern}",
+    "categoryForRuleAria": "Category for rule",
+    "backupRestore": "Backup & restore",
+    "exportJson": "Export JSON",
+    "exportCsv": "Export CSV",
+    "encrypted": "Encrypted…",
+    "restore": "Restore…",
+    "encHint": "Encrypts a full JSON backup with a passphrase (AES-256-GCM). Keep it safe — it can't be recovered.",
+    "passphrase": "Passphrase",
+    "confirmPassphrase": "Confirm passphrase",
+    "downloadEncrypted": "Download encrypted",
+    "cancel": "Cancel",
+    "decrypt": "Decrypt",
+    "passTooShort": "Use at least 6 characters.",
+    "passMismatch": "Passphrases do not match.",
+    "exportedJson": "Exported JSON backup",
+    "exportedCsv": "Exported CSV",
+    "exportedEncrypted": "Exported encrypted backup",
+    "encryptionFailed": "Encryption failed",
+    "exportFailed": "Export failed",
+    "restoreEncryptedPrompt": "This backup is encrypted. Enter its passphrase to continue.",
+    "restoreReadFailed": "Could not read that file.",
+    "replaceTitle": "Replace all data?",
+    "replaceBody": "This deletes the data currently stored on this device and restores {days} daily records and {sessions} sessions{from}. This cannot be undone.",
+    "replaceBodyFrom": " from the backup dated {date}",
+    "replaceData": "Replace data",
+    "restoring": "Restoring…",
+    "restored": "Restored {days} days · {sessions} sessions",
+    "restoreFailed": "Restore failed",
+    "confirmRestoreAria": "Confirm restore",
+    "wipeTitle": "Delete all data?",
+    "wipeBody": "This permanently removes every session, daily total, and tab record stored on this device. Settings are kept. This cannot be undone.",
+    "deleteEverything": "Delete everything",
+    "wiping": "Wiping…",
+    "wiped": "All data wiped",
+    "wipeFailed": "Wipe failed",
+    "confirmWipeAria": "Confirm wipe all data",
+    "languageAuto": "Automatic"
+  },
+  "onboarding": {
+    "title": "Welcome to TabStyr",
+    "lede": "A quiet picture of where your browser time actually goes. Here's the gist:",
+    "trackTitle": "What it tracks",
+    "trackBody": "Active foreground time on each site — the tab you're actually looking at. Background audio is counted separately.",
+    "privateTitle": "100% private",
+    "privateBody": "Everything stays in this browser. No account, no servers, no network calls. Export or wipe your data anytime.",
+    "categorizedTitle": "Auto-categorized",
+    "categorizedBody": "Sites are sorted into the categories below — the colored dots across the dashboard use these. Reclassify any site, or add your own rules in Settings.",
+    "legendAria": "Category colour key",
+    "gotIt": "Got it",
+    "close": "Close",
+    "dialogAria": "Welcome and how TabStyr works"
+  },
+  "dashboard": {
+    "statsAria": "Browser usage statistics"
+  },
+  "notification": {
+    "stale": "{count} tabs untouched for {days}+ days"
+  }
+}

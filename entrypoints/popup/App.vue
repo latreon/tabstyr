@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { browser } from 'wxt/browser';
+import { useLocale } from '@/composables/useLocale';
 import { getAllTabMeta, getStatsRange } from '@/lib/db/repo';
 import { findStale } from '@/lib/tracker/stale';
 import { getSettings } from '@/lib/settings';
@@ -12,6 +14,8 @@ import FaviconChip from '@/components/FaviconChip.vue';
 import RingLogo from '@/components/RingLogo.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
 
+const { t } = useI18n();
+const locale = useLocale();
 const todaySeconds = ref(0);
 const weeklyAvgSeconds = ref(0);
 const weeklyActiveDays = ref(0);
@@ -30,6 +34,7 @@ const maxSeconds = computed(() => Math.max(1, ...topDomains.value.map((d) => d.s
 
 onMounted(async () => {
   try {
+    await locale.load();
     const today = dateKey(Date.now());
     const [stats, weekStats, metas, settings, tabs] = await Promise.all([
       getStatsRange(today, today),
@@ -89,8 +94,8 @@ function openPrivacy() {
     <header class="head">
       <span class="brand"><RingLogo :size="18" /> TabStyr</span>
       <span class="counts">
-        {{ tabCount }} tabs
-        <template v-if="staleCount"> · <span class="stale-count">{{ staleCount }} stale</span></template>
+        {{ t('popup.tabs', { count: tabCount }) }}
+        <template v-if="staleCount"> · <span class="stale-count">{{ t('popup.stale', { count: staleCount }) }}</span></template>
       </span>
       <ThemeToggle />
     </header>
@@ -100,7 +105,7 @@ function openPrivacy() {
       <div class="sk sk-row" v-for="i in 3" :key="i" />
     </div>
 
-    <p v-else-if="loadError" class="label error">Could not load stats — try reopening the popup.</p>
+    <p v-else-if="loadError" class="label error">{{ t('popup.loadError') }}</p>
 
     <template v-else>
       <section class="hero">
@@ -108,12 +113,12 @@ function openPrivacy() {
         <span v-if="deltaPct !== null" class="delta" :class="deltaPct > 0 ? 'up' : 'down'">
           <span aria-hidden="true">{{ deltaPct > 0 ? '↑' : '↓' }}</span> {{ Math.abs(deltaPct) }}%
         </span>
-        <div class="sub label">active today · vs weekly average</div>
+        <div class="sub label">{{ t('popup.activeToday') }}</div>
       </section>
 
-      <ul v-if="topDomains.length" class="sites" aria-label="Top sites today">
+      <ul v-if="topDomains.length" class="sites" :aria-label="t('popup.topSitesAria')">
         <li v-for="d in topDomains" :key="d.domain">
-          <button class="site-row" :aria-label="`Open ${d.domain} — ${formatDuration(d.seconds)} today`" @click="openDomain(d.domain)">
+          <button class="site-row" :aria-label="t('popup.openAria', { domain: displayDomain(d.domain), time: formatDuration(d.seconds) })" @click="openDomain(d.domain)">
             <FaviconChip :domain="d.domain" />
             <span class="site-main">
               <span class="site-line">
@@ -125,19 +130,19 @@ function openPrivacy() {
           </button>
         </li>
       </ul>
-      <p v-else class="label empty">No activity tracked yet today.</p>
+      <p v-else class="label empty">{{ t('popup.noActivityToday') }}</p>
 
       <footer class="actions">
-        <button class="cta" @click="openDashboard()">Dashboard</button>
-        <button v-if="staleCount" class="stale-btn" @click="openDashboard('#stale')">{{ staleCount }} stale</button>
+        <button class="cta" @click="openDashboard()">{{ t('popup.dashboard') }}</button>
+        <button v-if="staleCount" class="stale-btn" @click="openDashboard('#stale')">{{ t('popup.stale', { count: staleCount }) }}</button>
       </footer>
 
-      <button class="privacy" aria-label="0 bytes leave your device — view privacy policy" @click="openPrivacy">
+      <button class="privacy" :aria-label="t('privacy.viewPolicy')" @click="openPrivacy">
         <svg class="shield" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 3l7 3v5.5c0 4-3 7-7 8.5-4-1.5-7-4.5-7-8.5V6z" />
           <path d="M9 12l2 2 4-4.5" />
         </svg>
-        <span>0&nbsp;bytes leave your device</span>
+        <span>{{ t('privacy.badge') }}</span>
         <span class="privacy-arrow" aria-hidden="true">↗</span>
       </button>
     </template>

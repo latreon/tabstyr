@@ -6,5 +6,9 @@ export default defineConfig({
   // vue() compiles .vue SFCs for component tests; WxtVitest provides the
   // browser/extension mocks used by the lib + composable tests.
   plugins: [vue(), WxtVitest()],
-  test: { environment: 'happy-dom', exclude: ['e2e/**', 'node_modules/**'] },
+  test: {
+    environment: 'happy-dom',
+    setupFiles: ['tests/setup.ts'],
+    exclude: ['e2e/**', 'node_modules/**'],
+  },
 });

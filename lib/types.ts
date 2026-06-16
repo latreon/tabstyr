@@ -53,4 +53,6 @@ export interface Settings {
   categoryRules: import('./categories').CategoryRule[];
   /** Whether the first-run onboarding intro has been dismissed. */
   onboarded: boolean;
+  /** UI language: 'auto' (follow the browser) or a supported locale code. */
+  language: string;
 }

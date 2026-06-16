@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useStats } from '@/composables/useStats';
+import { useLocale } from '@/composables/useLocale';
 import HeroTile from '@/components/HeroTile.vue';
 import StatTile from '@/components/StatTile.vue';
 import TopSitesChart from '@/components/TopSitesChart.vue';
@@ -17,6 +19,8 @@ import OnboardingCard from '@/components/OnboardingCard.vue';
 import RingLogo from '@/components/RingLogo.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
 
+const { t } = useI18n();
+const locale = useLocale();
 const s = useStats();
 const loadedNow = Date.now();
 const selected = ref<{ domain: string; now: number } | null>(null);
@@ -24,6 +28,7 @@ function openDetail(domain: string) {
   selected.value = { domain, now: Date.now() };
 }
 onMounted(async () => {
+  await locale.load();
   await s.load();
   if (location.hash === '#stale') {
     const el = document.getElementById('stale-section');
@@ -43,21 +48,21 @@ onMounted(async () => {
       <h1 class="brand"><RingLogo :size="24" /> TabStyr</h1>
       <div class="head-right">
         <a class="privacy-badge" href="/privacy.html" target="_blank" rel="noopener"
-           title="No servers, no accounts, no network requests. Click for the privacy policy.">
+           :title="t('privacy.badgeTitle')">
           <svg class="shield" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 3l7 3v5.5c0 4-3 7-7 8.5-4-1.5-7-4.5-7-8.5V6z" />
             <path d="M9 12l2 2 4-4.5" />
           </svg>
-          0 bytes leave your device
+          {{ t('privacy.badge') }}
         </a>
         <ThemeToggle />
       </div>
     </header>
-    <p v-if="s.loading.value" class="label">Loading…</p>
-    <p v-else-if="s.loadError.value" class="label">Could not load data — reload the page.</p>
+    <p v-if="s.loading.value" class="label">{{ t('common.loading') }}</p>
+    <p v-else-if="s.loadError.value" class="label">{{ t('common.loadError') }}</p>
     <template v-else>
       <OnboardingCard v-if="s.showOnboarding.value" @dismiss="s.dismissOnboarding" />
-      <section class="bento" aria-label="Browser usage statistics">
+      <section class="bento" :aria-label="t('dashboard.statsAria')">
       <HeroTile
         :today-seconds="s.todaySeconds.value"
         :weekly-avg-seconds="s.weeklyAvgSeconds.value"
@@ -65,10 +70,10 @@ onMounted(async () => {
         :today-audio-seconds="s.todayAudioSeconds.value"
         :stats="s.activeStats.value"
       />
-      <StatTile label="Open tabs" :value="String(s.openTabCount.value)" />
+      <StatTile :label="t('stat.openTabs')" :value="String(s.openTabCount.value)" />
       <StatTile
         id="stale-section"
-        label="Stale tabs"
+        :label="t('stat.staleTabs')"
         :value="String(s.staleTabs.value.length)"
         :warn="s.staleTabs.value.length > 0"
       />

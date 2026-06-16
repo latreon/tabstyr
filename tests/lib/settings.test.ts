@@ -96,4 +96,10 @@ describe('settings', () => {
     await saveSettings({ onboarded: true });
     expect((await getSettings()).onboarded).toBe(true);
   });
+
+  test('language defaults to auto and round-trips', async () => {
+    expect((await getSettings()).language).toBe('auto');
+    await saveSettings({ language: 'ja' });
+    expect((await getSettings()).language).toBe('ja');
+  });
 });

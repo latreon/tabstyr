@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { formatDuration } from '@/lib/time';
 import type { ProductivitySummary } from '@/lib/productivity';
 
 const props = defineProps<{ summary: ProductivitySummary }>();
+const { t } = useI18n();
 
 const hasData = computed(() => props.summary.productiveSeconds + props.summary.distractingSeconds > 0);
 const prodWidth = computed(() => `${props.summary.todayFocusPct}%`);
@@ -11,31 +13,28 @@ const prodWidth = computed(() => `${props.summary.todayFocusPct}%`);
 
 <template>
   <div class="tile prod-tile">
-    <span class="label">Focus today</span>
+    <span class="label">{{ t('focus.title') }}</span>
 
     <div class="figure">
       <span class="pct" :class="{ good: summary.todayFocusPct >= summary.focusTarget }">
         {{ hasData ? summary.todayFocusPct : '—' }}<em v-if="hasData">%</em>
       </span>
-      <span v-if="summary.streakDays > 0" class="streak" :title="`${summary.streakDays} days at ${summary.focusTarget}%+ focus`">
-        🔥 {{ summary.streakDays }}-day streak
+      <span v-if="summary.streakDays > 0" class="streak" :title="t('focus.streakTitle', { count: summary.streakDays, target: summary.focusTarget })">
+        {{ t('focus.streak', { count: summary.streakDays }) }}
       </span>
     </div>
 
-    <div class="split" :aria-label="`Focus ${summary.todayFocusPct}%`">
+    <div class="split" :aria-label="t('focus.ariaFocus', { pct: summary.todayFocusPct })">
       <div class="split-bar">
         <span class="prod" :style="{ width: prodWidth }" />
       </div>
       <div class="split-legend">
-        <span class="pl"><span class="sw prod" /> Productive · {{ formatDuration(summary.productiveSeconds) }}</span>
-        <span class="pl"><span class="sw dist" /> Distracting · {{ formatDuration(summary.distractingSeconds) }}</span>
+        <span class="pl"><span class="sw prod" /> {{ t('focus.productive') }} · {{ formatDuration(summary.productiveSeconds) }}</span>
+        <span class="pl"><span class="sw dist" /> {{ t('focus.distracting') }} · {{ formatDuration(summary.distractingSeconds) }}</span>
       </div>
     </div>
 
-    <p class="prod-note">
-      Productive ÷ (productive + distracting). Work &amp; Dev count as productive; target {{ summary.focusTarget }}%.
-      Change a site's category to reclassify it.
-    </p>
+    <p class="prod-note">{{ t('focus.note', { target: summary.focusTarget }) }}</p>
   </div>
 </template>
 

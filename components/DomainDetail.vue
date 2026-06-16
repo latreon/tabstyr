@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { buildTrend } from '@/lib/trend';
 import { buildHourlyHeatmap } from '@/lib/heatmap';
 import { coalesceSessions } from '@/lib/sessionize';
@@ -23,7 +24,8 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{ close: []; setCategory: [domain: string, category: Category] }>();
 
-const CATEGORY_OPTIONS = CATEGORIES.map((c) => ({ value: c, label: c }));
+const { t } = useI18n();
+const CATEGORY_OPTIONS = computed(() => CATEGORIES.map((c) => ({ value: c, label: t(`categories.${c}`) })));
 const currentCategory = computed(() => categorize(props.domain, props.overrides, props.rules ?? []));
 
 const closeBtn = ref<HTMLButtonElement | null>(null);
@@ -71,13 +73,13 @@ function showTip(e: Event, label: string, seconds: number) {
 const hideTip = () => (tip.value = null);
 
 const metrics = computed(() => [
-  { label: 'Total (90d)', value: formatDuration(totalSeconds.value) },
-  { label: 'Share of all time', value: `${sharePct.value}%` },
-  { label: 'Sessions', value: String(sessionCount.value) },
-  { label: 'Avg session', value: formatDuration(avgSession.value) },
-  { label: 'Longest session', value: formatDuration(longestSession.value) },
-  { label: 'Active days', value: String(daysActive.value) },
-  ...(audioSeconds.value ? [{ label: 'Audio', value: formatDuration(audioSeconds.value) }] : []),
+  { label: t('domainDetail.total90d'), value: formatDuration(totalSeconds.value) },
+  { label: t('domainDetail.shareOfAll'), value: `${sharePct.value}%` },
+  { label: t('domainDetail.sessions'), value: String(sessionCount.value) },
+  { label: t('domainDetail.avgSession'), value: formatDuration(avgSession.value) },
+  { label: t('domainDetail.longestSession'), value: formatDuration(longestSession.value) },
+  { label: t('domainDetail.activeDays'), value: String(daysActive.value) },
+  ...(audioSeconds.value ? [{ label: t('domainDetail.audio'), value: formatDuration(audioSeconds.value) }] : []),
 ]);
 
 function onKey(e: KeyboardEvent) {
@@ -97,7 +99,7 @@ onUnmounted(() => {
 
 <template>
   <div class="backdrop" @click.self="emit('close')">
-    <div ref="panel" class="panel tile" role="dialog" aria-modal="true" :aria-label="`Details for ${domain}`">
+    <div ref="panel" class="panel tile" role="dialog" aria-modal="true" :aria-label="t('domainDetail.detailsForAria', { domain: displayDomain(domain) })">
       <header class="head">
         <FaviconChip :domain="domain" />
         <h2 class="title">{{ displayDomain(domain) }}</h2>
@@ -105,16 +107,16 @@ onUnmounted(() => {
           v-if="isWebDomain(domain)"
           class="open"
           @click="openDomain(domain)"
-        >Open ↗</button>
-        <button ref="closeBtn" class="close" aria-label="Close details" @click="emit('close')">✕</button>
+        >{{ t('domainDetail.open') }}</button>
+        <button ref="closeBtn" class="close" :aria-label="t('domainDetail.close')" @click="emit('close')">✕</button>
       </header>
 
       <div class="cat-row">
-        <span class="cat-label">Category</span>
+        <span class="cat-label">{{ t('domainDetail.category') }}</span>
         <SelectBox
           :model-value="currentCategory"
           :options="CATEGORY_OPTIONS"
-          label="Category"
+          :label="t('domainDetail.category')"
           @update:model-value="emit('setCategory', domain, $event as Category)"
         />
       </div>
@@ -126,8 +128,8 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <section class="block" aria-label="Daily time, last 14 days">
-        <span class="label">Last 14 days</span>
+      <section class="block" :aria-label="t('domainDetail.last14Aria')">
+        <span class="label">{{ t('domainDetail.last14') }}</span>
         <div class="bars">
           <div
             v-for="p in trend"
@@ -150,7 +152,7 @@ onUnmounted(() => {
         </div>
       </section>
 
-      <section class="block" aria-label="Activity by hour">
+      <section class="block" :aria-label="t('domainDetail.byHourAria')">
         <HeatmapTile :data="domainHeatmap" />
       </section>
     </div>

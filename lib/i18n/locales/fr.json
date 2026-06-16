@@ -1,0 +1,213 @@
+{
+  "common": {
+    "loading": "Chargement…",
+    "loadError": "Impossible de charger les données — rechargez la page.",
+    "today": "Aujourd'hui",
+    "nothingYet": "Rien pour l'instant.",
+    "nothingTracked": "Rien de suivi pour l'instant.",
+    "noActivity": "Aucune activité suivie pour l'instant."
+  },
+  "privacy": {
+    "badge": "0 octet ne quitte votre appareil",
+    "badgeTitle": "Aucun serveur, aucun compte, aucune requête réseau. Cliquez pour la politique de confidentialité.",
+    "viewPolicy": "0 octet ne quitte votre appareil — voir la politique de confidentialité"
+  },
+  "popup": {
+    "tabs": "{count} onglets",
+    "stale": "{count} inactifs",
+    "activeToday": "actif aujourd'hui · vs moyenne hebdomadaire",
+    "noActivityToday": "Aucune activité suivie aujourd'hui.",
+    "dashboard": "Tableau de bord",
+    "loadError": "Impossible de charger les statistiques — essayez de rouvrir la fenêtre.",
+    "topSitesAria": "Sites les plus visités aujourd'hui",
+    "openAria": "Ouvrir {domain} — {time} aujourd'hui"
+  },
+  "hero": {
+    "todayActive": "Aujourd'hui · actif",
+    "vsWeeklyAvg": "{pct}% vs moyenne hebdo",
+    "up": "En hausse",
+    "down": "En baisse",
+    "backgroundAudio": "♪ +{time} audio en arrière-plan"
+  },
+  "stat": {
+    "openTabs": "Onglets ouverts",
+    "staleTabs": "Onglets inactifs"
+  },
+  "categories": {
+    "Work": "Travail",
+    "Dev": "Développement",
+    "Finance": "Finance",
+    "Social": "Réseaux sociaux",
+    "Media": "Médias",
+    "News": "Actualités",
+    "Shopping": "Achats",
+    "Other": "Autre"
+  },
+  "category": {
+    "title": "Aujourd'hui par catégorie",
+    "shareAria": "Part du temps par catégorie",
+    "segTitle": "{category} · {time} · {pct}%"
+  },
+  "focus": {
+    "title": "Concentration aujourd'hui",
+    "streak": "🔥 série de {count} jours",
+    "streakTitle": "{count} jours à {target}%+ de concentration",
+    "ariaFocus": "Concentration {pct}%",
+    "productive": "Productif",
+    "distracting": "Distrayant",
+    "note": "Productif ÷ (productif + distrayant). Travail et Développement comptent comme productifs ; objectif {target}%. Changez la catégorie d'un site pour le reclasser."
+  },
+  "topSites": {
+    "title": "Sites les plus visités aujourd'hui",
+    "viewDetailsAria": "Voir les détails de {domain} — {time} actif aujourd'hui"
+  },
+  "trend": {
+    "title": "Tendance",
+    "day": "Jour",
+    "week": "Semaine",
+    "month": "Mois",
+    "granularityAria": "Granularité de la tendance"
+  },
+  "heatmap": {
+    "title": "Carte de chaleur d'activité",
+    "peak": "Pic · {label}",
+    "gridAria": "Activité de navigation par jour de la semaine et heure de la journée",
+    "less": "Moins",
+    "more": "Plus",
+    "cellLabel": "{weekday} {hour} — {time}"
+  },
+  "comparison": {
+    "weekTitle": "Cette semaine vs la semaine dernière",
+    "monthTitle": "Ce mois-ci vs le mois dernier",
+    "weekSub": "7 derniers jours vs les 7 précédents · aujourd'hui en cours",
+    "monthSub": "30 derniers jours vs les 30 précédents · aujourd'hui en cours",
+    "notEnough": "Pas encore assez d'historique — revenez dans quelques jours.",
+    "week": "Semaine",
+    "month": "Mois",
+    "periodAria": "Période de comparaison",
+    "noChange": "aucun changement",
+    "vsBefore": "vs {time} avant"
+  },
+  "worklog": {
+    "title": "Sur quoi ai-je travaillé ?",
+    "prevDay": "Jour précédent",
+    "nextDay": "Jour suivant",
+    "copy": "Copier",
+    "copied": "Copié ✓",
+    "summary": "— vous avez passé {time} sur aucun site. | — vous avez passé {time} sur {count} site. | — vous avez passé {time} sur {count} sites.",
+    "nothingTracked": "— rien de suivi.",
+    "legendAria": "Légende des couleurs de points",
+    "viewSiteAria": "Voir les détails de {domain} — {category}",
+    "categoryTitle": "Catégorie : {category}"
+  },
+  "tabTable": {
+    "title": "Onglets ouverts par temps",
+    "sub": "Total suivi par onglet · 90 derniers jours",
+    "tab": "Onglet",
+    "tracked": "Suivi",
+    "lastActive": "Dernière activité",
+    "noTabs": "Aucun onglet suivi pour l'instant.",
+    "goToTabAria": "Aller à l'onglet : {title}",
+    "justNow": "à l'instant",
+    "minsAgo": "il y a {count} min",
+    "hoursAgo": "il y a {count} h",
+    "daysAgo": "il y a {count} j",
+    "never": "—"
+  },
+  "domainDetail": {
+    "detailsForAria": "Détails de {domain}",
+    "open": "Ouvrir ↗",
+    "close": "Fermer les détails",
+    "category": "Catégorie",
+    "last14": "14 derniers jours",
+    "last14Aria": "Temps quotidien, 14 derniers jours",
+    "byHourAria": "Activité par heure",
+    "total90d": "Total (90 j)",
+    "shareOfAll": "Part du temps total",
+    "sessions": "Sessions",
+    "avgSession": "Session moyenne",
+    "longestSession": "Session la plus longue",
+    "activeDays": "Jours actifs",
+    "audio": "Audio"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "theme": "Thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "language": "Langue",
+    "staleDays": "Inactif après (jours)",
+    "idleSeconds": "Délai d'inactivité (secondes)",
+    "countAudio": "Compter l'audio en arrière-plan",
+    "save": "Enregistrer",
+    "wipe": "Effacer toutes les données",
+    "saved": "Paramètres enregistrés",
+    "saveFailed": "Impossible d'enregistrer les paramètres",
+    "customRules": "Règles de catégorie personnalisées",
+    "rulesHint": "La plupart des sites populaires sont reconnus automatiquement. Ajoutez une règle uniquement pour un site que nous ne classons pas encore : toute adresse contenant votre texte est placée dans cette catégorie (vérifiée avant les règles intégrées).",
+    "rulePlaceholder": "ex. yandex",
+    "add": "Ajouter",
+    "ruleExists": "Ce motif a déjà une règle.",
+    "ruleAdded": "Règle ajoutée",
+    "ruleAddFailed": "Impossible d'ajouter la règle",
+    "ruleRemoveFailed": "Impossible de supprimer la règle",
+    "removeRuleAria": "Supprimer la règle pour {pattern}",
+    "categoryForRuleAria": "Catégorie pour la règle",
+    "backupRestore": "Sauvegarde et restauration",
+    "exportJson": "Exporter JSON",
+    "exportCsv": "Exporter CSV",
+    "encrypted": "Chiffré…",
+    "restore": "Restaurer…",
+    "encHint": "Chiffre une sauvegarde JSON complète avec une phrase secrète (AES-256-GCM). Conservez-la en lieu sûr — elle ne peut pas être récupérée.",
+    "passphrase": "Phrase secrète",
+    "confirmPassphrase": "Confirmer la phrase secrète",
+    "downloadEncrypted": "Télécharger chiffré",
+    "cancel": "Annuler",
+    "decrypt": "Déchiffrer",
+    "passTooShort": "Utilisez au moins 6 caractères.",
+    "passMismatch": "Les phrases secrètes ne correspondent pas.",
+    "exportedJson": "Sauvegarde JSON exportée",
+    "exportedCsv": "CSV exporté",
+    "exportedEncrypted": "Sauvegarde chiffrée exportée",
+    "encryptionFailed": "Échec du chiffrement",
+    "exportFailed": "Échec de l'exportation",
+    "restoreEncryptedPrompt": "Cette sauvegarde est chiffrée. Saisissez sa phrase secrète pour continuer.",
+    "restoreReadFailed": "Impossible de lire ce fichier.",
+    "replaceTitle": "Remplacer toutes les données ?",
+    "replaceBody": "Cela supprime les données actuellement stockées sur cet appareil et restaure {days} enregistrements quotidiens et {sessions} sessions{from}. Cette action est irréversible.",
+    "replaceBodyFrom": " à partir de la sauvegarde datée du {date}",
+    "replaceData": "Remplacer les données",
+    "restoring": "Restauration…",
+    "restored": "Restauré {days} jours · {sessions} sessions",
+    "restoreFailed": "Échec de la restauration",
+    "confirmRestoreAria": "Confirmer la restauration",
+    "wipeTitle": "Supprimer toutes les données ?",
+    "wipeBody": "Cela supprime définitivement chaque session, total quotidien et enregistrement d'onglet stocké sur cet appareil. Les paramètres sont conservés. Cette action est irréversible.",
+    "deleteEverything": "Tout supprimer",
+    "wiping": "Effacement…",
+    "wiped": "Toutes les données effacées",
+    "wipeFailed": "Échec de l'effacement",
+    "confirmWipeAria": "Confirmer l'effacement de toutes les données",
+    "languageAuto": "Automatique"
+  },
+  "onboarding": {
+    "title": "Bienvenue dans TabStyr",
+    "lede": "Un aperçu discret de l'usage réel du temps passé dans votre navigateur. Voici l'essentiel :",
+    "trackTitle": "Ce qu'il suit",
+    "trackBody": "Le temps actif au premier plan sur chaque site — l'onglet que vous regardez réellement. L'audio en arrière-plan est compté séparément.",
+    "privateTitle": "100% privé",
+    "privateBody": "Tout reste dans ce navigateur. Aucun compte, aucun serveur, aucun appel réseau. Exportez ou effacez vos données à tout moment.",
+    "categorizedTitle": "Catégorisé automatiquement",
+    "categorizedBody": "Les sites sont triés dans les catégories ci-dessous — les points colorés du tableau de bord les utilisent. Reclassez n'importe quel site, ou ajoutez vos propres règles dans les Paramètres.",
+    "legendAria": "Légende des couleurs de catégorie",
+    "gotIt": "Compris",
+    "close": "Fermer",
+    "dialogAria": "Bienvenue et fonctionnement de TabStyr"
+  },
+  "dashboard": {
+    "statsAria": "Statistiques d'utilisation du navigateur"
+  },
+  "notification": {
+    "stale": "{count} onglets inactifs depuis plus de {days} jours"
+  }
+}
