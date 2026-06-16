@@ -1,3 +1,9 @@
+/** Strip the noisy leading `www.` for display only. The stored/real domain is
+ * kept intact for navigation, category rules, and detail lookups. */
+export function displayDomain(domain: string): string {
+  return domain.replace(/^www\./, '');
+}
+
 export function domainOf(url: string): string {
   try {
     const u = new URL(url);

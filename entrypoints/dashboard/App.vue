@@ -11,7 +11,6 @@ import HeatmapTile from '@/components/HeatmapTile.vue';
 import WorkLog from '@/components/WorkLog.vue';
 import DomainDetail from '@/components/DomainDetail.vue';
 import TabTable from '@/components/TabTable.vue';
-import StaleList from '@/components/StaleList.vue';
 import SettingsPanel from '@/components/SettingsPanel.vue';
 import RingLogo from '@/components/RingLogo.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
@@ -56,12 +55,11 @@ onMounted(async () => {
         :value="String(s.staleTabs.value.length)"
         :warn="s.staleTabs.value.length > 0"
       />
-      <!-- row: 1 + 2 -->
-      <ProductivityTile :summary="s.productivity.value" />
+      <!-- Today by category fills the space below Open tabs / Stale tabs, beside the tall hero -->
       <CategoryChart :slices="s.todayByCategory.value" />
-      <!-- row: 2 + 1 -->
+      <!-- Top sites today + Focus today -->
       <TopSitesChart :domains="s.todayByDomain.value" @select="openDetail" />
-      <StaleList :tabs="s.staleTabs.value" @close="s.closeTab" @snooze="s.snoozeTab" />
+      <ProductivityTile :summary="s.productivity.value" />
       <!-- full-width rows -->
       <TrendChart :stats="s.activeStats.value" />
       <HeatmapTile :data="s.heatmap.value" />

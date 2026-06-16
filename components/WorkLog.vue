@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { buildWorkLog, workLogText } from '@/lib/worklog';
-import { CATEGORY_META, type Category } from '@/lib/categories';
+import { CATEGORIES, CATEGORY_META, type Category } from '@/lib/categories';
 import { addDays, dateKey, formatDuration, longDateLabel } from '@/lib/time';
+import { displayDomain } from '@/lib/domain';
 import type { DailyStat } from '@/lib/types';
 import FaviconChip from '@/components/FaviconChip.vue';
+import DatePicker from '@/components/ui/DatePicker.vue';
 
 const props = defineProps<{ stats: DailyStat[]; overrides: Record<string, Category>; now: number }>();
 const emit = defineEmits<{ select: [domain: string] }>();
@@ -26,6 +28,10 @@ function step(days: number) {
   if (next >= minDate && next <= today) selected.value = next;
 }
 
+// Category colours that appear as dots next to each site — shown as a legend so
+// the meaning is clear at a glance.
+const legend = CATEGORIES.map((c) => ({ category: c, color: CATEGORY_META[c].color }));
+
 async function copy() {
   try {
     await navigator.clipboard.writeText(workLogText(log.value));
@@ -43,7 +49,7 @@ async function copy() {
       <span class="label">What did I work on?</span>
       <div class="wl-controls">
         <button class="nav" :disabled="!canPrev" aria-label="Previous day" @click="step(-1)">‹</button>
-        <input v-model="selected" class="date" type="date" :min="minDate" :max="today" aria-label="Pick a day" />
+        <DatePicker v-model="selected" :min="minDate" :max="today" />
         <button class="nav" :disabled="!canNext" aria-label="Next day" @click="step(1)">›</button>
         <button class="copy" :disabled="!log.total" @click="copy">{{ copied ? 'Copied ✓' : 'Copy' }}</button>
       </div>
@@ -60,14 +66,21 @@ async function copy() {
 
     <ol v-if="log.total" class="sites">
       <li v-for="d in log.domains" :key="d.domain">
-        <button class="site" :aria-label="`View ${d.domain} details`" @click="emit('select', d.domain)">
+        <button class="site" :aria-label="`View ${displayDomain(d.domain)} details — ${d.category}`" @click="emit('select', d.domain)">
           <FaviconChip :domain="d.domain" />
-          <span class="site-name">{{ d.domain }}</span>
-          <span class="dot" :style="{ background: CATEGORY_META[d.category].color }" :title="d.category" aria-hidden="true" />
+          <span class="site-name">{{ displayDomain(d.domain) }}</span>
+          <span class="dot" :style="{ background: CATEGORY_META[d.category].color }" :title="`Category: ${d.category}`" aria-hidden="true" />
           <span class="site-time">{{ formatDuration(d.seconds) }}</span>
         </button>
       </li>
     </ol>
+
+    <ul v-if="log.total" class="legend" aria-label="Dot colour key">
+      <li v-for="l in legend" :key="l.category">
+        <span class="dot" :style="{ background: l.color }" aria-hidden="true" />
+        {{ l.category }}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -192,6 +205,27 @@ async function copy() {
   color: var(--text);
 }
 .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+.legend {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+.legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-3);
+}
+.legend .dot {
   width: 8px;
   height: 8px;
   border-radius: 2px;

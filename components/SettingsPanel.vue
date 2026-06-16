@@ -214,11 +214,20 @@ button:focus-visible {
 .save {
   background: var(--accent-gradient);
   color: var(--on-accent);
+  transition: filter 150ms ease;
+}
+.save:hover {
+  filter: brightness(1.08);
 }
 .wipe {
   background: transparent;
   color: var(--warn);
   border: 1px solid var(--warn-border);
+  transition: background 150ms ease, border-color 150ms ease;
+}
+.wipe:hover {
+  background: var(--warn-bg);
+  border-color: var(--warn);
 }
 .export {
   display: flex;
@@ -241,7 +250,7 @@ button:focus-visible {
 }
 .export-btns button:hover:not(:disabled) {
   border-color: var(--accent);
-  color: var(--text);
+  color: var(--accent);
 }
 .export-btns button:disabled {
   opacity: 0.5;

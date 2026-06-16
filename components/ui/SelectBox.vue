@@ -60,7 +60,9 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
       @keydown="onKeydown"
     >
       <span>{{ selected?.label }}</span>
-      <span class="chevron" :class="{ open }" aria-hidden="true">▾</span>
+      <svg class="chevron" :class="{ open }" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M6 9l6 6 6-6" />
+      </svg>
     </button>
     <ul
       v-if="open"
@@ -109,9 +111,14 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
 .trigger:hover { border-color: var(--accent); }
 .trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .chevron {
-  font-size: 14px;
-  line-height: 1;
-  color: var(--text);
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   opacity: 0.7;
   transition: transform 150ms ease;
 }

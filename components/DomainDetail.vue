@@ -5,7 +5,7 @@ import { buildHourlyHeatmap } from '@/lib/heatmap';
 import { coalesceSessions } from '@/lib/sessionize';
 import { formatDuration } from '@/lib/time';
 import { openDomain } from '@/lib/navigate';
-import { isWebDomain } from '@/lib/domain';
+import { isWebDomain, displayDomain } from '@/lib/domain';
 import { CATEGORIES, categorize, type Category } from '@/lib/categories';
 import type { DailyStat, Session } from '@/lib/types';
 import FaviconChip from '@/components/FaviconChip.vue';
@@ -51,6 +51,20 @@ const trend = computed(() => buildTrend(domainStats.value, 'day', props.now));
 const trendMax = computed(() => Math.max(1, ...trend.value.map((p) => p.seconds)));
 const domainHeatmap = computed(() => buildHourlyHeatmap(domainSessions.value));
 
+const tip = ref<{ text: string; x: number } | null>(null);
+function showTip(e: Event, label: string, seconds: number) {
+  const col = e.currentTarget as HTMLElement;
+  const host = col.closest('.bars') as HTMLElement;
+  const rect = col.getBoundingClientRect();
+  const hostRect = host.getBoundingClientRect();
+  const halfW = 64;
+  tip.value = {
+    text: `${label} — ${formatDuration(seconds)}`,
+    x: Math.max(halfW, Math.min(rect.left - hostRect.left + rect.width / 2, hostRect.width - halfW)),
+  };
+}
+const hideTip = () => (tip.value = null);
+
 const metrics = computed(() => [
   { label: 'Total (90d)', value: formatDuration(totalSeconds.value) },
   { label: 'Share of all time', value: `${sharePct.value}%` },
@@ -66,9 +80,14 @@ function onKey(e: KeyboardEvent) {
 }
 onMounted(() => {
   document.addEventListener('keydown', onKey);
+  // Lock the page behind the modal so the backdrop scrolls, not the dashboard.
+  document.body.style.overflow = 'hidden';
   closeBtn.value?.focus();
 });
-onUnmounted(() => document.removeEventListener('keydown', onKey));
+onUnmounted(() => {
+  document.removeEventListener('keydown', onKey);
+  document.body.style.overflow = '';
+});
 </script>
 
 <template>
@@ -76,7 +95,7 @@ onUnmounted(() => document.removeEventListener('keydown', onKey));
     <div class="panel tile" role="dialog" aria-modal="true" :aria-label="`Details for ${domain}`">
       <header class="head">
         <FaviconChip :domain="domain" />
-        <h2 class="title">{{ domain }}</h2>
+        <h2 class="title">{{ displayDomain(domain) }}</h2>
         <button
           v-if="isWebDomain(domain)"
           class="open"
@@ -109,10 +128,16 @@ onUnmounted(() => document.removeEventListener('keydown', onKey));
             v-for="p in trend"
             :key="p.key"
             class="bar-col"
-            :title="`${p.label} — ${formatDuration(p.seconds)}`"
+            tabindex="0"
+            :aria-label="`${p.label} — ${formatDuration(p.seconds)}`"
+            @mouseenter="showTip($event, p.label, p.seconds)"
+            @mouseleave="hideTip"
+            @focus="showTip($event, p.label, p.seconds)"
+            @blur="hideTip"
           >
             <div class="bar-fill" :style="{ height: `${(p.seconds / trendMax) * 100}%` }" />
           </div>
+          <div v-if="tip" class="bar-tip" :style="{ left: `${tip.x}px` }" aria-hidden="true">{{ tip.text }}</div>
         </div>
         <div class="bar-labels">
           <span>{{ trend[0]?.label }}</span>
@@ -227,6 +252,7 @@ onUnmounted(() => document.removeEventListener('keydown', onKey));
   gap: 8px;
 }
 .bars {
+  position: relative;
   display: flex;
   align-items: flex-end;
   gap: 4px;
@@ -237,6 +263,26 @@ onUnmounted(() => document.removeEventListener('keydown', onKey));
   height: 100%;
   display: flex;
   align-items: flex-end;
+  cursor: default;
+  border-radius: 3px;
+}
+.bar-col:hover { background: var(--row-hover); }
+.bar-col:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.bar-tip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--popover);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+  pointer-events: none;
+  z-index: 5;
 }
 .bar-fill {
   width: 100%;

@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import { formatDuration } from '@/lib/time';
 import { focusTab } from '@/lib/navigate';
+import { displayDomain } from '@/lib/domain';
 import FaviconChip from '@/components/FaviconChip.vue';
 import type { TabRow } from '@/composables/useStats';
 
@@ -87,7 +88,7 @@ function ago(ts: number): string {
           <td class="title" :title="r.title">
             <FaviconChip :domain="r.domain" />
             <span class="title-text">{{ r.title }}</span>
-            <span class="domain">{{ r.domain }}</span>
+            <span class="domain">{{ displayDomain(r.domain) }}</span>
           </td>
           <td>{{ formatDuration(r.seconds) }}</td>
           <td>{{ ago(r.lastActiveAt) }}</td>

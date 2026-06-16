@@ -60,6 +60,12 @@ const sparkArea = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  grid-row: span 2;
+}
+@media (max-width: 760px) {
+  .hero-tile {
+    grid-row: auto;
+  }
 }
 .hero-value {
   font-size: 46px;

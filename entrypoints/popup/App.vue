@@ -5,7 +5,7 @@ import { getAllTabMeta, getStatsRange } from '@/lib/db/repo';
 import { findStale } from '@/lib/tracker/stale';
 import { getSettings } from '@/lib/settings';
 import { addDays, dateKey, formatDuration } from '@/lib/time';
-import { isWebDomain } from '@/lib/domain';
+import { isWebDomain, displayDomain } from '@/lib/domain';
 import { activeSeconds as active } from '@/lib/metrics';
 import { openDomain } from '@/lib/navigate';
 import FaviconChip from '@/components/FaviconChip.vue';
@@ -112,7 +112,7 @@ function openDashboard(hash = '') {
             <FaviconChip :domain="d.domain" />
             <span class="site-main">
               <span class="site-line">
-                <span class="domain">{{ d.domain }}</span>
+                <span class="domain">{{ displayDomain(d.domain) }}</span>
                 <strong>{{ formatDuration(d.seconds) }}</strong>
               </span>
               <span class="track"><span class="fill" :style="{ width: `${(d.seconds / maxSeconds) * 100}%` }" /></span>

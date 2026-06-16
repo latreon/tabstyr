@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { formatDuration } from '@/lib/time';
+import { displayDomain } from '@/lib/domain';
 import FaviconChip from '@/components/FaviconChip.vue';
 
 const props = defineProps<{ domains: Array<{ domain: string; seconds: number; audioSeconds: number }> }>();
@@ -23,7 +24,7 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds + d.aud
       @click="emit('select', d.domain)"
     >
       <FaviconChip :domain="d.domain" />
-      <span class="name" :title="d.domain">{{ d.domain }}</span>
+      <span class="name" :title="displayDomain(d.domain)">{{ displayDomain(d.domain) }}</span>
       <svg :viewBox="`0 0 100 8`" preserveAspectRatio="none" class="bar" aria-hidden="true">
         <defs>
           <linearGradient id="siteBar" x1="0" y1="0" x2="1" y2="0">
@@ -62,7 +63,7 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds + d.aud
   all: unset;
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: 18px 130px 1fr 120px;
+  grid-template-columns: 18px 180px 1fr 70px;
   align-items: center;
   gap: 10px;
   font-size: 13px;
