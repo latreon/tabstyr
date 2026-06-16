@@ -6,7 +6,7 @@ import { findStale } from '@/lib/tracker/stale';
 import { getSettings, saveSettings } from '@/lib/settings';
 import { addDays, dateKey } from '@/lib/time';
 import { buildHourlyHeatmap, type HeatmapData } from '@/lib/heatmap';
-import { groupByCategory, type Category } from '@/lib/categories';
+import { groupByCategory, type Category, type CategoryRule } from '@/lib/categories';
 import { activeSeconds } from '@/lib/metrics';
 import { summarizeProductivity } from '@/lib/productivity';
 import type { DailyStat, Session, Settings, TabMeta } from '@/lib/types';
@@ -77,21 +77,47 @@ export function useStats() {
   });
 
   const overrides = computed(() => settings.value?.categoryOverrides ?? {});
+  const categoryRules = computed<CategoryRule[]>(() => settings.value?.categoryRules ?? []);
+  // Show the first-run intro only once settings have loaded and it isn't dismissed.
+  const showOnboarding = computed(() => !!settings.value && !settings.value.onboarded);
 
-  // Today's time grouped into categories (Work/Dev/Social/…), respecting overrides.
-  const todayByCategory = computed(() => groupByCategory(todayByDomain.value, overrides.value));
+  // Today's time grouped into categories (Work/Dev/Social/…), respecting overrides + user rules.
+  const todayByCategory = computed(() =>
+    groupByCategory(todayByDomain.value, overrides.value, categoryRules.value),
+  );
 
   // Focus %, productive/distracting split, and the current focus streak.
   const productivity = computed(() =>
-    summarizeProductivity(activeStats.value, todayKey.value, overrides.value),
+    summarizeProductivity(activeStats.value, todayKey.value, overrides.value, categoryRules.value),
   );
 
   async function setCategoryOverride(domain: string, category: Category): Promise<void> {
     settings.value = await saveSettings({ categoryOverrides: { ...overrides.value, [domain]: category } });
   }
 
-  async function load(): Promise<void> {
-    loading.value = true;
+  async function addCategoryRule(pattern: string, category: Category): Promise<void> {
+    const clean = pattern.trim().toLowerCase();
+    if (!clean) return;
+    // Replace any existing rule with the same pattern, then append the new one.
+    const next = [...categoryRules.value.filter((r) => r.pattern !== clean), { pattern: clean, category }];
+    settings.value = await saveSettings({ categoryRules: next });
+  }
+
+  async function removeCategoryRule(pattern: string): Promise<void> {
+    settings.value = await saveSettings({
+      categoryRules: categoryRules.value.filter((r) => r.pattern !== pattern),
+    });
+  }
+
+  async function dismissOnboarding(): Promise<void> {
+    settings.value = await saveSettings({ onboarded: true });
+  }
+
+  // `silent` refreshes data in place without flipping `loading` — used after
+  // settings changes so the dashboard never unmounts (which would jump scroll
+  // back to the top). The first load always shows the loading state.
+  async function load(opts: { silent?: boolean } = {}): Promise<void> {
+    if (!opts.silent) loading.value = true;
     loadError.value = false;
     try {
       todayKey.value = dateKey(Date.now());
@@ -159,7 +185,7 @@ export function useStats() {
     stats, activeStats, tabRows, staleTabs, openTabCount, settings, heatmap, recentSessions,
     loading, loadError, todayKey,
     todaySeconds, todayAudioSeconds, weeklyAvgSeconds, weeklyActiveDays,
-    todayByDomain, todayByCategory, productivity, overrides,
-    load, closeTab, snoozeTab, setCategoryOverride,
+    todayByDomain, todayByCategory, productivity, overrides, categoryRules, showOnboarding,
+    load, closeTab, snoozeTab, setCategoryOverride, addCategoryRule, removeCategoryRule, dismissOnboarding,
   };
 }

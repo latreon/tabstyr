@@ -1,5 +1,5 @@
 import { addDays } from './time';
-import { categorize, type Category } from './categories';
+import { categorize, type Category, type CategoryRule } from './categories';
 import type { DailyStat } from './types';
 
 export type ComparePeriod = 'week' | 'month';
@@ -50,6 +50,7 @@ export function buildComparison(
   todayKey: string,
   period: ComparePeriod,
   overrides: Record<string, Category> = {},
+  rules: readonly CategoryRule[] = [],
 ): Comparison {
   const days = PERIOD_DAYS[period];
   const currentDays = windowKeys(todayKey, days);
@@ -65,7 +66,7 @@ export function buildComparison(
     const inCurrent = currentDays.has(s.date);
     const inPrevious = previousDays.has(s.date);
     if (!inCurrent && !inPrevious) continue;
-    const cat = categorize(s.domain, overrides);
+    const cat = categorize(s.domain, overrides, rules);
     if (inCurrent) {
       currentSeconds += s.seconds;
       cur.set(cat, (cur.get(cat) ?? 0) + s.seconds);

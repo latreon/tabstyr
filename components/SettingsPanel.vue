@@ -2,9 +2,10 @@
 import { onMounted, ref } from 'vue';
 import { browser } from 'wxt/browser';
 import { getSettings, saveSettings } from '@/lib/settings';
+import { CATEGORIES, type Category, type CategoryRule } from '@/lib/categories';
 import { useTheme } from '@/composables/useTheme';
 import * as repo from '@/lib/db/repo';
-import { dailyStatsToCsv, sessionsToCsv, downloadFile, toJsonBackup } from '@/lib/export';
+import { dailyStatsToCsv, downloadFile, toJsonBackup } from '@/lib/export';
 import { dateKey } from '@/lib/time';
 import type { ThemeSetting } from '@/lib/types';
 import SelectBox from '@/components/ui/SelectBox.vue';
@@ -25,6 +26,12 @@ const idleSeconds = ref(60);
 const audioEnabled = ref(true);
 const themeChoice = ref<'light' | 'dark'>('light');
 
+const CATEGORY_OPTIONS = CATEGORIES.map((c) => ({ value: c, label: c }));
+const rules = ref<CategoryRule[]>([]);
+const newPattern = ref('');
+const newCategory = ref<Category>('Work');
+const ruleError = ref('');
+
 const toast = ref<string | null>(null);
 let toastTimer: ReturnType<typeof setTimeout> | undefined;
 function showToast(msg: string) {
@@ -44,7 +51,43 @@ onMounted(async () => {
   audioEnabled.value = s.audioEnabled;
   // If still on the implicit "system" default, show the resolved theme in the picker.
   themeChoice.value = s.theme === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : s.theme;
+  rules.value = s.categoryRules;
 });
+
+async function addRule() {
+  const pattern = newPattern.value.trim().toLowerCase();
+  ruleError.value = '';
+  if (!pattern) return;
+  if (rules.value.some((r) => r.pattern === pattern)) {
+    ruleError.value = 'That pattern already has a rule.';
+    return;
+  }
+  const next = [...rules.value, { pattern, category: newCategory.value }];
+  try {
+    const saved = await saveSettings({ categoryRules: next });
+    rules.value = saved.categoryRules;
+    newPattern.value = '';
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    emit('changed');
+    showToast('Rule added');
+  } catch (e) {
+    console.error('[settings] add rule failed', e);
+    showToast('Could not add rule');
+  }
+}
+
+async function removeRule(pattern: string) {
+  const next = rules.value.filter((r) => r.pattern !== pattern);
+  try {
+    const saved = await saveSettings({ categoryRules: next });
+    rules.value = saved.categoryRules;
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    emit('changed');
+  } catch (e) {
+    console.error('[settings] remove rule failed', e);
+    showToast('Could not remove rule');
+  }
+}
 
 async function save() {
   try {
@@ -66,7 +109,7 @@ async function save() {
 
 const exporting = ref(false);
 
-async function exportData(kind: 'json' | 'csv' | 'sessions') {
+async function exportData(kind: 'json' | 'csv') {
   if (exporting.value) return;
   exporting.value = true;
   try {
@@ -81,14 +124,10 @@ async function exportData(kind: 'json' | 'csv' | 'sessions') {
       const json = toJsonBackup({ dailyStats, sessions, tabMeta, settings }, Date.now());
       downloadFile(`tabstyr-backup-${stamp}.json`, json, 'application/json');
       showToast('Exported JSON backup');
-    } else if (kind === 'sessions') {
-      const csv = sessionsToCsv(await repo.getAllSessions());
-      downloadFile(`tabstyr-sessions-${stamp}.csv`, csv, 'text/csv');
-      showToast('Exported sessions CSV');
     } else {
       const csv = dailyStatsToCsv(await repo.getAllDailyStats());
-      downloadFile(`tabstyr-daily-${stamp}.csv`, csv, 'text/csv');
-      showToast('Exported daily CSV');
+      downloadFile(`tabstyr-${stamp}.csv`, csv, 'text/csv');
+      showToast('Exported CSV');
     }
   } catch (e) {
     console.error('[settings] export failed', e);
@@ -147,12 +186,44 @@ async function confirmWipe() {
       <button class="wipe" @click="showWipeModal = true">Wipe all data</button>
     </div>
 
+    <div class="rules">
+      <span class="field-label">Custom category rules</span>
+      <p class="rules-hint">Most popular sites are recognized automatically. Add a rule only for one we don't classify yet: any address containing your text goes to that category (checked before the built-in rules).</p>
+
+      <ul v-if="rules.length" class="rule-list">
+        <li v-for="r in rules" :key="r.pattern" class="rule">
+          <code class="rule-pattern">{{ r.pattern }}</code>
+          <span class="rule-arrow" aria-hidden="true">→</span>
+          <span class="rule-cat">{{ r.category }}</span>
+          <button class="rule-del" :aria-label="`Remove rule for ${r.pattern}`" @click="removeRule(r.pattern)">✕</button>
+        </li>
+      </ul>
+
+      <form class="rule-add" @submit.prevent="addRule">
+        <input
+          v-model="newPattern"
+          class="rule-input"
+          type="text"
+          placeholder="e.g. yandex"
+          aria-label="Domain contains"
+          maxlength="100"
+        />
+        <SelectBox
+          :model-value="newCategory"
+          :options="CATEGORY_OPTIONS"
+          label="Category for rule"
+          @update:model-value="newCategory = $event as Category"
+        />
+        <button type="submit" class="rule-add-btn" :disabled="!newPattern.trim()">Add</button>
+      </form>
+      <p v-if="ruleError" class="rule-error">{{ ruleError }}</p>
+    </div>
+
     <div class="export">
       <span class="field-label">Export</span>
       <div class="export-btns">
-        <button :disabled="exporting" @click="exportData('json')">JSON backup</button>
-        <button :disabled="exporting" @click="exportData('csv')">Daily CSV</button>
-        <button :disabled="exporting" @click="exportData('sessions')">Sessions CSV</button>
+        <button :disabled="exporting" @click="exportData('json')">Export JSON</button>
+        <button :disabled="exporting" @click="exportData('csv')">Export CSV</button>
       </div>
     </div>
 
@@ -233,6 +304,107 @@ button:focus-visible {
 .wipe:hover {
   background: var(--warn-bg);
   border-color: var(--warn);
+}
+.rules {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--divider);
+}
+.rules-hint {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-3);
+}
+.rule-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.rule {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.rule-pattern {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  background: var(--card-strong);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 6px;
+  color: var(--text);
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rule-arrow {
+  color: var(--text-3);
+}
+.rule-cat {
+  font-weight: 600;
+  color: var(--text-2);
+}
+.rule-del {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-3);
+  border-radius: 6px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  font-size: 11px;
+  cursor: pointer;
+}
+.rule-del:hover {
+  border-color: var(--warn);
+  color: var(--warn);
+}
+.rule-add {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.rule-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  background: var(--card-strong);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-family: inherit;
+}
+.rule-input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.rule-add-btn {
+  background: var(--card-strong);
+  color: var(--text-2);
+  border: 1px solid var(--border);
+}
+.rule-add-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.rule-add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.rule-error {
+  margin: 0;
+  font-size: 11px;
+  color: var(--warn);
 }
 .export {
   display: flex;

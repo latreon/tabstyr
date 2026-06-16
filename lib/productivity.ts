@@ -1,5 +1,5 @@
 import { addDays } from './time';
-import { categorize, CATEGORY_PRODUCTIVITY, type Category } from './categories';
+import { categorize, CATEGORY_PRODUCTIVITY, type Category, type CategoryRule } from './categories';
 import type { DailyStat } from './types';
 
 export interface DayFocus {
@@ -12,12 +12,16 @@ export interface DayFocus {
   focusPct: number;
 }
 
-export function dailyFocus(stats: DailyStat[], overrides: Record<string, Category> = {}): Map<string, DayFocus> {
+export function dailyFocus(
+  stats: DailyStat[],
+  overrides: Record<string, Category> = {},
+  rules: readonly CategoryRule[] = [],
+): Map<string, DayFocus> {
   const byDate = new Map<string, DayFocus>();
   for (const s of stats) {
     const f =
       byDate.get(s.date) ?? { date: s.date, productive: 0, distracting: 0, neutral: 0, total: 0, focusPct: 0 };
-    f[CATEGORY_PRODUCTIVITY[categorize(s.domain, overrides)]] += s.seconds;
+    f[CATEGORY_PRODUCTIVITY[categorize(s.domain, overrides, rules)]] += s.seconds;
     f.total += s.seconds;
     byDate.set(s.date, f);
   }
@@ -78,9 +82,10 @@ export function summarizeProductivity(
   stats: DailyStat[],
   todayKey: string,
   overrides: Record<string, Category> = {},
+  rules: readonly CategoryRule[] = [],
   focusTarget = 50,
 ): ProductivitySummary {
-  const byDate = dailyFocus(stats, overrides);
+  const byDate = dailyFocus(stats, overrides, rules);
   const today = byDate.get(todayKey);
   return {
     todayFocusPct: today?.focusPct ?? 0,

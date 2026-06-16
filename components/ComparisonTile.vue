@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { buildComparison, type ComparePeriod } from '@/lib/comparison';
-import { CATEGORY_META, type Category } from '@/lib/categories';
+import { CATEGORY_META, type Category, type CategoryRule } from '@/lib/categories';
 import { formatDuration } from '@/lib/time';
 import type { DailyStat } from '@/lib/types';
 
@@ -9,6 +9,7 @@ const props = defineProps<{
   stats: DailyStat[];
   todayKey: string;
   overrides: Record<string, Category>;
+  rules?: CategoryRule[];
 }>();
 
 const period = ref<ComparePeriod>('week');
@@ -17,7 +18,9 @@ const MODES: Array<{ value: ComparePeriod; label: string }> = [
   { value: 'month', label: 'Month' },
 ];
 
-const cmp = computed(() => buildComparison(props.stats, props.todayKey, period.value, props.overrides));
+const cmp = computed(() =>
+  buildComparison(props.stats, props.todayKey, period.value, props.overrides, props.rules ?? []),
+);
 
 const title = computed(() => (period.value === 'week' ? 'This week vs last week' : 'This month vs last month'));
 const subtitle = computed(() =>

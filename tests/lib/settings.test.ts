@@ -61,4 +61,39 @@ describe('settings', () => {
     await saveSettings({ categoryOverrides: { 'x.com': 'Dev' } });
     expect((await getSettings()).categoryOverrides).toEqual({ 'x.com': 'Dev' });
   });
+
+  test('category rules round-trip, normalise, and drop invalid/duplicate/blank entries', async () => {
+    await fakeBrowser.storage.local.set({
+      settings: {
+        categoryRules: [
+          { pattern: '  YANDEX ', category: 'Work' }, // trimmed + lowercased
+          { pattern: 'yandex', category: 'Social' }, //  duplicate of the above → dropped
+          { pattern: '', category: 'Dev' }, //            blank → dropped
+          { pattern: 'bilibili', category: 'Nonsense' }, // bad category → dropped
+          { pattern: 'taobao', category: 'Shopping' },
+        ],
+      },
+    });
+    expect((await getSettings()).categoryRules).toEqual([
+      { pattern: 'yandex', category: 'Work' },
+      { pattern: 'taobao', category: 'Shopping' },
+    ]);
+  });
+
+  test('non-array categoryRules is ignored (falls back to default [])', async () => {
+    await fakeBrowser.storage.local.set({ settings: { categoryRules: 'nope' } });
+    expect((await getSettings()).categoryRules).toEqual([]);
+  });
+
+  test('caps the number of stored rules', async () => {
+    const many = Array.from({ length: 250 }, (_, i) => ({ pattern: `p${i}`, category: 'Work' as const }));
+    await fakeBrowser.storage.local.set({ settings: { categoryRules: many } });
+    expect((await getSettings()).categoryRules.length).toBe(100);
+  });
+
+  test('onboarded flag round-trips', async () => {
+    expect((await getSettings()).onboarded).toBe(false);
+    await saveSettings({ onboarded: true });
+    expect((await getSettings()).onboarded).toBe(true);
+  });
 });

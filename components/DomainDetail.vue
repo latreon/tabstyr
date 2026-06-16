@@ -6,7 +6,7 @@ import { coalesceSessions } from '@/lib/sessionize';
 import { formatDuration } from '@/lib/time';
 import { openDomain } from '@/lib/navigate';
 import { isWebDomain, displayDomain } from '@/lib/domain';
-import { CATEGORIES, categorize, type Category } from '@/lib/categories';
+import { CATEGORIES, categorize, type Category, type CategoryRule } from '@/lib/categories';
 import type { DailyStat, Session } from '@/lib/types';
 import FaviconChip from '@/components/FaviconChip.vue';
 import HeatmapTile from '@/components/HeatmapTile.vue';
@@ -18,11 +18,12 @@ const props = defineProps<{
   sessions: Session[];
   now: number;
   overrides: Record<string, Category>;
+  rules?: CategoryRule[];
 }>();
 const emit = defineEmits<{ close: []; setCategory: [domain: string, category: Category] }>();
 
 const CATEGORY_OPTIONS = CATEGORIES.map((c) => ({ value: c, label: c }));
-const currentCategory = computed(() => categorize(props.domain, props.overrides));
+const currentCategory = computed(() => categorize(props.domain, props.overrides, props.rules ?? []));
 
 const closeBtn = ref<HTMLButtonElement | null>(null);
 

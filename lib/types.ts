@@ -49,4 +49,8 @@ export interface Settings {
   theme: ThemeSetting;
   /** User reassignments of domain → category, overriding the default rules. */
   categoryOverrides: Record<string, import('./categories').Category>;
+  /** User-defined substring → category rules, checked before the built-in rules. */
+  categoryRules: import('./categories').CategoryRule[];
+  /** Whether the first-run onboarding intro has been dismissed. */
+  onboarded: boolean;
 }

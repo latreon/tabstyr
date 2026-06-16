@@ -23,6 +23,57 @@ describe('categorize', () => {
   test('is case-insensitive', () => {
     expect(categorize('GitHub.com')).toBe('Dev');
   });
+
+  test('covers non-US sites in the built-in rules', () => {
+    expect(categorize('yandex.ru')).toBe('Other'); // portal — intentionally not categorized
+    expect(categorize('mail.yandex.ru')).toBe('Work');
+    expect(categorize('www.bilibili.com')).toBe('Media');
+    expect(categorize('weibo.com')).toBe('Social');
+    expect(categorize('cafe.naver.com')).toBe('Social');
+    expect(categorize('nikkei.com')).toBe('News');
+    expect(categorize('taobao.com')).toBe('Shopping');
+    expect(categorize('gitee.com')).toBe('Dev');
+  });
+
+  test('recognizes banks, payments, and investing as Finance', () => {
+    expect(categorize('www.paypal.com')).toBe('Finance');
+    expect(categorize('hsbc.co.uk')).toBe('Finance');
+    expect(categorize('icicibank.com')).toBe('Finance');
+    expect(categorize('sparkasse.de')).toBe('Finance');
+    expect(categorize('coinbase.com')).toBe('Finance');
+    expect(categorize('robinhood.com')).toBe('Finance');
+    expect(categorize('chase.com')).toBe('Finance');
+  });
+
+  test('does not misclassify lookalike domains', () => {
+    // The Finance token is 'chase.com', not bare 'chase', so 'purchase'-style
+    // hosts are not swallowed.
+    expect(categorize('mypurchases.example')).toBe('Other');
+  });
+
+  test('user rules (substring) beat built-in rules but lose to exact overrides', () => {
+    const rules = [{ pattern: 'mybank', category: 'Work' as const }];
+    expect(categorize('mybank.example', {}, rules)).toBe('Work');
+    // exact override still wins over a matching user rule
+    expect(categorize('mybank.example', { 'mybank.example': 'Other' }, rules)).toBe('Other');
+  });
+
+  test('user rules are applied in order, first match wins', () => {
+    const rules = [
+      { pattern: 'shop', category: 'Shopping' as const },
+      { pattern: 'shopx', category: 'Work' as const },
+    ];
+    expect(categorize('shopx.io', {}, rules)).toBe('Shopping');
+  });
+
+  test('groupByCategory honours user rules', () => {
+    const out = groupByCategory(
+      [{ domain: 'naver.com', seconds: 40, audioSeconds: 0 }],
+      {},
+      [{ pattern: 'naver', category: 'News' }],
+    );
+    expect(out).toEqual([{ category: 'News', seconds: 40, audioSeconds: 0 }]);
+  });
 });
 
 describe('isCategory', () => {

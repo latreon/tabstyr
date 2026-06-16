@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { buildWorkLog, workLogText } from '@/lib/worklog';
-import { CATEGORIES, CATEGORY_META, type Category } from '@/lib/categories';
+import { CATEGORIES, CATEGORY_META, type Category, type CategoryRule } from '@/lib/categories';
 import { addDays, dateKey, formatDuration, longDateLabel } from '@/lib/time';
 import { displayDomain } from '@/lib/domain';
 import type { DailyStat } from '@/lib/types';
 import FaviconChip from '@/components/FaviconChip.vue';
 import DatePicker from '@/components/ui/DatePicker.vue';
 
-const props = defineProps<{ stats: DailyStat[]; overrides: Record<string, Category>; now: number }>();
+const props = defineProps<{
+  stats: DailyStat[];
+  overrides: Record<string, Category>;
+  rules?: CategoryRule[];
+  now: number;
+}>();
 const emit = defineEmits<{ select: [domain: string] }>();
 
 const today = dateKey(props.now);
@@ -17,7 +22,7 @@ const minDate = addDays(today, -89);
 const selected = ref(today);
 const copied = ref(false);
 
-const log = computed(() => buildWorkLog(props.stats, selected.value, props.overrides));
+const log = computed(() => buildWorkLog(props.stats, selected.value, props.overrides, props.rules ?? []));
 const isToday = computed(() => selected.value === today);
 
 const canPrev = computed(() => selected.value > minDate);

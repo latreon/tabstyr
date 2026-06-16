@@ -13,6 +13,7 @@ import WorkLog from '@/components/WorkLog.vue';
 import DomainDetail from '@/components/DomainDetail.vue';
 import TabTable from '@/components/TabTable.vue';
 import SettingsPanel from '@/components/SettingsPanel.vue';
+import OnboardingCard from '@/components/OnboardingCard.vue';
 import RingLogo from '@/components/RingLogo.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
 
@@ -46,7 +47,9 @@ onMounted(async () => {
     </header>
     <p v-if="s.loading.value" class="label">Loading…</p>
     <p v-else-if="s.loadError.value" class="label">Could not load data — reload the page.</p>
-    <section v-else class="bento" aria-label="Browser usage statistics">
+    <template v-else>
+      <OnboardingCard v-if="s.showOnboarding.value" @dismiss="s.dismissOnboarding" />
+      <section class="bento" aria-label="Browser usage statistics">
       <HeroTile
         :today-seconds="s.todaySeconds.value"
         :weekly-avg-seconds="s.weeklyAvgSeconds.value"
@@ -68,13 +71,14 @@ onMounted(async () => {
       <ProductivityTile :summary="s.productivity.value" />
       <!-- full-width rows -->
       <TrendChart :stats="s.activeStats.value" />
-      <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" />
+      <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" />
       <HeatmapTile :data="s.heatmap.value" />
-      <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :now="loadedNow" @select="openDetail" />
+      <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :now="loadedNow" @select="openDetail" />
       <!-- row: 2 + 1 -->
       <TabTable :rows="s.tabRows.value" />
-      <SettingsPanel @changed="s.load" />
-    </section>
+      <SettingsPanel @changed="() => s.load({ silent: true })" />
+      </section>
+    </template>
   </main>
 
   <DomainDetail
@@ -84,6 +88,7 @@ onMounted(async () => {
     :sessions="s.recentSessions.value"
     :now="selected.now"
     :overrides="s.overrides.value"
+    :rules="s.categoryRules.value"
     @close="selected = null"
     @set-category="s.setCategoryOverride"
   />

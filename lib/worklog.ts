@@ -1,6 +1,6 @@
 import { formatDuration, longDateLabel } from './time';
 import { isWebDomain } from './domain';
-import { categorize, groupByCategory, type Category, type CategorySlice } from './categories';
+import { categorize, groupByCategory, type Category, type CategoryRule, type CategorySlice } from './categories';
 import type { DailyStat } from './types';
 
 export interface WorkLogDomain {
@@ -21,16 +21,21 @@ export interface WorkLog {
  * What was tracked on a single day: total, per-category breakdown, and the
  * per-site list (web domains only — internal pages aren't useful for a log).
  */
-export function buildWorkLog(stats: DailyStat[], date: string, overrides: Record<string, Category> = {}): WorkLog {
+export function buildWorkLog(
+  stats: DailyStat[],
+  date: string,
+  overrides: Record<string, Category> = {},
+  rules: readonly CategoryRule[] = [],
+): WorkLog {
   const day = stats.filter((s) => s.date === date && isWebDomain(s.domain));
   const total = day.reduce((sum, s) => sum + s.seconds, 0);
-  const categories = groupByCategory(day, overrides);
+  const categories = groupByCategory(day, overrides, rules);
   const domains = day
     .map((s) => ({
       domain: s.domain,
       seconds: s.seconds,
       audioSeconds: s.audioSeconds,
-      category: categorize(s.domain, overrides),
+      category: categorize(s.domain, overrides, rules),
     }))
     .sort((a, b) => b.seconds - a.seconds);
   return { date, total, categories, domains };
