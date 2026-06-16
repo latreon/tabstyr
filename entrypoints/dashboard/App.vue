@@ -7,6 +7,7 @@ import TopSitesChart from '@/components/TopSitesChart.vue';
 import CategoryChart from '@/components/CategoryChart.vue';
 import ProductivityTile from '@/components/ProductivityTile.vue';
 import TrendChart from '@/components/TrendChart.vue';
+import ComparisonTile from '@/components/ComparisonTile.vue';
 import HeatmapTile from '@/components/HeatmapTile.vue';
 import WorkLog from '@/components/WorkLog.vue';
 import DomainDetail from '@/components/DomainDetail.vue';
@@ -67,6 +68,7 @@ onMounted(async () => {
       <ProductivityTile :summary="s.productivity.value" />
       <!-- full-width rows -->
       <TrendChart :stats="s.activeStats.value" />
+      <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" />
       <HeatmapTile :data="s.heatmap.value" />
       <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :now="loadedNow" @select="openDetail" />
       <!-- row: 2 + 1 -->

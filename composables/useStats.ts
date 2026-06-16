@@ -157,7 +157,7 @@ export function useStats() {
 
   return {
     stats, activeStats, tabRows, staleTabs, openTabCount, settings, heatmap, recentSessions,
-    loading, loadError,
+    loading, loadError, todayKey,
     todaySeconds, todayAudioSeconds, weeklyAvgSeconds, weeklyActiveDays,
     todayByDomain, todayByCategory, productivity, overrides,
     load, closeTab, snoozeTab, setCategoryOverride,
