@@ -12,7 +12,9 @@
     "typecheck": "vue-tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "check:version": "node scripts/sync-readme-version.mjs",
+    "version": "node scripts/sync-readme-version.mjs --write && git add README.md"
   },
   "dependencies": {
     "idb": "^8.0.0",

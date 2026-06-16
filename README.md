@@ -17,7 +17,7 @@ breakdowns, and gentle stale-tab nudges. Every byte stays on your device.
 
 [![CI](https://github.com/latreon/tabstyr/actions/workflows/ci.yml/badge.svg)](https://github.com/latreon/tabstyr/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-1.0.0-7c5cf0)
+![Version](https://img.shields.io/github/package-json/v/latreon/tabstyr?color=7c5cf0&label=version)
 ![Data: 100% local](https://img.shields.io/badge/data-100%25%20local-3fb27f)
 
 <br/>
