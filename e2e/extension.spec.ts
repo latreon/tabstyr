@@ -53,8 +53,9 @@ test('dashboard renders all analytics tiles', async ({ context, extensionId }) =
 test('settings export buttons are present', async ({ context, extensionId }) => {
   const page = await context.newPage();
   await page.goto(`chrome-extension://${extensionId}/dashboard.html`);
-  await expect(page.getByRole('button', { name: 'Export JSON' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Export CSV' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'JSON backup' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Daily CSV' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Sessions CSV' })).toBeVisible();
 });
 
 test('theme toggle flips data-theme', async ({ context, extensionId }) => {
