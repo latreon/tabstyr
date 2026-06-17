@@ -1,14 +1,25 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useTheme } from '@/composables/useTheme';
 
 const { setting, cycle } = useTheme();
+const { t } = useI18n();
+
+// Tooltip/aria: current mode + a "click to switch" hint, localized.
+const modeLabel = computed(() =>
+  setting.value === 'dark' ? t('settings.dark')
+  : setting.value === 'light' ? t('settings.light')
+  : t('settings.languageAuto'),
+);
+const label = computed(() => t('settings.switchTheme', { mode: modeLabel.value }));
 </script>
 
 <template>
   <button
-    class="theme-toggle"
-    :aria-label="`Theme: ${setting}. Click to change.`"
-    :title="`Theme: ${setting}`"
+    class="theme-toggle tip-right"
+    :aria-label="label"
+    :data-tip="label"
     @click="cycle"
   >
     <!-- Sun: light (Lucide) -->

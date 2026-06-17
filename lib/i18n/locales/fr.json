@@ -13,6 +13,9 @@
     "badgeTitle": "Aucun serveur, aucun compte, aucune requête réseau. Cliquez pour la politique de confidentialité.",
     "viewPolicy": "0 octet ne quitte votre appareil — voir la politique de confidentialité"
   },
+  "support": {
+    "coffee": "Offrez-moi un café"
+  },
   "popup": {
     "tabs": "{count} onglets",
     "stale": "{count} inactifs",
@@ -136,6 +139,7 @@
   "settings": {
     "title": "Paramètres",
     "theme": "Thème",
+    "switchTheme": "Changer de thème · {mode}",
     "light": "Clair",
     "dark": "Sombre",
     "language": "Langue",

@@ -19,6 +19,7 @@ import OnboardingCard from '@/components/OnboardingCard.vue';
 import RingLogo from '@/components/RingLogo.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
 import PrivacyDialog from '@/components/PrivacyDialog.vue';
+// import { COFFEE_URL } from '@/lib/support'; // Buy me a coffee — hidden until the account is set up
 
 const { t } = useI18n();
 const locale = useLocale();
@@ -61,6 +62,12 @@ onMounted(async () => {
           </svg>
           {{ t('privacy.badge') }}
         </button>
+        <!-- Buy me a coffee — hidden until the account is set up; re-enable this block + the COFFEE_URL import.
+        <a class="coffee-badge tip-right" :href="COFFEE_URL" target="_blank" rel="noopener"
+           :data-tip="t('support.coffee')" :aria-label="t('support.coffee')">
+          <span aria-hidden="true">☕</span>
+        </a>
+        -->
         <ThemeToggle />
       </div>
     </header>
@@ -177,6 +184,24 @@ onMounted(async () => {
 @media (max-width: 760px) {
   .privacy-badge { display: none; } /* keep the compact header clean on phones */
 }
+.coffee-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--card-strong);
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+.coffee-badge:hover { border-color: var(--accent); color: var(--text); }
+.coffee-badge:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .bento {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

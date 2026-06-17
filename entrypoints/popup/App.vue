@@ -10,6 +10,7 @@ import { addDays, dateKey, formatDuration } from '@/lib/time';
 import { isWebDomain, displayDomain } from '@/lib/domain';
 import { activeSeconds as active } from '@/lib/metrics';
 import { openDomain } from '@/lib/navigate';
+// import { COFFEE_URL } from '@/lib/support'; // Buy me a coffee — hidden until the account is set up
 import FaviconChip from '@/components/FaviconChip.vue';
 import RingLogo from '@/components/RingLogo.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
@@ -85,6 +86,11 @@ function openPrivacy() {
   // Open the dashboard and show the in-app privacy overlay (no separate .html page).
   openDashboard('#privacy');
 }
+// Buy me a coffee — hidden until the account is set up. Re-enable: uncomment this,
+// the COFFEE_URL import above, and the button in the template.
+// function openCoffee() {
+//   void browser.tabs.create({ url: COFFEE_URL });
+// }
 </script>
 
 <template>
@@ -144,6 +150,13 @@ function openPrivacy() {
         <span>{{ t('privacy.badge') }}</span>
         <span class="privacy-arrow" aria-hidden="true">↗</span>
       </button>
+
+      <!-- Buy me a coffee — hidden until the account is set up; re-enable this block.
+      <button class="coffee tip-above" :aria-label="t('support.coffee')" :data-tip="t('support.coffee')" @click="openCoffee">
+        <span aria-hidden="true">☕</span>
+        <span>{{ t('support.coffee') }}</span>
+      </button>
+      -->
     </template>
   </main>
 </template>
@@ -313,6 +326,26 @@ function openPrivacy() {
   stroke-linejoin: round;
 }
 .privacy .privacy-arrow { margin-left: auto; color: var(--accent); font-weight: 700; }
+.coffee {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  margin-top: 2px;
+  padding: 8px 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-3);
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+.coffee:hover { border-color: var(--accent); color: var(--text); }
+.coffee:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .empty, .error { position: relative; margin: 0; }
 .skeleton { position: relative; display: flex; flex-direction: column; gap: 8px; }
 .sk {

@@ -13,6 +13,9 @@
     "badgeTitle": "No servers, no accounts, no network requests. Click for the privacy policy.",
     "viewPolicy": "0 bytes leave your device — view privacy policy"
   },
+  "support": {
+    "coffee": "Buy me a coffee"
+  },
   "popup": {
     "tabs": "{count} tabs",
     "stale": "{count} stale",
@@ -136,6 +139,7 @@
   "settings": {
     "title": "Settings",
     "theme": "Theme",
+    "switchTheme": "Switch theme · {mode}",
     "light": "Light",
     "dark": "Dark",
     "language": "Language",

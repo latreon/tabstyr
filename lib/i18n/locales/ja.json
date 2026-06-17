@@ -13,6 +13,9 @@
     "badgeTitle": "サーバーなし、アカウントなし、ネットワークリクエストなし。クリックでプライバシーポリシーを表示。",
     "viewPolicy": "デバイスから出るのは0バイト — プライバシーポリシーを表示"
   },
+  "support": {
+    "coffee": "コーヒーをおごる"
+  },
   "popup": {
     "tabs": "{count}個のタブ",
     "stale": "{count}個が古い",
@@ -136,6 +139,7 @@
   "settings": {
     "title": "設定",
     "theme": "テーマ",
+    "switchTheme": "テーマを切り替え · {mode}",
     "light": "ライト",
     "dark": "ダーク",
     "language": "言語",

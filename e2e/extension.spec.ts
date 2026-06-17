@@ -113,8 +113,22 @@ test('screenshots for visual review', async ({ context, extensionId }) => {
   // populated dashboard (trend, heatmap, categories, focus, comparison, top
   // sites, work log) rather than an empty first-run state.
   const seeder = await context.newPage();
+
+  // First, warm Chrome's favicon cache by visiting each site, so the _favicon API
+  // returns real logos in the captures (a fresh profile has none → generic globe).
+  // Done BEFORE seeding so the stray sessions these visits create are wiped by the
+  // clear-then-write seed below. Best-effort — falls back to chips if offline.
+  for (const d of ['github.com', 'mail.google.com', 'www.reddit.com', 'youtube.com', 'amazon.com']) {
+    await seeder.goto(`https://${d}/`, { waitUntil: 'load', timeout: 20_000 }).catch(() => {});
+    await seeder.waitForTimeout(1_500); // let Chrome fetch + cache the page favicon
+  }
+
+  // Now seed a realistic dataset and dismiss onboarding so the captures show a
+  // populated dashboard (trend, heatmap, categories, focus, comparison, top sites,
+  // work log) rather than an empty first-run state.
   await seeder.goto(`chrome-extension://${extensionId}/dashboard.html`);
   await seeder.waitForSelector('.bento, .label', { state: 'visible' });
+  await seeder.waitForTimeout(1_200); // let the background flush the last warming session
   await seeder.evaluate(async () => {
     await new Promise<void>((res) =>
       chrome.storage.local.set(
@@ -128,13 +142,12 @@ test('screenshots for visual review', async ({ context, extensionId }) => {
       ),
     );
 
-    const DAY = 86_400_000;
     // domain, seconds/day (active), optional background-audio seconds — chosen so
-    // the built-in category rules spread them across Dev/Work/Social/Media/News/Shopping.
+    // the built-in category rules spread them across Dev/Work/Social/Media/Shopping.
     const sites = [
       { d: 'github.com', s: 5400, h: 10 },
       { d: 'mail.google.com', s: 2700, h: 9 },
-      { d: 'reddit.com', s: 1500, h: 21 },
+      { d: 'www.reddit.com', s: 1500, h: 21 },
       { d: 'youtube.com', s: 1800, a: 1500, h: 20 },
       { d: 'amazon.com', s: 600, h: 13 },
     ];
@@ -173,20 +186,13 @@ test('screenshots for visual review', async ({ context, extensionId }) => {
       tx.onerror = () => rej(tx.error);
       const ds = tx.objectStore('dailyDomainStats');
       const ss = tx.objectStore('sessions');
+      ds.clear(); // drop any sessions the favicon-warming visits recorded
+      ss.clear();
       for (const s of stats) ds.put(s);
       for (const s of sessions) ss.put(s);
     });
     db.close();
-    void DAY;
   });
-
-  // Warm Chrome's favicon cache so the _favicon API returns real site logos in the
-  // captures. A fresh test profile has none, so icons would otherwise be the generic
-  // globe. Best-effort — if the network is unavailable the chips just fall back.
-  for (const d of ['github.com', 'mail.google.com', 'reddit.com', 'youtube.com', 'amazon.com']) {
-    await seeder.goto(`https://${d}/`, { waitUntil: 'domcontentloaded', timeout: 15_000 }).catch(() => {});
-    await seeder.waitForTimeout(700);
-  }
   await seeder.close();
 
   for (const theme of ['dark', 'light'] as const) {

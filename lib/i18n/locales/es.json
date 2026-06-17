@@ -13,6 +13,9 @@
     "badgeTitle": "Sin servidores, sin cuentas, sin solicitudes de red. Haz clic para ver la política de privacidad.",
     "viewPolicy": "0 bytes salen de tu dispositivo: ver política de privacidad"
   },
+  "support": {
+    "coffee": "Invítame a un café"
+  },
   "popup": {
     "tabs": "{count} pestañas",
     "stale": "{count} obsoletas",
@@ -136,6 +139,7 @@
   "settings": {
     "title": "Ajustes",
     "theme": "Tema",
+    "switchTheme": "Cambiar tema · {mode}",
     "light": "Claro",
     "dark": "Oscuro",
     "language": "Idioma",

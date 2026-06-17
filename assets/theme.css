@@ -158,3 +158,44 @@ body {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
+
+/* Instant, styled hover/focus tooltip. Add data-tip="text" to any element.
+   Shows below + centered by default; .tip-above flips it up, .tip-right anchors
+   it to the element's right edge (so right-aligned controls don't clip). */
+[data-tip] {
+  position: relative;
+}
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: var(--popover);
+  color: var(--text);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms ease;
+  z-index: 100;
+}
+[data-tip].tip-above::after {
+  top: auto;
+  bottom: calc(100% + 6px);
+}
+[data-tip].tip-right::after {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+[data-tip]:hover::after,
+[data-tip]:focus-visible::after {
+  opacity: 1;
+}

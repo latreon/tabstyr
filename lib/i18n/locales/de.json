@@ -13,6 +13,9 @@
     "badgeTitle": "Keine Server, keine Konten, keine Netzwerkanfragen. Klicken für die Datenschutzerklärung.",
     "viewPolicy": "0 Bytes verlassen dein Gerät — Datenschutzerklärung ansehen"
   },
+  "support": {
+    "coffee": "Spendier mir einen Kaffee"
+  },
   "popup": {
     "tabs": "{count} Tabs",
     "stale": "{count} veraltet",
@@ -136,6 +139,7 @@
   "settings": {
     "title": "Einstellungen",
     "theme": "Design",
+    "switchTheme": "Design wechseln · {mode}",
     "light": "Hell",
     "dark": "Dunkel",
     "language": "Sprache",
