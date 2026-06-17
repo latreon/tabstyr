@@ -64,13 +64,17 @@ network requests. Your data lives in your browser's database and never leaves it
 - **Today** — active time with a sparkline and a vs-weekly-average delta.
 - **Open / stale tab counts.**
 - **Trend** — day, week, and month views.
+- **This week vs last week** — period comparison (week or month) broken down by
+  category, with per-category deltas.
 - **Activity heatmap** — which hours of which days you browse most.
-- **Today by category** — Work, Dev, Social, Media, News, Shopping; every site
-  re-classifiable.
+- **Today by category** — Work, Dev, Finance, Social, Media, News, Shopping, Other.
+  **Click any site's category dot to re-classify it instantly** (a quick colored
+  picker); the change applies everywhere.
 - **Focus today** — a productive-vs-distracting ratio with a daily streak.
 - **Top sites** with a per-domain detail view (its own trend, sessions, share,
   and heatmap).
-- **Open tabs by time** — a sortable table of the tabs you've actually used.
+- **Open tabs by time** — for each site you have open, its total active time over
+  the last 90 days, sortable, with a per-site open-tab count.
 - **Stale tabs** — list with one-click Close / Keep.
 - **What did I work on?** — pick any day and copy a clean site list for standups
   or invoices.
@@ -80,11 +84,15 @@ network requests. Your data lives in your browser's database and never leaves it
 
 ### Data
 - **Export** — full JSON backup, or CSV (daily totals or raw session log).
+- **Encrypted backup** — optional passphrase-protected export (AES-256-GCM,
+  PBKDF2-SHA-256), all in-browser via the Web Crypto API.
+- **Restore / import** — load a JSON or encrypted backup on this or another device.
 - **One-click wipe** of all stored data.
 - **90-day rolling window**, pruned automatically.
 
 ### Look & feel
 - System-aware **dark / light** themes with a manual toggle.
+- **6 languages** — English, Español, Deutsch, Français, 日本語, 中文（简体）.
 - Accessible, keyboard-friendly UI.
 
 ## Screenshots
@@ -110,7 +118,21 @@ in your browser's IndexedDB and pruned to a 90-day window.
 - It does **not** read page content — only the tab metadata (URL/title) the
   browser already provides to extensions.
 
-Full policy: [docs/store/privacy-policy.md](docs/store/privacy-policy.md).
+Full policy: [docs/store/privacy-policy.md](docs/store/privacy-policy.md). The
+policy is also viewable in-app — the **0 bytes leave your device** badge opens it
+as an overlay (no new tab, no page navigation).
+
+### Security
+
+- **No network surface** — zero `fetch`/XHR, no remote scripts, no content
+  scripts, no cross-origin messaging.
+- **Strict CSP** on Chromium extension pages: `script-src 'self'`, `object-src
+  'self'`, `connect-src 'none'`.
+- **Hardened backup import** — every record is type-checked and capped; the
+  passphrase KDF iteration count is clamped to a safe range to block downgrade and
+  CPU-exhaustion from a crafted file.
+- **Encrypted backups** use authenticated AES-256-GCM (a wrong passphrase or a
+  tampered file fails to decrypt rather than returning garbage).
 
 ### Permissions
 
@@ -129,9 +151,13 @@ No host permissions are requested — the extension cannot access page contents.
 
 | Browser | Status |
 |---|---|
-| Chrome, Edge, Brave, Opera, Vivaldi, Arc (Chromium, MV3) | ✅ Fully supported |
+| Chrome, Edge, Brave, Opera, Vivaldi, Arc (Chromium, MV3) | ✅ Fully supported — install as-is |
 | Firefox 115+ (MV2 build) | ✅ Supported — favicons fall back to colored letter chips |
-| Safari 16.4+ | ⚠️ Works after Xcode conversion, with reduced features (see [Safari](#safari)) |
+| Safari 16.4+ | ⚠️ Works after an Xcode conversion, with reduced features (see [Safari](#safari)) |
+
+Same codebase, one build per engine; only packaging and a few platform APIs
+differ. Full matrix and per-browser publish steps:
+[docs/store/browser-support.md](docs/store/browser-support.md).
 
 ## Install
 
@@ -197,7 +223,9 @@ npm run e2e         # Playwright end-to-end in Chromium (run `npm run build` fir
 ```bash
 npm run build            # Chromium  → dist/chrome-mv3
 npm run build:firefox    # Firefox   → dist/firefox-mv2
-npm run zip              # store-ready zip
+npm run build:safari     # Safari    → dist/safari-mv2 (then convert with Xcode)
+npm run zip              # Chromium store-ready zip
+npm run zip:firefox      # Firefox store-ready zip
 node scripts/make-promo.mjs   # regenerate promo images
 ```
 
@@ -216,7 +244,8 @@ TabStyr separates a pure, well-tested core from a thin platform layer and the UI
   Per-tab time is attributed by a stable key so it survives tab-ID reuse; sessions
   and daily stats are committed atomically.
 - **`lib/`** — pure helpers: `time`, `trend`, `heatmap`, `categories`,
-  `productivity`, `worklog`, `export`, `metrics`, `domain`.
+  `productivity`, `worklog`, `export`, `metrics`, `domain`, plus `crypto` +
+  `restore` (encrypted backup / validated import) and `i18n/` (6 locales).
 - **`composables/useStats.ts`** — the dashboard's data layer (Vue composable).
 - **`components/`, `entrypoints/{popup,dashboard}`** — Vue 3 UI.
 
@@ -239,6 +268,7 @@ docs/store/       listing copy, privacy policy, QA checklist, promo, screenshots
 |---|---|
 | Framework | [WXT](https://wxt.dev) (cross-browser extension framework) |
 | UI | [Vue 3](https://vuejs.org) + `<script setup>`, scoped CSS |
+| i18n | [vue-i18n](https://vue-i18n.intlify.dev) — 6 locales |
 | Language | [TypeScript](https://www.typescriptlang.org) (strict) |
 | Build | [Vite](https://vitejs.dev) (via WXT) |
 | Storage | [IndexedDB](https://developer.mozilla.org/docs/Web/API/IndexedDB_API) via [idb](https://github.com/jakearchibald/idb) |
@@ -247,7 +277,8 @@ docs/store/       listing copy, privacy policy, QA checklist, promo, screenshots
 | Type-check | [vue-tsc](https://github.com/vuejs/language-tools) |
 | CI | GitHub Actions |
 
-Runtime dependencies are just **`vue`** and **`idb`** — everything else is dev-only.
+Runtime dependencies are just **`vue`**, **`vue-i18n`**, and **`idb`** —
+everything else is dev-only.
 
 ## Testing
 
@@ -263,23 +294,28 @@ npm run build && npm run e2e
 
 ## Safari
 
-Not built by WXT — convert the Chromium build:
+Safari can't load a web-extension folder directly — it must be wrapped in an Xcode
+app (requires macOS + Xcode). Build, then convert:
 
 ```bash
-xcrun safari-web-extension-converter dist/chrome-mv3
+npm run build:safari   # → dist/safari-mv2
+xcrun safari-web-extension-converter dist/safari-mv2 \
+  --app-name "TabStyr" --bundle-identifier io.github.latreon.tabstyr --macos-only
 ```
 
-Conversion succeeds. Safari does not support `idle`, `notifications`, or `favicon`;
-TabStyr degrades gracefully (no idle-pause, no stale notification, letter-chip
-icons). Core tracking, the dashboard, categories, focus, export, and stale
-detection all work. Open the generated Xcode project, test on a real build, and
-distribute via the App Store or notarization (Apple Developer account required).
+Open the generated Xcode project, set your signing team, build & run, then enable
+**TabStyr** in Safari → Settings → Extensions. Distribute via the App Store.
+
+Safari lacks `idle`, `notifications`, and `favicon`, and needs **16.4+** for
+`storage.session`; TabStyr degrades gracefully on each (no idle-pause, no stale
+notification, letter-chip icons, and engine state simply rebuilt on cold start
+where session storage is missing). Core tracking, dashboard, categories, focus,
+export, and stale detection all work. Step-by-step:
+[docs/store/browser-support.md](docs/store/browser-support.md).
 
 ## Roadmap
 
 - Time budgets / limits per category with badge + alerts
-- Week-over-week comparison view
-- JSON import / restore
 - Day timeline ribbon and year-in-pixels views
 - Store releases (Chrome, Edge, Firefox)
 
