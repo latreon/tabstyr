@@ -105,8 +105,8 @@ network requests. Your data lives in your browser's database and never leaves it
 |---|---|
 | ![Popup light](docs/store/screenshots/popup-light.png) | ![Popup dark](docs/store/screenshots/popup-dark.png) |
 
-> Screenshots above are captured from a fresh profile (empty state). Use the
-> extension for a day to see populated charts.
+> Captured from the live extension with sample data. Your own dashboard fills in
+> as you browse.
 
 ## Privacy
 
@@ -197,8 +197,9 @@ What each number actually means:
 - **Streak** = consecutive days meeting the focus target.
 - **Stale** = a tab you haven't focused for longer than your threshold (default 3
   days) and haven't snoozed.
-- **Per-tab time** = total tracked for that specific tab over the retained window,
-  attributed by a stable key so it stays correct even after a browser restart.
+- **Open tabs by time** = for each site you currently have open, its total active
+  time over the 90-day window. Built from daily per-domain totals, so the number is
+  stable across browser restarts (it doesn't depend on volatile tab IDs).
 - **Sessions** are split every minute by a heartbeat and capped at 30 minutes, so a
   sleeping/suspended machine can't inflate your totals. (Media playback is exempt from
   the cap so a long video still reports its full watch time.)
