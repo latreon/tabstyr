@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue';
 import { browser } from 'wxt/browser';
 import * as repo from '@/lib/db/repo';
-import { domainOf, isWebDomain } from '@/lib/domain';
+import { displayDomain, domainOf, isWebDomain } from '@/lib/domain';
 import { findStale } from '@/lib/tracker/stale';
 import { getSettings, saveSettings } from '@/lib/settings';
 import { addDays, dateKey } from '@/lib/time';
@@ -14,16 +14,17 @@ import type { DailyStat, Session, Settings, TabMeta } from '@/lib/types';
 const RETENTION_MS = 90 * 86_400_000;
 
 export interface TabRow {
-  tabId: number;
+  tabId: number; // a representative open tab of this domain, for click-to-focus
   title: string;
   domain: string;
-  seconds: number;
+  seconds: number; // total foreground active seconds for the domain over the window
   lastActiveAt: number;
+  tabCount: number; // how many open tabs currently sit on this domain
 }
 
 export function useStats() {
   const stats = ref<DailyStat[]>([]); // last 90 days
-  const tabRows = ref<TabRow[]>([]);
+  const openMetas = ref<TabMeta[]>([]); // metas of currently-open, web tabs
   const staleTabs = ref<TabMeta[]>([]);
   const openTabCount = ref(0);
   const settings = ref<Settings | null>(null);
@@ -91,6 +92,38 @@ export function useStats() {
     summarizeProductivity(activeStats.value, todayKey.value, overrides.value, categoryRules.value),
   );
 
+  // "Open tabs by time" — one row per DOMAIN that has an open tab, showing that
+  // domain's total foreground active time over the window. Reads from the daily
+  // stats (key-independent), so totals are stable across browser restarts and
+  // aren't confused by background-audio-only time, which activeStats excludes.
+  const tabRows = computed<TabRow[]>(() => {
+    const totals = new Map<string, number>();
+    for (const s of activeStats.value) totals.set(s.domain, (totals.get(s.domain) ?? 0) + s.seconds);
+
+    const byDomain = new Map<string, TabMeta[]>();
+    for (const m of openMetas.value) {
+      const domain = domainOf(m.url);
+      if (!isWebDomain(domain)) continue;
+      const arr = byDomain.get(domain);
+      if (arr) arr.push(m);
+      else byDomain.set(domain, [m]);
+    }
+
+    return [...byDomain.entries()]
+      .map(([domain, metas]) => {
+        const rep = metas.reduce((a, b) => (b.lastActiveAt > a.lastActiveAt ? b : a));
+        return {
+          tabId: rep.tabId,
+          title: rep.title || displayDomain(domain),
+          domain,
+          seconds: totals.get(domain) ?? 0,
+          lastActiveAt: Math.max(...metas.map((m) => m.lastActiveAt)),
+          tabCount: metas.length,
+        };
+      })
+      .sort((a, b) => b.seconds - a.seconds || b.lastActiveAt - a.lastActiveAt);
+  });
+
   async function setCategoryOverride(domain: string, category: Category): Promise<void> {
     settings.value = await saveSettings({ categoryOverrides: { ...overrides.value, [domain]: category } });
   }
@@ -147,19 +180,8 @@ export function useStats() {
       // Only tabs we actually interacted with (have a meta = were focused at least
       // once). Tabs merely open in the background are never listed.
       const liveMetas = metas.filter((m) => liveIds.has(m.tabId));
+      openMetas.value = liveMetas;
       staleTabs.value = findStale(liveMetas, Date.now(), loadedSettings.staleDays);
-
-      // Per-tab time by stable key (survives tabId reuse across restarts).
-      const secondsByKey = await repo.getSecondsForKeys(liveMetas.map((m) => m.key));
-      tabRows.value = liveMetas
-        .map((m) => ({
-          tabId: m.tabId,
-          title: m.title || m.url,
-          domain: domainOf(m.url),
-          seconds: secondsByKey.get(m.key) ?? 0,
-          lastActiveAt: m.lastActiveAt,
-        }))
-        .sort((a, b) => b.seconds - a.seconds || b.lastActiveAt - a.lastActiveAt);
     } catch (e) {
       console.error('[dashboard] load failed', e);
       loadError.value = true;

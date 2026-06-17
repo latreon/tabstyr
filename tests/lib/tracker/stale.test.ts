@@ -60,6 +60,31 @@ describe('rematchTabMeta', () => {
     expect(outReverse[0].lastActiveAt).toBe(NOW - DAY);
   });
 
+  test('falls back to a same-domain meta when the exact url drifted on restore', () => {
+    // Session restore dropped the fragment — exact url no longer matches, but the
+    // tab is clearly the same site, so its stable key must survive.
+    const m = meta({ tabId: 10, key: 'kKeep', url: 'https://a.com/watch#t=5' });
+    const out = rematchTabMeta([m], [{ id: 5, url: 'https://a.com/watch' }]);
+    expect(out).toHaveLength(1);
+    expect(out[0].tabId).toBe(5);
+    expect(out[0].key).toBe('kKeep');
+  });
+
+  test('exact-url match wins over domain fallback; no meta is claimed twice', () => {
+    const exact = meta({ tabId: 10, key: 'kExact', url: 'https://a.com/x' });
+    const other = meta({ tabId: 11, key: 'kOther', url: 'https://a.com/y' });
+    const out = rematchTabMeta(
+      [exact, other],
+      [
+        { id: 5, url: 'https://a.com/x' }, // exact → kExact
+        { id: 6, url: 'https://a.com/z' }, // no exact → domain fallback → kOther
+      ],
+    );
+    expect(out).toHaveLength(2);
+    expect(out.find((m) => m.tabId === 5)?.key).toBe('kExact');
+    expect(out.find((m) => m.tabId === 6)?.key).toBe('kOther');
+  });
+
   test('N live tabs sharing a url each claim their own meta (no collapse)', () => {
     const older = meta({ tabId: 10, key: 'kOld', url: 'https://a.com', lastActiveAt: NOW - 5 * DAY });
     const newer = meta({ tabId: 11, key: 'kNew', url: 'https://a.com', lastActiveAt: NOW - DAY });

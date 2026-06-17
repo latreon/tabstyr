@@ -8,6 +8,7 @@
     "noActivity": "Aucune activité suivie pour l'instant."
   },
   "privacy": {
+    "title": "Confidentialité",
     "badge": "0 octet ne quitte votre appareil",
     "badgeTitle": "Aucun serveur, aucun compte, aucune requête réseau. Cliquez pour la politique de confidentialité.",
     "viewPolicy": "0 octet ne quitte votre appareil — voir la politique de confidentialité"
@@ -98,14 +99,16 @@
     "nothingTracked": "— rien de suivi.",
     "legendAria": "Légende des couleurs de points",
     "viewSiteAria": "Voir les détails de {domain} — {category}",
-    "categoryTitle": "Catégorie : {category}"
+    "categoryTitle": "Catégorie : {category}",
+    "changeCategory": "Changer de catégorie (actuellement {category})"
   },
   "tabTable": {
     "title": "Onglets ouverts par temps",
-    "sub": "Total suivi par onglet · 90 derniers jours",
-    "tab": "Onglet",
+    "sub": "Temps actif par site · 90 derniers jours",
+    "tab": "Site",
     "tracked": "Suivi",
     "lastActive": "Dernière activité",
+    "tabCount": "{count} onglets",
     "noTabs": "Aucun onglet suivi pour l'instant.",
     "goToTabAria": "Aller à l'onglet : {title}",
     "justNow": "à l'instant",

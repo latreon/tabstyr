@@ -89,8 +89,8 @@ function ago(ts: number): string {
         >
           <td class="title" :title="r.title">
             <FaviconChip :domain="r.domain" />
-            <span class="title-text">{{ r.title }}</span>
-            <span class="domain">{{ displayDomain(r.domain) }}</span>
+            <span class="title-text">{{ displayDomain(r.domain) }}</span>
+            <span v-if="r.tabCount > 1" class="tab-count">{{ t('tabTable.tabCount', { count: r.tabCount }) }}</span>
           </td>
           <td>{{ formatDuration(r.seconds) }}</td>
           <td>{{ ago(r.lastActiveAt) }}</td>
@@ -202,9 +202,10 @@ td.title .favicon {
 .title-text {
   color: var(--text);
 }
-.domain {
+.tab-count {
   color: var(--text-3);
   font-size: 11px;
-  margin-left: 6px;
+  font-variant-numeric: tabular-nums;
+  margin-left: 8px;
 }
 </style>

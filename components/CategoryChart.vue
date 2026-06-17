@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { CATEGORY_META, type CategorySlice } from '@/lib/categories';
 import { formatDuration } from '@/lib/time';
 
 const props = defineProps<{ slices: CategorySlice[] }>();
 const { t } = useI18n();
+
+// Category the pointer is over — used to highlight its segment + chip together.
+const hovered = ref<string | null>(null);
 
 const total = computed(() => props.slices.reduce((sum, s) => sum + s.seconds, 0));
 
@@ -31,18 +34,27 @@ const items = computed(() =>
     <p v-if="!total" class="empty">{{ t('common.nothingTracked') }}</p>
 
     <template v-else>
-      <div class="stack" role="img" :aria-label="t('category.shareAria')">
+      <div class="stack" role="img" :aria-label="t('category.shareAria')" :class="{ 'has-hover': hovered }">
         <span
           v-for="i in items"
           :key="i.category"
           class="seg"
+          :class="{ active: hovered === i.category }"
           :style="{ width: `${i.pct}%`, background: i.color }"
           :title="t('category.segTitle', { category: t(`categories.${i.category}`), time: formatDuration(i.seconds), pct: i.pct })"
+          @mouseenter="hovered = i.category"
+          @mouseleave="hovered = null"
         />
       </div>
 
-      <ul class="chips">
-        <li v-for="i in items" :key="i.category">
+      <ul class="chips" :class="{ 'has-hover': hovered }">
+        <li
+          v-for="i in items"
+          :key="i.category"
+          :class="{ active: hovered === i.category }"
+          @mouseenter="hovered = i.category"
+          @mouseleave="hovered = null"
+        >
           <span class="dot" :style="{ background: i.color }" aria-hidden="true" />
           <span class="chip-name">{{ t(`categories.${i.category}`) }}</span>
           <span class="chip-time">{{ formatDuration(i.seconds) }}</span>
@@ -93,8 +105,19 @@ const items = computed(() =>
 .seg {
   height: 100%;
   min-width: 3px;
-  transition: width 300ms ease;
+  cursor: pointer;
+  transition: width 300ms ease, opacity 150ms ease, filter 150ms ease;
 }
+/* When hovering, dim the rest and lift the active segment/chip. */
+.stack.has-hover .seg { opacity: 0.4; }
+.stack.has-hover .seg.active { opacity: 1; filter: brightness(1.12); }
+.chips.has-hover li { opacity: 0.45; }
+.chips li {
+  cursor: pointer;
+  transition: opacity 150ms ease;
+}
+.chips.has-hover li.active { opacity: 1; }
+.chips li.active .chip-name { color: var(--text); }
 .seg:first-child {
   border-radius: 7px 0 0 7px;
 }

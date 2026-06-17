@@ -18,18 +18,25 @@ import SettingsPanel from '@/components/SettingsPanel.vue';
 import OnboardingCard from '@/components/OnboardingCard.vue';
 import RingLogo from '@/components/RingLogo.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
+import PrivacyDialog from '@/components/PrivacyDialog.vue';
 
 const { t } = useI18n();
 const locale = useLocale();
 const s = useStats();
 const loadedNow = Date.now();
 const selected = ref<{ domain: string; now: number } | null>(null);
+const showPrivacy = ref(false);
 function openDetail(domain: string) {
   selected.value = { domain, now: Date.now() };
 }
 onMounted(async () => {
   await locale.load();
   await s.load();
+  // Opened from the popup's Privacy link — show the in-app overlay (no separate page).
+  if (location.hash === '#privacy') {
+    showPrivacy.value = true;
+    history.replaceState(null, '', location.pathname); // drop the hash from the URL
+  }
   if (location.hash === '#stale') {
     const el = document.getElementById('stale-section');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -47,14 +54,13 @@ onMounted(async () => {
     <header class="head">
       <h1 class="brand"><RingLogo :size="24" /> TabStyr</h1>
       <div class="head-right">
-        <a class="privacy-badge" href="/privacy.html" target="_blank" rel="noopener"
-           :title="t('privacy.badgeTitle')">
+        <button type="button" class="privacy-badge" :title="t('privacy.badgeTitle')" @click="showPrivacy = true">
           <svg class="shield" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 3l7 3v5.5c0 4-3 7-7 8.5-4-1.5-7-4.5-7-8.5V6z" />
             <path d="M9 12l2 2 4-4.5" />
           </svg>
           {{ t('privacy.badge') }}
-        </a>
+        </button>
         <ThemeToggle />
       </div>
     </header>
@@ -86,7 +92,7 @@ onMounted(async () => {
       <TrendChart :stats="s.activeStats.value" />
       <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" />
       <HeatmapTile :data="s.heatmap.value" />
-      <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :now="loadedNow" @select="openDetail" />
+      <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :now="loadedNow" @select="openDetail" @set-category="s.setCategoryOverride" />
       <!-- row: 2 + 1 -->
       <TabTable :rows="s.tabRows.value" />
       <SettingsPanel @changed="() => s.load({ silent: true })" />
@@ -105,6 +111,8 @@ onMounted(async () => {
     @close="selected = null"
     @set-category="s.setCategoryOverride"
   />
+
+  <PrivacyDialog v-if="showPrivacy" @close="showPrivacy = false" />
 </template>
 
 <style scoped>
@@ -143,14 +151,16 @@ onMounted(async () => {
   box-sizing: border-box;
   height: 28px;
   padding: 0 12px;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--card-strong);
   color: var(--text-2);
   font-size: 11px;
   font-weight: 600;
+  font-family: inherit;
   text-decoration: none;
   white-space: nowrap;
+  cursor: pointer;
 }
 .privacy-badge:hover { border-color: var(--accent); color: var(--text); }
 .privacy-badge:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

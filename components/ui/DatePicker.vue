@@ -193,15 +193,17 @@ onBeforeUnmount(() => {
   position: relative;
 }
 .trigger {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   gap: 7px;
+  height: 34px;
   border: 1px solid var(--border);
   background: var(--card-strong);
   color: var(--text);
   border-radius: 8px;
-  padding: 5px 10px;
-  font-size: 12px;
+  padding: 0 12px;
+  font-size: 13px;
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
@@ -209,8 +211,8 @@ onBeforeUnmount(() => {
 .trigger:hover { border-color: var(--accent); }
 .trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .cal-icon {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
   fill: none;
   stroke: var(--text-2);
   stroke-width: 1.8;

@@ -8,6 +8,7 @@ import { displayDomain } from '@/lib/domain';
 import type { DailyStat } from '@/lib/types';
 import FaviconChip from '@/components/FaviconChip.vue';
 import DatePicker from '@/components/ui/DatePicker.vue';
+import CategoryPicker from '@/components/CategoryPicker.vue';
 
 const props = defineProps<{
   stats: DailyStat[];
@@ -15,7 +16,7 @@ const props = defineProps<{
   rules?: CategoryRule[];
   now: number;
 }>();
-const emit = defineEmits<{ select: [domain: string] }>();
+const emit = defineEmits<{ select: [domain: string]; setCategory: [domain: string, category: Category] }>();
 const { t } = useI18n();
 
 const today = dateKey(props.now);
@@ -71,13 +72,13 @@ async function copy() {
     </p>
 
     <ol v-if="log.total" class="sites">
-      <li v-for="d in log.domains" :key="d.domain">
+      <li v-for="d in log.domains" :key="d.domain" class="site-row">
         <button class="site" :aria-label="t('worklog.viewSiteAria', { domain: displayDomain(d.domain), category: t(`categories.${d.category}`) })" @click="emit('select', d.domain)">
           <FaviconChip :domain="d.domain" />
           <span class="site-name">{{ displayDomain(d.domain) }}</span>
-          <span class="dot" :style="{ background: CATEGORY_META[d.category].color }" :title="t('worklog.categoryTitle', { category: t(`categories.${d.category}`) })" aria-hidden="true" />
-          <span class="site-time">{{ formatDuration(d.seconds) }}</span>
         </button>
+        <CategoryPicker :current="d.category" @select="(c) => emit('setCategory', d.domain, c)" />
+        <span class="site-time">{{ formatDuration(d.seconds) }}</span>
       </li>
     </ol>
 
@@ -117,14 +118,18 @@ async function copy() {
   gap: 6px;
 }
 .nav {
-  width: 28px;
-  height: 28px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
   border: 1px solid var(--border);
   background: var(--card-strong);
   color: var(--text-2);
   border-radius: 8px;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 18px;
   line-height: 1;
 }
 .nav:disabled {
@@ -142,13 +147,17 @@ async function copy() {
   color-scheme: light dark;
 }
 .copy {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
   margin-left: 4px;
   border: 1px solid var(--border);
   background: var(--card-strong);
   color: var(--text-2);
   border-radius: 8px;
-  padding: 5px 12px;
-  font-size: 12px;
+  padding: 0 16px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
@@ -184,25 +193,33 @@ async function copy() {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 2px 16px;
 }
+.site-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+.site-row:hover {
+  background: var(--row-hover);
+}
 .site {
   all: unset;
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: 18px 1fr 10px auto;
+  grid-template-columns: 18px 1fr;
   align-items: center;
   gap: 10px;
-  width: 100%;
-  padding: 7px 8px;
-  border-radius: var(--radius-sm);
+  min-width: 0;
+  padding: 7px 0;
   cursor: pointer;
   font-size: 13px;
-}
-.site:hover {
-  background: var(--row-hover);
 }
 .site:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: -2px;
+  border-radius: var(--radius-sm);
 }
 .site-name {
   overflow: hidden;
@@ -219,7 +236,7 @@ async function copy() {
   list-style: none;
   margin: 4px 0 0;
   padding: 12px 0 0;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid color-mix(in oklab, var(--text-3) 55%, transparent);
   display: flex;
   flex-wrap: wrap;
   gap: 6px 14px;

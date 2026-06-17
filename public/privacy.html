@@ -5,49 +5,205 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>TabStyr — Privacy</title>
   <style>
-    :root {
-      color-scheme: light dark;
-      --bg: #fbfbfd; --card: #fff; --text: #18181b; --text-2: #44444c; --text-3: #6e6e78;
-      --border: #ececf1; --accent: #6d5cf0; --good-bg: #ecfdf5; --good-fg: #047857; --good-bd: #a7f3d0;
+    @font-face {
+      font-family: 'InterVar';
+      src: url('/fonts/InterVariable.woff2') format('woff2');
+      font-weight: 100 900;
+      font-display: swap;
     }
+
+    /* Light is the default; [data-theme] (set pre-paint from the dashboard's cached
+       choice) and prefers-color-scheme both override it — mirrors assets/theme.css. */
+    :root {
+      color-scheme: light;
+      --accent-a: #7c5cf0;
+      --accent-b: #4f86f7;
+      --accent: #6d5cf0;
+      --accent-gradient: linear-gradient(90deg, var(--accent-a), var(--accent-b));
+      --surface: #f4f5fa;
+      --surface-glow: radial-gradient(ellipse 90% 55% at 50% -12%, rgba(124, 92, 240, 0.08), transparent 70%);
+      --card-strong: #ffffff;
+      --border: #e5e6ef;
+      --text: #16161a;
+      --text-2: #44444c;
+      --text-3: #6e6e78;
+      --positive: #16a34a;
+      --positive-bg: #ecfdf5;
+      --positive-border: #a7f3d0;
+      --shadow: 0 1px 2px rgba(17, 18, 38, 0.04), 0 12px 32px -14px rgba(17, 18, 38, 0.16);
+      --code-bg: #eef0f7;
+      --radius: 14px;
+      --radius-sm: 10px;
+      --font-ui: 'InterVar', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    }
+
+    /* No explicit choice cached → follow the OS preference. */
     @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0a0a0f; --card: #16161d; --text: #f1f1f7; --text-2: #c0c0d0; --text-3: #9a9aad;
-        --border: rgba(255,255,255,.1); --accent: #a78bfa; --good-bg: rgba(16,185,129,.12); --good-fg: #4ade80; --good-bd: rgba(16,185,129,.3);
+      :root:not([data-theme]) {
+        color-scheme: dark;
+        --surface: #0a0a0f;
+        --surface-glow: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(122, 90, 248, 0.22), transparent);
+        --card-strong: rgba(255, 255, 255, 0.07);
+        --border: rgba(255, 255, 255, 0.09);
+        --text: #f1f1f7;
+        --text-2: #c0c0d0;
+        --text-3: #9a9aad;
+        --accent-a: #a78bfa;
+        --accent-b: #60a5fa;
+        --accent: #8b8bfa;
+        --positive: #4ade80;
+        --positive-bg: rgba(16, 185, 129, 0.12);
+        --positive-border: rgba(16, 185, 129, 0.3);
+        --shadow: none;
+        --code-bg: rgba(255, 255, 255, 0.08);
       }
     }
+
+    :root[data-theme='dark'] {
+      color-scheme: dark;
+      --surface: #0a0a0f;
+      --surface-glow: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(122, 90, 248, 0.22), transparent);
+      --card-strong: rgba(255, 255, 255, 0.07);
+      --border: rgba(255, 255, 255, 0.09);
+      --text: #f1f1f7;
+      --text-2: #c0c0d0;
+      --text-3: #9a9aad;
+      --accent-a: #a78bfa;
+      --accent-b: #60a5fa;
+      --accent: #8b8bfa;
+      --positive: #4ade80;
+      --positive-bg: rgba(16, 185, 129, 0.12);
+      --positive-border: rgba(16, 185, 129, 0.3);
+      --shadow: none;
+      --code-bg: rgba(255, 255, 255, 0.08);
+    }
+
     * { box-sizing: border-box; }
     body {
-      margin: 0; background: var(--bg); color: var(--text);
-      font: 15px/1.6 system-ui, -apple-system, Segoe UI, sans-serif;
-      padding: 40px 20px;
+      margin: 0;
+      background: var(--surface);
+      color: var(--text);
+      font-family: var(--font-ui);
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 28px 20px 64px;
     }
-    main { max-width: 720px; margin: 0 auto; }
-    h1 { font-size: 28px; letter-spacing: -0.5px; margin: 0 0 4px; }
-    h2 { font-size: 18px; margin: 32px 0 10px; }
-    .updated { color: var(--text-3); font-size: 13px; margin: 0 0 24px; }
+    .glow {
+      position: fixed;
+      inset: 0;
+      background: var(--surface-glow);
+      pointer-events: none;
+      z-index: 0;
+    }
+    main { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; }
+
+    .head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+    .brand svg { flex: none; }
+
+    h1 {
+      font-size: clamp(28px, 4vw, 36px);
+      letter-spacing: -0.8px;
+      margin: 0 0 6px;
+    }
+    .gradient-text {
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    h2 { font-size: 18px; margin: 30px 0 10px; letter-spacing: -0.2px; }
+    .updated { color: var(--text-3); font-size: 13px; margin: 0 0 22px; }
+
     .badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--good-bg); color: var(--good-fg); border: 1px solid var(--good-bd);
-      border-radius: 999px; padding: 8px 16px; font-weight: 700; font-size: 14px; margin-bottom: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--positive-bg);
+      color: var(--positive);
+      border: 1px solid var(--positive-border);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 24px;
     }
     .badge svg {
-      width: 16px; height: 16px; fill: none; stroke: var(--good-fg);
+      width: 16px; height: 16px; flex: none; fill: none; stroke: var(--positive);
       stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
     }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; }
+
+    .card {
+      background: var(--card-strong);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px 28px;
+    }
     p, li { color: var(--text-2); }
+    li { margin: 4px 0; }
     strong { color: var(--text); }
+
     table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }
-    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
-    th { color: var(--text-3); font-weight: 600; }
-    code { background: var(--border); padding: 1px 6px; border-radius: 5px; font-size: 13px; }
+    th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-3); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    code {
+      background: var(--code-bg);
+      padding: 1px 6px;
+      border-radius: 5px;
+      font-size: 13px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
     a { color: var(--accent); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
   </style>
+  <script>
+    // Mirror the dashboard's chosen theme BEFORE paint (no flash). The dashboard
+    // caches its setting in localStorage under this key; absent/"system" falls back
+    // to the OS preference, matched by the CSS media queries above.
+    try {
+      var t = localStorage.getItem('tabstyr:theme');
+      if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t;
+    } catch (e) { /* storage unavailable — CSS media-query fallback applies */ }
+  </script>
 </head>
 <body>
+  <div class="glow" aria-hidden="true"></div>
   <main>
-    <h1>TabStyr — Privacy</h1>
+    <div class="head">
+      <span class="brand">
+        <svg width="22" height="22" viewBox="0 0 64 64" aria-hidden="true">
+          <defs>
+            <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#a78bfa" />
+              <stop offset="1" stop-color="#60a5fa" />
+            </linearGradient>
+          </defs>
+          <circle cx="32" cy="32" r="22" fill="none" stroke="currentColor" opacity="0.15" stroke-width="9" />
+          <path d="M 32 10 A 22 22 0 1 1 13.4 43" fill="none" stroke="url(#ringGrad)" stroke-width="9" stroke-linecap="round" />
+          <line x1="32" y1="32" x2="32" y2="19" stroke="var(--accent)" stroke-width="6" stroke-linecap="round" />
+          <line x1="32" y1="32" x2="41" y2="37" stroke="var(--accent)" stroke-width="6" stroke-linecap="round" />
+        </svg>
+        TabStyr
+      </span>
+    </div>
+
+    <h1><span class="gradient-text">Privacy</span></h1>
     <p class="updated">Last updated: 2026-06-12</p>
     <div class="badge" role="status">
       <svg viewBox="0 0 24 24" aria-hidden="true">

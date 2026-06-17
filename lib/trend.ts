@@ -23,10 +23,10 @@ export function buildTrend(stats: DailyStat[], mode: TrendMode, now: number): Tr
 
 function buildFrom(byDate: Map<string, number>, mode: TrendMode, today: string): TrendPoint[] {
   if (mode === 'day') {
-    return rangeDays(today, 14).map((d) => ({ key: d, label: dayLabel(d), seconds: byDate.get(d) ?? 0 }));
+    return rangeDays(today, 10).map((d) => ({ key: d, label: dayLabel(d), seconds: byDate.get(d) ?? 0 }));
   }
   if (mode === 'week') {
-    const days = rangeDays(today, 84);
+    const days = rangeDays(today, 56);
     const out: TrendPoint[] = [];
     for (let i = 0; i < days.length; i += 7) {
       const chunk = days.slice(i, i + 7);
@@ -38,7 +38,7 @@ function buildFrom(byDate: Map<string, number>, mode: TrendMode, today: string):
     }
     return out;
   }
-  const days = rangeDays(today, 90);
+  const days = rangeDays(today, 60);
   // The oldest bucket only includes the tail of its month if the window didn't
   // start on the 1st; the newest bucket is the current month, still in progress.
   const startPartial = !days[0].endsWith('-01');

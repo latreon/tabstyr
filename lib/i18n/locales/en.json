@@ -8,6 +8,7 @@
     "noActivity": "No activity tracked yet."
   },
   "privacy": {
+    "title": "Privacy",
     "badge": "0 bytes leave your device",
     "badgeTitle": "No servers, no accounts, no network requests. Click for the privacy policy.",
     "viewPolicy": "0 bytes leave your device — view privacy policy"
@@ -98,16 +99,18 @@
     "nothingTracked": "— nothing tracked.",
     "legendAria": "Dot colour key",
     "viewSiteAria": "View {domain} details — {category}",
-    "categoryTitle": "Category: {category}"
+    "categoryTitle": "Category: {category}",
+    "changeCategory": "Change category (now {category})"
   },
   "tabTable": {
     "title": "Open tabs by time",
-    "sub": "Total tracked per tab · last 90 days",
-    "tab": "Tab",
+    "sub": "Active time per site · last 90 days",
+    "tab": "Site",
     "tracked": "Tracked",
     "lastActive": "Last active",
+    "tabCount": "{count} tabs",
     "noTabs": "No tracked tabs yet.",
-    "goToTabAria": "Go to tab: {title}",
+    "goToTabAria": "Go to {title}",
     "justNow": "just now",
     "minsAgo": "{count}m ago",
     "hoursAgo": "{count}h ago",

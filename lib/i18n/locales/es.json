@@ -8,6 +8,7 @@
     "noActivity": "Aún no se ha registrado actividad."
   },
   "privacy": {
+    "title": "Privacidad",
     "badge": "0 bytes salen de tu dispositivo",
     "badgeTitle": "Sin servidores, sin cuentas, sin solicitudes de red. Haz clic para ver la política de privacidad.",
     "viewPolicy": "0 bytes salen de tu dispositivo: ver política de privacidad"
@@ -98,14 +99,16 @@
     "nothingTracked": "— nada registrado.",
     "legendAria": "Leyenda de colores de los puntos",
     "viewSiteAria": "Ver detalles de {domain} — {category}",
-    "categoryTitle": "Categoría: {category}"
+    "categoryTitle": "Categoría: {category}",
+    "changeCategory": "Cambiar categoría (ahora {category})"
   },
   "tabTable": {
     "title": "Pestañas abiertas por tiempo",
-    "sub": "Total registrado por pestaña · últimos 90 días",
-    "tab": "Pestaña",
+    "sub": "Tiempo activo por sitio · últimos 90 días",
+    "tab": "Sitio",
     "tracked": "Registrado",
     "lastActive": "Última actividad",
+    "tabCount": "{count} pestañas",
     "noTabs": "Aún no hay pestañas registradas.",
     "goToTabAria": "Ir a la pestaña: {title}",
     "justNow": "ahora mismo",

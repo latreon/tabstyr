@@ -7,7 +7,7 @@ import { CATEGORIES, type Category, type CategoryRule } from '@/lib/categories';
 import { useTheme } from '@/composables/useTheme';
 import { useLocale } from '@/composables/useLocale';
 import { useFocusTrap } from '@/composables/useFocusTrap';
-import { SUPPORTED_LOCALES } from '@/lib/i18n';
+import { SUPPORTED_LOCALES, resolveLocale } from '@/lib/i18n';
 import * as repo from '@/lib/db/repo';
 import { dailyStatsToCsv, downloadFile, toJsonBackup } from '@/lib/export';
 import { encryptToEnvelope, isEncryptedEnvelope, decryptFromEnvelope } from '@/lib/crypto';
@@ -27,11 +27,13 @@ const THEME_OPTIONS = computed(() => [
   { value: 'dark', label: t('settings.dark') },
 ]);
 
-// 'auto' (follow the browser) + each supported locale, shown in its own script.
-const LANGUAGE_OPTIONS = computed(() => [
-  { value: 'auto', label: t('settings.languageAuto') },
-  ...SUPPORTED_LOCALES.map((l) => ({ value: l.code, label: l.label })),
-]);
+// Explicit locales only — each shown in its own script. No "Automatic": the
+// picker always reflects a concrete language.
+const LANGUAGE_OPTIONS = computed(() =>
+  SUPPORTED_LOCALES.map((l) => ({ value: l.code, label: l.label })),
+);
+// A stored 'auto' preference resolves to a concrete locale for display/selection.
+const currentLocale = computed(() => resolveLocale(locale.language.value));
 
 const emit = defineEmits<{ changed: [] }>();
 const theme = useTheme();
@@ -323,7 +325,7 @@ async function confirmWipe() {
     <div class="field">
       <span class="field-label">{{ t('settings.language') }}</span>
       <SelectBox
-        :model-value="locale.language.value"
+        :model-value="currentLocale"
         :options="LANGUAGE_OPTIONS"
         :label="t('settings.language')"
         @update:model-value="locale.setLanguage($event)"

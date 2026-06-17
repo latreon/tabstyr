@@ -8,6 +8,7 @@
     "noActivity": "Noch keine Aktivität erfasst."
   },
   "privacy": {
+    "title": "Datenschutz",
     "badge": "0 Bytes verlassen dein Gerät",
     "badgeTitle": "Keine Server, keine Konten, keine Netzwerkanfragen. Klicken für die Datenschutzerklärung.",
     "viewPolicy": "0 Bytes verlassen dein Gerät — Datenschutzerklärung ansehen"
@@ -98,14 +99,16 @@
     "nothingTracked": "— nichts erfasst.",
     "legendAria": "Legende der Punktfarben",
     "viewSiteAria": "Details zu {domain} ansehen — {category}",
-    "categoryTitle": "Kategorie: {category}"
+    "categoryTitle": "Kategorie: {category}",
+    "changeCategory": "Kategorie ändern (aktuell {category})"
   },
   "tabTable": {
     "title": "Offene Tabs nach Zeit",
-    "sub": "Gesamt erfasst pro Tab · letzte 90 Tage",
-    "tab": "Tab",
+    "sub": "Aktive Zeit pro Website · letzte 90 Tage",
+    "tab": "Website",
     "tracked": "Erfasst",
     "lastActive": "Zuletzt aktiv",
+    "tabCount": "{count} Tabs",
     "noTabs": "Noch keine erfassten Tabs.",
     "goToTabAria": "Zum Tab wechseln: {title}",
     "justNow": "gerade eben",

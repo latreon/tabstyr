@@ -15,6 +15,8 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const period = ref<ComparePeriod>('week');
+// Category row the pointer is over — highlights the row and its label.
+const hovered = ref<string | null>(null);
 const MODES: ComparePeriod[] = ['week', 'month'];
 
 const cmp = computed(() =>
@@ -67,8 +69,15 @@ const dir = (pct: number | null) => (pct === null ? '' : pct > 0 ? 'up' : pct < 
         <span class="prev">{{ t('comparison.vsBefore', { time: formatDuration(cmp.previousSeconds) }) }}</span>
       </div>
 
-      <ul class="rows">
-        <li v-for="c in cmp.categories" :key="c.category" class="row">
+      <ul class="rows" :class="{ 'has-hover': hovered }">
+        <li
+          v-for="c in cmp.categories"
+          :key="c.category"
+          class="row"
+          :class="{ active: hovered === c.category }"
+          @mouseenter="hovered = c.category"
+          @mouseleave="hovered = null"
+        >
           <span class="dot" :style="{ background: CATEGORY_META[c.category].color }" aria-hidden="true" />
           <span class="name">{{ t(`categories.${c.category}`) }}</span>
           <span class="bars" :aria-label="`${t(`categories.${c.category}`)}: ${formatDuration(c.current)} / ${formatDuration(c.previous)}`">
@@ -182,7 +191,18 @@ const dir = (pct: number | null) => (pct === null ? '' : pct > 0 ? 'up' : pct < 
   align-items: center;
   gap: 10px;
   font-size: 13px;
+  padding: 4px 8px;
+  margin: 0 -8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 150ms ease, opacity 150ms ease;
 }
+.rows.has-hover .row { opacity: 0.5; }
+.rows.has-hover .row.active {
+  opacity: 1;
+  background: var(--row-hover);
+}
+.row.active .name { color: var(--text); font-weight: 600; }
 .dot {
   width: 9px;
   height: 9px;

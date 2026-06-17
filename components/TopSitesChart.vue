@@ -65,7 +65,7 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds + d.aud
   all: unset;
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: 18px 180px 1fr 70px;
+  grid-template-columns: 18px 170px 1fr 80px;
   align-items: center;
   gap: 10px;
   font-size: 13px;

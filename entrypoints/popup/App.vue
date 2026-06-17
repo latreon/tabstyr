@@ -79,12 +79,14 @@ onMounted(async () => {
 });
 
 function openDashboard(hash = '') {
-  void browser.tabs.create({ url: browser.runtime.getURL(`/dashboard.html${hash}`) });
+  // Directory path (served by dashboard/index.html) keeps ".html" out of the URL bar.
+  // getURL is typed to known .html entrypoints; the directory index isn't one of them.
+  const getURL = browser.runtime.getURL as (p: string) => string;
+  void browser.tabs.create({ url: getURL(`/dashboard/${hash}`) });
 }
 function openPrivacy() {
-  // getURL is typed to known entrypoints; privacy.html is a public/ asset.
-  const url = (browser.runtime.getURL as (p: string) => string)('/privacy.html');
-  void browser.tabs.create({ url });
+  // Open the dashboard and show the in-app privacy overlay (no separate .html page).
+  openDashboard('#privacy');
 }
 </script>
 

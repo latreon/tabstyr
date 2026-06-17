@@ -8,6 +8,7 @@
     "noActivity": "まだアクティビティは記録されていません。"
   },
   "privacy": {
+    "title": "プライバシー",
     "badge": "デバイスから出るのは0バイト",
     "badgeTitle": "サーバーなし、アカウントなし、ネットワークリクエストなし。クリックでプライバシーポリシーを表示。",
     "viewPolicy": "デバイスから出るのは0バイト — プライバシーポリシーを表示"
@@ -98,14 +99,16 @@
     "nothingTracked": "— 何も記録されていません。",
     "legendAria": "ドットの色の凡例",
     "viewSiteAria": "{domain}の詳細を表示 — {category}",
-    "categoryTitle": "カテゴリ：{category}"
+    "categoryTitle": "カテゴリ：{category}",
+    "changeCategory": "カテゴリを変更（現在：{category}）"
   },
   "tabTable": {
     "title": "時間別の開いているタブ",
-    "sub": "タブごとの合計記録時間 · 直近90日間",
-    "tab": "タブ",
+    "sub": "サイトごとのアクティブ時間 · 直近90日間",
+    "tab": "サイト",
     "tracked": "記録時間",
     "lastActive": "最終アクティブ",
+    "tabCount": "{count}個のタブ",
     "noTabs": "まだ記録されたタブはありません。",
     "goToTabAria": "タブに移動：{title}",
     "justNow": "たった今",

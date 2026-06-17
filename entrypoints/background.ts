@@ -317,7 +317,9 @@ export default defineBackground(() => {
   }));
 
   browser.notifications?.onClicked?.addListener(() => {
-    void browser.tabs.create({ url: browser.runtime.getURL('/dashboard.html') });
+    // Directory path (dashboard/index.html) so the address bar shows no ".html".
+    const getURL = browser.runtime.getURL as (p: string) => string;
+    void browser.tabs.create({ url: getURL('/dashboard/#stale') });
   });
 
   // Before the service worker unloads (idle eviction or browser close), flush the
