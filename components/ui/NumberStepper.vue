@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{ modelValue: number; min?: number; max?: number; step?: number; label?: string }>();
 const emit = defineEmits<{ 'update:modelValue': [value: number] }>();
+const { t } = useI18n();
 
 const step = computed(() => props.step ?? 1);
 
@@ -23,7 +25,7 @@ function onInput(e: Event) {
 
 <template>
   <div class="stepper">
-    <button type="button" :aria-label="`Decrease ${label ?? ''}`" :disabled="min !== undefined && modelValue <= min" @click="bump(-1)">−</button>
+    <button type="button" :aria-label="t('common.decrease', { label: label ?? '' })" :disabled="min !== undefined && modelValue <= min" @click="bump(-1)">−</button>
     <input
       type="number"
       :value="modelValue"
@@ -33,7 +35,7 @@ function onInput(e: Event) {
       :aria-label="label"
       @input="onInput"
     />
-    <button type="button" :aria-label="`Increase ${label ?? ''}`" :disabled="max !== undefined && modelValue >= max" @click="bump(1)">+</button>
+    <button type="button" :aria-label="t('common.increase', { label: label ?? '' })" :disabled="max !== undefined && modelValue >= max" @click="bump(1)">+</button>
   </div>
 </template>
 

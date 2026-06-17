@@ -5,7 +5,9 @@
     "today": "Today",
     "nothingYet": "Nothing yet.",
     "nothingTracked": "Nothing tracked yet.",
-    "noActivity": "No activity tracked yet."
+    "noActivity": "No activity tracked yet.",
+    "decrease": "Decrease {label}",
+    "increase": "Increase {label}"
   },
   "privacy": {
     "title": "Privacy",

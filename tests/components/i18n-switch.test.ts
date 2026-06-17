@@ -9,7 +9,7 @@ afterEach(() => setLocale('en'));
 describe('locale switching', () => {
   test('rendered text follows the active locale', async () => {
     setLocale('en');
-    const w = mount(OnboardingCard, { global: { plugins: [i18n] }, attachTo: document.body });
+    const w = mount(OnboardingCard, { global: { plugins: [i18n], stubs: { teleport: true } }, attachTo: document.body });
     expect(w.get('.title').text()).toBe('Welcome to TabStyr');
 
     setLocale('de');

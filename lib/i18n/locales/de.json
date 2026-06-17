@@ -5,7 +5,9 @@
     "today": "Heute",
     "nothingYet": "Noch nichts.",
     "nothingTracked": "Noch nichts erfasst.",
-    "noActivity": "Noch keine Aktivität erfasst."
+    "noActivity": "Noch keine Aktivität erfasst.",
+    "decrease": "Verringern {label}",
+    "increase": "Erhöhen {label}"
   },
   "privacy": {
     "title": "Datenschutz",

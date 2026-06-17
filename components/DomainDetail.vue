@@ -98,6 +98,7 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <Teleport to="body">
   <div class="backdrop" @click.self="emit('close')">
     <div ref="panel" class="panel tile" role="dialog" aria-modal="true" :aria-label="t('domainDetail.detailsForAria', { domain: displayDomain(domain) })">
       <header class="head">
@@ -157,6 +158,7 @@ onUnmounted(() => {
       </section>
     </div>
   </div>
+  </Teleport>
 </template>
 
 <style scoped>

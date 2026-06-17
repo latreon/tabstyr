@@ -52,7 +52,8 @@ test('dashboard renders all analytics tiles', async ({ context, extensionId }) =
   await expect(page.getByText('Focus today')).toBeVisible();
   await expect(page.getByText('Today by category')).toBeVisible();
   await expect(page.getByText('Activity heatmap')).toBeVisible();
-  await expect(page.getByText('Trend', { exact: true })).toBeVisible();
+  await expect(page.getByText('Activity trend', { exact: true })).toBeVisible();
+  await expect(page.getByText('Focus trend', { exact: true })).toBeVisible();
   await expect(page.getByText('What did I work on?')).toBeVisible();
   await expect(page.getByText('Open tabs by time')).toBeVisible();
   await expect(page.getByText('Settings', { exact: true })).toBeVisible();
@@ -61,6 +62,7 @@ test('dashboard renders all analytics tiles', async ({ context, extensionId }) =
 test('settings export buttons are present', async ({ context, extensionId }) => {
   const page = await context.newPage();
   await page.goto(`chrome-extension://${extensionId}/dashboard.html`);
+  await dismissOnboarding(page); // onboarding inerts the background until dismissed
   await expect(page.getByRole('button', { name: 'Export JSON' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Export CSV' })).toBeVisible();
 });

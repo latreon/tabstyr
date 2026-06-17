@@ -32,8 +32,9 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <Teleport to="body">
   <div class="backdrop" @click.self="close">
-    <section ref="panel" class="modal" role="dialog" aria-modal="true" aria-labelledby="onboard-title" :aria-label="t('onboarding.dialogAria')">
+    <section ref="panel" class="modal" role="dialog" aria-modal="true" aria-labelledby="onboard-title">
       <button class="close" :aria-label="t('onboarding.close')" @click="close">✕</button>
 
       <h2 id="onboard-title" class="title">{{ t('onboarding.title') }}</h2>
@@ -81,6 +82,7 @@ onUnmounted(() => {
       </div>
     </section>
   </div>
+  </Teleport>
 </template>
 
 <style scoped>

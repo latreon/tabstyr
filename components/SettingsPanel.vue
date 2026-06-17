@@ -265,6 +265,7 @@ onBeforeUnmount(() => {
   encPass2.value = '';
   restorePass.value = '';
   restoreRaw.value = null;
+  clearTimeout(toastTimer);
 });
 
 async function confirmRestore() {
@@ -434,6 +435,7 @@ async function confirmWipe() {
     </div>
 
     <!-- Restore confirmation (destructive) -->
+    <Teleport to="body">
     <div v-if="pendingRestore" class="backdrop" @click.self="cancelRestore">
       <div ref="restoreModalEl" class="modal" role="dialog" aria-modal="true" :aria-label="t('settings.confirmRestoreAria')">
         <h3 class="modal-title">{{ t('settings.replaceTitle') }}</h3>
@@ -450,8 +452,10 @@ async function confirmWipe() {
         </div>
       </div>
     </div>
+    </Teleport>
 
     <!-- Wipe confirmation -->
+    <Teleport to="body">
     <div v-if="showWipeModal" class="backdrop" @click.self="showWipeModal = false">
       <div ref="wipeModalEl" class="modal" role="dialog" aria-modal="true" :aria-label="t('settings.confirmWipeAria')">
         <h3 class="modal-title">{{ t('settings.wipeTitle') }}</h3>
@@ -464,10 +468,15 @@ async function confirmWipe() {
         </div>
       </div>
     </div>
+    </Teleport>
 
-    <Transition name="toast">
-      <div v-if="toast" class="toast" role="status" aria-live="polite">{{ toast }}</div>
-    </Transition>
+    <!-- Live region is always present so screen readers announce text swaps
+         (wipe/restore/export results). Only the inner toast animates in/out. -->
+    <div class="toast-host" role="status" aria-live="polite">
+      <Transition name="toast">
+        <div v-if="toast" class="toast">{{ toast }}</div>
+      </Transition>
+    </div>
   </div>
 </template>
 

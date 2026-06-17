@@ -16,6 +16,15 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds + d.aud
 
 <template>
   <div class="tile top-sites">
+    <!-- Single shared gradient def (referenced by every row's bar) -->
+    <svg width="0" height="0" aria-hidden="true" style="position: absolute">
+      <defs>
+        <linearGradient id="siteBar" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#a78bfa" />
+          <stop offset="1" stop-color="#60a5fa" />
+        </linearGradient>
+      </defs>
+    </svg>
     <span class="label">{{ t('topSites.title') }}</span>
     <p v-if="!top.length" class="label">{{ t('common.nothingYet') }}</p>
     <button
@@ -28,12 +37,6 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds + d.aud
       <FaviconChip :domain="d.domain" />
       <span class="name" :title="displayDomain(d.domain)">{{ displayDomain(d.domain) }}</span>
       <svg :viewBox="`0 0 100 8`" preserveAspectRatio="none" class="bar" aria-hidden="true">
-        <defs>
-          <linearGradient id="siteBar" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stop-color="#a78bfa" />
-            <stop offset="1" stop-color="#60a5fa" />
-          </linearGradient>
-        </defs>
         <rect x="0" y="0" width="100" height="8" rx="2" fill="var(--bar-track)" />
         <rect x="0" y="0" :width="(d.seconds / max) * 100" height="8" rx="2" fill="url(#siteBar)" />
         <rect

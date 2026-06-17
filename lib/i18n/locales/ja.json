@@ -5,7 +5,9 @@
     "today": "今日",
     "nothingYet": "まだ何もありません。",
     "nothingTracked": "まだ何も記録されていません。",
-    "noActivity": "まだアクティビティは記録されていません。"
+    "noActivity": "まだアクティビティは記録されていません。",
+    "decrease": "減らす {label}",
+    "increase": "増やす {label}"
   },
   "privacy": {
     "title": "プライバシー",

@@ -5,7 +5,9 @@
     "today": "Aujourd'hui",
     "nothingYet": "Rien pour l'instant.",
     "nothingTracked": "Rien de suivi pour l'instant.",
-    "noActivity": "Aucune activité suivie pour l'instant."
+    "noActivity": "Aucune activité suivie pour l'instant.",
+    "decrease": "Diminuer {label}",
+    "increase": "Augmenter {label}"
   },
   "privacy": {
     "title": "Confidentialité",

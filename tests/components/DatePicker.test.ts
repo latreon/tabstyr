@@ -12,7 +12,7 @@ describe('DatePicker', () => {
     expect(w.get('.trigger').text()).toContain('Jun 16');
     expect(w.find('.cal').exists()).toBe(false);
     await w.get('.trigger').trigger('click');
-    expect(w.find('[role="grid"]').exists()).toBe(true);
+    expect(w.find('.grid').exists()).toBe(true);
   });
 
   test('the selected day carries roving focus (tabindex 0)', async () => {
@@ -26,7 +26,7 @@ describe('DatePicker', () => {
   test('arrow keys move the roving focus by day', async () => {
     const w = makeWrapper();
     await w.get('.trigger').trigger('click');
-    await w.get('[role="grid"]').trigger('keydown', { key: 'ArrowLeft' });
+    await w.get('.grid').trigger('keydown', { key: 'ArrowLeft' });
     const roving = w.findAll('.day').find((d) => d.attributes('tabindex') === '0');
     expect(roving?.attributes('data-key')).toBe('2026-06-15');
   });
@@ -34,7 +34,7 @@ describe('DatePicker', () => {
   test('arrow nav is clamped to max (cannot move past it)', async () => {
     const w = makeWrapper();
     await w.get('.trigger').trigger('click');
-    await w.get('[role="grid"]').trigger('keydown', { key: 'ArrowRight' }); // 16th is max
+    await w.get('.grid').trigger('keydown', { key: 'ArrowRight' }); // 16th is max
     const roving = w.findAll('.day').find((d) => d.attributes('tabindex') === '0');
     expect(roving?.attributes('data-key')).toBe('2026-06-16');
   });

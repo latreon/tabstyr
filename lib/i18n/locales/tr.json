@@ -5,7 +5,9 @@
     "today": "Bugün",
     "nothingYet": "Henüz bir şey yok.",
     "nothingTracked": "Henüz hiçbir şey kaydedilmedi.",
-    "noActivity": "Henüz etkinlik kaydedilmedi."
+    "noActivity": "Henüz etkinlik kaydedilmedi.",
+    "decrease": "Azalt {label}",
+    "increase": "Artır {label}"
   },
   "privacy": {
     "title": "Gizlilik",

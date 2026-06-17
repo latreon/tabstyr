@@ -5,7 +5,9 @@
     "today": "Сегодня",
     "nothingYet": "Пока ничего.",
     "nothingTracked": "Пока ничего не записано.",
-    "noActivity": "Активность пока не записана."
+    "noActivity": "Активность пока не записана.",
+    "decrease": "Уменьшить {label}",
+    "increase": "Увеличить {label}"
   },
   "privacy": {
     "title": "Конфиденциальность",

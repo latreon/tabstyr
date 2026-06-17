@@ -5,7 +5,9 @@
     "today": "今天",
     "nothingYet": "暂无内容。",
     "nothingTracked": "尚未记录任何内容。",
-    "noActivity": "尚未记录任何活动。"
+    "noActivity": "尚未记录任何活动。",
+    "decrease": "减少 {label}",
+    "increase": "增加 {label}"
   },
   "privacy": {
     "title": "隐私",

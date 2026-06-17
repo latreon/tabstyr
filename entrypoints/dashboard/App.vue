@@ -72,8 +72,8 @@ onMounted(async () => {
         <ThemeToggle />
       </div>
     </header>
-    <p v-if="s.loading.value" class="label">{{ t('common.loading') }}</p>
-    <p v-else-if="s.loadError.value" class="label">{{ t('common.loadError') }}</p>
+    <p v-if="s.loading.value" class="label" role="status" aria-live="polite" aria-busy="true">{{ t('common.loading') }}</p>
+    <p v-else-if="s.loadError.value" class="label" role="alert">{{ t('common.loadError') }}</p>
     <template v-else>
       <OnboardingCard v-if="s.showOnboarding.value" @dismiss="s.dismissOnboarding" />
       <section class="bento" :aria-label="t('dashboard.statsAria')">

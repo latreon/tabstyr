@@ -5,7 +5,9 @@
     "today": "오늘",
     "nothingYet": "아직 없음.",
     "nothingTracked": "아직 기록된 항목이 없습니다.",
-    "noActivity": "아직 기록된 활동이 없습니다."
+    "noActivity": "아직 기록된 활동이 없습니다.",
+    "decrease": "줄이기 {label}",
+    "increase": "늘리기 {label}"
   },
   "privacy": {
     "title": "개인정보 보호",

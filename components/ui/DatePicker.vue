@@ -168,7 +168,7 @@ onBeforeUnmount(() => {
       <div class="weekdays" aria-hidden="true">
         <span v-for="(w, i) in WEEKDAYS" :key="i">{{ w }}</span><!-- localized initials -->
       </div>
-      <div ref="grid" class="grid" role="grid" @keydown="onGridKey">
+      <div ref="grid" class="grid" role="group" :aria-label="monthTitle" @keydown="onGridKey">
         <template v-for="(c, i) in cells" :key="i">
           <span v-if="!c" class="empty" />
           <button

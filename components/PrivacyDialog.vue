@@ -26,6 +26,7 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <Teleport to="body">
   <div class="backdrop" @click.self="emit('close')">
     <div ref="panel" class="panel tile" role="dialog" aria-modal="true" :aria-label="t('privacy.title')">
       <header class="head">
@@ -75,6 +76,7 @@ onUnmounted(() => {
       </div>
     </div>
   </div>
+  </Teleport>
 </template>
 
 <style scoped>

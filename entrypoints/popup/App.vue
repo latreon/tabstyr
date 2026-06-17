@@ -105,12 +105,12 @@ function openPrivacy() {
       <ThemeToggle />
     </header>
 
-    <div v-if="loading" class="skeleton" aria-hidden="true">
-      <div class="sk sk-hero" />
-      <div class="sk sk-row" v-for="i in 3" :key="i" />
+    <div v-if="loading" class="skeleton" role="status" aria-busy="true" :aria-label="t('common.loading')">
+      <div class="sk sk-hero" aria-hidden="true" />
+      <div class="sk sk-row" v-for="i in 3" :key="i" aria-hidden="true" />
     </div>
 
-    <p v-else-if="loadError" class="label error">{{ t('popup.loadError') }}</p>
+    <p v-else-if="loadError" class="label error" role="alert">{{ t('popup.loadError') }}</p>
 
     <template v-else>
       <section class="hero">

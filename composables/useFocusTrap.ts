@@ -1,5 +1,25 @@
 import { onBeforeUnmount, onMounted, watch, type Ref } from 'vue';
 
+// While any trapped dialog is open, hide the app root from assistive tech and
+// pointer/focus interaction. Ref-counted so stacked dialogs are safe. Modals are
+// teleported to <body> (outside #app), so inerting #app disables only the
+// background, never the dialog itself.
+let openDialogs = 0;
+function lockBackground() {
+  if (openDialogs++ === 0) {
+    const app = document.getElementById('app');
+    app?.setAttribute('inert', '');
+    app?.setAttribute('aria-hidden', 'true');
+  }
+}
+function unlockBackground() {
+  if (openDialogs > 0 && --openDialogs === 0) {
+    const app = document.getElementById('app');
+    app?.removeAttribute('inert');
+    app?.removeAttribute('aria-hidden');
+  }
+}
+
 const FOCUSABLE = [
   'a[href]',
   'button:not([disabled])',
@@ -55,13 +75,20 @@ export function useFocusTrap(container: Ref<HTMLElement | null>, isActive?: Ref<
     }
   }
 
+  let active = false;
   function activate() {
+    if (active) return;
+    active = true;
     previouslyFocused = document.activeElement as HTMLElement | null;
     document.addEventListener('keydown', onKeydown, true);
+    lockBackground();
   }
 
   function deactivate() {
+    if (!active) return;
+    active = false;
     document.removeEventListener('keydown', onKeydown, true);
+    unlockBackground();
     previouslyFocused?.focus?.();
     previouslyFocused = null;
   }

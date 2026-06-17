@@ -2,7 +2,9 @@ import { describe, expect, test } from 'vitest';
 import { mount } from '@vue/test-utils';
 import OnboardingCard from '@/components/OnboardingCard.vue';
 
-const mountCard = () => mount(OnboardingCard, { attachTo: document.body });
+// Stub Teleport so the dialog renders inline under the wrapper (it teleports to
+// <body> in the app to support background `inert`).
+const mountCard = () => mount(OnboardingCard, { attachTo: document.body, global: { stubs: { teleport: true } } });
 
 describe('OnboardingCard', () => {
   test('renders a modal dialog with title and category legend', () => {
