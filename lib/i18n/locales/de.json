@@ -57,6 +57,7 @@
     "streak": "🔥 {count}-Tage-Serie",
     "streakTitle": "{count} Tage mit {target}%+ Fokus",
     "ariaFocus": "Fokus {pct}%",
+    "trendTitle": "Fokus-Verlauf",
     "productive": "Produktiv",
     "distracting": "Ablenkend",
     "note": "Produktiv ÷ (produktiv + ablenkend). Arbeit & Entwicklung zählen als produktiv; Ziel {target}%. Ändere die Kategorie einer Seite, um sie neu einzustufen."
@@ -66,7 +67,7 @@
     "viewDetailsAria": "Details zu {domain} ansehen — {time} heute aktiv"
   },
   "trend": {
-    "title": "Trend",
+    "title": "Aktivitätsverlauf",
     "day": "Tag",
     "week": "Woche",
     "month": "Monat",

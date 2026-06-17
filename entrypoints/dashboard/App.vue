@@ -9,6 +9,7 @@ import TopSitesChart from '@/components/TopSitesChart.vue';
 import CategoryChart from '@/components/CategoryChart.vue';
 import ProductivityTile from '@/components/ProductivityTile.vue';
 import TrendChart from '@/components/TrendChart.vue';
+import FocusTrend from '@/components/FocusTrend.vue';
 import ComparisonTile from '@/components/ComparisonTile.vue';
 import HeatmapTile from '@/components/HeatmapTile.vue';
 import WorkLog from '@/components/WorkLog.vue';
@@ -97,6 +98,7 @@ onMounted(async () => {
       <ProductivityTile :summary="s.productivity.value" />
       <!-- full-width rows -->
       <TrendChart :stats="s.activeStats.value" />
+      <FocusTrend :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :now="loadedNow" :target="s.productivity.value.focusTarget" />
       <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" />
       <HeatmapTile :data="s.heatmap.value" />
       <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :now="loadedNow" @select="openDetail" @set-category="s.setCategoryOverride" />

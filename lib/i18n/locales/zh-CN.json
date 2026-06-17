@@ -57,6 +57,7 @@
     "streak": "🔥 连续 {count} 天",
     "streakTitle": "连续 {count} 天专注度达到 {target}%+",
     "ariaFocus": "专注度 {pct}%",
+    "trendTitle": "专注趋势",
     "productive": "高效",
     "distracting": "分心",
     "note": "高效 ÷（高效 + 分心）。工作与开发计为高效；目标 {target}%。更改某个网站的类别即可重新归类。"
@@ -66,7 +67,7 @@
     "viewDetailsAria": "查看 {domain} 详情 — 今日活跃 {time}"
   },
   "trend": {
-    "title": "趋势",
+    "title": "活动趋势",
     "day": "日",
     "week": "周",
     "month": "月",

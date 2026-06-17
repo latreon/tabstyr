@@ -1,45 +1,53 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { buildTrend, type TrendMode, type TrendPoint } from '@/lib/trend';
-import { trendTooltip, xTickEvery, yTicks } from '@/lib/chart-scale';
+import { buildFocusTrend, type FocusPoint } from '@/lib/productivity';
+import { xTickEvery } from '@/lib/chart-scale';
+import type { TrendMode } from '@/lib/trend';
+import type { Category, CategoryRule } from '@/lib/categories';
 import type { DailyStat } from '@/lib/types';
 
-const props = defineProps<{ stats: DailyStat[] }>();
+const props = defineProps<{
+  stats: DailyStat[];
+  overrides: Record<string, Category>;
+  rules?: CategoryRule[];
+  now: number;
+  target?: number;
+}>();
 const { t } = useI18n();
 const mode = ref<TrendMode>('day');
 const MODES: TrendMode[] = ['day', 'week', 'month'];
+const target = computed(() => props.target ?? 50);
 
-const points = computed(() => buildTrend(props.stats, mode.value, Date.now()));
-const ticks = computed(() => yTicks(Math.max(1, ...points.value.map((p) => p.seconds))));
-const chartMax = computed(() => ticks.value[2].seconds);
+const points = computed(() => buildFocusTrend(props.stats, mode.value, props.now, props.overrides, props.rules ?? []));
+const hasData = computed(() => points.value.some((p) => p.judged > 0));
 const labelEvery = computed(() => xTickEvery(mode.value));
 
 const tooltip = ref<{ text: string; x: number; bottom: number } | null>(null);
-
-function showTip(e: Event, p: TrendPoint) {
+function tipText(p: FocusPoint): string {
+  return p.judged > 0 ? `${p.label} · ${p.focusPct}%` : `${p.label} · —`;
+}
+function showTip(e: Event, p: FocusPoint) {
   const target = e.currentTarget as HTMLElement;
   const host = target.closest('.plot') as HTMLElement;
   const rect = target.getBoundingClientRect();
   const hostRect = host.getBoundingClientRect();
-  const fill = target.querySelector('.bar-fill') as HTMLElement | null;
+  const fill = target.querySelector('.bar-fill, .bar-empty') as HTMLElement | null;
   const fillH = fill ? fill.getBoundingClientRect().height : 0;
-  const halfW = 80;
+  const halfW = 70;
   tooltip.value = {
-    text: trendTooltip(p.key, mode.value, p.seconds, p.partial),
+    text: tipText(p),
     x: Math.max(halfW, Math.min(rect.left - hostRect.left + rect.width / 2, hostRect.width - halfW)),
-    bottom: fillH + 8, // sit just above the bar's top, so it tracks bar height
+    bottom: fillH + 8, // sit just above the bar's top, tracking bar height
   };
 }
-function hideTip() {
-  tooltip.value = null;
-}
+const hideTip = () => (tooltip.value = null);
 </script>
 
 <template>
-  <div class="tile trend">
-    <div class="trend-head">
-      <span class="label">{{ t('trend.title') }}</span>
+  <div class="tile focus-trend">
+    <div class="ft-head">
+      <span class="label">{{ t('focus.trendTitle') }}</span>
       <div class="toggle" role="tablist" :aria-label="t('trend.granularityAria')">
         <button
           v-for="m in MODES"
@@ -51,53 +59,64 @@ function hideTip() {
         >{{ t(`trend.${m}`) }}</button>
       </div>
     </div>
-    <div class="chart">
-      <div class="y-axis" aria-hidden="true">
-        <span v-for="t in [...ticks].reverse()" :key="t.seconds" class="y-label">{{ t.label }}</span>
-        <span class="y-label">0</span>
-      </div>
-      <div class="plot">
-        <div v-for="t in ticks" :key="t.seconds" class="gridline" :style="{ bottom: `${(t.seconds / chartMax) * 100}%` }" aria-hidden="true" />
-        <div class="bars">
-          <div
-            v-for="p in points"
-            :key="p.key"
-            class="bar-col"
-            tabindex="0"
-            :aria-label="trendTooltip(p.key, mode, p.seconds, p.partial)"
-            @mouseenter="showTip($event, p)"
-            @mouseleave="hideTip"
-            @focus="showTip($event, p)"
-            @blur="hideTip"
-          >
-            <div class="bar-fill" :class="{ partial: p.partial }" :style="{ height: `${(p.seconds / chartMax) * 100}%` }" />
+
+    <p v-if="!hasData" class="empty">{{ t('comparison.notEnough') }}</p>
+
+    <template v-else>
+      <div class="chart">
+        <div class="y-axis" aria-hidden="true">
+          <span class="y-label">100%</span>
+          <span class="y-label">50%</span>
+          <span class="y-label">0%</span>
+        </div>
+        <div class="plot">
+          <div class="bars">
+            <div
+              v-for="p in points"
+              :key="p.key"
+              class="bar-col"
+              tabindex="0"
+              :aria-label="tipText(p)"
+              @mouseenter="showTip($event, p)"
+              @mouseleave="hideTip"
+              @focus="showTip($event, p)"
+              @blur="hideTip"
+            >
+              <div
+                v-if="p.judged > 0"
+                class="bar-fill"
+                :class="{ good: p.focusPct >= target, partial: p.partial }"
+                :style="{ height: `${Math.max(p.focusPct, 2)}%` }"
+              />
+              <div v-else class="bar-empty" />
+            </div>
+          </div>
+          <div v-if="tooltip" class="tooltip" :style="{ left: `${tooltip.x}px`, bottom: `${tooltip.bottom}px` }" aria-hidden="true">
+            {{ tooltip.text }}
           </div>
         </div>
-        <div v-if="tooltip" class="tooltip" :style="{ left: `${tooltip.x}px`, bottom: `${tooltip.bottom}px` }" aria-hidden="true">
-          {{ tooltip.text }}
-        </div>
       </div>
-    </div>
-    <div class="x-axis" aria-hidden="true">
-      <span v-for="(p, i) in points" :key="p.key" class="x-label">
-        {{ i % labelEvery === 0 ? p.label : '' }}
-      </span>
-    </div>
+      <div class="x-axis" aria-hidden="true">
+        <span v-for="(p, i) in points" :key="p.key" class="x-label">
+          {{ i % labelEvery === 0 ? p.label : '' }}
+        </span>
+      </div>
+    </template>
   </div>
 </template>
 
 <style scoped>
-.trend {
+.focus-trend {
   padding: 16px;
   grid-column: span 3;
 }
-.trend-head {
+.ft-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
-.trend-head .label {
+.ft-head .label {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -128,10 +147,15 @@ function hideTip() {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+.empty {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-3);
+}
 .chart {
   display: flex;
   gap: 8px;
-  padding: 24px 0;
+  padding: 24px 0 0;
 }
 .y-axis {
   display: flex;
@@ -156,12 +180,6 @@ function hideTip() {
   flex: 1;
   height: 130px;
 }
-.gridline {
-  position: absolute;
-  left: 0;
-  right: 0;
-  border-top: 1px dashed var(--divider);
-}
 .bars {
   position: absolute;
   inset: 0;
@@ -179,7 +197,7 @@ function hideTip() {
 }
 .bar-col:hover .bar-fill,
 .bar-col:focus-visible .bar-fill {
-  filter: brightness(1.25);
+  filter: brightness(1.15);
 }
 .bar-col:focus-visible {
   outline: 2px solid var(--accent);
@@ -187,14 +205,17 @@ function hideTip() {
 }
 .bar-fill {
   width: 100%;
-  background: var(--accent-gradient);
+  background: var(--negative);
   border-radius: 3px 3px 0 0;
   min-height: 2px;
-  opacity: 0.9;
+  opacity: 0.85;
+  transition: height 300ms ease;
 }
-/* Partial (in-progress / clipped) period: hatched + dimmed so it isn't read as a full month. */
+.bar-fill.good {
+  background: var(--positive);
+}
 .bar-fill.partial {
-  opacity: 0.55;
+  opacity: 0.5;
   background-image: repeating-linear-gradient(
     -45deg,
     transparent,
@@ -203,6 +224,12 @@ function hideTip() {
     rgba(255, 255, 255, 0.35) 6px
   );
   background-blend-mode: overlay;
+}
+.bar-empty {
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--bar-track);
 }
 .tooltip {
   position: absolute;
@@ -232,5 +259,8 @@ function hideTip() {
   text-align: center;
   overflow: hidden;
   white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bar-fill { transition: none; }
 }
 </style>

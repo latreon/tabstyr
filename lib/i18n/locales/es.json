@@ -57,6 +57,7 @@
     "streak": "🔥 racha de {count} días",
     "streakTitle": "{count} días con concentración del {target}%+",
     "ariaFocus": "Concentración {pct}%",
+    "trendTitle": "Tendencia de concentración",
     "productive": "Productivo",
     "distracting": "Distracción",
     "note": "Productivo ÷ (productivo + distracción). Trabajo y Desarrollo cuentan como productivos; objetivo {target}%. Cambia la categoría de un sitio para reclasificarlo."
@@ -66,7 +67,7 @@
     "viewDetailsAria": "Ver detalles de {domain} — {time} activo hoy"
   },
   "trend": {
-    "title": "Tendencia",
+    "title": "Tendencia de actividad",
     "day": "Día",
     "week": "Semana",
     "month": "Mes",

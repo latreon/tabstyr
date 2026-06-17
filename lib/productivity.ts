@@ -1,5 +1,6 @@
-import { addDays } from './time';
+import { addDays, dateKey, dayLabel, monthLabel } from './time';
 import { categorize, CATEGORY_PRODUCTIVITY, type Category, type CategoryRule } from './categories';
+import type { TrendMode } from './trend';
 import type { DailyStat } from './types';
 
 export interface DayFocus {
@@ -76,6 +77,82 @@ export interface ProductivitySummary {
   neutralSeconds: number;
   streakDays: number;
   focusTarget: number;
+}
+
+export interface FocusPoint {
+  key: string; // YYYY-MM-DD (day/week start) or YYYY-MM (month)
+  label: string;
+  focusPct: number; // 0–100; 0 when there's nothing to judge
+  judged: number; // productive + distracting seconds; 0 => no scoreable time that period
+  partial?: boolean; // month bucket only partly inside the window
+}
+
+function focusRangeDays(today: string, count: number): string[] {
+  return Array.from({ length: count }, (_, i) => addDays(today, i - (count - 1)));
+}
+
+const scoreFocus = (productive: number, distracting: number) => {
+  const judged = productive + distracting;
+  return { focusPct: judged ? Math.round((productive / judged) * 100) : 0, judged };
+};
+
+/**
+ * Focus % over time — the same day/week/month windows as the activity trend, but
+ * each bar is `productive / (productive + distracting)` aggregated across the
+ * bucket's days (neutral time ignored). Weekly/monthly buckets sum the underlying
+ * seconds first, so they reflect real ratios rather than an average of percentages.
+ */
+export function buildFocusTrend(
+  stats: DailyStat[],
+  mode: TrendMode,
+  now: number,
+  overrides: Record<string, Category> = {},
+  rules: readonly CategoryRule[] = [],
+): FocusPoint[] {
+  const byDate = dailyFocus(stats, overrides, rules);
+  const today = dateKey(now);
+
+  if (mode === 'day') {
+    return focusRangeDays(today, 10).map((d) => {
+      const f = byDate.get(d);
+      return { key: d, label: dayLabel(d), ...scoreFocus(f?.productive ?? 0, f?.distracting ?? 0) };
+    });
+  }
+  if (mode === 'week') {
+    const days = focusRangeDays(today, 56);
+    const out: FocusPoint[] = [];
+    for (let i = 0; i < days.length; i += 7) {
+      const chunk = days.slice(i, i + 7);
+      let p = 0;
+      let dist = 0;
+      for (const d of chunk) {
+        const f = byDate.get(d);
+        p += f?.productive ?? 0;
+        dist += f?.distracting ?? 0;
+      }
+      out.push({ key: chunk[0], label: dayLabel(chunk[0]), ...scoreFocus(p, dist) });
+    }
+    return out;
+  }
+  const days = focusRangeDays(today, 60);
+  const startPartial = !days[0].endsWith('-01');
+  const firstMonth = days[0].slice(0, 7);
+  const lastMonth = today.slice(0, 7);
+  const months = new Map<string, { p: number; dist: number }>();
+  for (const d of days) {
+    const key = d.slice(0, 7);
+    const f = byDate.get(d);
+    const m = months.get(key) ?? { p: 0, dist: 0 };
+    m.p += f?.productive ?? 0;
+    m.dist += f?.distracting ?? 0;
+    months.set(key, m);
+  }
+  return [...months.entries()].map(([key, m]) => ({
+    key,
+    label: monthLabel(key),
+    ...scoreFocus(m.p, m.dist),
+    partial: (key === firstMonth && startPartial) || key === lastMonth,
+  }));
 }
 
 export function summarizeProductivity(

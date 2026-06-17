@@ -57,6 +57,7 @@
     "streak": "🔥 {count}-day streak",
     "streakTitle": "{count} days at {target}%+ focus",
     "ariaFocus": "Focus {pct}%",
+    "trendTitle": "Focus trend",
     "productive": "Productive",
     "distracting": "Distracting",
     "note": "Productive ÷ (productive + distracting). Work & Dev count as productive; target {target}%. Change a site's category to reclassify it."
@@ -66,7 +67,7 @@
     "viewDetailsAria": "View {domain} details — {time} active today"
   },
   "trend": {
-    "title": "Trend",
+    "title": "Activity trend",
     "day": "Day",
     "week": "Week",
     "month": "Month",

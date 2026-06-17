@@ -57,6 +57,7 @@
     "streak": "🔥 {count}日連続",
     "streakTitle": "集中度{target}%以上が{count}日間",
     "ariaFocus": "集中度{pct}%",
+    "trendTitle": "集中の推移",
     "productive": "生産的",
     "distracting": "気が散る",
     "note": "生産的 ÷（生産的 + 気が散る）。仕事と開発は生産的としてカウントされます。目標は{target}%。サイトのカテゴリを変更すると再分類できます。"
@@ -66,7 +67,7 @@
     "viewDetailsAria": "{domain}の詳細を表示 — 今日{time}アクティブ"
   },
   "trend": {
-    "title": "トレンド",
+    "title": "アクティビティの推移",
     "day": "日",
     "week": "週",
     "month": "月",

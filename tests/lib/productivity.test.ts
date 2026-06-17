@@ -1,6 +1,8 @@
 import { describe, expect, test } from 'vitest';
-import { dailyFocus, focusStreak, summarizeProductivity } from '@/lib/productivity';
+import { buildFocusTrend, dailyFocus, focusStreak, summarizeProductivity } from '@/lib/productivity';
 import type { DailyStat } from '@/lib/types';
+
+const NOW = new Date(2026, 5, 11, 12, 0).getTime(); // 2026-06-11 local
 
 // github → Dev (productive), youtube → Media (distracting), cnn → News (neutral)
 function stat(date: string, domain: string, seconds: number): DailyStat {
@@ -59,6 +61,47 @@ describe('focusStreak', () => {
       stat('2026-06-09', 'github.com', 80), stat('2026-06-09', 'youtube.com', 20), // 80%
     ]);
     expect(focusStreak(map, '2026-06-11', target)).toBe(2);
+  });
+});
+
+describe('buildFocusTrend', () => {
+  test('day mode returns 10 points ending today with per-day focus %', () => {
+    const out = buildFocusTrend(
+      [
+        stat('2026-06-11', 'github.com', 70), stat('2026-06-11', 'youtube.com', 30), // 70%
+        stat('2026-06-10', 'github.com', 40), stat('2026-06-10', 'youtube.com', 60), // 40%
+      ],
+      'day',
+      NOW,
+    );
+    expect(out).toHaveLength(10);
+    expect(out[9]).toMatchObject({ key: '2026-06-11', focusPct: 70, judged: 100 });
+    expect(out[8]).toMatchObject({ key: '2026-06-10', focusPct: 40, judged: 100 });
+    expect(out[0]).toMatchObject({ focusPct: 0, judged: 0 }); // empty older day
+  });
+
+  test('weekly buckets aggregate seconds before computing the ratio', () => {
+    // Two days in the most recent week: 90 prod / 30 dist total → 75%, not avg(100%, 50%).
+    const out = buildFocusTrend(
+      [
+        stat('2026-06-11', 'github.com', 60), // 100%
+        stat('2026-06-10', 'github.com', 30), stat('2026-06-10', 'youtube.com', 30), // 50%
+      ],
+      'week',
+      NOW,
+    );
+    expect(out).toHaveLength(8);
+    expect(out[7]).toMatchObject({ focusPct: 75, judged: 120 });
+  });
+
+  test('respects overrides', () => {
+    const out = buildFocusTrend(
+      [stat('2026-06-11', 'youtube.com', 60), stat('2026-06-11', 'github.com', 40)],
+      'day',
+      NOW,
+      { 'youtube.com': 'Work' },
+    );
+    expect(out[9].focusPct).toBe(100);
   });
 });
 
