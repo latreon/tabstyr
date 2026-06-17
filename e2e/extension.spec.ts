@@ -134,9 +134,8 @@ test('screenshots for visual review', async ({ context, extensionId }) => {
     const sites = [
       { d: 'github.com', s: 5400, h: 10 },
       { d: 'mail.google.com', s: 2700, h: 9 },
-      { d: 'x.com', s: 1500, h: 21 },
+      { d: 'reddit.com', s: 1500, h: 21 },
       { d: 'youtube.com', s: 1800, a: 1500, h: 20 },
-      { d: 'nytimes.com', s: 900, h: 8 },
       { d: 'amazon.com', s: 600, h: 13 },
     ];
     const mult = [1, 0.85, 0.95, 1.1, 0.7, 0.5, 1, 0.9, 0.8, 1.05, 0.75, 0.6, 1, 0.9];
@@ -184,7 +183,7 @@ test('screenshots for visual review', async ({ context, extensionId }) => {
   // Warm Chrome's favicon cache so the _favicon API returns real site logos in the
   // captures. A fresh test profile has none, so icons would otherwise be the generic
   // globe. Best-effort — if the network is unavailable the chips just fall back.
-  for (const d of ['github.com', 'mail.google.com', 'x.com', 'youtube.com', 'nytimes.com', 'amazon.com']) {
+  for (const d of ['github.com', 'mail.google.com', 'reddit.com', 'youtube.com', 'amazon.com']) {
     await seeder.goto(`https://${d}/`, { waitUntil: 'domcontentloaded', timeout: 15_000 }).catch(() => {});
     await seeder.waitForTimeout(700);
   }

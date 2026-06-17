@@ -253,27 +253,6 @@ node scripts/make-promo.mjs   # regenerate promo images
 npm run build && npm run e2e
 ```
 
-## Safari
-
-Safari can't load a web-extension folder directly — it must be wrapped in an Xcode
-app (requires macOS + Xcode). Build, then convert:
-
-```bash
-npm run build:safari   # → dist/safari-mv2
-xcrun safari-web-extension-converter dist/safari-mv2 \
-  --app-name "TabStyr" --bundle-identifier io.github.latreon.tabstyr --macos-only
-```
-
-Open the generated Xcode project, set your signing team, build & run, then enable
-**TabStyr** in Safari → Settings → Extensions. Distribute via the App Store.
-
-Safari lacks `idle`, `notifications`, and `favicon`, and needs **16.4+** for
-`storage.session`; TabStyr degrades gracefully on each (no idle-pause, no stale
-notification, letter-chip icons, and engine state simply rebuilt on cold start
-where session storage is missing). Core tracking, dashboard, categories, focus,
-export, and stale detection all work. Step-by-step:
-[docs/store/browser-support.md](docs/store/browser-support.md).
-
 ## Contributing
 
 Issues and pull requests are welcome. Before opening a PR:
