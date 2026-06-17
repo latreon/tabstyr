@@ -1,23 +1,8 @@
 import { defineConfig } from 'wxt';
-import { copyFileSync, existsSync, mkdirSync } from 'node:fs';
-import { resolve } from 'node:path';
 
 export default defineConfig({
   outDir: 'dist',
   modules: ['@wxt-dev/module-vue'],
-  hooks: {
-    // Also emit the dashboard as a directory index (dashboard/index.html) so it can
-    // be opened at chrome-extension://<id>/dashboard/ — a clean path with no ".html"
-    // in the address bar. Asset URLs in the HTML are absolute, so they resolve from
-    // any path. The flat dashboard.html stays too (harmless fallback).
-    'build:done'(wxt) {
-      const src = resolve(wxt.config.outDir, 'dashboard.html');
-      if (!existsSync(src)) return;
-      const dir = resolve(wxt.config.outDir, 'dashboard');
-      mkdirSync(dir, { recursive: true });
-      copyFileSync(src, resolve(dir, 'index.html'));
-    },
-  },
   manifest: ({ browser }) => ({
     name: 'TabStyr',
     description: 'Private browsing-time insights — active time per site, trends, heatmaps, focus, and stale-tab nudges. All local.',
@@ -26,6 +11,20 @@ export default defineConfig({
       ...(browser === 'firefox' ? [] : ['favicon']),
     ],
     action: { default_title: 'TabStyr' },
+    // Explicit, auditable CSP for extension pages (Chromium MV3). Tightens the
+    // already-secure MV3 default: no remote scripts, no eval, and — since the
+    // extension makes zero network requests — connect-src 'none'. img-src allows
+    // only same-origin (the privileged chrome-extension://…/_favicon source) plus
+    // data:; style-src keeps 'unsafe-inline' for Vue's runtime style handling.
+    // Firefox (MV2) keeps its default CSP — the MV3 object form would be invalid there.
+    ...(browser === 'firefox'
+      ? {}
+      : {
+          content_security_policy: {
+            extension_pages:
+              "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'",
+          },
+        }),
     ...(browser === 'firefox' && {
       browser_specific_settings: {
         gecko: { id: 'tabstyr@example.com', strict_min_version: '115.0' },

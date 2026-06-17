@@ -4,7 +4,16 @@ import { isWebDomain } from './domain';
 export function openDomain(domain: string): void {
   // Never build `https://chrome/` etc. from an internal-scheme bucket.
   if (!isWebDomain(domain)) return;
-  void browser.tabs.create({ url: `https://${domain}/` });
+  const url = `https://${domain}/`;
+  // Belt-and-suspenders: re-parse and confirm it is genuinely https with the same
+  // host, so a tampered value can't smuggle a javascript:/data:/file: navigation.
+  try {
+    const u = new URL(url);
+    if (u.protocol !== 'https:' || u.hostname !== domain) return;
+  } catch {
+    return;
+  }
+  void browser.tabs.create({ url });
 }
 
 export async function focusTab(tabId: number): Promise<void> {

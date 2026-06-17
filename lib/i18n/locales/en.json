@@ -167,7 +167,7 @@
     "downloadEncrypted": "Download encrypted",
     "cancel": "Cancel",
     "decrypt": "Decrypt",
-    "passTooShort": "Use at least 6 characters.",
+    "passTooShort": "Use at least 10 characters.",
     "passMismatch": "Passphrases do not match.",
     "exportedJson": "Exported JSON backup",
     "exportedCsv": "Exported CSV",

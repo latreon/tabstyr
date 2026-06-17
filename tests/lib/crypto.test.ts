@@ -9,7 +9,7 @@ describe('crypto (passphrase backup)', () => {
   });
 
   test('envelope is recognisable and does not leak plaintext', async () => {
-    const env = await encryptToEnvelope('super-secret-token', 'pw123456');
+    const env = await encryptToEnvelope('super-secret-token', 'pw12345678');
     expect(isEncryptedEnvelope(env)).toBe(true);
     expect(env).not.toContain('super-secret-token');
     const o = JSON.parse(env);
@@ -24,13 +24,40 @@ describe('crypto (passphrase backup)', () => {
   });
 
   test('two encryptions of the same input differ (random salt/iv)', async () => {
-    const a = await encryptToEnvelope('x', 'pw123456');
-    const b = await encryptToEnvelope('x', 'pw123456');
+    const a = await encryptToEnvelope('x', 'pw12345678');
+    const b = await encryptToEnvelope('x', 'pw12345678');
     expect(a).not.toBe(b);
   });
 
   test('rejects an empty passphrase on encrypt', async () => {
     await expect(encryptToEnvelope('x', '')).rejects.toThrow(/passphrase/i);
+  });
+
+  test('rejects a passphrase shorter than the minimum on encrypt', async () => {
+    await expect(encryptToEnvelope('x', 'short')).rejects.toThrow(/at least 10/i);
+  });
+
+  test('a tampered low iteration count cannot silently decrypt', async () => {
+    const plain = 'data';
+    const env = await encryptToEnvelope(plain, 'correct horse battery');
+    const o = JSON.parse(env);
+    o.iterations = 1; // downgrade attempt — clamp must refuse to honour it
+    const tampered = JSON.stringify(o);
+    await expect(decryptFromEnvelope(tampered, 'correct horse battery')).rejects.toThrow(/wrong passphrase|corrupted/i);
+  });
+
+  test('an absurd iteration count is clamped (no hang) and fails closed', async () => {
+    const env = await encryptToEnvelope('data', 'correct horse battery');
+    const o = JSON.parse(env);
+    o.iterations = 1_000_000_000; // would freeze the CPU if honoured verbatim
+    await expect(decryptFromEnvelope(JSON.stringify(o), 'correct horse battery')).rejects.toThrow(/wrong passphrase|corrupted/i);
+  });
+
+  test('rejects an envelope with an oversized salt/iv', async () => {
+    const env = await encryptToEnvelope('data', 'correct horse battery');
+    const o = JSON.parse(env);
+    o.salt = 'A'.repeat(100);
+    await expect(decryptFromEnvelope(JSON.stringify(o), 'correct horse battery')).rejects.toThrow(/malformed/i);
   });
 
   test('isEncryptedEnvelope is false for plain JSON / garbage', () => {

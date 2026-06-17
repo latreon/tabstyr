@@ -23,5 +23,9 @@ export function domainOf(url: string): string {
 export function isWebDomain(domain: string): boolean {
   // `localhost` has no dot but is a real, trackable dev host (and a Dev category rule).
   if (domain === 'localhost') return true;
-  return /\./.test(domain) && !/\s/.test(domain);
+  // A pure hostname only: dot-separated alphanumeric/hyphen labels, ≥1 dot. Rejects
+  // anything carrying a path/query/fragment/credentials/whitespace (`/ ? # @ :` …),
+  // so a tampered stored value can't smuggle navigation when openDomain builds
+  // `https://${domain}/`. (URL.hostname is ASCII/punycode, so this is sufficient.)
+  return /^(?=.{1,253}$)[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?)+$/i.test(domain);
 }

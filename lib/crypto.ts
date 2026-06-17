@@ -4,8 +4,18 @@
 // tampered file fails to decrypt rather than returning garbage.
 
 const KDF_ITERATIONS = 250_000;
+// Accept a range on decrypt so a tampered envelope can neither downgrade the KDF
+// (cheap brute force) nor pin the CPU with an absurd count.
+const MIN_ITERATIONS = 100_000;
+const MAX_ITERATIONS = 2_000_000;
 const SALT_BYTES = 16;
 const IV_BYTES = 12;
+// Base64 length bounds for the 16-byte salt / 12-byte IV — guards against a
+// malicious envelope forcing a huge allocation before Web Crypto rejects it.
+const MAX_SALT_B64 = 64;
+const MAX_IV_B64 = 32;
+// Minimum passphrase length, enforced at the crypto layer (not just the UI).
+export const MIN_PASSPHRASE = 10;
 
 export interface EncryptedEnvelope {
   app: 'tabstyr';
@@ -50,7 +60,9 @@ async function deriveKey(passphrase: string, salt: Uint8Array, iterations: numbe
 
 /** Encrypt `plaintext` under `passphrase`, returning a JSON envelope string. */
 export async function encryptToEnvelope(plaintext: string, passphrase: string): Promise<string> {
-  if (!passphrase) throw new Error('Passphrase required');
+  if (!passphrase || passphrase.length < MIN_PASSPHRASE) {
+    throw new Error(`Passphrase must be at least ${MIN_PASSPHRASE} characters`);
+  }
   const salt = crypto.getRandomValues(new Uint8Array(SALT_BYTES));
   const iv = crypto.getRandomValues(new Uint8Array(IV_BYTES));
   const key = await deriveKey(passphrase, salt, KDF_ITERATIONS);
@@ -94,7 +106,14 @@ export async function decryptFromEnvelope(envelopeText: string, passphrase: stri
   if (env?.enc !== 'AES-GCM' || env?.kdf !== 'PBKDF2' || !env.ciphertext) {
     throw new Error('Not an encrypted TabStyr backup.');
   }
-  const key = await deriveKey(passphrase, fromBase64(env.salt), env.iterations || KDF_ITERATIONS);
+  if (typeof env.salt !== 'string' || env.salt.length > MAX_SALT_B64 ||
+      typeof env.iv !== 'string' || env.iv.length > MAX_IV_B64) {
+    throw new Error('Malformed backup file.');
+  }
+  // Clamp the file-supplied iteration count: never below MIN (downgrade attack),
+  // never above MAX (CPU-exhaustion via a crafted envelope).
+  const iterations = Math.min(Math.max(Number(env.iterations) || KDF_ITERATIONS, MIN_ITERATIONS), MAX_ITERATIONS);
+  const key = await deriveKey(passphrase, fromBase64(env.salt), iterations);
   let plain: ArrayBuffer;
   try {
     plain = await crypto.subtle.decrypt(

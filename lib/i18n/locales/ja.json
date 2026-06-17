@@ -167,7 +167,7 @@
     "downloadEncrypted": "暗号化してダウンロード",
     "cancel": "キャンセル",
     "decrypt": "復号",
-    "passTooShort": "6文字以上を使用してください。",
+    "passTooShort": "10文字以上を使用してください。",
     "passMismatch": "パスフレーズが一致しません。",
     "exportedJson": "JSONバックアップをエクスポートしました",
     "exportedCsv": "CSVをエクスポートしました",

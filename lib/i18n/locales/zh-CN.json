@@ -167,7 +167,7 @@
     "downloadEncrypted": "下载加密文件",
     "cancel": "取消",
     "decrypt": "解密",
-    "passTooShort": "请至少使用 6 个字符。",
+    "passTooShort": "请至少使用 10 个字符。",
     "passMismatch": "密码短语不一致。",
     "exportedJson": "已导出 JSON 备份",
     "exportedCsv": "已导出 CSV",

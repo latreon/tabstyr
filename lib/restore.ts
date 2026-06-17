@@ -10,6 +10,14 @@ export interface ParsedBackup {
   exportedAt?: string;
 }
 
+// Hard caps on imported record counts — a legitimate 90-day backup is far below
+// these; the limits stop a crafted file from exhausting memory / IndexedDB and
+// dying mid-restore (which wipes existing data first).
+const MAX_STATS = 200_000;
+const MAX_SESSIONS = 1_000_000;
+const MAX_TABMETA = 20_000;
+const MAX_SETTINGS_KEYS = 1_000;
+
 const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
 const isStr = (v: unknown): v is string => typeof v === 'string';
 
@@ -19,11 +27,25 @@ function isStat(v: unknown): v is DailyStat {
 }
 function isSession(v: unknown): v is Session {
   const o = v as Session;
-  return !!o && isStr(o.domain) && isNum(o.start) && isNum(o.end) && typeof o.audio === 'boolean';
+  return !!o && isStr(o.domain) && isStr(o.url) && isNum(o.start) && isNum(o.end) && typeof o.audio === 'boolean';
 }
 function isMeta(v: unknown): v is TabMeta {
   const o = v as TabMeta;
-  return !!o && isNum(o.tabId) && isStr(o.key) && isStr(o.url);
+  return (
+    !!o && isNum(o.tabId) && isStr(o.key) && isStr(o.url) &&
+    isStr(o.title) && isNum(o.lastActiveAt) && isNum(o.createdAt)
+  );
+}
+// Accept only a plausible ISO-ish timestamp string that parses to a real date.
+function isExportedAt(v: unknown): v is string {
+  if (!isStr(v) || v.length > 40) return false;
+  const t = Date.parse(v);
+  return Number.isFinite(t);
+}
+// Reject a settings object with an absurd key count before coerce() iterates it.
+function safeSettings(v: unknown): Record<string, unknown> | undefined {
+  if (!v || typeof v !== 'object') return undefined;
+  return Object.keys(v as object).length <= MAX_SETTINGS_KEYS ? (v as Record<string, unknown>) : undefined;
 }
 
 /**
@@ -39,11 +61,11 @@ export function parseBackup(text: string): ParsedBackup {
   }
   if (!o || o.app !== 'tabstyr') throw new Error('Not a TabStyr backup file.');
   return {
-    dailyStats: Array.isArray(o.dailyStats) ? o.dailyStats.filter(isStat) : [],
-    sessions: Array.isArray(o.sessions) ? o.sessions.filter(isSession) : [],
-    tabMeta: Array.isArray(o.tabMeta) ? o.tabMeta.filter(isMeta) : [],
-    settings: o.settings && typeof o.settings === 'object' ? (o.settings as Record<string, unknown>) : undefined,
-    exportedAt: isStr(o.exportedAt) ? o.exportedAt : undefined,
+    dailyStats: Array.isArray(o.dailyStats) ? o.dailyStats.filter(isStat).slice(0, MAX_STATS) : [],
+    sessions: Array.isArray(o.sessions) ? o.sessions.filter(isSession).slice(0, MAX_SESSIONS) : [],
+    tabMeta: Array.isArray(o.tabMeta) ? o.tabMeta.filter(isMeta).slice(0, MAX_TABMETA) : [],
+    settings: safeSettings(o.settings),
+    exportedAt: isExportedAt(o.exportedAt) ? o.exportedAt : undefined,
   };
 }
 

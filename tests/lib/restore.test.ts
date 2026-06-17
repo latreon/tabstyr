@@ -45,6 +45,34 @@ describe('parseBackup', () => {
     expect(parsed.dailyStats).toHaveLength(1);
     expect(parsed.sessions).toEqual([]);
   });
+
+  test('drops tabMeta missing required fields (title/lastActiveAt/createdAt)', () => {
+    const text = JSON.stringify({
+      app: 'tabstyr',
+      tabMeta: [
+        { tabId: 1, key: 'k1', url: 'https://a.com', title: 'A', lastActiveAt: 1, createdAt: 1 }, // valid
+        { tabId: 2, key: 'k2', url: 'https://b.com' }, // missing fields → dropped
+      ],
+    });
+    expect(parseBackup(text).tabMeta).toHaveLength(1);
+  });
+
+  test('validates exportedAt — bogus date strings are dropped', () => {
+    expect(parseBackup(JSON.stringify({ app: 'tabstyr', exportedAt: 'not-a-date' })).exportedAt).toBeUndefined();
+    const iso = '2026-06-16T00:00:00.000Z';
+    expect(parseBackup(JSON.stringify({ app: 'tabstyr', exportedAt: iso })).exportedAt).toBe(iso);
+  });
+
+  test('does not pollute Object.prototype via __proto__ in the backup JSON', () => {
+    parseBackup('{"app":"tabstyr","__proto__":{"polluted":true}}');
+    expect(({} as Record<string, unknown>).polluted).toBeUndefined();
+  });
+
+  test('rejects a settings object with an absurd key count', () => {
+    const settings: Record<string, number> = {};
+    for (let i = 0; i < 1001; i++) settings[`k${i}`] = i;
+    expect(parseBackup(JSON.stringify({ app: 'tabstyr', settings })).settings).toBeUndefined();
+  });
 });
 
 describe('restoreBackup', () => {

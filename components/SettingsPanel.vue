@@ -10,7 +10,7 @@ import { useFocusTrap } from '@/composables/useFocusTrap';
 import { SUPPORTED_LOCALES, resolveLocale } from '@/lib/i18n';
 import * as repo from '@/lib/db/repo';
 import { dailyStatsToCsv, downloadFile, toJsonBackup } from '@/lib/export';
-import { encryptToEnvelope, isEncryptedEnvelope, decryptFromEnvelope } from '@/lib/crypto';
+import { encryptToEnvelope, isEncryptedEnvelope, decryptFromEnvelope, MIN_PASSPHRASE } from '@/lib/crypto';
 import { parseBackup, restoreBackup, type ParsedBackup } from '@/lib/restore';
 import { dateKey } from '@/lib/time';
 import type { ThemeSetting } from '@/lib/types';
@@ -172,7 +172,7 @@ async function buildBackupJson(): Promise<string> {
 
 async function exportEncrypted() {
   encError.value = '';
-  if (encPass.value.length < 6) {
+  if (encPass.value.length < MIN_PASSPHRASE) {
     encError.value = t('settings.passTooShort');
     return;
   }
@@ -258,6 +258,14 @@ function cancelRestore() {
   pendingRestore.value = null;
   restoreError.value = '';
 }
+
+// Don't leave passphrases lingering in memory if the panel unmounts mid-flow.
+onBeforeUnmount(() => {
+  encPass.value = '';
+  encPass2.value = '';
+  restorePass.value = '';
+  restoreRaw.value = null;
+});
 
 async function confirmRestore() {
   if (!pendingRestore.value || restoring.value) return;

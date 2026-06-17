@@ -172,15 +172,8 @@
       *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
     }
   </style>
-  <script>
-    // Mirror the dashboard's chosen theme BEFORE paint (no flash). The dashboard
-    // caches its setting in localStorage under this key; absent/"system" falls back
-    // to the OS preference, matched by the CSS media queries above.
-    try {
-      var t = localStorage.getItem('tabstyr:theme');
-      if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t;
-    } catch (e) { /* storage unavailable — CSS media-query fallback applies */ }
-  </script>
+  <!-- External (not inline) to satisfy the extension CSP: script-src 'self'. -->
+  <script src="/privacy-theme.js"></script>
 </head>
 <body>
   <div class="glow" aria-hidden="true"></div>

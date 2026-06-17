@@ -28,6 +28,12 @@ function setSort(key: SortKey) {
   }
 }
 
+// Tab titles are set by the visited page (attacker-controlled). Cap length before
+// using them in tooltip/aria attributes so a page can't inject a huge or misleading
+// string. (Vue already HTML-escapes attribute values, so this is not an XSS fix.)
+const TITLE_MAX = 120;
+const clipTitle = (s: string): string => (s.length > TITLE_MAX ? `${s.slice(0, TITLE_MAX)}…` : s);
+
 function ago(ts: number): string {
   if (!ts) return t('tabTable.never'); // tab open but never focused
   const mins = Math.round((Date.now() - ts) / 60_000);
@@ -82,12 +88,12 @@ function ago(ts: number): string {
           :key="r.tabId"
           class="tab-row"
           tabindex="0"
-          :aria-label="t('tabTable.goToTabAria', { title: r.title })"
+          :aria-label="t('tabTable.goToTabAria', { title: clipTitle(r.title) })"
           @click="focusTab(r.tabId)"
           @keydown.enter="focusTab(r.tabId)"
           @keydown.space.prevent="focusTab(r.tabId)"
         >
-          <td class="title" :title="r.title">
+          <td class="title" :title="clipTitle(r.title)">
             <FaviconChip :domain="r.domain" />
             <span class="title-text">{{ displayDomain(r.domain) }}</span>
             <span v-if="r.tabCount > 1" class="tab-count">{{ t('tabTable.tabCount', { count: r.tabCount }) }}</span>
