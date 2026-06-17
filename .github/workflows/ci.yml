@@ -15,7 +15,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      # Retry: esbuild's postinstall can transiently fail with ETXTBSY ("text file
+      # busy") on hosted runners when the just-written binary is validated.
+      - run: npm ci || (sleep 5 && npm ci) || (sleep 15 && npm ci)
       - run: node scripts/make-icons.mjs
       - run: npm run check:version
       - run: npm run typecheck
@@ -35,7 +37,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
+      # Retry: esbuild's postinstall can transiently fail with ETXTBSY ("text file
+      # busy") on hosted runners when the just-written binary is validated.
+      - run: npm ci || (sleep 5 && npm ci) || (sleep 15 && npm ci)
       - run: node scripts/make-icons.mjs
       - run: npm run build
       - run: npx playwright install --with-deps chromium
