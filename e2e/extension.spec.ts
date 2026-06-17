@@ -180,6 +180,14 @@ test('screenshots for visual review', async ({ context, extensionId }) => {
     db.close();
     void DAY;
   });
+
+  // Warm Chrome's favicon cache so the _favicon API returns real site logos in the
+  // captures. A fresh test profile has none, so icons would otherwise be the generic
+  // globe. Best-effort — if the network is unavailable the chips just fall back.
+  for (const d of ['github.com', 'mail.google.com', 'x.com', 'youtube.com', 'nytimes.com', 'amazon.com']) {
+    await seeder.goto(`https://${d}/`, { waitUntil: 'domcontentloaded', timeout: 15_000 }).catch(() => {});
+    await seeder.waitForTimeout(700);
+  }
   await seeder.close();
 
   for (const theme of ['dark', 'light'] as const) {

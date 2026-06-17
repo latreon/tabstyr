@@ -9,9 +9,9 @@
 Active time per tab and site, trends, an hourly heatmap, category & focus
 breakdowns, and gentle stale-tab nudges. Every byte stays on your device.
 
-[Features](#features) · [Privacy](#privacy) · [Install](#install) ·
-[How metrics work](#how-the-metrics-work) · [Development](#development) ·
-[Architecture](#architecture)
+[Features](#features) · [Privacy](#privacy) · [Browser support](#browser-support) ·
+[Install](#install) · [How metrics work](#how-the-metrics-work) ·
+[Development](#development)
 
 <br/>
 
@@ -163,7 +163,8 @@ differ. Full matrix and per-browser publish steps:
 
 ### From a store
 
-Coming soon to the Chrome Web Store, Edge Add-ons, and Firefox AMO.
+Coming soon to the Chrome Web Store, Edge Add-ons, Firefox AMO, and the Mac App
+Store (Safari).
 
 ### Unpacked (from source)
 
@@ -174,12 +175,22 @@ npm install
 node scripts/make-icons.mjs   # generate icons (once)
 npm run build                 # Chromium → dist/chrome-mv3
 npm run build:firefox         # Firefox  → dist/firefox-mv2
+npm run build:safari          # Safari   → dist/safari-mv2
 ```
 
-- **Chromium:** open `chrome://extensions` → enable **Developer mode** →
-  **Load unpacked** → select `dist/chrome-mv3`.
+- **Chromium** (Chrome, Edge, Brave, Opera, Vivaldi, Arc): open `chrome://extensions`
+  → enable **Developer mode** → **Load unpacked** → select `dist/chrome-mv3`.
 - **Firefox:** open `about:debugging` → **This Firefox** → **Load Temporary
   Add-on** → pick any file inside `dist/firefox-mv2`.
+- **Safari** (macOS + Xcode): wrap the build in an app, then enable it in Safari →
+  Settings → Extensions:
+
+  ```bash
+  xcrun safari-web-extension-converter dist/safari-mv2 \
+    --app-name "TabStyr" --bundle-identifier io.github.latreon.tabstyr --macos-only
+  ```
+
+  Full steps: [docs/store/browser-support.md](docs/store/browser-support.md).
 
 ## How the metrics work
 
@@ -230,57 +241,6 @@ npm run zip:firefox      # Firefox store-ready zip
 node scripts/make-promo.mjs   # regenerate promo images
 ```
 
-## Architecture
-
-TabStyr separates a pure, well-tested core from a thin platform layer and the UI.
-
-- **`entrypoints/background.ts`** — the tracking driver. Listens to tab/window/idle
-  events and alarms, runs the engine, and persists results. Handles Chrome MV3
-  (`action`, `service_worker`) vs Firefox MV2 (`browser_action`, background
-  scripts), and degrades safely where APIs are missing (e.g. Safari has no `idle`).
-- **`lib/tracker/`** — a pure session state machine (`engine.ts`), daily rollup
-  (`aggregate.ts`), and stale/notify logic (`stale.ts`). No browser APIs, fully
-  unit-tested.
-- **`lib/db/`** — IndexedDB access via [idb](https://github.com/jakearchibald/idb).
-  Per-tab time is attributed by a stable key so it survives tab-ID reuse; sessions
-  and daily stats are committed atomically.
-- **`lib/`** — pure helpers: `time`, `trend`, `heatmap`, `categories`,
-  `productivity`, `worklog`, `export`, `metrics`, `domain`, plus `crypto` +
-  `restore` (encrypted backup / validated import) and `i18n/` (6 locales).
-- **`composables/useStats.ts`** — the dashboard's data layer (Vue composable).
-- **`components/`, `entrypoints/{popup,dashboard}`** — Vue 3 UI.
-
-### Project structure
-
-```
-entrypoints/      background + popup + dashboard
-components/       Vue UI (incl. ui/ for SelectBox, ToggleSwitch, NumberStepper)
-composables/      useStats, useTheme
-lib/              pure logic (tracker/, db/, and helpers)
-tests/            Vitest unit tests (mirrors lib/)
-e2e/              Playwright end-to-end (Chromium)
-scripts/          icon + promo generators
-docs/store/       listing copy, privacy policy, QA checklist, promo, screenshots
-```
-
-### Tech stack
-
-| Layer | Tooling |
-|---|---|
-| Framework | [WXT](https://wxt.dev) (cross-browser extension framework) |
-| UI | [Vue 3](https://vuejs.org) + `<script setup>`, scoped CSS |
-| i18n | [vue-i18n](https://vue-i18n.intlify.dev) — 6 locales |
-| Language | [TypeScript](https://www.typescriptlang.org) (strict) |
-| Build | [Vite](https://vitejs.dev) (via WXT) |
-| Storage | [IndexedDB](https://developer.mozilla.org/docs/Web/API/IndexedDB_API) via [idb](https://github.com/jakearchibald/idb) |
-| Unit tests | [Vitest](https://vitest.dev) + fake-indexeddb |
-| E2E | [Playwright](https://playwright.dev) (loads the real extension in Chromium) |
-| Type-check | [vue-tsc](https://github.com/vuejs/language-tools) |
-| CI | GitHub Actions |
-
-Runtime dependencies are just **`vue`**, **`vue-i18n`**, and **`idb`** —
-everything else is dev-only.
-
 ## Testing
 
 - **Unit** (Vitest) — every `lib/` module, including an end-to-end tracking-flow
@@ -313,12 +273,6 @@ notification, letter-chip icons, and engine state simply rebuilt on cold start
 where session storage is missing). Core tracking, dashboard, categories, focus,
 export, and stale detection all work. Step-by-step:
 [docs/store/browser-support.md](docs/store/browser-support.md).
-
-## Roadmap
-
-- Time budgets / limits per category with badge + alerts
-- Day timeline ribbon and year-in-pixels views
-- Store releases (Chrome, Edge, Firefox)
 
 ## Contributing
 
