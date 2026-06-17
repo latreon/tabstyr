@@ -15,6 +15,34 @@ const actionApi = browser.action ?? (browser as unknown as { browserAction: type
 const RETENTION_DAYS = 90;
 const DAY_MS = 86_400_000;
 
+// storage.session is MV3-era (Chrome 102+, Firefox 115+, Safari 16.4+). Where it's
+// absent (older Safari, etc.) `browser.storage.session` is undefined and a direct
+// call would throw — degrade gracefully: the engine just rebuilds from tabs.query()
+// via reconcile() on the next cold start instead of restoring its in-memory state.
+const sessionStore = {
+  async get(key: string): Promise<Record<string, unknown>> {
+    try {
+      return (await browser.storage.session?.get(key)) ?? {};
+    } catch {
+      return {};
+    }
+  },
+  async set(items: Record<string, unknown>): Promise<void> {
+    try {
+      await browser.storage.session?.set(items);
+    } catch {
+      /* storage.session unavailable — state is recomputed on cold start */
+    }
+  },
+  async remove(key: string): Promise<void> {
+    try {
+      await browser.storage.session?.remove(key);
+    } catch {
+      /* storage.session unavailable */
+    }
+  },
+};
+
 export default defineBackground(() => {
   let enginePromise: Promise<TrackerEngine> | null = null;
 
@@ -35,7 +63,7 @@ export default defineBackground(() => {
   // which the 1-minute heartbeat checkpoint + reconcile bounds and repairs.
   function getEngine(): Promise<TrackerEngine> {
     enginePromise ??= (async () => {
-      const { engineState } = await browser.storage.session.get('engineState');
+      const { engineState } = await sessionStore.get('engineState');
       const eng = new TrackerEngine((engineState as EngineState) ?? null);
       const tabs = await browser.tabs.query({});
       const liveIds = new Set(tabs.flatMap((t) => (t.id ? [t.id] : [])));
@@ -76,7 +104,7 @@ export default defineBackground(() => {
       // Sessions + their daily rollup committed atomically (single transaction).
       await repo.commitSessions(sessions, rollup(sessions));
     }
-    await browser.storage.session.set({ engineState: eng.getState() });
+    await sessionStore.set({ engineState: eng.getState() });
   }
 
   async function syncAudioSessions(eng: TrackerEngine, now: number): Promise<ClosedSession[]> {
@@ -245,7 +273,9 @@ export default defineBackground(() => {
   // The browser kept a tab's content but changed its id (prerender activation,
   // discard/restore). Remap the live session and the stored tabMeta to the new
   // id so time keeps accruing and the stable per-tab key is preserved.
-  browser.tabs.onReplaced.addListener(guard(async (addedTabId, removedTabId) => {
+  // onReplaced (prerender/discard id swap) is Chromium-centric; absent on some
+  // engines. Optional-chain the registration so it never throws at startup there.
+  browser.tabs.onReplaced?.addListener(guard(async (addedTabId, removedTabId) => {
     const eng = await getEngine();
     eng.handleTabReplaced(removedTabId, addedTabId, Date.now());
     const meta = await repo.getTabMeta(removedTabId);
@@ -353,7 +383,7 @@ export default defineBackground(() => {
       await updateBadge();
     } else if (msg?.type === 'wipe-data') {
       await repo.wipeAll();
-      await browser.storage.session.remove('engineState');
+      await sessionStore.remove('engineState');
       await browser.storage.local.remove(['notifyState', 'keyMigrationV2']);
       enginePromise = null;
       await updateBadge();
