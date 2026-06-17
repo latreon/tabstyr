@@ -1,0 +1,222 @@
+{
+  "common": {
+    "loading": "Caricamento…",
+    "loadError": "Impossibile caricare i dati — ricarica la pagina.",
+    "today": "Oggi",
+    "nothingYet": "Ancora niente.",
+    "nothingTracked": "Ancora nulla registrato.",
+    "noActivity": "Nessuna attività registrata finora."
+  },
+  "privacy": {
+    "title": "Privacy",
+    "badge": "0 byte lasciano il tuo dispositivo",
+    "badgeTitle": "Nessun server, nessun account, nessuna richiesta di rete. Clicca per l'informativa sulla privacy.",
+    "viewPolicy": "0 byte lasciano il tuo dispositivo — vedi l'informativa sulla privacy"
+  },
+  "support": {
+    "coffee": "Offrimi un caffè"
+  },
+  "popup": {
+    "tabs": "{count} schede",
+    "stale": "{count} obsolete",
+    "activeToday": "attivo oggi · vs media settimanale",
+    "noActivityToday": "Nessuna attività registrata oggi.",
+    "dashboard": "Dashboard",
+    "loadError": "Impossibile caricare le statistiche — prova a riaprire il popup.",
+    "topSitesAria": "Siti principali di oggi",
+    "openAria": "Apri {domain} — {time} oggi"
+  },
+  "hero": {
+    "todayActive": "Oggi · attivo",
+    "vsWeeklyAvg": "{pct}% vs media settimanale",
+    "up": "Su",
+    "down": "Giù",
+    "backgroundAudio": "♪ +{time} audio in background"
+  },
+  "stat": {
+    "openTabs": "Schede aperte",
+    "staleTabs": "Schede obsolete"
+  },
+  "categories": {
+    "Work": "Lavoro",
+    "Dev": "Sviluppo",
+    "Finance": "Finanza",
+    "Social": "Social",
+    "Media": "Media",
+    "News": "Notizie",
+    "Shopping": "Acquisti",
+    "Other": "Altro"
+  },
+  "category": {
+    "title": "Oggi per categoria",
+    "shareAria": "Quota di tempo per categoria",
+    "segTitle": "{category} · {time} · {pct}%"
+  },
+  "focus": {
+    "title": "Concentrazione oggi",
+    "streak": "🔥 serie di {count} giorni",
+    "streakTitle": "{count} giorni con concentrazione {target}%+",
+    "ariaFocus": "Concentrazione {pct}%",
+    "trendTitle": "Andamento concentrazione",
+    "productive": "Produttivo",
+    "distracting": "Distraente",
+    "note": "Produttivo ÷ (produttivo + distraente). Lavoro e Sviluppo contano come produttivi; obiettivo {target}%. Cambia la categoria di un sito per riclassificarlo."
+  },
+  "topSites": {
+    "title": "Siti principali di oggi",
+    "viewDetailsAria": "Vedi dettagli di {domain} — {time} attivo oggi"
+  },
+  "trend": {
+    "title": "Andamento attività",
+    "day": "Giorno",
+    "week": "Settimana",
+    "month": "Mese",
+    "granularityAria": "Granularità dell'andamento"
+  },
+  "heatmap": {
+    "title": "Mappa di calore attività",
+    "peak": "Picco · {label}",
+    "gridAria": "Attività di navigazione per giorno della settimana e ora del giorno",
+    "less": "Meno",
+    "more": "Più",
+    "cellLabel": "{weekday} {hour} — {time}"
+  },
+  "comparison": {
+    "weekTitle": "Questa settimana vs la scorsa",
+    "monthTitle": "Questo mese vs lo scorso",
+    "weekSub": "Ultimi 7 giorni vs i 7 precedenti · oggi ancora in corso",
+    "monthSub": "Ultimi 30 giorni vs i 30 precedenti · oggi ancora in corso",
+    "notEnough": "Cronologia ancora insufficiente — riprova tra qualche giorno.",
+    "week": "Settimana",
+    "month": "Mese",
+    "periodAria": "Periodo di confronto",
+    "noChange": "nessuna variazione",
+    "vsBefore": "vs {time} prima"
+  },
+  "worklog": {
+    "title": "A cosa ho lavorato?",
+    "prevDay": "Giorno precedente",
+    "nextDay": "Giorno successivo",
+    "copy": "Copia",
+    "copied": "Copiato ✓",
+    "summary": "— hai trascorso {time} su nessun sito. | — hai trascorso {time} su {count} sito. | — hai trascorso {time} su {count} siti.",
+    "nothingTracked": "— nulla registrato.",
+    "legendAria": "Legenda dei colori dei punti",
+    "viewSiteAria": "Vedi dettagli di {domain} — {category}",
+    "categoryTitle": "Categoria: {category}",
+    "changeCategory": "Cambia categoria (ora {category})"
+  },
+  "tabTable": {
+    "title": "Schede aperte per tempo",
+    "sub": "Tempo attivo per sito · ultimi 90 giorni",
+    "tab": "Sito",
+    "tracked": "Registrato",
+    "lastActive": "Ultima attività",
+    "tabCount": "{count} schede",
+    "noTabs": "Ancora nessuna scheda registrata.",
+    "goToTabAria": "Vai a {title}",
+    "justNow": "proprio ora",
+    "minsAgo": "{count} min fa",
+    "hoursAgo": "{count} h fa",
+    "daysAgo": "{count} g fa",
+    "never": "—"
+  },
+  "domainDetail": {
+    "detailsForAria": "Dettagli di {domain}",
+    "open": "Apri ↗",
+    "close": "Chiudi dettagli",
+    "category": "Categoria",
+    "last14": "Ultimi 14 giorni",
+    "last14Aria": "Tempo giornaliero, ultimi 14 giorni",
+    "byHourAria": "Attività per ora",
+    "total90d": "Totale (90 g)",
+    "shareOfAll": "Quota del tempo totale",
+    "sessions": "Sessioni",
+    "avgSession": "Sessione media",
+    "longestSession": "Sessione più lunga",
+    "activeDays": "Giorni attivi",
+    "audio": "Audio"
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "theme": "Tema",
+    "switchTheme": "Cambia tema · {mode}",
+    "light": "Chiaro",
+    "dark": "Scuro",
+    "language": "Lingua",
+    "staleDays": "Obsoleta dopo (giorni)",
+    "idleSeconds": "Timeout di inattività (secondi)",
+    "countAudio": "Conta audio in background",
+    "save": "Salva",
+    "wipe": "Cancella tutti i dati",
+    "saved": "Impostazioni salvate",
+    "saveFailed": "Impossibile salvare le impostazioni",
+    "customRules": "Regole di categoria personalizzate",
+    "rulesHint": "La maggior parte dei siti popolari viene riconosciuta automaticamente. Aggiungi una regola solo per uno che non classifichiamo ancora: qualsiasi indirizzo che contiene il tuo testo va in quella categoria (controllata prima delle regole integrate).",
+    "rulePlaceholder": "es. yandex",
+    "add": "Aggiungi",
+    "ruleExists": "Quel pattern ha già una regola.",
+    "ruleAdded": "Regola aggiunta",
+    "ruleAddFailed": "Impossibile aggiungere la regola",
+    "ruleRemoveFailed": "Impossibile rimuovere la regola",
+    "removeRuleAria": "Rimuovi regola per {pattern}",
+    "categoryForRuleAria": "Categoria per la regola",
+    "backupRestore": "Backup e ripristino",
+    "exportJson": "Esporta JSON",
+    "exportCsv": "Esporta CSV",
+    "encrypted": "Crittografato…",
+    "restore": "Ripristina…",
+    "encHint": "Crittografa un backup JSON completo con una passphrase (AES-256-GCM). Conservala bene — non può essere recuperata.",
+    "passphrase": "Passphrase",
+    "confirmPassphrase": "Conferma passphrase",
+    "downloadEncrypted": "Scarica crittografato",
+    "cancel": "Annulla",
+    "decrypt": "Decrittografa",
+    "passTooShort": "Usa almeno 10 caratteri.",
+    "passMismatch": "Le passphrase non corrispondono.",
+    "exportedJson": "Backup JSON esportato",
+    "exportedCsv": "CSV esportato",
+    "exportedEncrypted": "Backup crittografato esportato",
+    "encryptionFailed": "Crittografia non riuscita",
+    "exportFailed": "Esportazione non riuscita",
+    "restoreEncryptedPrompt": "Questo backup è crittografato. Inserisci la passphrase per continuare.",
+    "restoreReadFailed": "Impossibile leggere quel file.",
+    "replaceTitle": "Sostituire tutti i dati?",
+    "replaceBody": "Questo elimina i dati attualmente memorizzati su questo dispositivo e ripristina {days} record giornalieri e {sessions} sessioni{from}. Non può essere annullato.",
+    "replaceBodyFrom": " dal backup del {date}",
+    "replaceData": "Sostituisci dati",
+    "restoring": "Ripristino…",
+    "restored": "Ripristinati {days} giorni · {sessions} sessioni",
+    "restoreFailed": "Ripristino non riuscito",
+    "confirmRestoreAria": "Conferma ripristino",
+    "wipeTitle": "Eliminare tutti i dati?",
+    "wipeBody": "Questo rimuove permanentemente ogni sessione, totale giornaliero e record di scheda memorizzati su questo dispositivo. Le impostazioni vengono mantenute. Non può essere annullato.",
+    "deleteEverything": "Elimina tutto",
+    "wiping": "Cancellazione…",
+    "wiped": "Tutti i dati cancellati",
+    "wipeFailed": "Cancellazione non riuscita",
+    "confirmWipeAria": "Conferma cancellazione di tutti i dati",
+    "languageAuto": "Automatico",
+    "idleHint": "Il monitoraggio si interrompe dopo questo tempo senza mouse o tastiera. Aumentalo se leggi senza scorrere."
+  },
+  "onboarding": {
+    "title": "Benvenuto in TabStyr",
+    "lede": "Un quadro tranquillo di dove finisce davvero il tuo tempo nel browser. In breve:",
+    "trackTitle": "Cosa monitora",
+    "trackBody": "Tempo attivo in primo piano su ogni sito — la scheda che stai effettivamente guardando. L'audio in background è conteggiato separatamente.",
+    "privateTitle": "100% privato",
+    "privateBody": "Tutto resta in questo browser. Nessun account, nessun server, nessuna chiamata di rete. Esporta o cancella i tuoi dati quando vuoi.",
+    "categorizedTitle": "Categorizzato automaticamente",
+    "categorizedBody": "I siti sono ordinati nelle categorie qui sotto — i punti colorati nella dashboard le usano. Riclassifica qualsiasi sito o aggiungi le tue regole nelle Impostazioni.",
+    "legendAria": "Legenda dei colori delle categorie",
+    "gotIt": "Capito",
+    "close": "Chiudi",
+    "dialogAria": "Benvenuto e come funziona TabStyr"
+  },
+  "dashboard": {
+    "statsAria": "Statistiche di utilizzo del browser"
+  },
+  "notification": {
+    "stale": "{count} schede non toccate da {days}+ giorni"
+  }
+}

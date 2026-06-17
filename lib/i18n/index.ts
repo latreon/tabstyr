@@ -6,15 +6,26 @@ import de from './locales/de.json';
 import fr from './locales/fr.json';
 import ja from './locales/ja.json';
 import zhCN from './locales/zh-CN.json';
+import ptBR from './locales/pt-BR.json';
+import it from './locales/it.json';
+import ru from './locales/ru.json';
+import ko from './locales/ko.json';
+import tr from './locales/tr.json';
 
-/** Languages offered in the picker. `label` is shown in the user's own script. */
+/** Languages offered in the picker. `label` is shown in the user's own script;
+ * `flag` is a regional-indicator emoji shown beside it. */
 export const SUPPORTED_LOCALES = [
-  { code: 'en', label: 'English' },
-  { code: 'es', label: 'Español' },
-  { code: 'de', label: 'Deutsch' },
-  { code: 'fr', label: 'Français' },
-  { code: 'ja', label: '日本語' },
-  { code: 'zh-CN', label: '中文（简体）' },
+  { code: 'en', label: 'English', flag: '🇬🇧' },
+  { code: 'es', label: 'Español', flag: '🇪🇸' },
+  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
+  { code: 'fr', label: 'Français', flag: '🇫🇷' },
+  { code: 'it', label: 'Italiano', flag: '🇮🇹' },
+  { code: 'pt-BR', label: 'Português (BR)', flag: '🇧🇷' },
+  { code: 'ru', label: 'Русский', flag: '🇷🇺' },
+  { code: 'tr', label: 'Türkçe', flag: '🇹🇷' },
+  { code: 'ja', label: '日本語', flag: '🇯🇵' },
+  { code: 'ko', label: '한국어', flag: '🇰🇷' },
+  { code: 'zh-CN', label: '中文（简体）', flag: '🇨🇳' },
 ] as const;
 
 export type LocaleCode = (typeof SUPPORTED_LOCALES)[number]['code'];
@@ -45,7 +56,7 @@ export const i18n = createI18n({
   legacy: false,
   locale: resolveLocale(cachedPref()),
   fallbackLocale: 'en',
-  messages: { en, es, de, fr, ja, 'zh-CN': zhCN },
+  messages: { en, es, de, fr, it, 'pt-BR': ptBR, ru, tr, ja, ko, 'zh-CN': zhCN },
   missingWarn: false,
   fallbackWarn: false,
 });

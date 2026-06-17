@@ -95,7 +95,8 @@ network requests. Your data lives in your browser's database and never leaves it
 
 ### Look & feel
 - System-aware **dark / light** themes with a manual toggle.
-- **6 languages** — English, Español, Deutsch, Français, 日本語, 中文（简体）.
+- **11 languages** — English, Español, Deutsch, Français, Italiano, Português (BR),
+  Русский, Türkçe, 日本語, 한국어, 中文（简体）.
 - Accessible, keyboard-friendly UI.
 
 ## Screenshots

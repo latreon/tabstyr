@@ -1,0 +1,222 @@
+{
+  "common": {
+    "loading": "Yükleniyor…",
+    "loadError": "Veriler yüklenemedi — sayfayı yeniden yükleyin.",
+    "today": "Bugün",
+    "nothingYet": "Henüz bir şey yok.",
+    "nothingTracked": "Henüz hiçbir şey kaydedilmedi.",
+    "noActivity": "Henüz etkinlik kaydedilmedi."
+  },
+  "privacy": {
+    "title": "Gizlilik",
+    "badge": "Cihazınızdan 0 bayt ayrılır",
+    "badgeTitle": "Sunucu yok, hesap yok, ağ isteği yok. Gizlilik politikası için tıklayın.",
+    "viewPolicy": "Cihazınızdan 0 bayt ayrılır — gizlilik politikasını görüntüle"
+  },
+  "support": {
+    "coffee": "Bana bir kahve ısmarla"
+  },
+  "popup": {
+    "tabs": "{count} sekme",
+    "stale": "{count} eski",
+    "activeToday": "bugün aktif · haftalık ortalamaya göre",
+    "noActivityToday": "Bugün henüz etkinlik kaydedilmedi.",
+    "dashboard": "Panel",
+    "loadError": "İstatistikler yüklenemedi — açılır pencereyi yeniden açmayı deneyin.",
+    "topSitesAria": "Bugünün en çok kullanılan siteleri",
+    "openAria": "{domain} aç — bugün {time}"
+  },
+  "hero": {
+    "todayActive": "Bugün · aktif",
+    "vsWeeklyAvg": "haftalık ort. göre %{pct}",
+    "up": "Arttı",
+    "down": "Azaldı",
+    "backgroundAudio": "♪ +{time} arka plan sesi"
+  },
+  "stat": {
+    "openTabs": "Açık sekmeler",
+    "staleTabs": "Eski sekmeler"
+  },
+  "categories": {
+    "Work": "İş",
+    "Dev": "Geliştirme",
+    "Finance": "Finans",
+    "Social": "Sosyal",
+    "Media": "Medya",
+    "News": "Haberler",
+    "Shopping": "Alışveriş",
+    "Other": "Diğer"
+  },
+  "category": {
+    "title": "Bugün kategoriye göre",
+    "shareAria": "Kategoriye göre zaman payı",
+    "segTitle": "{category} · {time} · %{pct}"
+  },
+  "focus": {
+    "title": "Bugün odak",
+    "streak": "🔥 {count} günlük seri",
+    "streakTitle": "%{target}+ odakla {count} gün",
+    "ariaFocus": "Odak %{pct}",
+    "trendTitle": "Odak eğilimi",
+    "productive": "Üretken",
+    "distracting": "Dikkat dağıtıcı",
+    "note": "Üretken ÷ (üretken + dikkat dağıtıcı). İş ve Geliştirme üretken sayılır; hedef %{target}. Yeniden sınıflandırmak için bir sitenin kategorisini değiştirin."
+  },
+  "topSites": {
+    "title": "Bugünün en çok kullanılan siteleri",
+    "viewDetailsAria": "{domain} ayrıntılarını gör — bugün {time} aktif"
+  },
+  "trend": {
+    "title": "Etkinlik eğilimi",
+    "day": "Gün",
+    "week": "Hafta",
+    "month": "Ay",
+    "granularityAria": "Eğilim ayrıntı düzeyi"
+  },
+  "heatmap": {
+    "title": "Etkinlik ısı haritası",
+    "peak": "Zirve · {label}",
+    "gridAria": "Haftanın günü ve günün saatine göre gezinme etkinliği",
+    "less": "Az",
+    "more": "Çok",
+    "cellLabel": "{weekday} {hour} — {time}"
+  },
+  "comparison": {
+    "weekTitle": "Bu hafta vs geçen hafta",
+    "monthTitle": "Bu ay vs geçen ay",
+    "weekSub": "Son 7 gün vs önceki 7 gün · bugün hâlâ sayılıyor",
+    "monthSub": "Son 30 gün vs önceki 30 gün · bugün hâlâ sayılıyor",
+    "notEnough": "Henüz yeterli geçmiş yok — birkaç gün sonra tekrar bakın.",
+    "week": "Hafta",
+    "month": "Ay",
+    "periodAria": "Karşılaştırma dönemi",
+    "noChange": "değişiklik yok",
+    "vsBefore": "önceki {time} göre"
+  },
+  "worklog": {
+    "title": "Ne üzerinde çalıştım?",
+    "prevDay": "Önceki gün",
+    "nextDay": "Sonraki gün",
+    "copy": "Kopyala",
+    "copied": "Kopyalandı ✓",
+    "summary": "— hiçbir sitede {time} geçirdiniz. | — {count} sitede {time} geçirdiniz. | — {count} sitede {time} geçirdiniz.",
+    "nothingTracked": "— hiçbir şey kaydedilmedi.",
+    "legendAria": "Nokta renk açıklaması",
+    "viewSiteAria": "{domain} ayrıntılarını gör — {category}",
+    "categoryTitle": "Kategori: {category}",
+    "changeCategory": "Kategoriyi değiştir (şu an {category})"
+  },
+  "tabTable": {
+    "title": "Zamana göre açık sekmeler",
+    "sub": "Site başına aktif süre · son 90 gün",
+    "tab": "Site",
+    "tracked": "Kaydedildi",
+    "lastActive": "Son etkinlik",
+    "tabCount": "{count} sekme",
+    "noTabs": "Henüz kaydedilmiş sekme yok.",
+    "goToTabAria": "{title} sekmesine git",
+    "justNow": "az önce",
+    "minsAgo": "{count} dk önce",
+    "hoursAgo": "{count} sa önce",
+    "daysAgo": "{count} gün önce",
+    "never": "—"
+  },
+  "domainDetail": {
+    "detailsForAria": "{domain} ayrıntıları",
+    "open": "Aç ↗",
+    "close": "Ayrıntıları kapat",
+    "category": "Kategori",
+    "last14": "Son 14 gün",
+    "last14Aria": "Günlük süre, son 14 gün",
+    "byHourAria": "Saate göre etkinlik",
+    "total90d": "Toplam (90 gün)",
+    "shareOfAll": "Toplam sürenin payı",
+    "sessions": "Oturumlar",
+    "avgSession": "Ort. oturum",
+    "longestSession": "En uzun oturum",
+    "activeDays": "Aktif günler",
+    "audio": "Ses"
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "theme": "Tema",
+    "switchTheme": "Temayı değiştir · {mode}",
+    "light": "Açık",
+    "dark": "Koyu",
+    "language": "Dil",
+    "staleDays": "Şu kadar gün sonra eski (gün)",
+    "idleSeconds": "Boşta kalma süresi (saniye)",
+    "countAudio": "Arka plan sesini say",
+    "save": "Kaydet",
+    "wipe": "Tüm verileri sil",
+    "saved": "Ayarlar kaydedildi",
+    "saveFailed": "Ayarlar kaydedilemedi",
+    "customRules": "Özel kategori kuralları",
+    "rulesHint": "Çoğu popüler site otomatik olarak tanınır. Yalnızca henüz sınıflandırmadığımız bir site için kural ekleyin: metninizi içeren her adres o kategoriye gider (yerleşik kurallardan önce kontrol edilir).",
+    "rulePlaceholder": "örn. yandex",
+    "add": "Ekle",
+    "ruleExists": "Bu desenin zaten bir kuralı var.",
+    "ruleAdded": "Kural eklendi",
+    "ruleAddFailed": "Kural eklenemedi",
+    "ruleRemoveFailed": "Kural kaldırılamadı",
+    "removeRuleAria": "{pattern} için kuralı kaldır",
+    "categoryForRuleAria": "Kural için kategori",
+    "backupRestore": "Yedekleme ve geri yükleme",
+    "exportJson": "JSON dışa aktar",
+    "exportCsv": "CSV dışa aktar",
+    "encrypted": "Şifreli…",
+    "restore": "Geri yükle…",
+    "encHint": "Tam bir JSON yedeğini bir parola tümcesiyle şifreler (AES-256-GCM). Güvenli saklayın — kurtarılamaz.",
+    "passphrase": "Parola tümcesi",
+    "confirmPassphrase": "Parola tümcesini onayla",
+    "downloadEncrypted": "Şifreli indir",
+    "cancel": "İptal",
+    "decrypt": "Şifre çöz",
+    "passTooShort": "En az 10 karakter kullanın.",
+    "passMismatch": "Parola tümceleri eşleşmiyor.",
+    "exportedJson": "JSON yedeği dışa aktarıldı",
+    "exportedCsv": "CSV dışa aktarıldı",
+    "exportedEncrypted": "Şifreli yedek dışa aktarıldı",
+    "encryptionFailed": "Şifreleme başarısız",
+    "exportFailed": "Dışa aktarma başarısız",
+    "restoreEncryptedPrompt": "Bu yedek şifreli. Devam etmek için parola tümcesini girin.",
+    "restoreReadFailed": "Bu dosya okunamadı.",
+    "replaceTitle": "Tüm veriler değiştirilsin mi?",
+    "replaceBody": "Bu, şu anda bu cihazda saklanan verileri siler ve {days} günlük kayıt ile {sessions} oturum{from} geri yükler. Geri alınamaz.",
+    "replaceBodyFrom": " ({date} tarihli yedekten)",
+    "replaceData": "Verileri değiştir",
+    "restoring": "Geri yükleniyor…",
+    "restored": "{days} gün · {sessions} oturum geri yüklendi",
+    "restoreFailed": "Geri yükleme başarısız",
+    "confirmRestoreAria": "Geri yüklemeyi onayla",
+    "wipeTitle": "Tüm veriler silinsin mi?",
+    "wipeBody": "Bu, bu cihazda saklanan her oturumu, günlük toplamı ve sekme kaydını kalıcı olarak kaldırır. Ayarlar korunur. Geri alınamaz.",
+    "deleteEverything": "Her şeyi sil",
+    "wiping": "Siliniyor…",
+    "wiped": "Tüm veriler silindi",
+    "wipeFailed": "Silme başarısız",
+    "confirmWipeAria": "Tüm verileri silmeyi onayla",
+    "languageAuto": "Otomatik",
+    "idleHint": "Fare veya klavye girişi olmadan bu süre geçince izleme duraklatılır. Kaydırmadan okuyorsanız artırın."
+  },
+  "onboarding": {
+    "title": "TabStyr'a hoş geldiniz",
+    "lede": "Tarayıcı zamanınızın gerçekte nereye gittiğine dair sakin bir tablo. Özetle:",
+    "trackTitle": "Neyi izler",
+    "trackBody": "Her sitedeki aktif ön plan süresi — gerçekten baktığınız sekme. Arka plan sesi ayrı sayılır.",
+    "privateTitle": "%100 gizli",
+    "privateBody": "Her şey bu tarayıcıda kalır. Hesap yok, sunucu yok, ağ çağrısı yok. Verilerinizi istediğiniz zaman dışa aktarın veya silin.",
+    "categorizedTitle": "Otomatik sınıflandırma",
+    "categorizedBody": "Siteler aşağıdaki kategorilere ayrılır — paneldeki renkli noktalar bunları kullanır. Herhangi bir siteyi yeniden sınıflandırın veya Ayarlar'da kendi kurallarınızı ekleyin.",
+    "legendAria": "Kategori renk açıklaması",
+    "gotIt": "Anladım",
+    "close": "Kapat",
+    "dialogAria": "Hoş geldiniz ve TabStyr nasıl çalışır"
+  },
+  "dashboard": {
+    "statsAria": "Tarayıcı kullanım istatistikleri"
+  },
+  "notification": {
+    "stale": "{count} sekme {days}+ gündür kullanılmadı"
+  }
+}

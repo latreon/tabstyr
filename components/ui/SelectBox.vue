@@ -6,7 +6,7 @@ interface Option {
   label: string;
 }
 
-const props = defineProps<{ modelValue: string; options: Option[]; label?: string }>();
+const props = defineProps<{ modelValue: string; options: Option[]; label?: string; wide?: boolean }>();
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>();
 
 const uid = useId();
@@ -48,7 +48,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
 </script>
 
 <template>
-  <div ref="root" class="selectbox">
+  <div ref="root" class="selectbox" :class="{ wide }">
     <button
       type="button"
       class="trigger"
@@ -92,6 +92,9 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
 .selectbox {
   position: relative;
   min-width: 120px;
+}
+.selectbox.wide {
+  min-width: 190px;
 }
 .trigger {
   display: flex;

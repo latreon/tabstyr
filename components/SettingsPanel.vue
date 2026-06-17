@@ -30,7 +30,7 @@ const THEME_OPTIONS = computed(() => [
 // Explicit locales only — each shown in its own script. No "Automatic": the
 // picker always reflects a concrete language.
 const LANGUAGE_OPTIONS = computed(() =>
-  SUPPORTED_LOCALES.map((l) => ({ value: l.code, label: l.label })),
+  SUPPORTED_LOCALES.map((l) => ({ value: l.code, label: `${l.flag}  ${l.label}` })),
 );
 // A stored 'auto' preference resolves to a concrete locale for display/selection.
 const currentLocale = computed(() => resolveLocale(locale.language.value));
@@ -336,6 +336,7 @@ async function confirmWipe() {
         :model-value="currentLocale"
         :options="LANGUAGE_OPTIONS"
         :label="t('settings.language')"
+        wide
         @update:model-value="locale.setLanguage($event)"
       />
     </div>

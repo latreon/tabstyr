@@ -1,0 +1,222 @@
+{
+  "common": {
+    "loading": "불러오는 중…",
+    "loadError": "데이터를 불러오지 못했습니다 — 페이지를 새로고침하세요.",
+    "today": "오늘",
+    "nothingYet": "아직 없음.",
+    "nothingTracked": "아직 기록된 항목이 없습니다.",
+    "noActivity": "아직 기록된 활동이 없습니다."
+  },
+  "privacy": {
+    "title": "개인정보 보호",
+    "badge": "0바이트만 기기를 떠납니다",
+    "badgeTitle": "서버 없음, 계정 없음, 네트워크 요청 없음. 개인정보 처리방침을 보려면 클릭하세요.",
+    "viewPolicy": "0바이트만 기기를 떠납니다 — 개인정보 처리방침 보기"
+  },
+  "support": {
+    "coffee": "커피 한 잔 사주기"
+  },
+  "popup": {
+    "tabs": "탭 {count}개",
+    "stale": "오래된 탭 {count}개",
+    "activeToday": "오늘 활동 · 주간 평균 대비",
+    "noActivityToday": "오늘 기록된 활동이 아직 없습니다.",
+    "dashboard": "대시보드",
+    "loadError": "통계를 불러오지 못했습니다 — 팝업을 다시 열어 보세요.",
+    "topSitesAria": "오늘의 상위 사이트",
+    "openAria": "{domain} 열기 — 오늘 {time}"
+  },
+  "hero": {
+    "todayActive": "오늘 · 활동",
+    "vsWeeklyAvg": "주간 평균 대비 {pct}%",
+    "up": "상승",
+    "down": "하락",
+    "backgroundAudio": "♪ +{time} 백그라운드 오디오"
+  },
+  "stat": {
+    "openTabs": "열린 탭",
+    "staleTabs": "오래된 탭"
+  },
+  "categories": {
+    "Work": "업무",
+    "Dev": "개발",
+    "Finance": "금융",
+    "Social": "소셜",
+    "Media": "미디어",
+    "News": "뉴스",
+    "Shopping": "쇼핑",
+    "Other": "기타"
+  },
+  "category": {
+    "title": "오늘 카테고리별",
+    "shareAria": "카테고리별 시간 비율",
+    "segTitle": "{category} · {time} · {pct}%"
+  },
+  "focus": {
+    "title": "오늘의 집중",
+    "streak": "🔥 {count}일 연속",
+    "streakTitle": "집중도 {target}%+ {count}일 연속",
+    "ariaFocus": "집중도 {pct}%",
+    "trendTitle": "집중 추이",
+    "productive": "생산적",
+    "distracting": "산만함",
+    "note": "생산적 ÷ (생산적 + 산만함). 업무와 개발은 생산적으로 계산됩니다. 목표 {target}%. 사이트의 카테고리를 바꾸면 다시 분류됩니다."
+  },
+  "topSites": {
+    "title": "오늘의 상위 사이트",
+    "viewDetailsAria": "{domain} 상세 보기 — 오늘 {time} 활동"
+  },
+  "trend": {
+    "title": "활동 추이",
+    "day": "일",
+    "week": "주",
+    "month": "월",
+    "granularityAria": "추이 단위"
+  },
+  "heatmap": {
+    "title": "활동 히트맵",
+    "peak": "최고 · {label}",
+    "gridAria": "요일 및 시간대별 탐색 활동",
+    "less": "적음",
+    "more": "많음",
+    "cellLabel": "{weekday} {hour} — {time}"
+  },
+  "comparison": {
+    "weekTitle": "이번 주 vs 지난주",
+    "monthTitle": "이번 달 vs 지난달",
+    "weekSub": "최근 7일 vs 그 이전 7일 · 오늘은 집계 중",
+    "monthSub": "최근 30일 vs 그 이전 30일 · 오늘은 집계 중",
+    "notEnough": "아직 기록이 충분하지 않습니다 — 며칠 후에 다시 확인하세요.",
+    "week": "주",
+    "month": "월",
+    "periodAria": "비교 기간",
+    "noChange": "변화 없음",
+    "vsBefore": "이전 {time} 대비"
+  },
+  "worklog": {
+    "title": "무슨 작업을 했나요?",
+    "prevDay": "이전 날",
+    "nextDay": "다음 날",
+    "copy": "복사",
+    "copied": "복사됨 ✓",
+    "summary": "— {time}를 보냈지만 사이트가 없습니다. | — {count}개 사이트에서 {time}를 보냈습니다. | — {count}개 사이트에서 {time}를 보냈습니다.",
+    "nothingTracked": "— 기록된 항목 없음.",
+    "legendAria": "점 색상 범례",
+    "viewSiteAria": "{domain} 상세 보기 — {category}",
+    "categoryTitle": "카테고리: {category}",
+    "changeCategory": "카테고리 변경 (현재 {category})"
+  },
+  "tabTable": {
+    "title": "시간별 열린 탭",
+    "sub": "사이트별 활동 시간 · 최근 90일",
+    "tab": "사이트",
+    "tracked": "기록됨",
+    "lastActive": "마지막 활동",
+    "tabCount": "탭 {count}개",
+    "noTabs": "아직 기록된 탭이 없습니다.",
+    "goToTabAria": "{title}(으)로 이동",
+    "justNow": "방금",
+    "minsAgo": "{count}분 전",
+    "hoursAgo": "{count}시간 전",
+    "daysAgo": "{count}일 전",
+    "never": "—"
+  },
+  "domainDetail": {
+    "detailsForAria": "{domain} 상세 정보",
+    "open": "열기 ↗",
+    "close": "상세 닫기",
+    "category": "카테고리",
+    "last14": "최근 14일",
+    "last14Aria": "일별 시간, 최근 14일",
+    "byHourAria": "시간대별 활동",
+    "total90d": "합계 (90일)",
+    "shareOfAll": "전체 시간 중 비율",
+    "sessions": "세션",
+    "avgSession": "평균 세션",
+    "longestSession": "가장 긴 세션",
+    "activeDays": "활동 일수",
+    "audio": "오디오"
+  },
+  "settings": {
+    "title": "설정",
+    "theme": "테마",
+    "switchTheme": "테마 전환 · {mode}",
+    "light": "라이트",
+    "dark": "다크",
+    "language": "언어",
+    "staleDays": "오래됨 기준 (일)",
+    "idleSeconds": "유휴 시간 제한 (초)",
+    "countAudio": "백그라운드 오디오 집계",
+    "save": "저장",
+    "wipe": "모든 데이터 지우기",
+    "saved": "설정이 저장되었습니다",
+    "saveFailed": "설정을 저장하지 못했습니다",
+    "customRules": "사용자 지정 카테고리 규칙",
+    "rulesHint": "대부분의 인기 사이트는 자동으로 인식됩니다. 아직 분류되지 않은 사이트에만 규칙을 추가하세요: 입력한 텍스트가 포함된 모든 주소가 해당 카테고리로 분류됩니다(기본 규칙보다 먼저 확인됨).",
+    "rulePlaceholder": "예: yandex",
+    "add": "추가",
+    "ruleExists": "해당 패턴에는 이미 규칙이 있습니다.",
+    "ruleAdded": "규칙 추가됨",
+    "ruleAddFailed": "규칙을 추가하지 못했습니다",
+    "ruleRemoveFailed": "규칙을 제거하지 못했습니다",
+    "removeRuleAria": "{pattern} 규칙 제거",
+    "categoryForRuleAria": "규칙 카테고리",
+    "backupRestore": "백업 및 복원",
+    "exportJson": "JSON 내보내기",
+    "exportCsv": "CSV 내보내기",
+    "encrypted": "암호화…",
+    "restore": "복원…",
+    "encHint": "전체 JSON 백업을 암호로 암호화합니다(AES-256-GCM). 안전하게 보관하세요 — 복구할 수 없습니다.",
+    "passphrase": "암호 문구",
+    "confirmPassphrase": "암호 문구 확인",
+    "downloadEncrypted": "암호화하여 다운로드",
+    "cancel": "취소",
+    "decrypt": "복호화",
+    "passTooShort": "10자 이상 사용하세요.",
+    "passMismatch": "암호 문구가 일치하지 않습니다.",
+    "exportedJson": "JSON 백업을 내보냈습니다",
+    "exportedCsv": "CSV를 내보냈습니다",
+    "exportedEncrypted": "암호화 백업을 내보냈습니다",
+    "encryptionFailed": "암호화 실패",
+    "exportFailed": "내보내기 실패",
+    "restoreEncryptedPrompt": "이 백업은 암호화되어 있습니다. 계속하려면 암호 문구를 입력하세요.",
+    "restoreReadFailed": "해당 파일을 읽을 수 없습니다.",
+    "replaceTitle": "모든 데이터를 교체하시겠습니까?",
+    "replaceBody": "이 기기에 현재 저장된 데이터를 삭제하고 일별 기록 {days}개와 세션 {sessions}개{from}를 복원합니다. 되돌릴 수 없습니다.",
+    "replaceBodyFrom": " ({date} 백업에서)",
+    "replaceData": "데이터 교체",
+    "restoring": "복원 중…",
+    "restored": "{days}일 · 세션 {sessions}개 복원됨",
+    "restoreFailed": "복원 실패",
+    "confirmRestoreAria": "복원 확인",
+    "wipeTitle": "모든 데이터를 삭제하시겠습니까?",
+    "wipeBody": "이 기기에 저장된 모든 세션, 일별 합계, 탭 기록을 영구히 제거합니다. 설정은 유지됩니다. 되돌릴 수 없습니다.",
+    "deleteEverything": "전부 삭제",
+    "wiping": "지우는 중…",
+    "wiped": "모든 데이터가 지워졌습니다",
+    "wipeFailed": "지우기 실패",
+    "confirmWipeAria": "모든 데이터 지우기 확인",
+    "languageAuto": "자동",
+    "idleHint": "마우스나 키보드 입력이 이 시간 동안 없으면 추적이 일시 중지됩니다. 스크롤 없이 읽는다면 늘리세요."
+  },
+  "onboarding": {
+    "title": "TabStyr에 오신 것을 환영합니다",
+    "lede": "브라우저 시간이 실제로 어디에 쓰이는지 차분하게 보여줍니다. 요점은 다음과 같습니다:",
+    "trackTitle": "무엇을 추적하나요",
+    "trackBody": "각 사이트의 활성 전면 시간 — 실제로 보고 있는 탭입니다. 백그라운드 오디오는 별도로 집계됩니다.",
+    "privateTitle": "100% 비공개",
+    "privateBody": "모든 것이 이 브라우저에 남습니다. 계정 없음, 서버 없음, 네트워크 호출 없음. 언제든 데이터를 내보내거나 지울 수 있습니다.",
+    "categorizedTitle": "자동 분류",
+    "categorizedBody": "사이트는 아래 카테고리로 분류됩니다 — 대시보드의 색상 점이 이를 사용합니다. 어떤 사이트든 다시 분류하거나 설정에서 직접 규칙을 추가하세요.",
+    "legendAria": "카테고리 색상 범례",
+    "gotIt": "확인",
+    "close": "닫기",
+    "dialogAria": "환영 및 TabStyr 작동 방식"
+  },
+  "dashboard": {
+    "statsAria": "브라우저 사용 통계"
+  },
+  "notification": {
+    "stale": "{count}개 탭이 {days}일 이상 사용되지 않음"
+  }
+}
