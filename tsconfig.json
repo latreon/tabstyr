@@ -1,3 +1,6 @@
 {
-  "extends": "./.wxt/tsconfig.json"
+  "extends": "./.wxt/tsconfig.json",
+  "comment": "landing/ is a separate Vue app with its own tsconfig + @/ alias; exclude it from the extension typecheck. dist is re-listed because extends overrides the base exclude array.",
+  "exclude": ["dist", "landing"]
 }
+
