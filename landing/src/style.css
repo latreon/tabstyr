@@ -1,0 +1,163 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   TabStyr landing — premium dark, in the product's own violet→blue brand.
+   Atmospheric depth: layered slate surfaces, glass cards, ambient glow,
+   generous spacing, geometric display type, very subtle borders.
+   ──────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* layered darkness (3+ tones) */
+  --bg: #0a0a0f;
+  --bg-alt: #101019;
+  --surface: #16161f;
+
+  /* brand accent — TabStyr violet → blue */
+  --accent-a: #a78bfa;
+  --accent-b: #60a5fa;
+  --accent: #8b8bfa;
+  --accent-strong: #7c5cf0;
+  --accent-grad: linear-gradient(90deg, var(--accent-a), var(--accent-b));
+  --accent-muted: rgba(139, 139, 250, 0.14);
+
+  /* text */
+  --text: #f4f4fa;
+  --text-2: #c2c2d4;
+  --text-3: #8a8aa0;
+
+  /* lines + glass */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.16);
+  --card: rgba(26, 26, 38, 0.55);
+  --card-solid: #1a1a26;
+
+  /* glows */
+  --glow-sm: 0 0 24px rgba(124, 92, 240, 0.18);
+  --glow-md: 0 0 48px rgba(124, 92, 240, 0.22);
+  --shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
+
+  /* type */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* layout */
+  --container: 1120px;
+  --radius: 16px;
+  --radius-sm: 10px;
+
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  margin: 0;
+}
+
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* ── shared utilities ──────────────────────────────────────────────────── */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section {
+  position: relative;
+  padding: 112px 0;
+}
+@media (max-width: 760px) {
+  .section { padding: 72px 0; }
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.gradient-text {
+  background: var(--accent-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.glass {
+  background: var(--card);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* primary / secondary buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform 180ms ease, box-shadow 220ms ease, background 200ms ease, border-color 200ms ease, filter 200ms ease;
+}
+.btn svg { width: 18px; height: 18px; }
+.btn-primary {
+  background: var(--accent-grad);
+  color: #0a0a0f;
+  box-shadow: var(--glow-sm);
+}
+.btn-primary:hover { filter: brightness(1.08); box-shadow: var(--glow-md); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0) scale(0.985); }
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  border-color: var(--border);
+}
+.btn-ghost:hover { background: rgba(255, 255, 255, 0.07); border-color: var(--border-hover); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* scroll-reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1), transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
