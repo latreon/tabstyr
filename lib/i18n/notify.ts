@@ -1,15 +1,21 @@
 // Lightweight, vue-i18n-free message lookup for the background service worker
-// (which has no Vue runtime). Bundles only the small JSON catalogs and does
-// simple {token} interpolation — used for the stale-tab notification.
-import en from './locales/en.json';
-import es from './locales/es.json';
-import de from './locales/de.json';
-import fr from './locales/fr.json';
-import ja from './locales/ja.json';
-import zhCN from './locales/zh-CN.json';
-
-const CATALOGS: Record<string, typeof en> = { en, es, de, fr, ja, 'zh-CN': zhCN };
-const CODES = Object.keys(CATALOGS);
+// (which has no Vue runtime). Inlines ONLY the one string it needs per language —
+// importing the full JSON catalogs here would bundle ~60 KB into background.js for
+// a single key. Keep in sync with each locale's `notification.stale`.
+const STALE: Record<string, string> = {
+  en: '{count} tabs untouched for {days}+ days',
+  es: '{count} pestañas sin tocar durante más de {days} días',
+  de: '{count} Tabs seit über {days} Tagen unberührt',
+  fr: '{count} onglets inactifs depuis plus de {days} jours',
+  it: '{count} schede non toccate da {days}+ giorni',
+  'pt-BR': '{count} abas sem uso por {days}+ dias',
+  ru: '{count} вкладок не открывались {days}+ дней',
+  tr: '{count} sekme {days}+ gündür kullanılmadı',
+  ja: '{count} 個のタブが {days} 日以上未使用です',
+  ko: '{count}개 탭이 {days}일 이상 사용되지 않음',
+  'zh-CN': '{count} 个标签页已 {days} 天以上未使用',
+};
+const CODES = Object.keys(STALE);
 
 function resolve(pref: string | undefined): string {
   if (pref && pref !== 'auto' && CODES.includes(pref)) return pref;
@@ -25,6 +31,5 @@ function interpolate(template: string, params: Record<string, string | number>):
 
 /** Localized stale-tab notification message for a stored language preference. */
 export function staleNotification(languagePref: string | undefined, count: number, days: number): string {
-  const cat = CATALOGS[resolve(languagePref)] ?? en;
-  return interpolate(cat.notification.stale, { count, days });
+  return interpolate(STALE[resolve(languagePref)] ?? STALE.en, { count, days });
 }
