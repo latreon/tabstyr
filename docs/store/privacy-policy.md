@@ -41,6 +41,7 @@ automatically.
 | `idle` | Pause tracking when you step away |
 | `alarms` | Periodic checkpoints and the daily maintenance/notification |
 | `notifications` | Optional once-a-day stale-tab reminder |
+| `webNavigation` | Detect in-page (SPA) route changes on the active tab so time is credited to the page you're actually on |
 | `favicon` (Chromium only) | Show site icons in lists |
 
 No host permissions are requested; the extension cannot access the content of the

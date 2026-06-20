@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { buildTrend } from '@/lib/trend';
 import { buildHourlyHeatmap } from '@/lib/heatmap';
 import { coalesceSessions } from '@/lib/sessionize';
+import { topSubPages } from '@/lib/subpages';
 import { formatDuration } from '@/lib/time';
 import { openDomain } from '@/lib/navigate';
 import { isWebDomain, displayDomain } from '@/lib/domain';
@@ -53,6 +54,13 @@ const avgSession = computed(() =>
 const longestSession = computed(() =>
   visits.value.reduce((max, v) => Math.max(max, Math.round((v.end - v.start) / 1000)), 0),
 );
+
+// Sub-page (SPA) breakdown — only meaningful when the site has more than one
+// tracked page. Labels the bare root path via a localized "Home".
+const subPages = computed(() => topSubPages(domainSessions.value));
+const hasSubPages = computed(() => subPages.value.pages.length > 1);
+const subPageMax = computed(() => Math.max(1, ...subPages.value.pages.map((p) => p.seconds)));
+const pageLabel = (path: string) => (path === '/' ? t('domainDetail.homePath') : path);
 
 const trend = computed(() => buildTrend(domainStats.value, 'day', props.now));
 const trendMax = computed(() => Math.max(1, ...trend.value.map((p) => p.seconds)));
@@ -151,6 +159,22 @@ onUnmounted(() => {
           <span>{{ trend[0]?.label }}</span>
           <span>{{ trend[trend.length - 1]?.label }}</span>
         </div>
+      </section>
+
+      <section v-if="hasSubPages" class="block" :aria-label="t('domainDetail.topPagesAria')">
+        <span class="label">{{ t('domainDetail.topPages') }}</span>
+        <ul class="pages">
+          <li v-for="p in subPages.pages" :key="p.path" class="page-row">
+            <span class="page-path" :title="pageLabel(p.path)">{{ pageLabel(p.path) }}</span>
+            <span class="page-bar-track" aria-hidden="true">
+              <span class="page-bar-fill" :style="{ width: `${(p.seconds / subPageMax) * 100}%` }" />
+            </span>
+            <span class="page-time">{{ formatDuration(p.seconds) }}</span>
+          </li>
+        </ul>
+        <p v-if="subPages.otherCount" class="pages-more">
+          {{ t('domainDetail.otherPages', { count: subPages.otherCount }) }}
+        </p>
       </section>
 
       <section class="block" :aria-label="t('domainDetail.byHourAria')">
@@ -304,6 +328,52 @@ onUnmounted(() => {
   display: flex;
   justify-content: space-between;
   font-size: 10px;
+  color: var(--text-3);
+}
+.pages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.page-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(60px, 90px) auto;
+  align-items: center;
+  gap: 10px;
+}
+.page-path {
+  font-size: 12px;
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.page-bar-track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--card-strong);
+  overflow: hidden;
+}
+.page-bar-fill {
+  display: block;
+  height: 100%;
+  min-width: 2px;
+  border-radius: 3px;
+  background: var(--accent-gradient);
+}
+.page-time {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.pages-more {
+  margin: 2px 0 0;
+  font-size: 11px;
   color: var(--text-3);
 }
 /* The embedded heatmap is not in the dashboard grid here — neutralise its span. */

@@ -147,6 +147,7 @@ as an overlay (no new tab, no page navigation).
 | `idle` | Pause tracking when you're away so totals stay accurate |
 | `alarms` | Periodic checkpoints + the once-daily maintenance task |
 | `notifications` | Optional, at-most-once-per-day stale-tab reminder |
+| `webNavigation` | Detect in-page (SPA) route changes on the active tab so time is credited to the right page |
 | `favicon` (Chromium only) | Show site icons in lists |
 
 No host permissions are requested — the extension cannot access page contents.

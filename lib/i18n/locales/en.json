@@ -137,7 +137,11 @@
     "avgSession": "Avg session",
     "longestSession": "Longest session",
     "activeDays": "Active days",
-    "audio": "Audio"
+    "audio": "Audio",
+    "topPages": "Top pages",
+    "topPagesAria": "Most-visited pages on this site",
+    "otherPages": "+{count} more",
+    "homePath": "Home"
   },
   "settings": {
     "title": "Settings",

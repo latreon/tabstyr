@@ -1,4 +1,5 @@
 import * as repo from './db/repo';
+import { SCHEMA_VERSION } from './export';
 import { saveSettings } from './settings';
 import type { DailyStat, Session, Settings, TabMeta } from './types';
 
@@ -60,6 +61,14 @@ export function parseBackup(text: string): ParsedBackup {
     throw new Error('Not a valid JSON file.');
   }
   if (!o || o.app !== 'tabstyr') throw new Error('Not a TabStyr backup file.');
+  // Forward-compat guard: a file stamped with a newer schema than this build
+  // understands may have a different shape — silently importing it would drop or
+  // mangle records. Refuse with a clear message. (Missing/legacy versions, ≤ the
+  // supported version, fall through to the tolerant per-record validators below.)
+  const fileVersion = o.schemaVersion;
+  if (typeof fileVersion === 'number' && fileVersion > SCHEMA_VERSION) {
+    throw new Error('This backup was made by a newer version of TabStyr. Please update first.');
+  }
   return {
     dailyStats: Array.isArray(o.dailyStats) ? o.dailyStats.filter(isStat).slice(0, MAX_STATS) : [],
     sessions: Array.isArray(o.sessions) ? o.sessions.filter(isSession).slice(0, MAX_SESSIONS) : [],

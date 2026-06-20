@@ -137,7 +137,11 @@
     "avgSession": "平均セッション",
     "longestSession": "最長セッション",
     "activeDays": "アクティブ日数",
-    "audio": "音声"
+    "audio": "音声",
+    "topPages": "よく見るページ",
+    "topPagesAria": "このサイトでよく見るページ",
+    "otherPages": "他{count}件",
+    "homePath": "ホーム"
   },
   "settings": {
     "title": "設定",

@@ -15,6 +15,11 @@ export default defineConfig({
       description: 'Private browsing-time insights — active time per site, trends, heatmaps, focus, and stale-tab nudges. All local.',
       permissions: [
         'tabs', 'storage', 'idle', 'alarms', 'notifications',
+        // webNavigation detects in-page (SPA) route changes — pushState/replaceState
+        // navigations that don't reload the page — so time on, e.g., successive
+        // YouTube videos is attributed to the page actually viewed. Local-only: we
+        // read the URL of the focused tab's top frame, never page content.
+        'webNavigation',
         // `favicon` exists only on Chromium. Firefox & Safari fall back to the
         // letter-chip in FaviconChip.vue, so requesting it there would be invalid.
         ...(chromium ? ['favicon'] : []),

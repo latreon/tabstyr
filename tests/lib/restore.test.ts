@@ -73,6 +73,22 @@ describe('parseBackup', () => {
     for (let i = 0; i < 1001; i++) settings[`k${i}`] = i;
     expect(parseBackup(JSON.stringify({ app: 'tabstyr', settings })).settings).toBeUndefined();
   });
+
+  test('rejects a backup from a newer schema version', () => {
+    expect(() => parseBackup(JSON.stringify({ app: 'tabstyr', schemaVersion: 999, dailyStats: [] }))).toThrow(
+      /newer version/i,
+    );
+  });
+
+  test('accepts current and legacy (missing / older) schema versions', () => {
+    expect(() => parseBackup(JSON.stringify({ app: 'tabstyr', schemaVersion: 2 }))).not.toThrow();
+    expect(() => parseBackup(JSON.stringify({ app: 'tabstyr', schemaVersion: 1 }))).not.toThrow();
+    expect(() => parseBackup(JSON.stringify({ app: 'tabstyr' }))).not.toThrow(); // pre-versioning file
+  });
+
+  test('round-trips a freshly written backup through the version guard', () => {
+    expect(() => parseBackup(backupText())).not.toThrow();
+  });
 });
 
 describe('restoreBackup', () => {

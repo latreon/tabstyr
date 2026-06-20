@@ -64,6 +64,7 @@ const sparkArea = computed(() => {
   flex-direction: column;
   gap: 4px;
   grid-row: span 2;
+  overflow: hidden;
 }
 @media (max-width: 760px) {
   .hero-tile {
@@ -88,9 +89,10 @@ const sparkArea = computed(() => {
   margin-top: 2px;
 }
 .spark {
-  width: 100%;
+  display: block;
+  width: calc(100% + 40px);
   height: 44px;
-  margin-top: 10px;
+  margin: 10px -20px -20px;
 }
 .sr-only {
   position: absolute;

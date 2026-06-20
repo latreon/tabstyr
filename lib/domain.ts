@@ -4,6 +4,55 @@ export function displayDomain(domain: string): string {
   return domain.replace(/^www\./, '');
 }
 
+/**
+ * A path-like hash route (`#/inbox`) as used by hash-router SPAs, or '' for any
+ * other fragment. We deliberately keep ONLY `#/…` routes and drop everything
+ * else — bare anchors (`#section`) and, critically, OAuth implicit-flow tokens
+ * (`#access_token=…`) must never be stored. Any query inside the hash route
+ * (`#/cb?token=…`) is also stripped, so secrets in the fragment can't leak.
+ */
+function hashRoute(hash: string): string {
+  if (!hash.startsWith('#/')) return '';
+  return hash.split('?')[0];
+}
+
+/**
+ * Normalized page identity for sub-page (SPA) tracking: scheme + host + path
+ * (+ a `#/` hash route when present), with the query string and all other
+ * fragments stripped. Dropping `?…`/`#…` keeps secrets and PII (session tokens,
+ * search terms) out of what we store and display, and collapses the countless
+ * query-only variants of one page into a single entry. Non-web URLs are returned
+ * unchanged (the engine never stores them anyway).
+ */
+export function pageOf(url: string): string {
+  try {
+    const u = new URL(url);
+    if (u.protocol === 'http:' || u.protocol === 'https:') {
+      return `${u.protocol}//${u.host}${u.pathname}${hashRoute(u.hash)}`;
+    }
+    return url;
+  } catch {
+    return url;
+  }
+}
+
+/**
+ * The display path for a stored page URL — the `pathname` (trailing slash
+ * trimmed, except the bare root) plus any `#/` hash route. Used as the sub-page
+ * label; the bare root is surfaced via a "Home" label by the caller.
+ */
+export function pagePath(url: string): string {
+  try {
+    const u = new URL(url);
+    const path = u.pathname.length > 1 ? u.pathname.replace(/\/$/, '') : '/';
+    const route = hashRoute(u.hash);
+    if (!route) return path;
+    return path === '/' ? route : path + route;
+  } catch {
+    return '/';
+  }
+}
+
 export function domainOf(url: string): string {
   try {
     const u = new URL(url);

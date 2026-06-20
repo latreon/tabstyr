@@ -1,4 +1,4 @@
-import { domainOf, isWebDomain } from '../domain';
+import { domainOf, isWebDomain, pageOf } from '../domain';
 import type { ClosedSession, EngineState, OpenSession } from '../types';
 
 const MIN_SESSION_MS = 1000;
@@ -49,9 +49,10 @@ export class TrackerEngine {
       this.audio.delete(tabId);
     }
     // Only track real web pages — internal pages (chrome://, newtab, the dashboard)
-    // are never counted.
+    // are never counted. Store the normalized page URL (no query/fragment) so the
+    // sub-page breakdown groups cleanly and no secrets are persisted.
     const domain = domainOf(url);
-    this.focused = isWebDomain(domain) ? { tabId, url, domain, start: now, audio: false, audible } : null;
+    this.focused = isWebDomain(domain) ? { tabId, url: pageOf(url), domain, start: now, audio: false, audible } : null;
     return out;
   }
 
@@ -131,7 +132,7 @@ export class TrackerEngine {
       if (!isWebDomain(domainOf(url))) continue; // ignore audio from internal pages
       keep.add(tabId);
       if (!this.audio.has(tabId)) {
-        this.audio.set(tabId, { tabId, url, domain: domainOf(url), start: now, audio: true });
+        this.audio.set(tabId, { tabId, url: pageOf(url), domain: domainOf(url), start: now, audio: true });
       }
     }
     for (const [tabId, open] of this.audio) {
@@ -143,21 +144,35 @@ export class TrackerEngine {
     return out;
   }
 
-  // url in open sessions reflects the url at session-open time;
-  // same-domain navigations do not update it.
+  // A navigation in `tabId`. For the FOCUSED tab we split on any page change —
+  // domain OR sub-page path — so in-page (SPA) navigations like flipping between
+  // YouTube videos are attributed to the page actually viewed, not lumped onto
+  // the first URL the tab opened with. Background-AUDIO sessions split on domain
+  // only: the sub-page of a music/video tab you're not looking at is noise, and
+  // splitting it would multiply rows for no insight.
   handleUrlChange(tabId: number, url: string, now: number): ClosedSession[] {
     const out: ClosedSession[] = [];
     const domain = domainOf(url);
     const web = isWebDomain(domain);
-    if (this.focused?.tabId === tabId && this.focused.domain !== domain) {
+    const page = pageOf(url);
+    if (this.focused?.tabId === tabId && this.focused.url !== page) {
       const wasAudible = this.focused.audible;
-      out.push(...this.closed(this.focused, now));
-      this.focused = web ? { tabId, url, domain, start: now, audio: false, audible: wasAudible } : null;
+      const emitted = this.closed(this.focused, now);
+      out.push(...emitted);
+      if (web) {
+        // If the prior slice was sub-1s (rapid SPA churn), `closed` emits nothing;
+        // keep the original start so that brief time rolls into the new page's
+        // session instead of being dropped (mirrors checkpoint's sub-1s handling).
+        const start = emitted.length ? now : this.focused.start;
+        this.focused = { tabId, url: page, domain, start, audio: false, audible: wasAudible };
+      } else {
+        this.focused = null;
+      }
     }
     const a = this.audio.get(tabId);
     if (a && a.domain !== domain) {
       out.push(...this.closed(a, now));
-      if (web) this.audio.set(tabId, { tabId, url, domain, start: now, audio: true });
+      if (web) this.audio.set(tabId, { tabId, url: page, domain, start: now, audio: true });
       else this.audio.delete(tabId);
     }
     return out;

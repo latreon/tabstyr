@@ -263,6 +263,38 @@ export default defineBackground(() => {
     await persist(eng, closed);
   }));
 
+  // In-page (SPA) navigation: pushState/replaceState route changes and #/ hash
+  // routes that never reload the page, so `tabs.onUpdated` may not fire. We only
+  // act on the focused tab's top frame and only when the normalized page actually
+  // changes (pageOf strips query + non-route fragments), so this neither double-
+  // counts with onUpdated (a duplicate URL no-ops) nor churns on token fragments.
+  async function handleSpaNavigation(tabId: number, url: string): Promise<void> {
+    const eng = await getEngine();
+    const state = eng.getState();
+    if (state.focused?.tabId !== tabId) return; // only the focused, tracked tab
+    const now = Date.now();
+    const before = state.focused.url;
+    const closed = eng.handleUrlChange(tabId, url, now);
+    if (!closed.length && eng.getState().focused?.url === before) return; // nothing changed
+    await touchTab(tabId, now);
+    await persist(eng, closed);
+  }
+
+  // webNavigation is absent on some platforms — optional-chain every hop so a
+  // missing API degrades to onUpdated-only coverage instead of throwing.
+  browser.webNavigation?.onHistoryStateUpdated?.addListener(
+    guard(async (d: { tabId: number; frameId: number; url: string }) => {
+      if (d.frameId !== 0) return; // top frame only — ignore iframe navigations
+      await handleSpaNavigation(d.tabId, d.url);
+    }),
+  );
+  browser.webNavigation?.onReferenceFragmentUpdated?.addListener(
+    guard(async (d: { tabId: number; frameId: number; url: string }) => {
+      if (d.frameId !== 0) return;
+      await handleSpaNavigation(d.tabId, d.url);
+    }),
+  );
+
   browser.tabs.onRemoved.addListener(guard(async (tabId) => {
     const eng = await getEngine();
     await persist(eng, eng.handleTabRemoved(tabId, Date.now()));

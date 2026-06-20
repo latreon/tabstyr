@@ -137,7 +137,11 @@
     "avgSession": "Ort. oturum",
     "longestSession": "En uzun oturum",
     "activeDays": "Aktif günler",
-    "audio": "Ses"
+    "audio": "Ses",
+    "topPages": "En çok ziyaret edilenler",
+    "topPagesAria": "Bu sitede en çok ziyaret edilen sayfalar",
+    "otherPages": "+{count} daha",
+    "homePath": "Ana sayfa"
   },
   "settings": {
     "title": "Ayarlar",

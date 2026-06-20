@@ -74,6 +74,9 @@ entirely on your own device, to help you understand and manage your browsing.
 - idle: Pause time tracking when the user is away so totals stay accurate.
 - alarms: Run periodic checkpoints and a once-daily maintenance/notification task.
 - notifications: Show an optional, at-most-once-per-day stale-tab reminder.
+- webNavigation: Detect in-page (single-page-app) route changes on the active tab
+  so browsing time is attributed to the page actually viewed. Only the focused
+  tab's top-frame URL is read; no page content is accessed.
 - favicon: Display website icons in lists (Chromium only).
 
 ## Screenshots & promo images

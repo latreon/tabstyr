@@ -137,7 +137,11 @@
     "avgSession": "平均会话",
     "longestSession": "最长会话",
     "activeDays": "活跃天数",
-    "audio": "音频"
+    "audio": "音频",
+    "topPages": "热门页面",
+    "topPagesAria": "本站访问最多的页面",
+    "otherPages": "其他 {count} 个",
+    "homePath": "主页"
   },
   "settings": {
     "title": "设置",

@@ -137,7 +137,11 @@
     "avgSession": "평균 세션",
     "longestSession": "가장 긴 세션",
     "activeDays": "활동 일수",
-    "audio": "오디오"
+    "audio": "오디오",
+    "topPages": "상위 페이지",
+    "topPagesAria": "이 사이트에서 가장 많이 본 페이지",
+    "otherPages": "외 {count}개",
+    "homePath": "홈"
   },
   "settings": {
     "title": "설정",

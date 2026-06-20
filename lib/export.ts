@@ -47,12 +47,18 @@ export interface BackupData {
   settings: Settings;
 }
 
+// Backup file format version. Bump when the on-disk shape changes in a way that
+// requires a migration on import. parseBackup() refuses files stamped with a
+// HIGHER version than this build understands rather than importing them as
+// partial garbage. The single source of truth for both the writer and reader.
+export const SCHEMA_VERSION = 2;
+
 /** Full, restorable JSON backup. `now` is passed in so the builder stays pure. */
 export function toJsonBackup(data: BackupData, now: number): string {
   return JSON.stringify(
     {
       app: 'tabstyr',
-      schemaVersion: 2,
+      schemaVersion: SCHEMA_VERSION,
       exportedAt: new Date(now).toISOString(),
       ...data,
     },

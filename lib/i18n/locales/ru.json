@@ -137,7 +137,11 @@
     "avgSession": "Средний сеанс",
     "longestSession": "Самый долгий сеанс",
     "activeDays": "Активных дней",
-    "audio": "Аудио"
+    "audio": "Аудио",
+    "topPages": "Топ страниц",
+    "topPagesAria": "Самые посещаемые страницы сайта",
+    "otherPages": "ещё {count}",
+    "homePath": "Главная"
   },
   "settings": {
     "title": "Настройки",

@@ -59,11 +59,39 @@ describe('TrackerEngine.handleUrlChange', () => {
     expect(e.getState().focused?.domain).toBe('youtube.com');
   });
 
-  test('same-domain navigation keeps session running', () => {
+  test('same-domain sub-page navigation splits the session (SPA attribution)', () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://github.com/a', T0);
-    expect(e.handleUrlChange(1, 'https://github.com/b', T0 + 60_000)).toEqual([]);
+    const closed = e.handleUrlChange(1, 'https://github.com/b', T0 + 60_000);
+    expect(closed).toHaveLength(1);
+    expect(closed[0]).toMatchObject({ domain: 'github.com', url: 'https://github.com/a' });
+    // New segment opens on the new sub-page, starting now.
+    expect(e.getState().focused).toMatchObject({ url: 'https://github.com/b', start: T0 + 60_000 });
+  });
+
+  test('navigation to the same page (query/anchor only) does not split', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://github.com/a', T0);
+    // query + bare anchor are stripped by pageOf, so this is the same page → no split
+    expect(e.handleUrlChange(1, 'https://github.com/a?tab=x#frag', T0 + 60_000)).toEqual([]);
     expect(e.getState().focused?.start).toBe(T0);
+  });
+
+  test('hash-router (#/) route change splits the session', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://mail.app/#/inbox', T0);
+    const closed = e.handleUrlChange(1, 'https://mail.app/#/sent', T0 + 60_000);
+    expect(closed).toHaveLength(1);
+    expect(closed[0].url).toBe('https://mail.app/#/inbox');
+    expect(e.getState().focused?.url).toBe('https://mail.app/#/sent');
+  });
+
+  test('sub-1s sub-page churn is not dropped — time rolls into the new page', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://github.com/a', T0);
+    // 500ms on /a then navigate: nothing emitted, but start is preserved on /b
+    expect(e.handleUrlChange(1, 'https://github.com/b', T0 + 500)).toEqual([]);
+    expect(e.getState().focused).toMatchObject({ url: 'https://github.com/b', start: T0 });
   });
 
   test('domain change on audio tab closes audio session and opens new one', () => {

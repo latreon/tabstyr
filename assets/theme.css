@@ -143,6 +143,9 @@ body {
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--text-3);
+  /* Let a pathological long compound (e.g. German) break inside a narrow tile
+     rather than forcing horizontal overflow. No effect on strings that fit. */
+  overflow-wrap: anywhere;
 }
 
 .gradient-text {

@@ -3,10 +3,15 @@
 // user's passphrase; GCM provides authentication so a wrong passphrase or a
 // tampered file fails to decrypt rather than returning garbage.
 
-const KDF_ITERATIONS = 250_000;
+// OWASP 2023 floor for PBKDF2-HMAC-SHA256. The cost is paid once per export/
+// restore, so a high count is cheap for the user but multiplies an attacker's
+// brute-force cost against a stolen backup file.
+const KDF_ITERATIONS = 600_000;
 // Accept a range on decrypt so a tampered envelope can neither downgrade the KDF
-// (cheap brute force) nor pin the CPU with an absurd count.
-const MIN_ITERATIONS = 100_000;
+// (cheap brute force) nor pin the CPU with an absurd count. The floor stays at or
+// below any count we've ever written (older backups used 250k) so genuine old
+// files still decrypt with their own stored, higher count.
+const MIN_ITERATIONS = 200_000;
 const MAX_ITERATIONS = 2_000_000;
 const SALT_BYTES = 16;
 const IV_BYTES = 12;
@@ -66,11 +71,17 @@ export async function encryptToEnvelope(plaintext: string, passphrase: string): 
   const salt = crypto.getRandomValues(new Uint8Array(SALT_BYTES));
   const iv = crypto.getRandomValues(new Uint8Array(IV_BYTES));
   const key = await deriveKey(passphrase, salt, KDF_ITERATIONS);
+  // Hold the encoded plaintext in a named buffer so we can zero it after the
+  // encrypt completes. (The source `plaintext` string is immutable and can't be
+  // wiped — JS strings live until GC — but the byte view is mutable, so we clear
+  // the copy we control to shorten the window where it sits in memory.)
+  const plainBytes = new TextEncoder().encode(plaintext);
   const ct = await crypto.subtle.encrypt(
     { name: 'AES-GCM', iv: iv as BufferSource },
     key,
-    new TextEncoder().encode(plaintext) as BufferSource,
+    plainBytes as BufferSource,
   );
+  plainBytes.fill(0);
   const envelope: EncryptedEnvelope = {
     app: 'tabstyr',
     enc: 'AES-GCM',
