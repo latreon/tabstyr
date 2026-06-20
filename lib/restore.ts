@@ -28,7 +28,14 @@ function isStat(v: unknown): v is DailyStat {
 }
 function isSession(v: unknown): v is Session {
   const o = v as Session;
-  return !!o && isStr(o.domain) && isStr(o.url) && isNum(o.start) && isNum(o.end) && typeof o.audio === 'boolean';
+  return (
+    !!o && isStr(o.domain) && isStr(o.url) && isNum(o.start) && isNum(o.end) &&
+    typeof o.audio === 'boolean' &&
+    // tabKey is the per-tab attribution id. Legacy files may omit it (normalized
+    // to '' below); reject any non-string value so a hostile null/number can't
+    // reach the IndexedDB by-key index.
+    (o.tabKey === undefined || isStr(o.tabKey))
+  );
 }
 function isMeta(v: unknown): v is TabMeta {
   const o = v as TabMeta;
@@ -71,7 +78,9 @@ export function parseBackup(text: string): ParsedBackup {
   }
   return {
     dailyStats: Array.isArray(o.dailyStats) ? o.dailyStats.filter(isStat).slice(0, MAX_STATS) : [],
-    sessions: Array.isArray(o.sessions) ? o.sessions.filter(isSession).slice(0, MAX_SESSIONS) : [],
+    sessions: Array.isArray(o.sessions)
+      ? o.sessions.filter(isSession).slice(0, MAX_SESSIONS).map((s) => ({ ...s, tabKey: s.tabKey ?? '' }))
+      : [],
     tabMeta: Array.isArray(o.tabMeta) ? o.tabMeta.filter(isMeta).slice(0, MAX_TABMETA) : [],
     settings: safeSettings(o.settings),
     exportedAt: isExportedAt(o.exportedAt) ? o.exportedAt : undefined,

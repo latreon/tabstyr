@@ -1,14 +1,26 @@
 /* eslint-disable */
 declare const chrome: any;
 
-// One-off visual harness: render the dashboard + popup in the longest-string
-// locale (German) and a CJK locale (Japanese) at several widths so text-overflow
-// / clipping can be reviewed from the screenshots. Not part of the default suite
-// signal — it produces artifacts under e2e/__screenshots__/i18n/.
+// Renders the dashboard + popup in the longest-string locale (German) and a CJK
+// locale (Japanese) at several widths. It both (a) captures screenshots under
+// e2e/__screenshots__/i18n/ for visual review AND (b) asserts that no surface
+// overflows horizontally — a long translation that breaks the layout fails CI
+// rather than only showing up in a screenshot nobody opens.
 import { test as base, chromium, expect, type BrowserContext } from '@playwright/test';
 import path from 'node:path';
 
 const EXT_PATH = path.resolve('dist/chrome-mv3');
+
+// Horizontal page overflow = a translated string forced a surface wider than the
+// viewport (the canonical "i18n broke the layout" signal). 1px tolerance absorbs
+// sub-pixel rounding. Truncated-with-ellipsis text is fine — it clips inside its
+// own box and does not widen the page.
+async function pageOverflow(page: import('@playwright/test').Page): Promise<number> {
+  return page.evaluate(() => {
+    const el = document.documentElement;
+    return el.scrollWidth - el.clientWidth;
+  });
+}
 
 const test = base.extend<{ context: BrowserContext; extensionId: string }>({
   // eslint-disable-next-line no-empty-pattern
@@ -91,7 +103,8 @@ async function seed(page: import('@playwright/test').Page, language: string) {
   }, language);
 }
 
-for (const lang of ['de', 'ja'] as const) {
+// de = longest Latin compounds, ja = CJK, ru = Cyrillic, tr = long Latin + dotted İ.
+for (const lang of ['de', 'ja', 'ru', 'tr'] as const) {
   test(`i18n overflow — ${lang}`, async ({ context, extensionId }) => {
     const seeder = await context.newPage();
     await seeder.goto(`chrome-extension://${extensionId}/dashboard.html`);
@@ -106,6 +119,10 @@ for (const lang of ['de', 'ja'] as const) {
       await dash.waitForSelector('.bento, .label', { state: 'visible' });
       await dash.waitForTimeout(700); // let locale + data settle
       await dash.screenshot({ path: `e2e/__screenshots__/i18n/dashboard-${lang}-${width}.png`, fullPage: true });
+      // No surface may overflow horizontally at any tested width — a translation
+      // that breaks the layout (or a regression in the responsive bento grid)
+      // fails here rather than only showing up in a screenshot.
+      expect(await pageOverflow(dash), `dashboard overflows horizontally at ${width}px (${lang})`).toBeLessThanOrEqual(1);
 
       // Open a site's detail modal to capture the Top-pages / long-label layout.
       if (width === 380) {
@@ -125,6 +142,7 @@ for (const lang of ['de', 'ja'] as const) {
     await pop.waitForSelector('.total, .cta', { state: 'visible' });
     await pop.waitForTimeout(600);
     await pop.screenshot({ path: `e2e/__screenshots__/i18n/popup-${lang}.png` });
+    expect(await pageOverflow(pop), `popup overflows horizontally (${lang})`).toBeLessThanOrEqual(1);
     await pop.close();
   });
 }

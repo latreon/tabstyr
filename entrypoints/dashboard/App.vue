@@ -206,13 +206,22 @@ onMounted(async () => {
 .coffee-badge:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .bento {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* minmax(0, 1fr) lets tracks shrink below their content's min-content instead
+     of expanding the grid wider than its container. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space);
   align-items: stretch;
 }
 @media (max-width: 760px) {
   .bento {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* Tiles declare `grid-column: span 2/3` for the desktop 3-column grid. In the
+     single-column mobile layout that span creates implicit columns and sizes the
+     tiles to their content width, overflowing the viewport. Collapse every tile
+     to the single track. :deep() pierces the child components' scoped styles. */
+  .bento > :deep(*) {
+    grid-column: 1 / -1 !important;
   }
 }
 </style>

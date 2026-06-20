@@ -109,17 +109,26 @@ export class TrackerEngine {
     return out;
   }
 
+  /**
+   * Service-worker cold start: in-memory continuity was lost and the gap since
+   * the last persisted slice is unknown (the machine may have slept for hours).
+   * Force-cap EVERY surviving session — media included — so an open audio/video
+   * tab can't book the entire offline duration. Sessions whose tab is gone are
+   * dropped; survivors re-base to `now` and resume counting.
+   */
   reconcile(liveTabIds: Set<number>, now: number): ClosedSession[] {
     const out: ClosedSession[] = [];
-    if (this.focused && !liveTabIds.has(this.focused.tabId)) {
-      out.push(...this.closed(this.focused, now));
-      this.focused = null;
+    if (this.focused) {
+      const emitted = this.closed(this.focused, now, true);
+      out.push(...emitted);
+      if (!liveTabIds.has(this.focused.tabId)) this.focused = null;
+      else if (emitted.length) this.focused = { ...this.focused, start: now };
     }
     for (const [tabId, open] of this.audio) {
-      if (!liveTabIds.has(tabId)) {
-        out.push(...this.closed(open, now));
-        this.audio.delete(tabId);
-      }
+      const emitted = this.closed(open, now, true);
+      out.push(...emitted);
+      if (!liveTabIds.has(tabId)) this.audio.delete(tabId);
+      else if (emitted.length) this.audio.set(tabId, { ...open, start: now });
     }
     return out;
   }

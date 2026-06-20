@@ -46,6 +46,22 @@ describe('parseBackup', () => {
     expect(parsed.sessions).toEqual([]);
   });
 
+  test('drops sessions with a non-string tabKey, normalizes a missing one', () => {
+    const text = JSON.stringify({
+      app: 'tabstyr',
+      sessions: [
+        { tabKey: 'ok', domain: 'a.com', url: 'https://a.com', start: 1, end: 2, audio: false }, // valid
+        { tabKey: null, domain: 'b.com', url: 'https://b.com', start: 1, end: 2, audio: false }, // hostile → dropped
+        { tabKey: 123, domain: 'c.com', url: 'https://c.com', start: 1, end: 2, audio: false }, // hostile → dropped
+        { domain: 'd.com', url: 'https://d.com', start: 1, end: 2, audio: false }, // legacy (no key) → kept as ''
+      ],
+    });
+    const parsed = parseBackup(text);
+    expect(parsed.sessions).toHaveLength(2);
+    expect(parsed.sessions[0].tabKey).toBe('ok');
+    expect(parsed.sessions[1].tabKey).toBe('');
+  });
+
   test('drops tabMeta missing required fields (title/lastActiveAt/createdAt)', () => {
     const text = JSON.stringify({
       app: 'tabstyr',

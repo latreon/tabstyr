@@ -145,20 +145,30 @@ const LEGEND = [0, 25, 50, 75, 100];
   font-weight: 700;
   letter-spacing: 0.5px;
   color: var(--text-2);
+  min-width: 0; /* allow shrink in the flex row so long titles can't push width */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .peak {
   font-size: 11px;
   color: var(--text-3);
   white-space: nowrap;
+  min-width: 0; /* shrink + truncate instead of overflowing the tile in long locales */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .empty {
   margin: 0;
 }
 .hm-grid {
   display: grid;
-  grid-template-columns: 32px repeat(24, 1fr);
+  grid-template-columns: 40px repeat(24, minmax(8px, 1fr));
   gap: 3px;
   align-items: center;
+  /* 24 hour-columns can't shrink past a legible minimum; on very narrow screens
+     scroll the grid inside the tile rather than widening the page. */
+  overflow-x: auto;
 }
 .hm-row-label {
   font-size: 10px;
@@ -166,6 +176,11 @@ const LEGEND = [0, 25, 50, 75, 100];
   text-align: right;
   padding-right: 8px;
   line-height: 1;
+  /* Cyrillic/long weekday abbreviations (Пнд, Чтв) must clip cleanly inside the
+     label column instead of bleeding into the first hour cell. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .hm-cell {
   aspect-ratio: 1;

@@ -73,11 +73,40 @@ describe('TrackerEngine reconcile', () => {
     expect(e.getState().focused).toBeNull();
   });
 
-  test('keeps sessions for live tabs', () => {
+  test('re-bases live sessions on wake — emits elapsed and resets start', () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://a.com', T0);
-    expect(e.reconcile(new Set([1]), T0 + 5_000)).toEqual([]);
+    const closed = e.reconcile(new Set([1]), T0 + 5_000);
+    expect(closed).toHaveLength(1);
+    expect(closed[0].end).toBe(T0 + 5_000);
     expect(e.getState().focused?.tabId).toBe(1);
+    expect(e.getState().focused?.start).toBe(T0 + 5_000);
+  });
+
+  // Continuity is lost on a service-worker cold start; the gap may be a long
+  // sleep. A live media tab must NOT book the whole offline duration.
+  test('force-caps a live media tab across a long gap', () => {
+    const e = new TrackerEngine({
+      focused: { tabId: 1, url: 'https://yt.com/v', domain: 'yt.com', start: T0, audio: false, audible: true },
+      audio: [],
+      isIdle: false,
+    });
+    const closed = e.reconcile(new Set([1]), T0 + 8 * 3_600_000); // 8h later
+    expect(closed).toHaveLength(1);
+    expect(closed[0].end).toBe(T0 + 30 * 60_000); // capped at MAX_SESSION_MS, not +8h
+    expect(e.getState().focused?.start).toBe(T0 + 8 * 3_600_000);
+  });
+
+  test('force-caps a dead media (audio) tab — no uncapped overcount', () => {
+    const e = new TrackerEngine({
+      focused: null,
+      audio: [{ tabId: 2, url: 'https://yt.com/v', domain: 'yt.com', start: T0, audio: true }],
+      isIdle: false,
+    });
+    const closed = e.reconcile(new Set([1]), T0 + 8 * 3_600_000);
+    expect(closed).toHaveLength(1);
+    expect(closed[0].end).toBe(T0 + 30 * 60_000); // capped, not start + 8h
+    expect(e.getState().audio).toEqual([]);
   });
 });
 

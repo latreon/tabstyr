@@ -498,6 +498,10 @@ async function confirmWipe() {
   font-size: 13px;
   gap: 10px;
   min-height: 32px;
+  /* In a narrow bento track the label + control (e.g. the 190px language
+     SelectBox) can't sit on one line; wrap the control below instead of
+     overflowing the tile. */
+  flex-wrap: wrap;
 }
 .field-label {
   color: var(--text-2);
@@ -609,6 +613,7 @@ button:focus-visible {
 }
 .rule-add {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: center;
 }
@@ -659,7 +664,13 @@ button:focus-visible {
   gap: 8px;
 }
 .export-btns button {
-  min-width: 96px;
+  /* Force the row to wrap before long labels overflow. 96px let all four buttons
+     squeeze into one row at ~768px, where German labels ("Wiederherstellen",
+     "JSON exportieren") then spilled past their boxes and widened the page.
+     A larger floor wraps to multiple rows instead; overflow-wrap is the
+     last-resort break for even longer locales (ru/tr). */
+  min-width: 120px;
+  overflow-wrap: anywhere;
 }
 .export-btns button {
   flex: 1;
