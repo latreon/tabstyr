@@ -21,7 +21,40 @@
     "title": "Privacy",
     "badge": "0 bytes leave your device",
     "badgeTitle": "No servers, no accounts, no network requests. Click for the privacy policy.",
-    "viewPolicy": "0 bytes leave your device — view privacy policy"
+    "viewPolicy": "0 bytes leave your device — view privacy policy",
+    "intro1": "TabStyr does not collect, transmit, or share any data.",
+    "intro2": "Everything stays on your device — no servers, no analytics, no accounts, and no network requests.",
+    "storesTitle": "What it stores (locally, in your browser's IndexedDB)",
+    "store1Label": "Session records",
+    "store1Body": "start/end times, the page's domain, and whether the tab played audio.",
+    "store2Label": "Daily per-domain totals",
+    "store2Body": "seconds per site per day.",
+    "store3Label": "Open-tab metadata",
+    "store3Body": "title, URL, last-active time, and a random local id used to attribute time.",
+    "store4Label": "Settings",
+    "store4Body": "stale threshold, idle timeout, theme, audio counting, category rules.",
+    "retention": "Data is kept for a rolling 90-day window, then pruned automatically.",
+    "notTitle": "What it does NOT do",
+    "not1": "Does not send data off your device, or use servers, cloud sync, or analytics.",
+    "not2": "Does not contain ads or trackers.",
+    "not3": "Does not read page contents — only tab metadata (URL/title) from standard extension APIs.",
+    "permsTitle": "Permissions",
+    "permCol1": "Permission",
+    "permCol2": "Purpose",
+    "permTabs": "See the active tab's URL/title to attribute time",
+    "permStorage": "Save your stats and settings locally",
+    "permIdle": "Pause tracking when you step away",
+    "permAlarms": "Periodic checkpoints and daily maintenance",
+    "permNotifications": "Optional once-a-day stale-tab reminder",
+    "permFavicon": "Show site icons in lists",
+    "noHost": "No host permissions — the extension can't access page content.",
+    "controlTitle": "Your control",
+    "control1Label": "Export",
+    "control1Body": "your full history (JSON or CSV), optionally passphrase-encrypted.",
+    "control2Label": "Restore",
+    "control2Body": "from a backup on any device.",
+    "control3Label": "Wipe all data",
+    "control3Body": "in one click; removing the extension deletes everything."
   },
   "support": {
     "coffee": "Buy me a coffee"
@@ -41,7 +74,8 @@
     "vsWeeklyAvg": "{pct}% vs weekly avg",
     "up": "Up",
     "down": "Down",
-    "backgroundAudio": "♪ +{time} background audio"
+    "backgroundAudio": "♪ +{time} background audio",
+    "empty": "Browse a little and your daily total shows up here."
   },
   "stat": {
     "openTabs": "Open tabs",
@@ -70,7 +104,8 @@
     "trendTitle": "Focus trend",
     "productive": "Productive",
     "distracting": "Distracting",
-    "note": "Productive ÷ (productive + distracting). Work & Dev count as productive; target {target}%. Change a site's category to reclassify it."
+    "note": "Productive ÷ (productive + distracting). Work & Dev count as productive; target {target}%. Change a site's category to reclassify it.",
+    "empty": "No tracked activity yet today — your focus split appears once you start browsing."
   },
   "topSites": {
     "title": "Top sites today",
@@ -81,7 +116,9 @@
     "day": "Day",
     "week": "Week",
     "month": "Month",
-    "granularityAria": "Trend granularity"
+    "granularityAria": "Trend granularity",
+    "weekOf": "Week of {date}",
+    "partial": "partial"
   },
   "heatmap": {
     "title": "Activity heatmap",
@@ -212,7 +249,14 @@
     "wipeFailed": "Wipe failed",
     "confirmWipeAria": "Confirm wipe all data",
     "languageAuto": "Automatic",
-    "idleHint": "Tracking pauses after this long without mouse or keyboard input. Raise it if you read without scrolling."
+    "idleHint": "Tracking pauses after this long without mouse or keyboard input. Raise it if you read without scrolling.",
+    "backupNote": "JSON backups include open-tab titles. Encrypt the backup if titles may be sensitive.",
+    "notifications": "Stale-tab reminders",
+    "notificationsHint": "A once-a-day notification when tabs sit untouched past the stale threshold.",
+    "showIntro": "Show intro again",
+    "introShown": "Intro will show on the dashboard",
+    "restoreInvalid": "That file isn't a valid TabStyr backup.",
+    "restoreWrongPass": "Wrong passphrase or corrupted file."
   },
   "onboarding": {
     "title": "Welcome to TabStyr",

@@ -222,7 +222,7 @@ onUnmounted(() => {
 }
 .open {
   margin-left: auto;
-  background: var(--accent-gradient);
+  background: var(--accent-grad-strong);
   color: var(--on-accent);
   border: none;
   border-radius: 8px;

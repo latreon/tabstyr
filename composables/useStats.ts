@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref, shallowRef } from 'vue';
 import { browser } from 'wxt/browser';
 import * as repo from '@/lib/db/repo';
 import { displayDomain, domainOf, isWebDomain } from '@/lib/domain';
@@ -31,7 +31,12 @@ export function useStats() {
   // Seed with a real 7×24 zero grid (not []) so any pre-load template read of
   // grid[row][col] is safe before the first load() resolves.
   const heatmap = ref<HeatmapData>(buildHourlyHeatmap([]));
-  const recentSessions = ref<Session[]>([]); // last 90 days, for per-domain detail
+  // shallowRef: this can hold tens of thousands of session rows over a 90-day
+  // window. A deep `ref` would wrap every row in a reactive proxy (large heap +
+  // GC churn) for no benefit — the array is only ever reassigned wholesale in
+  // load() and read (never mutated in place), so shallow reactivity is sufficient
+  // and reassignment still triggers dependent computeds in DomainDetail.
+  const recentSessions = shallowRef<Session[]>([]); // last 90 days, for per-domain detail
   const loading = ref(true);
   const loadError = ref(false);
   // Set by the background worker when a write hit the storage quota. Surfaced as a

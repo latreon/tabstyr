@@ -21,7 +21,40 @@
     "title": "Privacy",
     "badge": "0 byte lasciano il tuo dispositivo",
     "badgeTitle": "Nessun server, nessun account, nessuna richiesta di rete. Clicca per l'informativa sulla privacy.",
-    "viewPolicy": "0 byte lasciano il tuo dispositivo — vedi l'informativa sulla privacy"
+    "viewPolicy": "0 byte lasciano il tuo dispositivo — vedi l'informativa sulla privacy",
+    "intro1": "TabStyr non raccoglie, trasmette né condivide alcun dato.",
+    "intro2": "Tutto resta sul tuo dispositivo: nessun server, nessuna analisi, nessun account e nessuna richiesta di rete.",
+    "storesTitle": "Cosa memorizza (localmente, nell'IndexedDB del tuo browser)",
+    "store1Label": "Registri di sessione",
+    "store1Body": "orari di inizio/fine, il dominio della pagina e se la scheda ha riprodotto audio.",
+    "store2Label": "Totali giornalieri per dominio",
+    "store2Body": "secondi per sito al giorno.",
+    "store3Label": "Metadati delle schede aperte",
+    "store3Body": "titolo, URL, ultima attività e un id locale casuale usato per attribuire il tempo.",
+    "store4Label": "Impostazioni",
+    "store4Body": "soglia di obsolescenza, timeout di inattività, tema, conteggio audio, regole di categoria.",
+    "retention": "I dati vengono conservati in una finestra mobile di 90 giorni, poi rimossi automaticamente.",
+    "notTitle": "Cosa NON fa",
+    "not1": "Non invia dati fuori dal tuo dispositivo e non usa server, sincronizzazione cloud o analisi.",
+    "not2": "Non contiene pubblicità né tracker.",
+    "not3": "Non legge il contenuto delle pagine — solo i metadati delle schede (URL/titolo) dalle API standard delle estensioni.",
+    "permsTitle": "Autorizzazioni",
+    "permCol1": "Autorizzazione",
+    "permCol2": "Scopo",
+    "permTabs": "Vedere URL/titolo della scheda attiva per attribuire il tempo",
+    "permStorage": "Salvare statistiche e impostazioni localmente",
+    "permIdle": "Mettere in pausa il monitoraggio quando ti allontani",
+    "permAlarms": "Checkpoint periodici e manutenzione giornaliera",
+    "permNotifications": "Promemoria facoltativo una volta al giorno per le schede obsolete",
+    "permFavicon": "Mostrare le icone dei siti negli elenchi",
+    "noHost": "Nessuna autorizzazione host — l'estensione non può accedere al contenuto delle pagine.",
+    "controlTitle": "Il tuo controllo",
+    "control1Label": "Esporta",
+    "control1Body": "tutta la cronologia (JSON o CSV), facoltativamente cifrata con passphrase.",
+    "control2Label": "Ripristina",
+    "control2Body": "da un backup su qualsiasi dispositivo.",
+    "control3Label": "Cancella tutti i dati",
+    "control3Body": "con un clic; rimuovendo l'estensione si elimina tutto."
   },
   "support": {
     "coffee": "Offrimi un caffè"
@@ -41,7 +74,8 @@
     "vsWeeklyAvg": "{pct}% vs media settimanale",
     "up": "Su",
     "down": "Giù",
-    "backgroundAudio": "♪ +{time} audio in background"
+    "backgroundAudio": "♪ +{time} audio in background",
+    "empty": "Naviga un po' e qui apparirà il totale giornaliero."
   },
   "stat": {
     "openTabs": "Schede aperte",
@@ -70,7 +104,8 @@
     "trendTitle": "Andamento concentrazione",
     "productive": "Produttivo",
     "distracting": "Distraente",
-    "note": "Produttivo ÷ (produttivo + distraente). Lavoro e Sviluppo contano come produttivi; obiettivo {target}%. Cambia la categoria di un sito per riclassificarlo."
+    "note": "Produttivo ÷ (produttivo + distraente). Lavoro e Sviluppo contano come produttivi; obiettivo {target}%. Cambia la categoria di un sito per riclassificarlo.",
+    "empty": "Nessuna attività registrata oggi — la tua ripartizione della concentrazione apparirà appena inizi a navigare."
   },
   "topSites": {
     "title": "Siti principali di oggi",
@@ -81,7 +116,9 @@
     "day": "Giorno",
     "week": "Settimana",
     "month": "Mese",
-    "granularityAria": "Granularità dell'andamento"
+    "granularityAria": "Granularità dell'andamento",
+    "weekOf": "Settimana del {date}",
+    "partial": "parziale"
   },
   "heatmap": {
     "title": "Mappa di calore attività",
@@ -212,7 +249,14 @@
     "wipeFailed": "Cancellazione non riuscita",
     "confirmWipeAria": "Conferma cancellazione di tutti i dati",
     "languageAuto": "Automatico",
-    "idleHint": "Il monitoraggio si interrompe dopo questo tempo senza mouse o tastiera. Aumentalo se leggi senza scorrere."
+    "idleHint": "Il monitoraggio si interrompe dopo questo tempo senza mouse o tastiera. Aumentalo se leggi senza scorrere.",
+    "backupNote": "I backup JSON includono i titoli delle schede aperte. Cifra il backup se i titoli possono essere sensibili.",
+    "notifications": "Promemoria schede inattive",
+    "notificationsHint": "Una notifica al giorno quando le schede restano inutilizzate oltre la soglia.",
+    "showIntro": "Rivedi l'introduzione",
+    "introShown": "L'introduzione apparirà nella dashboard",
+    "restoreInvalid": "Questo file non è un backup TabStyr valido.",
+    "restoreWrongPass": "Passphrase errata o file danneggiato."
   },
   "onboarding": {
     "title": "Benvenuto in TabStyr",

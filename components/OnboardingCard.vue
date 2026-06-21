@@ -212,7 +212,7 @@ onUnmounted(() => {
   justify-content: flex-end;
 }
 .cta {
-  background: var(--accent-gradient);
+  background: var(--accent-grad-strong);
   color: var(--on-accent);
   border: none;
   border-radius: 9px;

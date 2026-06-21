@@ -230,6 +230,16 @@ Deliberate design choices — listed so the behaviour reads as intended, not as 
 - **Sleep / lock is capped, not exact.** When the OS sleeps or the screen locks,
   open non-media sessions are closed and capped at 30 minutes rather than booking
   the full away time. A multi-hour sleep never shows as multi-hour active time.
+- **Very long uninterrupted reads can undercount.** Active time is checkpointed by
+  a 1-minute alarm, but MV3 may suspend the service worker and throttle that alarm
+  during long input-free reading. A single page read for hours with no interaction
+  (and idle pausing disabled) can be capped at ~30 minutes for the un-checkpointed
+  stretch. Any tab switch, scroll, or navigation checkpoints well within the
+  window, so this only affects pathological cases.
+- **Hard 24-hour ceiling per session.** Even uncapped media sessions are bounded at
+  24 hours, so a system-clock jump (NTP correction, VM resume) can never book days
+  of bogus time; a backward clock jump drops the affected slice rather than storing
+  a negative duration.
 - **Calendar-day tracking only.** Totals bucket by local calendar day; there is no
   "browser-session" reset mode. Closing every window does **not** erase history.
 - **No content blocking.** TabStyr measures and reports; it does not block sites or

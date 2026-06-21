@@ -157,6 +157,21 @@ describe('TrackerEngine boundary safety', () => {
     expect(closed[0].end - closed[0].start).toBe(2 * 60 * 60_000); // full 2 hours
   });
 
+  test('caps even a media session at the 24h absolute ceiling (forward clock jump)', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://youtube.com/watch', T0, true); // audible — normally uncapped
+    // System clock jumps 3 days forward while the session is open (NTP/VM resume).
+    const closed = e.handleBlur(T0 + 3 * 24 * 60 * 60_000);
+    expect(closed).toHaveLength(1);
+    expect(closed[0].end - closed[0].start).toBe(24 * 60 * 60_000); // not 3 days of bogus time
+  });
+
+  test('drops a session when the clock jumps backward (now < start)', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://a.com', T0);
+    expect(e.handleBlur(T0 - 60_000)).toEqual([]); // negative duration — no row stored
+  });
+
   test('keeps an audible (media) tab counting through idle', () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://youtube.com/watch', T0, true);
@@ -165,11 +180,24 @@ describe('TrackerEngine boundary safety', () => {
     expect(e.getState().focused?.tabId).toBe(1);
   });
 
-  test('continuous background audio is not capped while it keeps playing', () => {
+  test('continuous background audio counts fully across regular heartbeats', () => {
     const e = new TrackerEngine();
     e.syncAudio([{ tabId: 2, url: 'https://music.com/x' }], T0);
-    const closed = e.checkpoint(T0 + 60 * 60_000); // 1h of continuous playback
-    expect(closed[0].end - closed[0].start).toBe(60 * 60_000); // full hour
+    // The heartbeat fires every minute; an hour of playback accrues as 60 slices.
+    let total = 0;
+    for (let m = 1; m <= 60; m++) {
+      for (const s of e.checkpoint(T0 + m * 60_000)) total += s.end - s.start;
+    }
+    expect(total).toBe(60 * 60_000); // full hour, no clipping of genuine playback
+  });
+
+  test('checkpoint force-caps a media session across a long unobserved gap (sleep)', () => {
+    const e = new TrackerEngine();
+    e.syncAudio([{ tabId: 2, url: 'https://music.com/x' }], T0);
+    // No heartbeat for 4h means the worker was stalled (system slept), not 4h of
+    // real listening — cap it at the 30-minute backstop instead of booking 4h.
+    const closed = e.checkpoint(T0 + 4 * 60 * 60_000);
+    expect(closed[0].end - closed[0].start).toBe(30 * 60_000);
   });
 
   test('lock/sleep caps everything, even media sessions', () => {

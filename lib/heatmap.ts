@@ -33,7 +33,11 @@ export function buildHourlyHeatmap(sessions: Array<{ start: number; end: number 
       const d = new Date(cursor);
       const dow = d.getDay();
       const hour = d.getHours();
-      const boundary = new Date(d.getFullYear(), d.getMonth(), d.getDate(), hour + 1, 0, 0, 0).getTime();
+      // setHours mutates `d` (already read above) and returns the timestamp of the
+      // next local-hour boundary — one Date allocation per iteration instead of two,
+      // while still honouring local time + DST (plain ms arithmetic would break for
+      // half-hour timezones and DST shifts).
+      const boundary = d.setHours(hour + 1, 0, 0, 0);
       const segEnd = Math.min(s.end, boundary);
       if (segEnd <= cursor) break; // guard against clock edge cases (e.g. DST)
       const secs = (segEnd - cursor) / 1000;

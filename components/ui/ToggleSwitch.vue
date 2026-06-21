@@ -20,8 +20,8 @@ const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>();
 <style scoped>
 .toggle {
   position: relative;
-  width: 40px;
-  height: 22px;
+  width: 44px;
+  height: 24px; /* WCAG 2.2 (2.5.8) minimum target height */
   border: 1px solid var(--border);
   background: var(--bar-track);
   border-radius: 999px;
@@ -31,7 +31,7 @@ const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>();
   flex: none;
 }
 .toggle.on {
-  background: var(--accent-gradient);
+  background: var(--accent-grad-strong);
   border-color: transparent;
 }
 .toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -39,12 +39,12 @@ const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>();
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
   transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.toggle.on .knob { transform: translateX(18px); }
+.toggle.on .knob { transform: translateX(20px); }
 </style>

@@ -21,7 +21,40 @@
     "title": "Privacidad",
     "badge": "0 bytes salen de tu dispositivo",
     "badgeTitle": "Sin servidores, sin cuentas, sin solicitudes de red. Haz clic para ver la política de privacidad.",
-    "viewPolicy": "0 bytes salen de tu dispositivo: ver política de privacidad"
+    "viewPolicy": "0 bytes salen de tu dispositivo: ver política de privacidad",
+    "intro1": "TabStyr no recopila, transmite ni comparte ningún dato.",
+    "intro2": "Todo permanece en tu dispositivo: sin servidores, sin analíticas, sin cuentas y sin solicitudes de red.",
+    "storesTitle": "Qué almacena (localmente, en la IndexedDB de tu navegador)",
+    "store1Label": "Registros de sesión",
+    "store1Body": "horas de inicio/fin, el dominio de la página y si la pestaña reprodujo audio.",
+    "store2Label": "Totales diarios por dominio",
+    "store2Body": "segundos por sitio y día.",
+    "store3Label": "Metadatos de pestañas abiertas",
+    "store3Body": "título, URL, última actividad y un id local aleatorio usado para atribuir el tiempo.",
+    "store4Label": "Ajustes",
+    "store4Body": "umbral de obsolescencia, tiempo de inactividad, tema, conteo de audio, reglas de categoría.",
+    "retention": "Los datos se conservan en una ventana móvil de 90 días y luego se eliminan automáticamente.",
+    "notTitle": "Lo que NO hace",
+    "not1": "No envía datos fuera de tu dispositivo ni usa servidores, sincronización en la nube o analíticas.",
+    "not2": "No contiene anuncios ni rastreadores.",
+    "not3": "No lee el contenido de las páginas: solo metadatos de pestañas (URL/título) de las APIs estándar de extensiones.",
+    "permsTitle": "Permisos",
+    "permCol1": "Permiso",
+    "permCol2": "Propósito",
+    "permTabs": "Ver la URL/título de la pestaña activa para atribuir el tiempo",
+    "permStorage": "Guardar tus estadísticas y ajustes localmente",
+    "permIdle": "Pausar el seguimiento cuando te ausentas",
+    "permAlarms": "Puntos de control periódicos y mantenimiento diario",
+    "permNotifications": "Recordatorio opcional una vez al día de pestañas obsoletas",
+    "permFavicon": "Mostrar iconos de sitios en las listas",
+    "noHost": "Sin permisos de host: la extensión no puede acceder al contenido de las páginas.",
+    "controlTitle": "Tu control",
+    "control1Label": "Exporta",
+    "control1Body": "todo tu historial (JSON o CSV), opcionalmente cifrado con contraseña.",
+    "control2Label": "Restaura",
+    "control2Body": "desde una copia de seguridad en cualquier dispositivo.",
+    "control3Label": "Borrar todos los datos",
+    "control3Body": "con un clic; al eliminar la extensión se borra todo."
   },
   "support": {
     "coffee": "Invítame a un café"
@@ -41,7 +74,8 @@
     "vsWeeklyAvg": "{pct}% frente al promedio semanal",
     "up": "Sube",
     "down": "Baja",
-    "backgroundAudio": "♪ +{time} audio en segundo plano"
+    "backgroundAudio": "♪ +{time} audio en segundo plano",
+    "empty": "Navega un poco y tu total diario aparecerá aquí."
   },
   "stat": {
     "openTabs": "Pestañas abiertas",
@@ -70,7 +104,8 @@
     "trendTitle": "Tendencia de concentración",
     "productive": "Productivo",
     "distracting": "Distracción",
-    "note": "Productivo ÷ (productivo + distracción). Trabajo y Desarrollo cuentan como productivos; objetivo {target}%. Cambia la categoría de un sitio para reclasificarlo."
+    "note": "Productivo ÷ (productivo + distracción). Trabajo y Desarrollo cuentan como productivos; objetivo {target}%. Cambia la categoría de un sitio para reclasificarlo.",
+    "empty": "Aún no hay actividad registrada hoy: tu reparto de concentración aparecerá cuando empieces a navegar."
   },
   "topSites": {
     "title": "Sitios principales de hoy",
@@ -81,7 +116,9 @@
     "day": "Día",
     "week": "Semana",
     "month": "Mes",
-    "granularityAria": "Granularidad de la tendencia"
+    "granularityAria": "Granularidad de la tendencia",
+    "weekOf": "Semana del {date}",
+    "partial": "parcial"
   },
   "heatmap": {
     "title": "Mapa de calor de actividad",
@@ -212,7 +249,14 @@
     "wipeFailed": "El borrado falló",
     "confirmWipeAria": "Confirmar borrado de todos los datos",
     "languageAuto": "Automático",
-    "idleHint": "El seguimiento se pausa tras este tiempo sin actividad de ratón o teclado. Auméntalo si lees sin desplazarte."
+    "idleHint": "El seguimiento se pausa tras este tiempo sin actividad de ratón o teclado. Auméntalo si lees sin desplazarte.",
+    "backupNote": "Las copias JSON incluyen los títulos de las pestañas abiertas. Cifra la copia si los títulos pueden ser sensibles.",
+    "notifications": "Recordatorios de pestañas inactivas",
+    "notificationsHint": "Una notificación al día cuando hay pestañas sin tocar más allá del umbral.",
+    "showIntro": "Mostrar la introducción otra vez",
+    "introShown": "La introducción se mostrará en el panel",
+    "restoreInvalid": "Ese archivo no es una copia de seguridad válida de TabStyr.",
+    "restoreWrongPass": "Contraseña incorrecta o archivo dañado."
   },
   "onboarding": {
     "title": "Te damos la bienvenida a TabStyr",

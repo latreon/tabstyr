@@ -26,7 +26,7 @@ function showTip(e: Event, p: TrendPoint) {
   const fillH = fill ? fill.getBoundingClientRect().height : 0;
   const halfW = 80;
   tooltip.value = {
-    text: trendTooltip(p.key, mode.value, p.seconds, p.partial),
+    text: trendTooltip(p.key, mode.value, p.seconds, p.partial, t),
     x: Math.max(halfW, Math.min(rect.left - hostRect.left + rect.width / 2, hostRect.width - halfW)),
     bottom: fillH + 8, // sit just above the bar's top, so it tracks bar height
   };
@@ -39,13 +39,13 @@ function hideTip() {
 <template>
   <div class="tile trend">
     <div class="trend-head">
-      <span class="label">{{ t('trend.title') }}</span>
-      <div class="toggle" role="tablist" :aria-label="t('trend.granularityAria')">
+      <h2 class="label">{{ t('trend.title') }}</h2>
+      <div class="toggle" role="group" :aria-label="t('trend.granularityAria')">
         <button
           v-for="m in MODES"
           :key="m"
-          role="tab"
-          :aria-selected="mode === m"
+          type="button"
+          :aria-pressed="mode === m"
           :class="{ active: mode === m }"
           @click="mode = m"
         >{{ t(`trend.${m}`) }}</button>
@@ -65,7 +65,7 @@ function hideTip() {
             class="bar-col"
             role="img"
             tabindex="0"
-            :aria-label="trendTooltip(p.key, mode, p.seconds, p.partial)"
+            :aria-label="trendTooltip(p.key, mode, p.seconds, p.partial, t)"
             @mouseenter="showTip($event, p)"
             @mouseleave="hideTip"
             @focus="showTip($event, p)"
@@ -120,7 +120,7 @@ function hideTip() {
   font-family: inherit;
 }
 .toggle button.active {
-  background: var(--accent-gradient);
+  background: var(--accent-grad-strong);
   color: var(--on-accent);
   border-color: transparent;
   font-weight: 700;

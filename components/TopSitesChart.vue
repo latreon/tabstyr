@@ -25,7 +25,7 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds + d.aud
         </linearGradient>
       </defs>
     </svg>
-    <span class="label">{{ t('topSites.title') }}</span>
+    <h2 class="label">{{ t('topSites.title') }}</h2>
     <p v-if="!top.length" class="label">{{ t('common.nothingYet') }}</p>
     <button
       v-for="d in top"

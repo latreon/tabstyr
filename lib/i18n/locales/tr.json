@@ -21,7 +21,40 @@
     "title": "Gizlilik",
     "badge": "Cihazınızdan 0 bayt ayrılır",
     "badgeTitle": "Sunucu yok, hesap yok, ağ isteği yok. Gizlilik politikası için tıklayın.",
-    "viewPolicy": "Cihazınızdan 0 bayt ayrılır — gizlilik politikasını görüntüle"
+    "viewPolicy": "Cihazınızdan 0 bayt ayrılır — gizlilik politikasını görüntüle",
+    "intro1": "TabStyr hiçbir veriyi toplamaz, iletmez veya paylaşmaz.",
+    "intro2": "Her şey cihazınızda kalır — sunucu yok, analiz yok, hesap yok ve ağ isteği yok.",
+    "storesTitle": "Neleri saklar (yerel olarak, tarayıcınızın IndexedDB'sinde)",
+    "store1Label": "Oturum kayıtları",
+    "store1Body": "başlangıç/bitiş zamanları, sayfanın alan adı ve sekmenin ses çalıp çalmadığı.",
+    "store2Label": "Alan adı başına günlük toplamlar",
+    "store2Body": "site başına günlük saniye.",
+    "store3Label": "Açık sekme meta verileri",
+    "store3Body": "başlık, URL, son etkin olma zamanı ve zamanı ilişkilendirmek için kullanılan rastgele yerel kimlik.",
+    "store4Label": "Ayarlar",
+    "store4Body": "eskime eşiği, boşta kalma zaman aşımı, tema, ses sayımı, kategori kuralları.",
+    "retention": "Veriler 90 günlük kayan bir pencerede tutulur, sonra otomatik olarak silinir.",
+    "notTitle": "Yapmadıkları",
+    "not1": "Verileri cihazınızın dışına göndermez; sunucu, bulut eşitleme veya analiz kullanmaz.",
+    "not2": "Reklam veya izleyici içermez.",
+    "not3": "Sayfa içeriğini okumaz — yalnızca standart uzantı API'lerinden sekme meta verilerini (URL/başlık) kullanır.",
+    "permsTitle": "İzinler",
+    "permCol1": "İzin",
+    "permCol2": "Amaç",
+    "permTabs": "Zamanı ilişkilendirmek için etkin sekmenin URL/başlığını görmek",
+    "permStorage": "İstatistiklerinizi ve ayarlarınızı yerel olarak kaydetmek",
+    "permIdle": "Uzaklaştığınızda izlemeyi duraklatmak",
+    "permAlarms": "Düzenli kontrol noktaları ve günlük bakım",
+    "permNotifications": "İsteğe bağlı günde bir kez eskimiş sekme hatırlatması",
+    "permFavicon": "Listelerde site simgelerini göstermek",
+    "noHost": "Ana bilgisayar izni yok — uzantı sayfa içeriğine erişemez.",
+    "controlTitle": "Kontrol sizde",
+    "control1Label": "Dışa aktarın",
+    "control1Body": "tüm geçmişinizi (JSON veya CSV), isteğe bağlı olarak parola ifadesiyle şifreli.",
+    "control2Label": "Geri yükleyin",
+    "control2Body": "herhangi bir cihazdaki yedekten.",
+    "control3Label": "Tüm verileri sil",
+    "control3Body": "tek tıklamayla; uzantıyı kaldırmak her şeyi siler."
   },
   "support": {
     "coffee": "Bana bir kahve ısmarla"
@@ -41,7 +74,8 @@
     "vsWeeklyAvg": "haftalık ort. göre %{pct}",
     "up": "Arttı",
     "down": "Azaldı",
-    "backgroundAudio": "♪ +{time} arka plan sesi"
+    "backgroundAudio": "♪ +{time} arka plan sesi",
+    "empty": "Biraz gezinin, günlük toplamınız burada görünecek."
   },
   "stat": {
     "openTabs": "Açık sekmeler",
@@ -70,7 +104,8 @@
     "trendTitle": "Odak eğilimi",
     "productive": "Üretken",
     "distracting": "Dikkat dağıtıcı",
-    "note": "Üretken ÷ (üretken + dikkat dağıtıcı). İş ve Geliştirme üretken sayılır; hedef %{target}. Yeniden sınıflandırmak için bir sitenin kategorisini değiştirin."
+    "note": "Üretken ÷ (üretken + dikkat dağıtıcı). İş ve Geliştirme üretken sayılır; hedef %{target}. Yeniden sınıflandırmak için bir sitenin kategorisini değiştirin.",
+    "empty": "Bugün henüz kaydedilen etkinlik yok — gezinmeye başladığınızda odak dağılımınız görünecek."
   },
   "topSites": {
     "title": "Bugünün en çok kullanılan siteleri",
@@ -81,7 +116,9 @@
     "day": "Gün",
     "week": "Hafta",
     "month": "Ay",
-    "granularityAria": "Eğilim ayrıntı düzeyi"
+    "granularityAria": "Eğilim ayrıntı düzeyi",
+    "weekOf": "{date} haftası",
+    "partial": "kısmi"
   },
   "heatmap": {
     "title": "Etkinlik ısı haritası",
@@ -212,7 +249,14 @@
     "wipeFailed": "Silme başarısız",
     "confirmWipeAria": "Tüm verileri silmeyi onayla",
     "languageAuto": "Otomatik",
-    "idleHint": "Fare veya klavye girişi olmadan bu süre geçince izleme duraklatılır. Kaydırmadan okuyorsanız artırın."
+    "idleHint": "Fare veya klavye girişi olmadan bu süre geçince izleme duraklatılır. Kaydırmadan okuyorsanız artırın.",
+    "backupNote": "JSON yedekleri açık sekme başlıklarını içerir. Başlıklar hassas olabiliyorsa yedeği şifreleyin.",
+    "notifications": "Durağan sekme hatırlatıcıları",
+    "notificationsHint": "Sekmeler eşik süresini aşarak dokunulmadan kaldığında günde bir bildirim.",
+    "showIntro": "Tanıtımı tekrar göster",
+    "introShown": "Tanıtım panoda gösterilecek",
+    "restoreInvalid": "Bu dosya geçerli bir TabStyr yedeği değil.",
+    "restoreWrongPass": "Yanlış parola veya bozuk dosya."
   },
   "onboarding": {
     "title": "TabStyr'a hoş geldiniz",

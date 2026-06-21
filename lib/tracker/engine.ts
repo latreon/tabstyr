@@ -9,6 +9,13 @@ const MIN_SESSION_MS = 1000;
 // a 2-hour video watched without input still reports ~2 hours. A non-playing tab
 // that spans a long gap (e.g. the machine slept) is capped.
 const MAX_SESSION_MS = 30 * 60_000;
+// Absolute hard ceiling applied to EVERY session — media included. A single
+// continuous slice can never legitimately exceed this; a longer span means the
+// system clock jumped forward (NTP correction, manual change, VM resume) while a
+// media/audio session was open and uncapped. Without this, one bad timestamp
+// books hours or days of bogus time onto an uncapped media session. 24h is well
+// beyond any real heartbeat interval, so genuine media is never clipped by it.
+const ABSOLUTE_MAX_SESSION_MS = 24 * 60 * 60_000;
 
 export class TrackerEngine {
   private focused: OpenSession | null;
@@ -33,9 +40,14 @@ export class TrackerEngine {
   // even a media session must be bounded. Otherwise media sessions are never capped.
   private closed(open: OpenSession, now: number, forceCap = false): ClosedSession[] {
     const dur = now - open.start;
+    // dur < MIN also covers a backward clock jump (now < start → negative dur):
+    // the slice is dropped rather than stored with a negative/zero duration.
     if (dur < MIN_SESSION_MS) return [];
     const cappable = forceCap || (!open.audio && !open.audible);
-    const end = cappable && dur > MAX_SESSION_MS ? open.start + MAX_SESSION_MS : now;
+    // Non-media (or forced) sessions cap at 30min; media caps at the 24h absolute
+    // ceiling so a forward clock jump can't book a giant uncapped slice.
+    const cap = cappable ? MAX_SESSION_MS : ABSOLUTE_MAX_SESSION_MS;
+    const end = dur > cap ? open.start + cap : now;
     return [{ ...open, end }];
   }
 
@@ -97,16 +109,26 @@ export class TrackerEngine {
   checkpoint(now: number): ClosedSession[] {
     const out: ClosedSession[] = [];
     if (this.focused) {
-      const emitted = this.closed(this.focused, now);
+      const emitted = this.closed(this.focused, now, this.stalled(this.focused, now));
       out.push(...emitted);
       if (emitted.length) this.focused = { ...this.focused, start: now };
     }
     for (const [tabId, open] of this.audio) {
-      const emitted = this.closed(open, now);
+      const emitted = this.closed(open, now, this.stalled(open, now));
       out.push(...emitted);
       if (emitted.length) this.audio.set(tabId, { ...open, start: now });
     }
     return out;
+  }
+
+  // The heartbeat fires ~once a minute. A single slice far longer than that means
+  // the heartbeat didn't fire on schedule — the system slept or the alarm was
+  // heavily throttled, not genuine continuous use. Force-cap even a media session
+  // in that case so a multi-hour nap with a video/audio tab left open can't book
+  // hours of phantom time. Real playback still accrues fully because each on-time
+  // heartbeat emits a ≤1-minute slice (well under this threshold).
+  private stalled(open: OpenSession, now: number): boolean {
+    return now - open.start > MAX_SESSION_MS;
   }
 
   /**
@@ -195,7 +217,9 @@ export class TrackerEngine {
    * `now` is unused but kept for signature symmetry with the other handlers.
    */
   handleTabReplaced(removedTabId: number, addedTabId: number, _now: number): ClosedSession[] {
-    if (this.focused?.tabId === removedTabId) this.focused.tabId = addedTabId;
+    // Replace, don't mutate in place — the rest of the engine treats OpenSession
+    // as immutable (handleUrlChange/checkpoint always build new objects).
+    if (this.focused?.tabId === removedTabId) this.focused = { ...this.focused, tabId: addedTabId };
     const a = this.audio.get(removedTabId);
     if (a) {
       this.audio.delete(removedTabId);

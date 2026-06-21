@@ -21,7 +21,40 @@
     "title": "개인정보 보호",
     "badge": "0바이트만 기기를 떠납니다",
     "badgeTitle": "서버 없음, 계정 없음, 네트워크 요청 없음. 개인정보 처리방침을 보려면 클릭하세요.",
-    "viewPolicy": "0바이트만 기기를 떠납니다 — 개인정보 처리방침 보기"
+    "viewPolicy": "0바이트만 기기를 떠납니다 — 개인정보 처리방침 보기",
+    "intro1": "TabStyr는 어떤 데이터도 수집·전송·공유하지 않습니다.",
+    "intro2": "모든 것은 기기 안에 남습니다 — 서버, 분석, 계정, 네트워크 요청이 전혀 없습니다.",
+    "storesTitle": "저장하는 항목 (브라우저의 IndexedDB에 로컬 저장)",
+    "store1Label": "세션 기록",
+    "store1Body": "시작/종료 시간, 페이지 도메인, 탭의 오디오 재생 여부.",
+    "store2Label": "도메인별 일일 합계",
+    "store2Body": "사이트별 하루 초 단위 시간.",
+    "store3Label": "열린 탭 메타데이터",
+    "store3Body": "제목, URL, 마지막 활동 시간, 시간 귀속에 사용되는 무작위 로컬 ID.",
+    "store4Label": "설정",
+    "store4Body": "오래된 탭 기준, 유휴 시간 제한, 테마, 오디오 집계, 카테고리 규칙.",
+    "retention": "데이터는 90일 롤링 기간 동안 보관된 후 자동으로 삭제됩니다.",
+    "notTitle": "하지 않는 것",
+    "not1": "데이터를 기기 밖으로 보내지 않으며 서버, 클라우드 동기화, 분석을 사용하지 않습니다.",
+    "not2": "광고나 추적기를 포함하지 않습니다.",
+    "not3": "페이지 내용을 읽지 않습니다 — 표준 확장 API의 탭 메타데이터(URL/제목)만 사용합니다.",
+    "permsTitle": "권한",
+    "permCol1": "권한",
+    "permCol2": "용도",
+    "permTabs": "활성 탭의 URL/제목을 확인해 시간을 귀속",
+    "permStorage": "통계와 설정을 로컬에 저장",
+    "permIdle": "자리를 비우면 추적 일시정지",
+    "permAlarms": "주기적 체크포인트와 일일 유지 관리",
+    "permNotifications": "선택적 하루 한 번 오래된 탭 알림",
+    "permFavicon": "목록에 사이트 아이콘 표시",
+    "noHost": "호스트 권한 없음 — 확장 프로그램은 페이지 내용에 접근할 수 없습니다.",
+    "controlTitle": "사용자 제어",
+    "control1Label": "내보내기",
+    "control1Body": "전체 기록(JSON 또는 CSV)을 선택적으로 암호문구로 암호화하여 내보냅니다.",
+    "control2Label": "복원",
+    "control2Body": "어떤 기기에서든 백업으로부터 복원합니다.",
+    "control3Label": "모든 데이터 삭제",
+    "control3Body": "한 번의 클릭으로 삭제; 확장 프로그램을 제거하면 모두 삭제됩니다."
   },
   "support": {
     "coffee": "커피 한 잔 사주기"
@@ -41,7 +74,8 @@
     "vsWeeklyAvg": "주간 평균 대비 {pct}%",
     "up": "상승",
     "down": "하락",
-    "backgroundAudio": "♪ +{time} 백그라운드 오디오"
+    "backgroundAudio": "♪ +{time} 백그라운드 오디오",
+    "empty": "잠시 둘러보면 오늘의 총합이 여기에 표시됩니다."
   },
   "stat": {
     "openTabs": "열린 탭",
@@ -70,7 +104,8 @@
     "trendTitle": "집중 추이",
     "productive": "생산적",
     "distracting": "산만함",
-    "note": "생산적 ÷ (생산적 + 산만함). 업무와 개발은 생산적으로 계산됩니다. 목표 {target}%. 사이트의 카테고리를 바꾸면 다시 분류됩니다."
+    "note": "생산적 ÷ (생산적 + 산만함). 업무와 개발은 생산적으로 계산됩니다. 목표 {target}%. 사이트의 카테고리를 바꾸면 다시 분류됩니다.",
+    "empty": "오늘 기록된 활동이 아직 없습니다 — 탐색을 시작하면 집중 비율이 표시됩니다."
   },
   "topSites": {
     "title": "오늘의 상위 사이트",
@@ -81,7 +116,9 @@
     "day": "일",
     "week": "주",
     "month": "월",
-    "granularityAria": "추이 단위"
+    "granularityAria": "추이 단위",
+    "weekOf": "{date} 주",
+    "partial": "일부"
   },
   "heatmap": {
     "title": "활동 히트맵",
@@ -212,7 +249,14 @@
     "wipeFailed": "지우기 실패",
     "confirmWipeAria": "모든 데이터 지우기 확인",
     "languageAuto": "자동",
-    "idleHint": "마우스나 키보드 입력이 이 시간 동안 없으면 추적이 일시 중지됩니다. 스크롤 없이 읽는다면 늘리세요."
+    "idleHint": "마우스나 키보드 입력이 이 시간 동안 없으면 추적이 일시 중지됩니다. 스크롤 없이 읽는다면 늘리세요.",
+    "backupNote": "JSON 백업에는 열린 탭의 제목이 포함됩니다. 제목이 민감할 수 있으면 백업을 암호화하세요.",
+    "notifications": "오래된 탭 알림",
+    "notificationsHint": "탭이 기준일을 넘겨 방치되면 하루에 한 번 알림을 보냅니다.",
+    "showIntro": "소개 다시 보기",
+    "introShown": "대시보드에 소개가 표시됩니다",
+    "restoreInvalid": "유효한 TabStyr 백업 파일이 아닙니다.",
+    "restoreWrongPass": "암호가 틀렸거나 파일이 손상되었습니다."
   },
   "onboarding": {
     "title": "TabStyr에 오신 것을 환영합니다",

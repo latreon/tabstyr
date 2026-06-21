@@ -148,7 +148,7 @@ onBeforeUnmount(() => {
       type="button"
       class="trigger"
       :aria-expanded="open"
-      aria-haspopup="dialog"
+      aria-haspopup="true"
       :aria-label="t('datePicker.pickDay')"
       @click="toggle"
     >
@@ -159,7 +159,10 @@ onBeforeUnmount(() => {
       <span>{{ triggerLabel }}</span>
     </button>
 
-    <div v-if="open" class="cal" role="dialog" :aria-label="t('datePicker.chooseDate')">
+    <!-- Non-modal popover: a roving-tabindex grid with Esc-to-close and focus
+         return, but no focus trap — so it's a labelled group, not a dialog (which
+         would promise modal focus containment it doesn't implement). -->
+    <div v-if="open" class="cal" role="group" :aria-label="t('datePicker.chooseDate')">
       <div class="cal-head">
         <button type="button" class="mnav" :disabled="!canPrev" :aria-label="t('datePicker.prevMonth')" @click="stepMonth(-1)">‹</button>
         <span class="cal-title">{{ monthTitle }}</span>
@@ -281,7 +284,7 @@ onBeforeUnmount(() => {
 .day:not(:disabled):hover { background: var(--row-hover); }
 .day:disabled { opacity: 0.3; cursor: not-allowed; }
 .day.selected {
-  background: var(--accent-gradient);
+  background: var(--accent-grad-strong);
   color: var(--on-accent);
   font-weight: 700;
 }

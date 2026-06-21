@@ -168,6 +168,26 @@ function domainMatches(domain: string, needle: string): boolean {
   );
 }
 
+/**
+ * A categorizer bound to a fixed (overrides, rules) set with a per-domain cache.
+ * Aggregations run categorize() once per stats row, but the same ~dozens of
+ * domains repeat across hundreds/thousands of rows — caching collapses the work
+ * to one categorize() call per distinct domain. Build one per aggregation pass.
+ */
+export function makeCategorizer(
+  overrides: Record<string, Category> = {},
+  rules: readonly CategoryRule[] = [],
+): (domain: string) => Category {
+  const cache = new Map<string, Category>();
+  return (domain: string): Category => {
+    const hit = cache.get(domain);
+    if (hit !== undefined) return hit;
+    const c = categorize(domain, overrides, rules);
+    cache.set(domain, c);
+    return c;
+  };
+}
+
 export type Productivity = 'productive' | 'distracting' | 'neutral';
 
 export const CATEGORY_PRODUCTIVITY: Record<Category, Productivity> = {

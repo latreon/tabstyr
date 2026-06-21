@@ -1,9 +1,12 @@
 import { beforeEach, describe, expect, test } from 'vitest';
 import { fakeBrowser } from 'wxt/testing';
-import { DEFAULT_SETTINGS, getSettings, saveSettings } from '@/lib/settings';
+import { DEFAULT_SETTINGS, getSettings, invalidateSettings, saveSettings } from '@/lib/settings';
 
 describe('settings', () => {
-  beforeEach(() => fakeBrowser.reset());
+  beforeEach(() => {
+    fakeBrowser.reset();
+    invalidateSettings(); // drop the in-process cache so each test reads fresh storage
+  });
 
   test('returns defaults when nothing stored', async () => {
     expect(await getSettings()).toEqual(DEFAULT_SETTINGS);
@@ -49,6 +52,14 @@ describe('settings', () => {
   test('out-of-range stored numbers are clamped', async () => {
     await fakeBrowser.storage.local.set({ settings: { staleDays: 0, idleSeconds: 99999 } });
     expect(await getSettings()).toEqual({ ...DEFAULT_SETTINGS, staleDays: 1, idleSeconds: 600 });
+  });
+
+  test('notificationsEnabled round-trips and a non-boolean falls back to the default', async () => {
+    await saveSettings({ notificationsEnabled: false });
+    expect((await getSettings()).notificationsEnabled).toBe(false);
+    invalidateSettings();
+    await fakeBrowser.storage.local.set({ settings: { notificationsEnabled: 'yes' } });
+    expect((await getSettings()).notificationsEnabled).toBe(true); // default
   });
 
   test('invalid theme value is ignored, default wins', async () => {

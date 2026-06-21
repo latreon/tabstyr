@@ -298,7 +298,7 @@ function openPrivacy() {
 }
 .cta {
   flex: 1;
-  background: var(--accent-gradient);
+  background: var(--accent-grad-strong);
   color: var(--on-accent);
   border: none;
   border-radius: var(--radius-sm);

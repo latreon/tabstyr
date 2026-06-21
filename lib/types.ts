@@ -53,6 +53,8 @@ export interface Settings {
   categoryRules: import('./categories').CategoryRule[];
   /** Whether the first-run onboarding intro has been dismissed. */
   onboarded: boolean;
+  /** Whether the once-a-day stale-tab reminder notification is shown. */
+  notificationsEnabled: boolean;
   /** UI language: 'auto' (follow the browser) or a supported locale code. */
   language: string;
 }

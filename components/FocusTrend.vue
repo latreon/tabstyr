@@ -47,13 +47,13 @@ const hideTip = () => (tooltip.value = null);
 <template>
   <div class="tile focus-trend">
     <div class="ft-head">
-      <span class="label">{{ t('focus.trendTitle') }}</span>
-      <div class="toggle" role="tablist" :aria-label="t('trend.granularityAria')">
+      <h2 class="label">{{ t('focus.trendTitle') }}</h2>
+      <div class="toggle" role="group" :aria-label="t('trend.granularityAria')">
         <button
           v-for="m in MODES"
           :key="m"
-          role="tab"
-          :aria-selected="mode === m"
+          type="button"
+          :aria-pressed="mode === m"
           :class="{ active: mode === m }"
           @click="mode = m"
         >{{ t(`trend.${m}`) }}</button>
@@ -75,6 +75,7 @@ const hideTip = () => (tooltip.value = null);
               v-for="p in points"
               :key="p.key"
               class="bar-col"
+              role="img"
               tabindex="0"
               :aria-label="tipText(p)"
               @mouseenter="showTip($event, p)"
@@ -138,7 +139,7 @@ const hideTip = () => (tooltip.value = null);
   font-family: inherit;
 }
 .toggle button.active {
-  background: var(--accent-gradient);
+  background: var(--accent-grad-strong);
   color: var(--on-accent);
   border-color: transparent;
   font-weight: 700;
