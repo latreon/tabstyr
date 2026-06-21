@@ -15,6 +15,10 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
+// On a brand-new install (or any day with zero tracked time) the sparkline is a
+// dead-flat line and the "0s" reads as broken. Swap in a one-line hint instead.
+const hasActivity = computed(() => props.todaySeconds > 0);
+
 // Hide the comparison until there are at least 3 days of history — a 1–2 day
 // baseline produces wild, misleading percentages.
 const deltaPct = computed(() => {
@@ -26,8 +30,9 @@ const deltaPct = computed(() => {
 const sparkArea = computed(() => {
   const points = buildTrend(props.stats, 'day', Date.now());
   const max = Math.max(1, ...points.map((p) => p.seconds));
+  const span = Math.max(1, points.length - 1); // guard against a 1-point trend (0/0 → NaN)
   const coords = points.map(
-    (p, i) => `${(i / (points.length - 1)) * 100},${28 - (p.seconds / max) * 26}`,
+    (p, i) => `${(i / span) * 100},${28 - (p.seconds / max) * 26}`,
   );
   return { line: coords.join(' '), area: `0,30 ${coords.join(' ')} 100,30` };
 });
@@ -35,24 +40,27 @@ const sparkArea = computed(() => {
 
 <template>
   <div class="tile hero-tile">
-    <span class="label">{{ t('hero.todayActive') }}</span>
+    <h2 class="label">{{ t('hero.todayActive') }}</h2>
     <span class="hero-value gradient-text">{{ formatDuration(todaySeconds) }}</span>
-    <span v-if="deltaPct !== null" class="hero-delta" :class="deltaPct > 0 ? 'up' : 'down'">
-      <span aria-hidden="true">{{ deltaPct > 0 ? '↑' : '↓' }}</span>
-      <span class="sr-only">{{ deltaPct > 0 ? t('hero.up') : t('hero.down') }}</span>
-      {{ t('hero.vsWeeklyAvg', { pct: Math.abs(deltaPct) }) }}
-    </span>
-    <span v-if="todayAudioSeconds > 0" class="hero-audio">{{ t('hero.backgroundAudio', { time: formatDuration(todayAudioSeconds) }) }}</span>
-    <svg viewBox="0 0 100 30" preserveAspectRatio="none" class="spark" aria-hidden="true">
-      <defs>
-        <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#a78bfa" stop-opacity="0.45" />
-          <stop offset="1" stop-color="#60a5fa" stop-opacity="0" />
-        </linearGradient>
-      </defs>
-      <polygon :points="sparkArea.area" fill="url(#sparkFill)" />
-      <polyline :points="sparkArea.line" fill="none" stroke="#a78bfa" stroke-width="1.5" vector-effect="non-scaling-stroke" />
-    </svg>
+    <template v-if="hasActivity">
+      <span v-if="deltaPct !== null" class="hero-delta" :class="deltaPct > 0 ? 'up' : 'down'">
+        <span aria-hidden="true">{{ deltaPct > 0 ? '↑' : '↓' }}</span>
+        <span class="sr-only">{{ deltaPct > 0 ? t('hero.up') : t('hero.down') }}</span>
+        {{ t('hero.vsWeeklyAvg', { pct: Math.abs(deltaPct) }) }}
+      </span>
+      <span v-if="todayAudioSeconds > 0" class="hero-audio">{{ t('hero.backgroundAudio', { time: formatDuration(todayAudioSeconds) }) }}</span>
+      <svg viewBox="0 0 100 30" preserveAspectRatio="none" class="spark" aria-hidden="true">
+        <defs>
+          <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#a78bfa" stop-opacity="0.45" />
+            <stop offset="1" stop-color="#60a5fa" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+        <polygon :points="sparkArea.area" fill="url(#sparkFill)" />
+        <polyline :points="sparkArea.line" fill="none" stroke="#a78bfa" stroke-width="1.5" vector-effect="non-scaling-stroke" />
+      </svg>
+    </template>
+    <span v-else class="hero-empty">{{ t('hero.empty') }}</span>
   </div>
 </template>
 
@@ -87,6 +95,13 @@ const sparkArea = computed(() => {
   font-size: 11px;
   color: var(--text-3);
   margin-top: 2px;
+}
+.hero-empty {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-3);
+  margin-top: 6px;
+  max-width: 32ch;
 }
 .spark {
   display: block;

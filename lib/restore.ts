@@ -70,7 +70,12 @@ function isMeta(v: unknown): v is TabMeta {
   const o = v as TabMeta;
   return (
     !!o && isNum(o.tabId) &&
-    isBoundedStr(o.key, MAX_KEY_LEN) && isBoundedStr(o.url, MAX_URL_LEN) &&
+    isBoundedStr(o.key, MAX_KEY_LEN) &&
+    // Only real web URLs — a crafted file:// / chrome:// / javascript: value must
+    // not be stored (it would leak into the next export and could be fed to a
+    // navigation builder). touchTab only ever stores http(s) URLs, so this is
+    // exactly the legitimate shape.
+    isBoundedStr(o.url, MAX_URL_LEN) && /^https?:\/\//i.test(o.url) &&
     isBoundedStr(o.title, MAX_TITLE_LEN) && isTs(o.lastActiveAt) && isTs(o.createdAt) &&
     (o.snoozedUntil === undefined || isTs(o.snoozedUntil))
   );

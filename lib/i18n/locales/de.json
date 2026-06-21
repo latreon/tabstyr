@@ -21,7 +21,40 @@
     "title": "Datenschutz",
     "badge": "0 Bytes verlassen dein Gerät",
     "badgeTitle": "Keine Server, keine Konten, keine Netzwerkanfragen. Klicken für die Datenschutzerklärung.",
-    "viewPolicy": "0 Bytes verlassen dein Gerät — Datenschutzerklärung ansehen"
+    "viewPolicy": "0 Bytes verlassen dein Gerät — Datenschutzerklärung ansehen",
+    "intro1": "TabStyr erfasst, überträgt oder teilt keinerlei Daten.",
+    "intro2": "Alles bleibt auf deinem Gerät — keine Server, keine Analyse, keine Konten und keine Netzwerkanfragen.",
+    "storesTitle": "Was lokal gespeichert wird (in der IndexedDB deines Browsers)",
+    "store1Label": "Sitzungsdaten",
+    "store1Body": "Start-/Endzeiten, die Domain der Seite und ob der Tab Audio abgespielt hat.",
+    "store2Label": "Tägliche Summen pro Domain",
+    "store2Body": "Sekunden pro Website und Tag.",
+    "store3Label": "Tab-Metadaten",
+    "store3Body": "Titel, URL, letzte Aktivität und eine zufällige lokale ID zur Zuordnung der Zeit.",
+    "store4Label": "Einstellungen",
+    "store4Body": "Schwellenwert für veraltete Tabs, Leerlauf-Timeout, Theme, Audiozählung, Kategorieregeln.",
+    "retention": "Daten werden in einem gleitenden 90-Tage-Fenster gehalten und danach automatisch gelöscht.",
+    "notTitle": "Was es NICHT tut",
+    "not1": "Sendet keine Daten von deinem Gerät und nutzt keine Server, Cloud-Synchronisierung oder Analyse.",
+    "not2": "Enthält keine Werbung und keine Tracker.",
+    "not3": "Liest keine Seiteninhalte — nur Tab-Metadaten (URL/Titel) aus den Standard-Erweiterungs-APIs.",
+    "permsTitle": "Berechtigungen",
+    "permCol1": "Berechtigung",
+    "permCol2": "Zweck",
+    "permTabs": "URL/Titel des aktiven Tabs lesen, um Zeit zuzuordnen",
+    "permStorage": "Statistiken und Einstellungen lokal speichern",
+    "permIdle": "Erfassung pausieren, wenn du abwesend bist",
+    "permAlarms": "Regelmäßige Checkpoints und tägliche Wartung",
+    "permNotifications": "Optionale einmal-tägliche Erinnerung an veraltete Tabs",
+    "permFavicon": "Website-Symbole in Listen anzeigen",
+    "noHost": "Keine Host-Berechtigungen — die Erweiterung kann nicht auf Seiteninhalte zugreifen.",
+    "controlTitle": "Deine Kontrolle",
+    "control1Label": "Exportiere",
+    "control1Body": "deinen gesamten Verlauf (JSON oder CSV), optional mit Passphrase verschlüsselt.",
+    "control2Label": "Stelle wieder her",
+    "control2Body": "aus einem Backup auf jedem Gerät.",
+    "control3Label": "Alle Daten löschen",
+    "control3Body": "mit einem Klick; beim Entfernen der Erweiterung wird alles gelöscht."
   },
   "support": {
     "coffee": "Spendier mir einen Kaffee"
@@ -41,7 +74,8 @@
     "vsWeeklyAvg": "{pct}% vs. Wochendurchschnitt",
     "up": "Hoch",
     "down": "Runter",
-    "backgroundAudio": "♪ +{time} Hintergrund-Audio"
+    "backgroundAudio": "♪ +{time} Hintergrund-Audio",
+    "empty": "Surf ein wenig, dann erscheint hier deine Tagessumme."
   },
   "stat": {
     "openTabs": "Offene Tabs",
@@ -70,7 +104,8 @@
     "trendTitle": "Fokus-Verlauf",
     "productive": "Produktiv",
     "distracting": "Ablenkend",
-    "note": "Produktiv ÷ (produktiv + ablenkend). Arbeit & Entwicklung zählen als produktiv; Ziel {target}%. Ändere die Kategorie einer Seite, um sie neu einzustufen."
+    "note": "Produktiv ÷ (produktiv + ablenkend). Arbeit & Entwicklung zählen als produktiv; Ziel {target}%. Ändere die Kategorie einer Seite, um sie neu einzustufen.",
+    "empty": "Heute noch keine erfasste Aktivität — dein Fokus-Verhältnis erscheint, sobald du browst."
   },
   "topSites": {
     "title": "Top-Seiten heute",
@@ -81,7 +116,9 @@
     "day": "Tag",
     "week": "Woche",
     "month": "Monat",
-    "granularityAria": "Trend-Granularität"
+    "granularityAria": "Trend-Granularität",
+    "weekOf": "Woche vom {date}",
+    "partial": "unvollständig"
   },
   "heatmap": {
     "title": "Aktivitäts-Heatmap",
@@ -212,7 +249,8 @@
     "wipeFailed": "Löschen fehlgeschlagen",
     "confirmWipeAria": "Löschen aller Daten bestätigen",
     "languageAuto": "Automatisch",
-    "idleHint": "Die Erfassung pausiert nach dieser Zeit ohne Maus- oder Tastatureingabe. Erhöhe den Wert, wenn du ohne Scrollen liest."
+    "idleHint": "Die Erfassung pausiert nach dieser Zeit ohne Maus- oder Tastatureingabe. Erhöhe den Wert, wenn du ohne Scrollen liest.",
+    "backupNote": "JSON-Backups enthalten die Titel offener Tabs. Verschlüssle das Backup, wenn Titel sensibel sein können."
   },
   "onboarding": {
     "title": "Willkommen bei TabStyr",

@@ -47,7 +47,7 @@ function ago(ts: number): string {
 <template>
   <div class="tile table-tile">
     <div class="tt-head">
-      <span class="label">{{ t('tabTable.title') }}</span>
+      <h2 class="label">{{ t('tabTable.title') }}</h2>
       <span class="tt-sub">{{ t('tabTable.sub') }}</span>
     </div>
     <table>

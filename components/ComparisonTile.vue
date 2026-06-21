@@ -39,15 +39,15 @@ const dir = (pct: number | null) => (pct === null ? '' : pct > 0 ? 'up' : pct < 
   <div class="tile compare">
     <div class="head">
       <div class="head-text">
-        <span class="label">{{ title }}</span>
+        <h2 class="label">{{ title }}</h2>
         <span class="sub">{{ subtitle }}</span>
       </div>
-      <div class="toggle" role="tablist" :aria-label="t('comparison.periodAria')">
+      <div class="toggle" role="group" :aria-label="t('comparison.periodAria')">
         <button
           v-for="m in MODES"
           :key="m"
-          role="tab"
-          :aria-selected="period === m"
+          type="button"
+          :aria-pressed="period === m"
           :class="{ active: period === m }"
           @click="period = m"
         >{{ t(`comparison.${m}`) }}</button>
@@ -138,7 +138,7 @@ const dir = (pct: number | null) => (pct === null ? '' : pct > 0 ? 'up' : pct < 
   font-family: inherit;
 }
 .toggle button.active {
-  background: var(--accent-gradient);
+  background: var(--accent-grad-strong);
   color: var(--on-accent);
   border-color: transparent;
   font-weight: 700;

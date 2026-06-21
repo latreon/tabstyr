@@ -1,9 +1,12 @@
 import { beforeEach, describe, expect, test } from 'vitest';
 import { fakeBrowser } from 'wxt/testing';
-import { DEFAULT_SETTINGS, getSettings, saveSettings } from '@/lib/settings';
+import { DEFAULT_SETTINGS, getSettings, invalidateSettings, saveSettings } from '@/lib/settings';
 
 describe('settings', () => {
-  beforeEach(() => fakeBrowser.reset());
+  beforeEach(() => {
+    fakeBrowser.reset();
+    invalidateSettings(); // drop the in-process cache so each test reads fresh storage
+  });
 
   test('returns defaults when nothing stored', async () => {
     expect(await getSettings()).toEqual(DEFAULT_SETTINGS);

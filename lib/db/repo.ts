@@ -141,20 +141,26 @@ export async function pruneBefore(cutoffDate: string, cutoffTs: number): Promise
 export async function backfillKeylessSessions(tabIdToKey: Map<number, string>): Promise<number> {
   if (!tabIdToKey.size) return 0;
   const db = await getDB();
-  const tx = db.transaction('sessions', 'readwrite');
+  // Read once (cheap getAll), compute the rows that need a key, then write them in
+  // bounded chunks across separate transactions. A single cursor transaction over
+  // a large history could hold the sessions store locked for many seconds on the
+  // v1→v2 upgrade; chunking keeps each transaction short. `id` is the inline
+  // keyPath, so put(value) updates the existing row in place (never inserts).
+  const all = await db.getAll('sessions');
+  const updates = all.flatMap((s) => {
+    if (s.tabKey) return [];
+    const key = tabIdToKey.get(s.tabId);
+    return key ? [{ ...s, tabKey: key }] : [];
+  });
+  const BATCH = 1_000;
   let updated = 0;
-  let cur = await tx.store.openCursor();
-  while (cur) {
-    if (!cur.value.tabKey) {
-      const key = tabIdToKey.get(cur.value.tabId);
-      if (key) {
-        await cur.update({ ...cur.value, tabKey: key });
-        updated++;
-      }
-    }
-    cur = await cur.continue();
+  for (let i = 0; i < updates.length; i += BATCH) {
+    const chunk = updates.slice(i, i + BATCH);
+    const tx = db.transaction('sessions', 'readwrite');
+    for (const s of chunk) await tx.store.put(s);
+    await tx.done;
+    updated += chunk.length;
   }
-  await tx.done;
   return updated;
 }
 

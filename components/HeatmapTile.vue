@@ -97,7 +97,7 @@ const LEGEND = [0, 25, 50, 75, 100];
 <template>
   <div class="tile heatmap-tile">
     <div class="hm-head">
-      <span class="label">{{ t('heatmap.title') }}</span>
+      <h2 class="label">{{ t('heatmap.title') }}</h2>
       <span v-if="peakLabel" class="peak">{{ t('heatmap.peak', { label: peakLabel }) }}</span>
     </div>
 

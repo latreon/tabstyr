@@ -21,7 +21,40 @@
     "title": "隐私",
     "badge": "0 字节离开你的设备",
     "badgeTitle": "无服务器、无账户、无网络请求。点击查看隐私政策。",
-    "viewPolicy": "0 字节离开你的设备 — 查看隐私政策"
+    "viewPolicy": "0 字节离开你的设备 — 查看隐私政策",
+    "intro1": "TabStyr 不收集、不传输、不共享任何数据。",
+    "intro2": "一切都保留在你的设备上——没有服务器、没有分析、没有账户，也没有网络请求。",
+    "storesTitle": "它存储的内容（本地保存在浏览器的 IndexedDB 中）",
+    "store1Label": "会话记录",
+    "store1Body": "开始/结束时间、页面域名，以及标签页是否播放了音频。",
+    "store2Label": "按域名的每日合计",
+    "store2Body": "每个网站每天的秒数。",
+    "store3Label": "打开标签页的元数据",
+    "store3Body": "标题、URL、最后活动时间，以及用于归属时间的随机本地 ID。",
+    "store4Label": "设置",
+    "store4Body": "陈旧阈值、空闲超时、主题、音频计数、分类规则。",
+    "retention": "数据在 90 天的滚动窗口内保留，之后自动清除。",
+    "notTitle": "它不会做的事",
+    "not1": "不会将数据发送到你的设备之外，也不使用服务器、云同步或分析。",
+    "not2": "不包含广告或跟踪器。",
+    "not3": "不读取页面内容——仅使用标准扩展 API 提供的标签页元数据（URL/标题）。",
+    "permsTitle": "权限",
+    "permCol1": "权限",
+    "permCol2": "用途",
+    "permTabs": "查看活动标签页的 URL/标题以归属时间",
+    "permStorage": "在本地保存你的统计和设置",
+    "permIdle": "当你离开时暂停跟踪",
+    "permAlarms": "定期检查点和每日维护",
+    "permNotifications": "可选的每天一次陈旧标签页提醒",
+    "permFavicon": "在列表中显示网站图标",
+    "noHost": "没有主机权限——扩展无法访问页面内容。",
+    "controlTitle": "由你掌控",
+    "control1Label": "导出",
+    "control1Body": "你的全部历史记录（JSON 或 CSV），可选用口令加密。",
+    "control2Label": "恢复",
+    "control2Body": "在任意设备上从备份恢复。",
+    "control3Label": "清除所有数据",
+    "control3Body": "一键清除；移除扩展会删除所有内容。"
   },
   "support": {
     "coffee": "请我喝杯咖啡"
@@ -41,7 +74,8 @@
     "vsWeeklyAvg": "{pct}% 对比每周平均",
     "up": "上升",
     "down": "下降",
-    "backgroundAudio": "♪ +{time} 后台音频"
+    "backgroundAudio": "♪ +{time} 后台音频",
+    "empty": "浏览一会儿，你的每日总计就会显示在这里。"
   },
   "stat": {
     "openTabs": "打开的标签页",
@@ -70,7 +104,8 @@
     "trendTitle": "专注趋势",
     "productive": "高效",
     "distracting": "分心",
-    "note": "高效 ÷（高效 + 分心）。工作与开发计为高效；目标 {target}%。更改某个网站的类别即可重新归类。"
+    "note": "高效 ÷（高效 + 分心）。工作与开发计为高效；目标 {target}%。更改某个网站的类别即可重新归类。",
+    "empty": "今天还没有记录的活动——开始浏览后将显示你的专注占比。"
   },
   "topSites": {
     "title": "今日热门网站",
@@ -81,7 +116,9 @@
     "day": "日",
     "week": "周",
     "month": "月",
-    "granularityAria": "趋势粒度"
+    "granularityAria": "趋势粒度",
+    "weekOf": "{date} 当周",
+    "partial": "部分"
   },
   "heatmap": {
     "title": "活动热力图",
@@ -212,7 +249,8 @@
     "wipeFailed": "清除失败",
     "confirmWipeAria": "确认清除所有数据",
     "languageAuto": "自动",
-    "idleHint": "在此时长内没有鼠标或键盘输入时将暂停计时。如果阅读时不滚动，请调高此值。"
+    "idleHint": "在此时长内没有鼠标或键盘输入时将暂停计时。如果阅读时不滚动，请调高此值。",
+    "backupNote": "JSON 备份包含打开标签页的标题。如果标题可能涉及隐私，请加密备份。"
   },
   "onboarding": {
     "title": "欢迎使用 TabStyr",

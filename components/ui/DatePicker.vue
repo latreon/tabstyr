@@ -281,7 +281,7 @@ onBeforeUnmount(() => {
 .day:not(:disabled):hover { background: var(--row-hover); }
 .day:disabled { opacity: 0.3; cursor: not-allowed; }
 .day.selected {
-  background: var(--accent-gradient);
+  background: var(--accent-grad-strong);
   color: var(--on-accent);
   font-weight: 700;
 }

@@ -3,7 +3,7 @@ import { TrackerEngine } from '@/lib/tracker/engine';
 import { rollup } from '@/lib/tracker/aggregate';
 import { findStale, rematchTabMeta, shouldNotify } from '@/lib/tracker/stale';
 import { staleNotification, storageFullNotification } from '@/lib/i18n/notify';
-import { getSettings } from '@/lib/settings';
+import { getSettings, invalidateSettings } from '@/lib/settings';
 import * as repo from '@/lib/db/repo';
 import { isQuotaError } from '@/lib/db/errors';
 import { addDays, dateKey } from '@/lib/time';
@@ -47,15 +47,30 @@ const sessionStore = {
 export default defineBackground(() => {
   let enginePromise: Promise<TrackerEngine> | null = null;
 
-  // Wrap an async event listener so a thrown error is logged, not left as an
-  // unhandled rejection that silently stops tracking for this worker.
+  // Serialize every event handler through one promise chain. The handlers share a
+  // single mutable TrackerEngine and mutate it across multiple awaits (tabs.get,
+  // isInFocusedWindow, repo reads, persist). Running them concurrently let two
+  // events interleave and corrupt focused/audio state or persist a stale snapshot
+  // (last-writer-wins). Chaining makes each handler's read-mutate-persist atomic
+  // with respect to the others; throughput is unaffected (events are sub-second).
+  let queue: Promise<unknown> = Promise.resolve();
+
+  // Wrap an async event listener so it runs after the previous handler finishes,
+  // and so a thrown error is logged, not left as an unhandled rejection that
+  // silently stops tracking for this worker.
   function guard<A extends unknown[]>(fn: (...a: A) => Promise<unknown>): (...a: A) => Promise<void> {
-    return async (...a: A) => {
-      try {
-        await fn(...a);
-      } catch (e) {
-        console.error('[tab-time] handler failed', e);
-      }
+    return (...a: A) => {
+      const run = queue
+        .catch(() => {}) // a prior handler's failure must not break the chain
+        .then(() => fn(...a))
+        .then(
+          () => {},
+          (e) => {
+            console.error('[tab-time] handler failed', e);
+          },
+        );
+      queue = run;
+      return run;
     };
   }
 
@@ -472,14 +487,17 @@ export default defineBackground(() => {
   // immediately, but it's strictly better than dropping the tail every time.
   browser.runtime.onSuspend?.addListener(() => {
     if (!enginePromise) return; // engine never woke this session — nothing open
-    void (async () => {
-      try {
+    // Chain after any in-flight handler so the flush sees committed state, not a
+    // half-applied mutation (same queue the guarded handlers use).
+    queue = queue
+      .catch(() => {})
+      .then(async () => {
         const eng = await enginePromise!;
         await persist(eng, eng.checkpoint(Date.now()));
-      } catch (e) {
+      })
+      .catch((e) => {
         console.error('[tab-time] suspend flush failed', e);
-      }
-    })();
+      });
   });
 
   // Adaptation: onMessage listener receives (message: unknown, sender: MessageSender).
@@ -491,6 +509,7 @@ export default defineBackground(() => {
     if ((sender as { id?: string })?.id !== browser.runtime.id) return;
     const msg = message as { type?: string } | null | undefined;
     if (msg?.type === 'settings-changed') {
+      invalidateSettings(); // the dashboard just wrote new settings — drop stale cache
       const settings = await getSettings();
       browser.idle?.setDetectionInterval?.(settings.idleSeconds);
       // Apply audio on/off immediately rather than waiting for the next heartbeat.

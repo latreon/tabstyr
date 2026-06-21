@@ -35,7 +35,7 @@ const stackSummary = computed(() =>
 <template>
   <div class="tile cat-tile">
     <div class="cat-head">
-      <span class="label">{{ t('category.title') }}</span>
+      <h2 class="label">{{ t('category.title') }}</h2>
       <span class="cat-total">{{ formatDuration(total) }}</span>
     </div>
 

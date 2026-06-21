@@ -70,9 +70,18 @@ function coerce(raw: unknown): Partial<Settings> {
   };
 }
 
+// In-process cache. The background worker calls getSettings() on every heartbeat
+// (and inside audio sync), so an uncached read meant two storage.local round-trips
+// per minute. The cache is invalidated by saveSettings (same context) and via
+// invalidateSettings() when a 'settings-changed' message arrives from another
+// context (the dashboard saving). Treat the returned object as READ-ONLY.
+let cache: Settings | null = null;
+
 export async function getSettings(): Promise<Settings> {
+  if (cache) return cache;
   const { settings } = await browser.storage.local.get('settings');
-  return { ...DEFAULT_SETTINGS, ...coerce(settings) };
+  cache = { ...DEFAULT_SETTINGS, ...coerce(settings) };
+  return cache;
 }
 
 export async function saveSettings(patch: Partial<Settings>): Promise<Settings> {
@@ -81,5 +90,13 @@ export async function saveSettings(patch: Partial<Settings>): Promise<Settings> 
   // rather than only when read back, so it can't bloat or corrupt stored settings.
   const next = { ...DEFAULT_SETTINGS, ...coerce({ ...(await getSettings()), ...patch }) };
   await browser.storage.local.set({ settings: next });
+  cache = next;
   return next;
+}
+
+/** Drop the cache so the next getSettings() re-reads from storage. Call when
+ * settings may have changed in another context (e.g. on a settings-changed
+ * message in the background worker). */
+export function invalidateSettings(): void {
+  cache = null;
 }

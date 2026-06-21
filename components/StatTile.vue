@@ -4,7 +4,7 @@ defineProps<{ label: string; value: string; warn?: boolean }>();
 
 <template>
   <div class="tile stat-tile" :class="{ warn }">
-    <span class="label">{{ label }}</span>
+    <h2 class="label">{{ label }}</h2>
     <span class="stat-value">{{ value }}</span>
   </div>
 </template>

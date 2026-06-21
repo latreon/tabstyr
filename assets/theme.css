@@ -10,6 +10,11 @@
   --accent-b: #60a5fa;
   --accent: #8b8bfa;
   --accent-gradient: linear-gradient(90deg, var(--accent-a), var(--accent-b));
+  /* Darker gradient used ONLY behind white (--on-accent) text — primary buttons,
+   * active toggles, selected day. Both stops keep white text >= 4.5:1 (WCAG AA):
+   * #6d28d9 ~= 7.1:1, #1d4ed8 ~= 6.7:1. The pastel --accent-gradient above stays
+   * for decorative fills (bars, glows, gradient text) that carry no text. */
+  --accent-grad-strong: linear-gradient(90deg, #6d28d9, #1d4ed8);
   --radius: 14px;
   --radius-sm: 10px;
   --space: 16px;
@@ -34,7 +39,7 @@
   --warn: #c2410c; /* orange-700 — AA contrast on white for the Wipe action text */
   --warn-bg: #fff7ed;
   --warn-border: #fed7aa;
-  --positive: #16a34a;
+  --positive: #15803d; /* green-700 — AA (>=4.5:1) as small delta text on white */
   --negative: #dc2626;
   --shadow: 0 1px 2px rgba(17, 18, 38, 0.04), 0 12px 32px -14px rgba(17, 18, 38, 0.16);
   --row-hover: #eef0f7;
@@ -109,7 +114,7 @@
   --warn: #c2410c; /* orange-700 — AA contrast on white for the Wipe action text */
   --warn-bg: #fff7ed;
   --warn-border: #fed7aa;
-  --positive: #16a34a;
+  --positive: #15803d; /* green-700 — AA (>=4.5:1) as small delta text on white */
   --negative: #dc2626;
   --shadow: 0 1px 2px rgba(17, 18, 38, 0.04), 0 12px 32px -14px rgba(17, 18, 38, 0.16);
   --row-hover: #eef0f7;
@@ -124,6 +129,13 @@ body {
   background: var(--surface);
   color: var(--text);
   font-feature-settings: 'tnum';
+}
+
+/* Tile titles are <h2 class="label"> so screen readers can navigate the dashboard
+   by heading. The .label class (scoped per tile) supplies all visual styling, so
+   strip the user-agent heading margin to keep the layout pixel-identical. */
+h2.label {
+  margin: 0;
 }
 
 /* Respect users who ask for less motion: near-instant transitions/animations. */

@@ -54,7 +54,7 @@ async function copy() {
 <template>
   <div class="tile worklog-tile">
     <div class="wl-head">
-      <span class="label">{{ t('worklog.title') }}</span>
+      <h2 class="label">{{ t('worklog.title') }}</h2>
       <div class="wl-controls">
         <button class="nav" :disabled="!canPrev" :aria-label="t('worklog.prevDay')" @click="step(-1)">‹</button>
         <DatePicker v-model="selected" :min="minDate" :max="today" />

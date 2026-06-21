@@ -13,6 +13,7 @@ import { dailyStatsToCsv, downloadFile, toJsonBackup } from '@/lib/export';
 import { encryptToEnvelope, isEncryptedEnvelope, decryptFromEnvelope, MIN_PASSPHRASE } from '@/lib/crypto';
 import { parseBackup, restoreBackup, MAX_BACKUP_BYTES, type ParsedBackup } from '@/lib/restore';
 import { dateKey } from '@/lib/time';
+import { getDateLocale } from '@/lib/locale';
 import type { ThemeSetting } from '@/lib/types';
 import SelectBox from '@/components/ui/SelectBox.vue';
 import ToggleSwitch from '@/components/ui/ToggleSwitch.vue';
@@ -336,7 +337,7 @@ async function confirmWipe() {
 
 <template>
   <div class="tile settings-tile">
-    <span class="label">{{ t('settings.title') }}</span>
+    <h2 class="label">{{ t('settings.title') }}</h2>
     <div class="field">
       <span class="field-label">{{ t('settings.language') }}</span>
       <SelectBox
@@ -404,11 +405,12 @@ async function confirmWipe() {
         />
         <button type="submit" class="rule-add-btn" :disabled="!newPattern.trim()">{{ t('settings.add') }}</button>
       </form>
-      <p v-if="ruleError" class="rule-error">{{ ruleError }}</p>
+      <p v-if="ruleError" class="rule-error" role="alert">{{ ruleError }}</p>
     </div>
 
     <div class="export">
       <span class="field-label">{{ t('settings.backupRestore') }}</span>
+      <p class="rules-hint">{{ t('settings.backupNote') }}</p>
       <div class="export-btns">
         <button :disabled="exporting" @click="exportData('json')">{{ t('settings.exportJson') }}</button>
         <button :disabled="exporting" @click="exportData('csv')">{{ t('settings.exportCsv') }}</button>
@@ -419,25 +421,25 @@ async function confirmWipe() {
 
       <form v-if="showEncrypt" class="enc-form" @submit.prevent="exportEncrypted">
         <p class="rules-hint">{{ t('settings.encHint') }}</p>
-        <input v-model="encPass" type="password" class="rule-input" :placeholder="t('settings.passphrase')" autocomplete="new-password" />
-        <input v-model="encPass2" type="password" class="rule-input" :placeholder="t('settings.confirmPassphrase')" autocomplete="new-password" />
+        <input v-model="encPass" type="password" class="rule-input" :placeholder="t('settings.passphrase')" :aria-label="t('settings.passphrase')" autocomplete="new-password" />
+        <input v-model="encPass2" type="password" class="rule-input" :placeholder="t('settings.confirmPassphrase')" :aria-label="t('settings.confirmPassphrase')" autocomplete="new-password" />
         <div class="enc-actions">
           <button type="submit" class="rule-add-btn" :disabled="exporting">{{ t('settings.downloadEncrypted') }}</button>
           <button type="button" class="cancel-link" @click="showEncrypt = false">{{ t('settings.cancel') }}</button>
         </div>
-        <p v-if="encError" class="rule-error">{{ encError }}</p>
+        <p v-if="encError" class="rule-error" role="alert">{{ encError }}</p>
       </form>
 
       <form v-if="restoreRaw" class="enc-form" @submit.prevent="decryptRestore">
         <p class="rules-hint">{{ t('settings.restoreEncryptedPrompt') }}</p>
-        <input v-model="restorePass" type="password" class="rule-input" :placeholder="t('settings.passphrase')" autocomplete="off" />
+        <input v-model="restorePass" type="password" class="rule-input" :placeholder="t('settings.passphrase')" :aria-label="t('settings.passphrase')" autocomplete="off" />
         <div class="enc-actions">
           <button type="submit" class="rule-add-btn">{{ t('settings.decrypt') }}</button>
           <button type="button" class="cancel-link" @click="cancelRestore">{{ t('settings.cancel') }}</button>
         </div>
-        <p v-if="restoreError" class="rule-error">{{ restoreError }}</p>
+        <p v-if="restoreError" class="rule-error" role="alert">{{ restoreError }}</p>
       </form>
-      <p v-else-if="restoreError" class="rule-error">{{ restoreError }}</p>
+      <p v-else-if="restoreError" class="rule-error" role="alert">{{ restoreError }}</p>
     </div>
 
     <!-- Restore confirmation (destructive) -->
@@ -448,7 +450,7 @@ async function confirmWipe() {
         <p class="modal-body">{{ t('settings.replaceBody', {
           days: pendingRestore.dailyStats.length,
           sessions: pendingRestore.sessions.length,
-          from: pendingRestore.exportedAt ? t('settings.replaceBodyFrom', { date: new Date(pendingRestore.exportedAt).toLocaleDateString() }) : '',
+          from: pendingRestore.exportedAt ? t('settings.replaceBodyFrom', { date: new Date(pendingRestore.exportedAt).toLocaleDateString(getDateLocale()) }) : '',
         }) }}</p>
         <div class="modal-actions">
           <button class="cancel" :disabled="restoring" @click="cancelRestore">{{ t('settings.cancel') }}</button>
@@ -537,7 +539,7 @@ button:focus-visible {
   outline-offset: 2px;
 }
 .save {
-  background: var(--accent-gradient);
+  background: var(--accent-grad-strong);
   color: var(--on-accent);
   transition: filter 150ms ease;
 }

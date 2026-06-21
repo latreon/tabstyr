@@ -13,26 +13,30 @@ const prodWidth = computed(() => `${props.summary.todayFocusPct}%`);
 
 <template>
   <div class="tile prod-tile">
-    <span class="label">{{ t('focus.title') }}</span>
+    <h2 class="label">{{ t('focus.title') }}</h2>
 
-    <div class="figure">
-      <span class="pct" :class="{ good: summary.todayFocusPct >= summary.focusTarget }">
-        {{ hasData ? summary.todayFocusPct : '—' }}<em v-if="hasData">%</em>
-      </span>
-      <span v-if="summary.streakDays > 0" class="streak" :title="t('focus.streakTitle', { count: summary.streakDays, target: summary.focusTarget })">
-        {{ t('focus.streak', { count: summary.streakDays }) }}
-      </span>
-    </div>
+    <template v-if="hasData">
+      <div class="figure">
+        <span class="pct" :class="{ good: summary.todayFocusPct >= summary.focusTarget }">
+          {{ summary.todayFocusPct }}<em>%</em>
+        </span>
+        <span v-if="summary.streakDays > 0" class="streak" :title="t('focus.streakTitle', { count: summary.streakDays, target: summary.focusTarget })">
+          {{ t('focus.streak', { count: summary.streakDays }) }}
+        </span>
+      </div>
 
-    <div class="split" :aria-label="t('focus.ariaFocus', { pct: summary.todayFocusPct })">
-      <div class="split-bar">
-        <span class="prod" :style="{ width: prodWidth }" />
+      <div class="split" :aria-label="t('focus.ariaFocus', { pct: summary.todayFocusPct })">
+        <div class="split-bar">
+          <span class="prod" :style="{ width: prodWidth }" />
+        </div>
+        <div class="split-legend">
+          <span class="pl"><span class="sw prod" /> {{ t('focus.productive') }} · {{ formatDuration(summary.productiveSeconds) }}</span>
+          <span class="pl"><span class="sw dist" /> {{ t('focus.distracting') }} · {{ formatDuration(summary.distractingSeconds) }}</span>
+        </div>
       </div>
-      <div class="split-legend">
-        <span class="pl"><span class="sw prod" /> {{ t('focus.productive') }} · {{ formatDuration(summary.productiveSeconds) }}</span>
-        <span class="pl"><span class="sw dist" /> {{ t('focus.distracting') }} · {{ formatDuration(summary.distractingSeconds) }}</span>
-      </div>
-    </div>
+    </template>
+
+    <p v-else class="prod-empty">{{ t('focus.empty') }}</p>
 
     <p class="prod-note">{{ t('focus.note', { target: summary.focusTarget }) }}</p>
   </div>
@@ -120,6 +124,12 @@ const prodWidth = computed(() => `${props.summary.todayFocusPct}%`);
 }
 .sw.dist {
   background: var(--negative);
+}
+.prod-empty {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-3);
 }
 .prod-note {
   margin: 0;

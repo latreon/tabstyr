@@ -21,7 +21,40 @@
     "title": "Confidentialité",
     "badge": "0 octet ne quitte votre appareil",
     "badgeTitle": "Aucun serveur, aucun compte, aucune requête réseau. Cliquez pour la politique de confidentialité.",
-    "viewPolicy": "0 octet ne quitte votre appareil — voir la politique de confidentialité"
+    "viewPolicy": "0 octet ne quitte votre appareil — voir la politique de confidentialité",
+    "intro1": "TabStyr ne collecte, ne transmet ni ne partage aucune donnée.",
+    "intro2": "Tout reste sur votre appareil — aucun serveur, aucune analyse, aucun compte et aucune requête réseau.",
+    "storesTitle": "Ce qu'il stocke (localement, dans l'IndexedDB de votre navigateur)",
+    "store1Label": "Enregistrements de session",
+    "store1Body": "heures de début/fin, le domaine de la page et si l'onglet a joué de l'audio.",
+    "store2Label": "Totaux quotidiens par domaine",
+    "store2Body": "secondes par site et par jour.",
+    "store3Label": "Métadonnées des onglets ouverts",
+    "store3Body": "titre, URL, dernière activité et un identifiant local aléatoire utilisé pour attribuer le temps.",
+    "store4Label": "Paramètres",
+    "store4Body": "seuil d'obsolescence, délai d'inactivité, thème, comptage audio, règles de catégorie.",
+    "retention": "Les données sont conservées sur une fenêtre glissante de 90 jours, puis supprimées automatiquement.",
+    "notTitle": "Ce qu'il ne fait PAS",
+    "not1": "N'envoie aucune donnée hors de votre appareil et n'utilise ni serveurs, ni synchronisation cloud, ni analyse.",
+    "not2": "Ne contient ni publicités ni traqueurs.",
+    "not3": "Ne lit pas le contenu des pages — uniquement les métadonnées d'onglet (URL/titre) via les API d'extension standard.",
+    "permsTitle": "Autorisations",
+    "permCol1": "Autorisation",
+    "permCol2": "Objet",
+    "permTabs": "Voir l'URL/le titre de l'onglet actif pour attribuer le temps",
+    "permStorage": "Enregistrer vos statistiques et paramètres localement",
+    "permIdle": "Suspendre le suivi lorsque vous vous absentez",
+    "permAlarms": "Points de contrôle périodiques et maintenance quotidienne",
+    "permNotifications": "Rappel facultatif une fois par jour des onglets obsolètes",
+    "permFavicon": "Afficher les icônes des sites dans les listes",
+    "noHost": "Aucune autorisation d'hôte — l'extension ne peut pas accéder au contenu des pages.",
+    "controlTitle": "Votre contrôle",
+    "control1Label": "Exportez",
+    "control1Body": "tout votre historique (JSON ou CSV), éventuellement chiffré par phrase secrète.",
+    "control2Label": "Restaurez",
+    "control2Body": "depuis une sauvegarde sur n'importe quel appareil.",
+    "control3Label": "Effacer toutes les données",
+    "control3Body": "en un clic ; supprimer l'extension efface tout."
   },
   "support": {
     "coffee": "Offrez-moi un café"
@@ -41,7 +74,8 @@
     "vsWeeklyAvg": "{pct}% vs moyenne hebdo",
     "up": "En hausse",
     "down": "En baisse",
-    "backgroundAudio": "♪ +{time} audio en arrière-plan"
+    "backgroundAudio": "♪ +{time} audio en arrière-plan",
+    "empty": "Naviguez un peu et votre total quotidien apparaîtra ici."
   },
   "stat": {
     "openTabs": "Onglets ouverts",
@@ -70,7 +104,8 @@
     "trendTitle": "Tendance de concentration",
     "productive": "Productif",
     "distracting": "Distrayant",
-    "note": "Productif ÷ (productif + distrayant). Travail et Développement comptent comme productifs ; objectif {target}%. Changez la catégorie d'un site pour le reclasser."
+    "note": "Productif ÷ (productif + distrayant). Travail et Développement comptent comme productifs ; objectif {target}%. Changez la catégorie d'un site pour le reclasser.",
+    "empty": "Aucune activité enregistrée aujourd'hui — votre répartition de concentration apparaîtra dès que vous naviguerez."
   },
   "topSites": {
     "title": "Sites les plus visités aujourd'hui",
@@ -81,7 +116,9 @@
     "day": "Jour",
     "week": "Semaine",
     "month": "Mois",
-    "granularityAria": "Granularité de la tendance"
+    "granularityAria": "Granularité de la tendance",
+    "weekOf": "Semaine du {date}",
+    "partial": "partiel"
   },
   "heatmap": {
     "title": "Carte de chaleur d'activité",
@@ -212,7 +249,8 @@
     "wipeFailed": "Échec de l'effacement",
     "confirmWipeAria": "Confirmer l'effacement de toutes les données",
     "languageAuto": "Automatique",
-    "idleHint": "Le suivi se met en pause après ce délai sans activité souris ou clavier. Augmentez-le si vous lisez sans faire défiler."
+    "idleHint": "Le suivi se met en pause après ce délai sans activité souris ou clavier. Augmentez-le si vous lisez sans faire défiler.",
+    "backupNote": "Les sauvegardes JSON incluent les titres des onglets ouverts. Chiffrez la sauvegarde si les titres peuvent être sensibles."
   },
   "onboarding": {
     "title": "Bienvenue dans TabStyr",

@@ -39,6 +39,16 @@ export default defineConfig({
             },
           }
         : {}),
+      // MV2 (Firefox, Safari) takes the STRING form of CSP. The MV2 default omits
+      // connect-src/base-uri/form-action; spell them out so these builds get the
+      // same defense-in-depth as Chromium — the extension makes zero network
+      // requests, submits no forms, and needs no <base>.
+      ...(!chromium && manifestVersion === 2
+        ? {
+            content_security_policy:
+              "script-src 'self'; object-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'",
+          }
+        : {}),
       // Firefox (AMO) requirements:
       // - a stable add-on id,
       // - strict_min_version 115 — the floor for `storage.session`,

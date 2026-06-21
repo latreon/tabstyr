@@ -157,6 +157,21 @@ describe('TrackerEngine boundary safety', () => {
     expect(closed[0].end - closed[0].start).toBe(2 * 60 * 60_000); // full 2 hours
   });
 
+  test('caps even a media session at the 24h absolute ceiling (forward clock jump)', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://youtube.com/watch', T0, true); // audible — normally uncapped
+    // System clock jumps 3 days forward while the session is open (NTP/VM resume).
+    const closed = e.handleBlur(T0 + 3 * 24 * 60 * 60_000);
+    expect(closed).toHaveLength(1);
+    expect(closed[0].end - closed[0].start).toBe(24 * 60 * 60_000); // not 3 days of bogus time
+  });
+
+  test('drops a session when the clock jumps backward (now < start)', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://a.com', T0);
+    expect(e.handleBlur(T0 - 60_000)).toEqual([]); // negative duration — no row stored
+  });
+
   test('keeps an audible (media) tab counting through idle', () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://youtube.com/watch', T0, true);

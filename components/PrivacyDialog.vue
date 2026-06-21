@@ -35,43 +35,43 @@ onUnmounted(() => {
       </header>
 
       <div class="content">
-        <p><strong>TabStyr does not collect, transmit, or share any data.</strong> Everything stays on your device — no servers, no analytics, no accounts, and no network requests.</p>
+        <p><strong>{{ t('privacy.intro1') }}</strong> {{ t('privacy.intro2') }}</p>
 
-        <h3>What it stores (locally, in your browser's IndexedDB)</h3>
+        <h3>{{ t('privacy.storesTitle') }}</h3>
         <ul>
-          <li><strong>Session records</strong> — start/end times, the page's domain, and whether the tab played audio.</li>
-          <li><strong>Daily per-domain totals</strong> — seconds per site per day.</li>
-          <li><strong>Open-tab metadata</strong> — title, URL, last-active time, and a random local id used to attribute time.</li>
-          <li><strong>Settings</strong> — stale threshold, idle timeout, theme, audio counting, category rules.</li>
+          <li><strong>{{ t('privacy.store1Label') }}</strong> — {{ t('privacy.store1Body') }}</li>
+          <li><strong>{{ t('privacy.store2Label') }}</strong> — {{ t('privacy.store2Body') }}</li>
+          <li><strong>{{ t('privacy.store3Label') }}</strong> — {{ t('privacy.store3Body') }}</li>
+          <li><strong>{{ t('privacy.store4Label') }}</strong> — {{ t('privacy.store4Body') }}</li>
         </ul>
-        <p>Data is kept for a rolling <strong>90-day window</strong>, then pruned automatically.</p>
+        <p>{{ t('privacy.retention') }}</p>
 
-        <h3>What it does NOT do</h3>
+        <h3>{{ t('privacy.notTitle') }}</h3>
         <ul>
-          <li>Does <strong>not</strong> send data off your device, or use servers, cloud sync, or analytics.</li>
-          <li>Does <strong>not</strong> contain ads or trackers.</li>
-          <li>Does <strong>not</strong> read page contents — only tab metadata (URL/title) from standard extension APIs.</li>
+          <li>{{ t('privacy.not1') }}</li>
+          <li>{{ t('privacy.not2') }}</li>
+          <li>{{ t('privacy.not3') }}</li>
         </ul>
 
-        <h3>Permissions</h3>
+        <h3>{{ t('privacy.permsTitle') }}</h3>
         <table>
-          <thead><tr><th>Permission</th><th>Purpose</th></tr></thead>
+          <thead><tr><th>{{ t('privacy.permCol1') }}</th><th>{{ t('privacy.permCol2') }}</th></tr></thead>
           <tbody>
-            <tr><td><code>tabs</code></td><td>See the active tab's URL/title to attribute time</td></tr>
-            <tr><td><code>storage</code></td><td>Save your stats and settings locally</td></tr>
-            <tr><td><code>idle</code></td><td>Pause tracking when you step away</td></tr>
-            <tr><td><code>alarms</code></td><td>Periodic checkpoints and daily maintenance</td></tr>
-            <tr><td><code>notifications</code></td><td>Optional once-a-day stale-tab reminder</td></tr>
-            <tr><td><code>favicon</code> (Chromium)</td><td>Show site icons in lists</td></tr>
+            <tr><td><code>tabs</code></td><td>{{ t('privacy.permTabs') }}</td></tr>
+            <tr><td><code>storage</code></td><td>{{ t('privacy.permStorage') }}</td></tr>
+            <tr><td><code>idle</code></td><td>{{ t('privacy.permIdle') }}</td></tr>
+            <tr><td><code>alarms</code></td><td>{{ t('privacy.permAlarms') }}</td></tr>
+            <tr><td><code>notifications</code></td><td>{{ t('privacy.permNotifications') }}</td></tr>
+            <tr><td><code>favicon</code> (Chromium)</td><td>{{ t('privacy.permFavicon') }}</td></tr>
           </tbody>
         </table>
-        <p>No host permissions — the extension can't access page content.</p>
+        <p>{{ t('privacy.noHost') }}</p>
 
-        <h3>Your control</h3>
+        <h3>{{ t('privacy.controlTitle') }}</h3>
         <ul>
-          <li><strong>Export</strong> your full history (JSON or CSV), optionally <strong>passphrase-encrypted</strong>.</li>
-          <li><strong>Restore</strong> from a backup on any device.</li>
-          <li><strong>Wipe all data</strong> in one click; removing the extension deletes everything.</li>
+          <li><strong>{{ t('privacy.control1Label') }}</strong> — {{ t('privacy.control1Body') }}</li>
+          <li><strong>{{ t('privacy.control2Label') }}</strong> — {{ t('privacy.control2Body') }}</li>
+          <li><strong>{{ t('privacy.control3Label') }}</strong> — {{ t('privacy.control3Body') }}</li>
         </ul>
       </div>
     </div>

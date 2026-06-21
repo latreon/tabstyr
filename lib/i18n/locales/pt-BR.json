@@ -21,7 +21,40 @@
     "title": "Privacidade",
     "badge": "0 bytes saem do seu dispositivo",
     "badgeTitle": "Sem servidores, sem contas, sem requisições de rede. Clique para ver a política de privacidade.",
-    "viewPolicy": "0 bytes saem do seu dispositivo — ver política de privacidade"
+    "viewPolicy": "0 bytes saem do seu dispositivo — ver política de privacidade",
+    "intro1": "O TabStyr não coleta, transmite nem compartilha nenhum dado.",
+    "intro2": "Tudo permanece no seu dispositivo — sem servidores, sem análises, sem contas e sem requisições de rede.",
+    "storesTitle": "O que ele armazena (localmente, no IndexedDB do seu navegador)",
+    "store1Label": "Registros de sessão",
+    "store1Body": "horários de início/fim, o domínio da página e se a aba reproduziu áudio.",
+    "store2Label": "Totais diários por domínio",
+    "store2Body": "segundos por site por dia.",
+    "store3Label": "Metadados das abas abertas",
+    "store3Body": "título, URL, última atividade e um id local aleatório usado para atribuir o tempo.",
+    "store4Label": "Configurações",
+    "store4Body": "limite de obsolescência, tempo de inatividade, tema, contagem de áudio, regras de categoria.",
+    "retention": "Os dados são mantidos por uma janela móvel de 90 dias e depois removidos automaticamente.",
+    "notTitle": "O que ele NÃO faz",
+    "not1": "Não envia dados para fora do seu dispositivo nem usa servidores, sincronização na nuvem ou análises.",
+    "not2": "Não contém anúncios nem rastreadores.",
+    "not3": "Não lê o conteúdo das páginas — apenas metadados de abas (URL/título) das APIs padrão de extensões.",
+    "permsTitle": "Permissões",
+    "permCol1": "Permissão",
+    "permCol2": "Finalidade",
+    "permTabs": "Ver a URL/título da aba ativa para atribuir o tempo",
+    "permStorage": "Salvar suas estatísticas e configurações localmente",
+    "permIdle": "Pausar o monitoramento quando você se ausenta",
+    "permAlarms": "Checkpoints periódicos e manutenção diária",
+    "permNotifications": "Lembrete opcional uma vez por dia de abas obsoletas",
+    "permFavicon": "Mostrar ícones dos sites nas listas",
+    "noHost": "Sem permissões de host — a extensão não pode acessar o conteúdo das páginas.",
+    "controlTitle": "Seu controle",
+    "control1Label": "Exporte",
+    "control1Body": "todo o seu histórico (JSON ou CSV), opcionalmente criptografado com senha.",
+    "control2Label": "Restaure",
+    "control2Body": "a partir de um backup em qualquer dispositivo.",
+    "control3Label": "Apagar todos os dados",
+    "control3Body": "com um clique; remover a extensão exclui tudo."
   },
   "support": {
     "coffee": "Pague-me um café"
@@ -41,7 +74,8 @@
     "vsWeeklyAvg": "{pct}% vs média semanal",
     "up": "Subiu",
     "down": "Caiu",
-    "backgroundAudio": "♪ +{time} áudio em segundo plano"
+    "backgroundAudio": "♪ +{time} áudio em segundo plano",
+    "empty": "Navegue um pouco e seu total diário aparecerá aqui."
   },
   "stat": {
     "openTabs": "Abas abertas",
@@ -70,7 +104,8 @@
     "trendTitle": "Tendência de foco",
     "productive": "Produtivo",
     "distracting": "Distrativo",
-    "note": "Produtivo ÷ (produtivo + distrativo). Trabalho e Desenvolvimento contam como produtivos; meta {target}%. Mude a categoria de um site para reclassificá-lo."
+    "note": "Produtivo ÷ (produtivo + distrativo). Trabalho e Desenvolvimento contam como produtivos; meta {target}%. Mude a categoria de um site para reclassificá-lo.",
+    "empty": "Nenhuma atividade registrada hoje — sua divisão de foco aparecerá quando você começar a navegar."
   },
   "topSites": {
     "title": "Principais sites de hoje",
@@ -81,7 +116,9 @@
     "day": "Dia",
     "week": "Semana",
     "month": "Mês",
-    "granularityAria": "Granularidade da tendência"
+    "granularityAria": "Granularidade da tendência",
+    "weekOf": "Semana de {date}",
+    "partial": "parcial"
   },
   "heatmap": {
     "title": "Mapa de calor de atividade",
@@ -212,7 +249,8 @@
     "wipeFailed": "Falha ao apagar",
     "confirmWipeAria": "Confirmar exclusão de todos os dados",
     "languageAuto": "Automático",
-    "idleHint": "O rastreamento pausa após esse tempo sem mouse ou teclado. Aumente se você lê sem rolar."
+    "idleHint": "O rastreamento pausa após esse tempo sem mouse ou teclado. Aumente se você lê sem rolar.",
+    "backupNote": "Os backups JSON incluem os títulos das abas abertas. Criptografe o backup se os títulos puderem ser sensíveis."
   },
   "onboarding": {
     "title": "Bem-vindo ao TabStyr",
