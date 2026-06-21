@@ -97,5 +97,6 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds + d.aud
   color: var(--text-3);
   font-style: normal;
   font-weight: 400;
+  margin-left: 6px;
 }
 </style>

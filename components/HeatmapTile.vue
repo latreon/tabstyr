@@ -123,9 +123,7 @@ const LEGEND = [0, 25, 50, 75, 100];
           />
         </template>
         <span class="hm-corner" aria-hidden="true" />
-        <span v-for="h in HOURS" :key="`hour-${h}`" class="hm-hour" aria-hidden="true">
-          {{ h % 3 === 0 ? h : '' }}
-        </span>
+        <span v-for="h in HOURS" :key="`hour-${h}`" class="hm-hour" aria-hidden="true">{{ h }}</span>
       </div>
 
       <div class="hm-legend" aria-hidden="true">
@@ -196,12 +194,12 @@ const LEGEND = [0, 25, 50, 75, 100];
 }
 .hm-grid {
   display: grid;
-  grid-template-columns: 40px repeat(24, minmax(8px, 1fr));
+  /* minmax(0,1fr): columns always shrink to fit the tile, so the grid never
+     overflows and needs no scrollbar. The hover pop (scale) is transform-only —
+     with no overflow container it can't spawn a scrollbar. */
+  grid-template-columns: 40px repeat(24, minmax(0, 1fr));
   gap: 3px;
   align-items: center;
-  /* 24 hour-columns can't shrink past a legible minimum; on very narrow screens
-     scroll the grid inside the tile rather than widening the page. */
-  overflow-x: auto;
 }
 .hm-row-label {
   font-size: 10px;
@@ -243,11 +241,15 @@ const LEGEND = [0, 25, 50, 75, 100];
   height: 1px;
 }
 .hm-hour {
-  font-size: 9px;
+  font-size: 8px;
   color: var(--text-3);
   text-align: center;
   line-height: 1;
   margin-top: 2px;
+  /* All 24 labels now shown — let each clip to its (narrow) column instead of
+     widening the grid. */
+  min-width: 0;
+  overflow: hidden;
 }
 .hm-legend {
   display: flex;
