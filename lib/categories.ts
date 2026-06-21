@@ -1,3 +1,5 @@
+import { isLocalDevHost } from './domain';
+
 export const CATEGORIES = ['Work', 'Dev', 'Finance', 'Social', 'Media', 'News', 'Shopping', 'Other'] as const;
 export type Category = (typeof CATEGORIES)[number];
 
@@ -141,6 +143,9 @@ export function categorize(
   const d = domain.toLowerCase();
   const userMatch = matchUserRule(d, rules);
   if (userMatch) return userMatch;
+  // Local-dev hosts (localhost / bare IPv4) are dev work — group them under Dev
+  // instead of letting each raw IP fall through to "Other".
+  if (isLocalDevHost(d)) return 'Dev';
   for (const [category, needles] of RULES) {
     if (needles.some((n) => domainMatches(d, n))) return category;
   }

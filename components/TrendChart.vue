@@ -58,11 +58,12 @@ function hideTip() {
       </div>
       <div class="plot">
         <div v-for="t in ticks" :key="t.seconds" class="gridline" :style="{ bottom: `${(t.seconds / chartMax) * 100}%` }" aria-hidden="true" />
-        <div class="bars">
+        <div class="bars" role="group" :aria-label="t('trend.title')">
           <div
             v-for="p in points"
             :key="p.key"
             class="bar-col"
+            role="img"
             tabindex="0"
             :aria-label="trendTooltip(p.key, mode, p.seconds, p.partial)"
             @mouseenter="showTip($event, p)"

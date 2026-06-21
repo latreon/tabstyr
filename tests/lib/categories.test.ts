@@ -16,6 +16,14 @@ describe('categorize', () => {
     expect(categorize('some-random-site.example')).toBe('Other');
   });
 
+  test('maps local-dev hosts (localhost / bare IPv4) to Dev', () => {
+    expect(categorize('localhost')).toBe('Dev');
+    expect(categorize('127.0.0.1')).toBe('Dev');
+    expect(categorize('192.168.1.10')).toBe('Dev');
+    // explicit override still wins over the local-dev default
+    expect(categorize('127.0.0.1', { '127.0.0.1': 'Work' })).toBe('Work');
+  });
+
   test('user override beats the default rules', () => {
     expect(categorize('youtube.com', { 'youtube.com': 'Work' })).toBe('Work');
   });

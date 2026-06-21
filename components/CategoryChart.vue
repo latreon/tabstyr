@@ -22,6 +22,14 @@ const items = computed(() =>
       pct: total.value ? Math.round((s.seconds / total.value) * 100) : 0,
     })),
 );
+
+// Screen-reader label for the (purely visual) stacked bar — spells out each
+// category's share so the role="img" conveys the data, not just "chart".
+const stackSummary = computed(() =>
+  `${t('category.shareAria')}: ${items.value
+    .map((i) => `${t(`categories.${i.category}`)} ${i.pct}%`)
+    .join(', ')}`,
+);
 </script>
 
 <template>
@@ -34,7 +42,7 @@ const items = computed(() =>
     <p v-if="!total" class="empty">{{ t('common.nothingTracked') }}</p>
 
     <template v-else>
-      <div class="stack" role="img" :aria-label="t('category.shareAria')" :class="{ 'has-hover': hovered }">
+      <div class="stack" role="img" :aria-label="stackSummary" :class="{ 'has-hover': hovered }">
         <span
           v-for="i in items"
           :key="i.category"

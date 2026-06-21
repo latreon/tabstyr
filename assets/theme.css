@@ -138,6 +138,30 @@ body {
   }
 }
 
+/* Windows High Contrast / forced-colors: keep text, focus, and color-coded
+   swatches legible when the OS overrides the palette. */
+@media (forced-colors: active) {
+  /* Clipped gradient text has a transparent fill that would vanish — paint it
+     with the forced text color instead. */
+  .gradient-text {
+    background: none;
+    color: CanvasText;
+    -webkit-text-fill-color: CanvasText;
+  }
+  /* Focus must stay visible against the forced palette. */
+  :focus-visible {
+    outline: 2px solid Highlight !important;
+    outline-offset: 2px;
+  }
+  /* Color-only legend swatches/segments collapse to one system color — give them
+     a border so adjacent items stay distinguishable (text labels carry meaning). */
+  .dot,
+  .hm-swatch,
+  .seg {
+    border: 1px solid CanvasText;
+  }
+}
+
 .label {
   font-size: 11px;
   text-transform: uppercase;

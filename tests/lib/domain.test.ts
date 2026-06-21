@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { domainOf, isWebDomain, pageOf, pagePath } from '@/lib/domain';
+import { domainOf, isWebDomain, isLocalDevHost, pageOf, pagePath } from '@/lib/domain';
 
 describe('domainOf', () => {
   test('extracts hostname from http(s) urls', () => {
@@ -37,6 +37,25 @@ describe('isWebDomain', () => {
 
   test('accepts localhost (dotless but a real dev host)', () => {
     expect(isWebDomain('localhost')).toBe(true);
+  });
+
+  test('local-dev policy: tracks bare IPv4 hosts, rejects IPv6 literals', () => {
+    expect(isWebDomain('127.0.0.1')).toBe(true);
+    expect(isWebDomain('192.168.1.10')).toBe(true);
+    expect(isWebDomain('[::1]')).toBe(false); // IPv6 literal — accepted gap
+  });
+});
+
+describe('isLocalDevHost', () => {
+  test('matches localhost and IPv4 literals', () => {
+    expect(isLocalDevHost('localhost')).toBe(true);
+    expect(isLocalDevHost('127.0.0.1')).toBe(true);
+    expect(isLocalDevHost('10.0.0.5')).toBe(true);
+  });
+
+  test('does not match real domains', () => {
+    expect(isLocalDevHost('github.com')).toBe(false);
+    expect(isLocalDevHost('1.2.3.4.example.com')).toBe(false);
   });
 });
 
