@@ -1,6 +1,7 @@
 import * as repo from './db/repo';
 import { SCHEMA_VERSION } from './export';
 import { saveSettings } from './settings';
+import { isWebDomain } from './domain';
 import type { DailyStat, Session, Settings, TabMeta } from './types';
 
 export interface ParsedBackup {
@@ -19,29 +20,59 @@ const MAX_SESSIONS = 1_000_000;
 const MAX_TABMETA = 20_000;
 const MAX_SETTINGS_KEYS = 1_000;
 
+// Reject an oversized file before reading/parsing it — a multi-hundred-MB JSON
+// would freeze the main thread in JSON.parse() long before the per-record caps
+// above could apply. A real 90-day backup is a few MB at most; 64 MB is a
+// generous ceiling that still bounds memory/parse cost.
+export const MAX_BACKUP_BYTES = 64 * 1024 * 1024;
+
+// Value sanity bounds. Imported data is untrusted: impossible values (negative
+// durations, end<start, audio>total, far-future timestamps) would silently
+// corrupt dashboard math, so drop any record that violates them.
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const MAX_TS = 4_102_444_800_000; // ~year 2100 (ms) — anything beyond is bogus
+const MAX_DURATION_MS = 24 * 60 * 60_000; // a single session can't exceed a day
+const MAX_DAY_SECONDS = 90_000; // per-domain per-day ceiling (>24h headroom)
+const MAX_URL_LEN = 4_096;
+const MAX_TITLE_LEN = 2_048;
+const MAX_KEY_LEN = 256;
+
 const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
 const isStr = (v: unknown): v is string => typeof v === 'string';
+const isBoundedStr = (v: unknown, max: number): v is string => isStr(v) && v.length <= max;
+const isTs = (v: unknown): v is number => isNum(v) && v > 0 && v < MAX_TS;
 
 function isStat(v: unknown): v is DailyStat {
   const o = v as DailyStat;
-  return !!o && isStr(o.date) && isStr(o.domain) && isNum(o.seconds) && isNum(o.audioSeconds);
+  return (
+    !!o &&
+    isBoundedStr(o.date, 10) && DATE_RE.test(o.date) &&
+    isBoundedStr(o.domain, MAX_KEY_LEN) && isWebDomain(o.domain) &&
+    isNum(o.seconds) && o.seconds >= 0 && o.seconds <= MAX_DAY_SECONDS &&
+    isNum(o.audioSeconds) && o.audioSeconds >= 0 && o.audioSeconds <= o.seconds
+  );
 }
 function isSession(v: unknown): v is Session {
   const o = v as Session;
   return (
-    !!o && isStr(o.domain) && isStr(o.url) && isNum(o.start) && isNum(o.end) &&
+    !!o &&
+    isBoundedStr(o.domain, MAX_KEY_LEN) && isWebDomain(o.domain) &&
+    isBoundedStr(o.url, MAX_URL_LEN) &&
+    isTs(o.start) && isTs(o.end) && o.start < o.end && o.end - o.start <= MAX_DURATION_MS &&
     typeof o.audio === 'boolean' &&
     // tabKey is the per-tab attribution id. Legacy files may omit it (normalized
     // to '' below); reject any non-string value so a hostile null/number can't
     // reach the IndexedDB by-key index.
-    (o.tabKey === undefined || isStr(o.tabKey))
+    (o.tabKey === undefined || isBoundedStr(o.tabKey, MAX_KEY_LEN))
   );
 }
 function isMeta(v: unknown): v is TabMeta {
   const o = v as TabMeta;
   return (
-    !!o && isNum(o.tabId) && isStr(o.key) && isStr(o.url) &&
-    isStr(o.title) && isNum(o.lastActiveAt) && isNum(o.createdAt)
+    !!o && isNum(o.tabId) &&
+    isBoundedStr(o.key, MAX_KEY_LEN) && isBoundedStr(o.url, MAX_URL_LEN) &&
+    isBoundedStr(o.title, MAX_TITLE_LEN) && isTs(o.lastActiveAt) && isTs(o.createdAt) &&
+    (o.snoozedUntil === undefined || isTs(o.snoozedUntil))
   );
 }
 // Accept only a plausible ISO-ish timestamp string that parses to a real date.
@@ -61,6 +92,9 @@ function safeSettings(v: unknown): Record<string, unknown> | undefined {
  * record is filtered to a well-formed shape, malformed rows are dropped.
  */
 export function parseBackup(text: string): ParsedBackup {
+  // Defense in depth — the UI rejects by file.size first, but a decrypted payload
+  // arrives here as a raw string. Bound it before JSON.parse() touches it.
+  if (text.length > MAX_BACKUP_BYTES) throw new Error('Backup file is too large.');
   let o: Record<string, unknown>;
   try {
     o = JSON.parse(text);
@@ -103,10 +137,10 @@ export async function restoreBackup(parsed: ParsedBackup): Promise<RestoreResult
   // Proxy, and callers often hold `parsed` in a ref. A JSON round-trip yields
   // plain, structured-cloneable objects (all fields are JSON-serializable).
   const data: ParsedBackup = JSON.parse(JSON.stringify(parsed));
-  await repo.wipeAll();
-  await repo.addSessions(data.sessions);
-  await repo.applyDailyStats(data.dailyStats); // store is empty post-wipe → deltas become absolute values
-  await repo.replaceAllTabMeta(data.tabMeta);
+  // Clear + write all three stores in a SINGLE transaction: a failure aborts the
+  // whole restore and rolls back the clears, so existing history is never lost to
+  // a half-completed import (see repo.restoreAll).
+  await repo.restoreAll(data.sessions, data.dailyStats, data.tabMeta);
   // getSettings() re-sanitizes on the next read, so unsafe fields can't survive.
   if (data.settings) await saveSettings(data.settings as Partial<Settings>);
   return {

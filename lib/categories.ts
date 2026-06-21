@@ -142,9 +142,25 @@ export function categorize(
   const userMatch = matchUserRule(d, rules);
   if (userMatch) return userMatch;
   for (const [category, needles] of RULES) {
-    if (needles.some((n) => d.includes(n))) return category;
+    if (needles.some((n) => domainMatches(d, n))) return category;
   }
   return 'Other';
+}
+
+/**
+ * Match a built-in needle against a hostname on LABEL boundaries, not raw
+ * substring. A needle (a brand label like `amazon` or a partial host like
+ * `x.com`) matches only when it aligns to dot-delimited boundaries — so
+ * `x.com` matches `x.com` and `mobile.x.com` but not `notx.com`, and `amazon`
+ * matches `amazon.com`/`music.amazon.com` but not `myamazon-clone.com`.
+ */
+function domainMatches(domain: string, needle: string): boolean {
+  return (
+    domain === needle ||
+    domain.startsWith(`${needle}.`) || // needle is the leading label(s)
+    domain.endsWith(`.${needle}`) || // needle is the trailing label(s)
+    domain.includes(`.${needle}.`) // needle sits between boundaries
+  );
 }
 
 export type Productivity = 'productive' | 'distracting' | 'neutral';

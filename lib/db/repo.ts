@@ -158,6 +158,38 @@ export async function backfillKeylessSessions(tabIdToKey: Map<number, string>): 
   return updated;
 }
 
+/**
+ * Replace ALL stored data with a backup's contents in ONE transaction: clears the
+ * three stores and writes the new rows together. If any write fails (quota, bad
+ * record, IndexedDB error) the whole transaction aborts and IndexedDB rolls back
+ * the clears too — so a failed restore can never leave the user wiped or
+ * half-restored. The stores are empty post-clear, so daily stats are written as
+ * absolute values (no merge).
+ */
+export async function restoreAll(
+  sessions: Session[],
+  stats: DailyStat[],
+  tabMeta: TabMeta[],
+): Promise<void> {
+  const db = await getDB();
+  const tx = db.transaction(['sessions', 'dailyDomainStats', 'tabMeta'], 'readwrite');
+  const sessionStore = tx.objectStore('sessions');
+  const statStore = tx.objectStore('dailyDomainStats');
+  const metaStore = tx.objectStore('tabMeta');
+  const writes = (async () => {
+    await sessionStore.clear();
+    await statStore.clear();
+    await metaStore.clear();
+    for (const s of sessions) await sessionStore.add(s);
+    for (const d of stats) await statStore.put(d);
+    for (const m of tabMeta) await metaStore.put(m);
+  })();
+  // Await BOTH the writes and the transaction: a failing write auto-aborts the
+  // tx, so tx.done also rejects — gathering them here means neither rejection is
+  // left unhandled, and the whole restore rejects (rolling back the clears).
+  await Promise.all([writes, tx.done]);
+}
+
 export async function wipeAll(): Promise<void> {
   const db = await getDB();
   const tx = db.transaction(['sessions', 'dailyDomainStats', 'tabMeta'], 'readwrite');

@@ -189,6 +189,7 @@
     "exportFailed": "내보내기 실패",
     "restoreEncryptedPrompt": "이 백업은 암호화되어 있습니다. 계속하려면 암호 문구를 입력하세요.",
     "restoreReadFailed": "해당 파일을 읽을 수 없습니다.",
+    "restoreTooLarge": "이 파일은 TabStyr 백업이라기에는 너무 큽니다.",
     "replaceTitle": "모든 데이터를 교체하시겠습니까?",
     "replaceBody": "이 기기에 현재 저장된 데이터를 삭제하고 일별 기록 {days}개와 세션 {sessions}개{from}를 복원합니다. 되돌릴 수 없습니다.",
     "replaceBodyFrom": " ({date} 백업에서)",

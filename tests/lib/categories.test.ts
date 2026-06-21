@@ -51,6 +51,16 @@ describe('categorize', () => {
     expect(categorize('mypurchases.example')).toBe('Other');
   });
 
+  test('matches built-in tokens on label boundaries, not raw substring', () => {
+    // Real boundary matches still work…
+    expect(categorize('mobile.x.com')).toBe('Social');
+    expect(categorize('music.amazon.com')).toBe('Shopping');
+    // …but lookalikes that merely contain a token are not swallowed.
+    expect(categorize('notx.com')).toBe('Other'); // contains 'x.com'
+    expect(categorize('myamazon-clone.com')).toBe('Other'); // contains 'amazon'
+    expect(categorize('mygithub.io')).toBe('Other'); // contains 'github'
+  });
+
   test('user rules (substring) beat built-in rules but lose to exact overrides', () => {
     const rules = [{ pattern: 'mybank', category: 'Work' as const }];
     expect(categorize('mybank.example', {}, rules)).toBe('Work');

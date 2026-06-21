@@ -189,6 +189,7 @@
     "exportFailed": "エクスポートに失敗しました",
     "restoreEncryptedPrompt": "このバックアップは暗号化されています。続行するにはパスフレーズを入力してください。",
     "restoreReadFailed": "そのファイルを読み込めませんでした。",
+    "restoreTooLarge": "このファイルは TabStyr のバックアップにしては大きすぎます。",
     "replaceTitle": "すべてのデータを置き換えますか？",
     "replaceBody": "このデバイスに現在保存されているデータを削除し、{days}件の日別記録と{sessions}件のセッション{from}を復元します。この操作は取り消せません。",
     "replaceBodyFrom": "（{date}付けのバックアップから）",

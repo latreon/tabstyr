@@ -189,6 +189,7 @@
     "exportFailed": "Dışa aktarma başarısız",
     "restoreEncryptedPrompt": "Bu yedek şifreli. Devam etmek için parola tümcesini girin.",
     "restoreReadFailed": "Bu dosya okunamadı.",
+    "restoreTooLarge": "Bu dosya bir TabStyr yedeği olamayacak kadar büyük.",
     "replaceTitle": "Tüm veriler değiştirilsin mi?",
     "replaceBody": "Bu, şu anda bu cihazda saklanan verileri siler ve {days} günlük kayıt ile {sessions} oturum{from} geri yükler. Geri alınamaz.",
     "replaceBodyFrom": " ({date} tarihli yedekten)",

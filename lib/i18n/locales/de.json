@@ -189,6 +189,7 @@
     "exportFailed": "Export fehlgeschlagen",
     "restoreEncryptedPrompt": "Diese Sicherung ist verschlüsselt. Gib ihre Passphrase ein, um fortzufahren.",
     "restoreReadFailed": "Diese Datei konnte nicht gelesen werden.",
+    "restoreTooLarge": "Diese Datei ist zu groß für ein TabStyr-Backup.",
     "replaceTitle": "Alle Daten ersetzen?",
     "replaceBody": "Dies löscht die aktuell auf diesem Gerät gespeicherten Daten und stellt {days} Tagesdatensätze und {sessions} Sitzungen{from} wieder her. Dies kann nicht rückgängig gemacht werden.",
     "replaceBodyFrom": " aus der Sicherung vom {date}",

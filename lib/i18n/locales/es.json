@@ -189,6 +189,7 @@
     "exportFailed": "La exportación falló",
     "restoreEncryptedPrompt": "Esta copia de seguridad está cifrada. Introduce su frase de contraseña para continuar.",
     "restoreReadFailed": "No se pudo leer ese archivo.",
+    "restoreTooLarge": "Ese archivo es demasiado grande para ser una copia de TabStyr.",
     "replaceTitle": "¿Reemplazar todos los datos?",
     "replaceBody": "Esto elimina los datos almacenados actualmente en este dispositivo y restaura {days} registros diarios y {sessions} sesiones{from}. Esto no se puede deshacer.",
     "replaceBodyFrom": " de la copia de seguridad con fecha {date}",

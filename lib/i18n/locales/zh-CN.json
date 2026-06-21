@@ -189,6 +189,7 @@
     "exportFailed": "导出失败",
     "restoreEncryptedPrompt": "此备份已加密。请输入其密码短语以继续。",
     "restoreReadFailed": "无法读取该文件。",
+    "restoreTooLarge": "该文件过大，不像是 TabStyr 备份。",
     "replaceTitle": "替换所有数据？",
     "replaceBody": "这将删除当前存储在此设备上的数据，并恢复 {days} 条每日记录和 {sessions} 个会话{from}。此操作无法撤销。",
     "replaceBodyFrom": "（来自日期为 {date} 的备份）",

@@ -3,7 +3,7 @@ import { IDBFactory } from 'fake-indexeddb';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { resetDBConnection } from '@/lib/db/db';
 import * as repo from '@/lib/db/repo';
-import { parseBackup, restoreBackup } from '@/lib/restore';
+import { parseBackup, restoreBackup, MAX_BACKUP_BYTES } from '@/lib/restore';
 import { toJsonBackup } from '@/lib/export';
 import { DEFAULT_SETTINGS } from '@/lib/settings';
 
@@ -79,6 +79,32 @@ describe('parseBackup', () => {
     expect(parseBackup(JSON.stringify({ app: 'tabstyr', exportedAt: iso })).exportedAt).toBe(iso);
   });
 
+  test('drops records with impossible / out-of-range values', () => {
+    const text = JSON.stringify({
+      app: 'tabstyr',
+      dailyStats: [
+        { date: '2026-06-16', domain: 'a.com', seconds: 10, audioSeconds: 0 }, // valid
+        { date: '2026-06-16', domain: 'a.com', seconds: -5, audioSeconds: 0 }, // negative → drop
+        { date: '2026-06-16', domain: 'a.com', seconds: 10, audioSeconds: 99 }, // audio>seconds → drop
+        { date: '2026/06/16', domain: 'a.com', seconds: 10, audioSeconds: 0 }, // bad date format → drop
+        { date: '2026-06-16', domain: 'chrome', seconds: 10, audioSeconds: 0 }, // non-web domain → drop
+      ],
+      sessions: [
+        { domain: 'a.com', url: 'https://a.com', start: 100, end: 200, audio: false }, // valid
+        { domain: 'a.com', url: 'https://a.com', start: 200, end: 100, audio: false }, // end<start → drop
+        { domain: 'a.com', url: 'https://a.com', start: 0, end: 100, audio: false }, // start not >0 → drop
+      ],
+    });
+    const p = parseBackup(text);
+    expect(p.dailyStats).toHaveLength(1);
+    expect(p.sessions).toHaveLength(1);
+  });
+
+  test('rejects an oversized payload before parsing', () => {
+    const huge = 'x'.repeat(MAX_BACKUP_BYTES + 1);
+    expect(() => parseBackup(huge)).toThrow(/too large/i);
+  });
+
   test('does not pollute Object.prototype via __proto__ in the backup JSON', () => {
     parseBackup('{"app":"tabstyr","__proto__":{"polluted":true}}');
     expect(({} as Record<string, unknown>).polluted).toBeUndefined();
@@ -120,5 +146,16 @@ describe('restoreBackup', () => {
     const metas = await repo.getAllTabMeta();
     expect(metas).toHaveLength(1);
     expect(metas[0].key).toBe('k1');
+  });
+
+  test('rolls back and keeps existing data when a write fails mid-restore', async () => {
+    await repo.applyDailyStats([{ date: '2020-01-01', domain: 'old.com', seconds: 50, audioSeconds: 0 }]);
+    // Two sessions sharing an explicit primary key → the second add() throws a
+    // ConstraintError, aborting the single restore transaction. The clears must
+    // roll back with it, leaving the pre-existing data intact.
+    const dup = { domain: 'a.com', url: 'https://a.com', start: 1, end: 2, audio: false, tabKey: '', id: 1 };
+    await expect(repo.restoreAll([dup as never, { ...dup } as never], [], [])).rejects.toBeTruthy();
+    const stats = await repo.getAllDailyStats();
+    expect(stats).toEqual([{ date: '2020-01-01', domain: 'old.com', seconds: 50, audioSeconds: 0 }]);
   });
 });

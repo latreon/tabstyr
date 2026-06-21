@@ -189,6 +189,7 @@
     "exportFailed": "Export failed",
     "restoreEncryptedPrompt": "This backup is encrypted. Enter its passphrase to continue.",
     "restoreReadFailed": "Could not read that file.",
+    "restoreTooLarge": "That file is too large to be a TabStyr backup.",
     "replaceTitle": "Replace all data?",
     "replaceBody": "This deletes the data currently stored on this device and restores {days} daily records and {sessions} sessions{from}. This cannot be undone.",
     "replaceBodyFrom": " from the backup dated {date}",

@@ -11,7 +11,7 @@ import { SUPPORTED_LOCALES, resolveLocale } from '@/lib/i18n';
 import * as repo from '@/lib/db/repo';
 import { dailyStatsToCsv, downloadFile, toJsonBackup } from '@/lib/export';
 import { encryptToEnvelope, isEncryptedEnvelope, decryptFromEnvelope, MIN_PASSPHRASE } from '@/lib/crypto';
-import { parseBackup, restoreBackup, type ParsedBackup } from '@/lib/restore';
+import { parseBackup, restoreBackup, MAX_BACKUP_BYTES, type ParsedBackup } from '@/lib/restore';
 import { dateKey } from '@/lib/time';
 import type { ThemeSetting } from '@/lib/types';
 import SelectBox from '@/components/ui/SelectBox.vue';
@@ -227,6 +227,12 @@ async function onRestoreFile(e: Event) {
   restoreRaw.value = null;
   restorePass.value = '';
   pendingRestore.value = null;
+  // Reject by size before reading — a huge file would freeze the tab in
+  // file.text()/JSON.parse() before any per-record cap could apply.
+  if (file.size > MAX_BACKUP_BYTES) {
+    restoreError.value = t('settings.restoreTooLarge');
+    return;
+  }
   try {
     const text = await file.text();
     if (isEncryptedEnvelope(text)) restoreRaw.value = text; // prompt for passphrase

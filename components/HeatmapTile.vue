@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { WEEK_ORDER, peakHour, type HeatmapData } from '@/lib/heatmap';
 import { formatDuration } from '@/lib/time';
@@ -40,6 +40,34 @@ function hideTip() {
   tooltip.value = null;
 }
 
+// Keyboard access: the grid is a roving-tabindex group — one cell is in the tab
+// order at a time, arrow keys move focus between cells (so a screen-reader /
+// keyboard user can inspect every hour, not just hover with a mouse).
+const activeDay = ref<(typeof WEEK_ORDER)[number]>(WEEK_ORDER[0]);
+const activeHour = ref(0);
+function isActive(day: number, hour: number): boolean {
+  return day === activeDay.value && hour === activeHour.value;
+}
+function moveFocus(e: KeyboardEvent) {
+  const handled = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'];
+  if (!handled.includes(e.key)) return;
+  e.preventDefault();
+  let row = WEEK_ORDER.indexOf(activeDay.value);
+  let h = activeHour.value;
+  if (e.key === 'ArrowLeft') h = Math.max(0, h - 1);
+  else if (e.key === 'ArrowRight') h = Math.min(23, h + 1);
+  else if (e.key === 'ArrowUp') row = Math.max(0, row - 1);
+  else if (e.key === 'ArrowDown') row = Math.min(WEEK_ORDER.length - 1, row + 1);
+  else if (e.key === 'Home') h = 0;
+  else if (e.key === 'End') h = 23;
+  activeDay.value = WEEK_ORDER[row];
+  activeHour.value = h;
+  const grid = e.currentTarget as HTMLElement;
+  void nextTick(() => {
+    grid.querySelector<HTMLElement>(`[data-cell="${activeDay.value}-${activeHour.value}"]`)?.focus();
+  });
+}
+
 const peak = computed(() => peakHour(props.data));
 const peakLabel = computed(() => {
   const p = peak.value;
@@ -76,15 +104,20 @@ const LEGEND = [0, 25, 50, 75, 100];
     <p v-if="data.total === 0" class="label empty">{{ t('common.noActivity') }}</p>
 
     <template v-else>
-      <div class="hm-grid" role="img" :aria-label="t('heatmap.gridAria')">
+      <div class="hm-grid" role="group" :aria-label="t('heatmap.gridAria')" @keydown="moveFocus">
         <template v-for="day in WEEK_ORDER" :key="day">
-          <span class="hm-row-label">{{ weekdays[day] }}</span>
-          <span
+          <span class="hm-row-label" aria-hidden="true">{{ weekdays[day] }}</span>
+          <button
             v-for="h in HOURS"
             :key="`${day}-${h}`"
+            type="button"
             class="hm-cell"
             :style="cellStyle(day, h)"
             :aria-label="cellLabel(day, h)"
+            :tabindex="isActive(day, h) ? 0 : -1"
+            :data-cell="`${day}-${h}`"
+            @focus="showTip($event, day, h)"
+            @blur="hideTip"
             @mouseenter="showTip($event, day, h)"
             @mouseleave="hideTip"
           />
@@ -183,6 +216,12 @@ const LEGEND = [0, 25, 50, 75, 100];
   white-space: nowrap;
 }
 .hm-cell {
+  appearance: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
   aspect-ratio: 1;
   min-height: 12px;
   border-radius: 3px;
@@ -193,6 +232,12 @@ const LEGEND = [0, 25, 50, 75, 100];
   transform: scale(1.35);
   outline: 1px solid var(--accent);
   z-index: 1;
+}
+.hm-cell:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  transform: scale(1.35);
+  z-index: 2;
 }
 .hm-corner {
   height: 1px;

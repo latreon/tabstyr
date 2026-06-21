@@ -189,6 +189,7 @@
     "exportFailed": "Échec de l'exportation",
     "restoreEncryptedPrompt": "Cette sauvegarde est chiffrée. Saisissez sa phrase secrète pour continuer.",
     "restoreReadFailed": "Impossible de lire ce fichier.",
+    "restoreTooLarge": "Ce fichier est trop volumineux pour être une sauvegarde TabStyr.",
     "replaceTitle": "Remplacer toutes les données ?",
     "replaceBody": "Cela supprime les données actuellement stockées sur cet appareil et restaure {days} enregistrements quotidiens et {sessions} sessions{from}. Cette action est irréversible.",
     "replaceBodyFrom": " à partir de la sauvegarde datée du {date}",
