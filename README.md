@@ -11,7 +11,7 @@ breakdowns, and gentle stale-tab nudges. Every byte stays on your device.
 
 [Features](#features) · [Privacy](#privacy) · [Browser support](#browser-support) ·
 [Install](#install) · [How metrics work](#how-the-metrics-work) ·
-[Development](#development)
+[Scope & limitations](#scope--limitations) · [Development](#development)
 
 <br/>
 
@@ -219,6 +219,31 @@ What each number actually means:
 - **Sessions** are split every minute by a heartbeat and capped at 30 minutes, so a
   sleeping/suspended machine can't inflate your totals. (Media playback is exempt from
   the cap so a long video still reports its full watch time.)
+
+## Scope & limitations
+
+Deliberate design choices — listed so the behaviour reads as intended, not as a bug:
+
+- **Bounded crash tail.** Time is checkpointed every minute and flushed on worker
+  suspend. A hard browser crash can lose at most the seconds since the last
+  heartbeat (≤ 1 minute) for the tab in focus; everything older is already saved.
+- **Sleep / lock is capped, not exact.** When the OS sleeps or the screen locks,
+  open non-media sessions are closed and capped at 30 minutes rather than booking
+  the full away time. A multi-hour sleep never shows as multi-hour active time.
+- **Calendar-day tracking only.** Totals bucket by local calendar day; there is no
+  "browser-session" reset mode. Closing every window does **not** erase history.
+- **No content blocking.** TabStyr measures and reports; it does not block sites or
+  enforce focus limits. The Focus % and streak are analytics, not a blocker. (No
+  blocking permissions, content scripts, or network rules are requested.)
+- **Local-dev hosts.** `localhost` and bare IPv4 addresses (e.g. `127.0.0.1`,
+  `192.168.x.y`) are treated as real pages and grouped under **Dev**. IPv6 literals
+  (`[::1]`) are not tracked.
+- **Background audio on idle.** When you step away, background audio stops
+  accruing (it isn't "away-from-keyboard listening time"); a focused, audible
+  media tab keeps counting as watch time.
+- **URLs are reduced.** Stored page identity is scheme + host + path (+ `#/` SPA
+  route); query strings and token fragments are stripped, so secrets never land in
+  storage or exports.
 
 ## Development
 
