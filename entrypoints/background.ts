@@ -254,7 +254,8 @@ export default defineBackground(() => {
     const { notifyState } = await browser.storage.local.get('notifyState');
     const prev = (notifyState as { lastDate: string; ids: number[] }) ?? { lastDate: '', ids: [] };
     // browser.notifications is absent on some platforms (e.g. Safari) — skip gracefully.
-    if (browser.notifications && shouldNotify(stale.map((m) => m.tabId), prev.ids, prev.lastDate, today)) {
+    // The reminder is opt-out via settings.notificationsEnabled.
+    if (settings.notificationsEnabled && browser.notifications && shouldNotify(stale.map((m) => m.tabId), prev.ids, prev.lastDate, today)) {
       await browser.notifications.create('tab-time-stale', {
         type: 'basic',
         iconUrl: browser.runtime.getURL('/icon/128.png'),
@@ -466,6 +467,16 @@ export default defineBackground(() => {
   }));
 
   // --- lifecycle + UI commands ---
+
+  // First install: open the dashboard so the onboarding intro is actually seen.
+  // Without this a new user only sees the toolbar popup and the onboarding card
+  // (which lives on the dashboard) would never surface. Only on 'install', never
+  // on 'update'/'browser_update', so upgrades don't reopen a tab each time.
+  browser.runtime.onInstalled.addListener((details) => {
+    if (details.reason === 'install') {
+      void browser.tabs.create({ url: browser.runtime.getURL('/dashboard.html') });
+    }
+  });
 
   browser.runtime.onStartup.addListener(guard(async () => {
     // Tab IDs reset on browser restart: re-match saved tabMeta to live tabs by URL.

@@ -250,7 +250,13 @@
     "confirmWipeAria": "Confirmer l'effacement de toutes les données",
     "languageAuto": "Automatique",
     "idleHint": "Le suivi se met en pause après ce délai sans activité souris ou clavier. Augmentez-le si vous lisez sans faire défiler.",
-    "backupNote": "Les sauvegardes JSON incluent les titres des onglets ouverts. Chiffrez la sauvegarde si les titres peuvent être sensibles."
+    "backupNote": "Les sauvegardes JSON incluent les titres des onglets ouverts. Chiffrez la sauvegarde si les titres peuvent être sensibles.",
+    "notifications": "Rappels d'onglets inactifs",
+    "notificationsHint": "Une notification par jour lorsque des onglets restent inactifs au-delà du seuil.",
+    "showIntro": "Revoir l'introduction",
+    "introShown": "L'introduction s'affichera sur le tableau de bord",
+    "restoreInvalid": "Ce fichier n'est pas une sauvegarde TabStyr valide.",
+    "restoreWrongPass": "Phrase secrète incorrecte ou fichier corrompu."
   },
   "onboarding": {
     "title": "Bienvenue dans TabStyr",

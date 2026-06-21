@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { dailyStatsToCsv, sessionsToCsv, toJsonBackup } from '@/lib/export';
 import type { DailyStat, Session, Settings } from '@/lib/types';
 
-const SETTINGS: Settings = { staleDays: 3, idleSeconds: 60, audioEnabled: true, theme: 'system', categoryOverrides: {}, categoryRules: [], onboarded: false, language: 'auto' };
+const SETTINGS: Settings = { staleDays: 3, idleSeconds: 60, audioEnabled: true, theme: 'system', categoryOverrides: {}, categoryRules: [], onboarded: false, notificationsEnabled: true, language: 'auto' };
 
 describe('dailyStatsToCsv', () => {
   test('emits a header and one row per stat, sorted by date then domain', () => {

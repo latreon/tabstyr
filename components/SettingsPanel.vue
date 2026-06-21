@@ -40,9 +40,14 @@ const emit = defineEmits<{ changed: [] }>();
 const theme = useTheme();
 
 const staleDays = ref(3);
-const idleSeconds = ref(60);
+const idleSeconds = ref(180);
 const audioEnabled = ref(true);
+const notificationsEnabled = ref(true);
 const themeChoice = ref<'light' | 'dark'>('light');
+// Gate auto-save until the initial values are loaded, so seeding the refs in
+// onMounted doesn't immediately persist defaults over stored settings.
+const loaded = ref(false);
+let saveTimer: ReturnType<typeof setTimeout> | undefined;
 
 const CATEGORY_OPTIONS = computed(() => CATEGORIES.map((c) => ({ value: c, label: t(`categories.${c}`) })));
 const rules = ref<CategoryRule[]>([]);
@@ -67,10 +72,67 @@ onMounted(async () => {
   staleDays.value = s.staleDays;
   idleSeconds.value = s.idleSeconds;
   audioEnabled.value = s.audioEnabled;
+  notificationsEnabled.value = s.notificationsEnabled;
   // If still on the implicit "system" default, show the resolved theme in the picker.
   themeChoice.value = s.theme === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : s.theme;
   rules.value = s.categoryRules;
+  loaded.value = true;
 });
+
+// Keep the picker in sync if the theme is changed elsewhere (header toggle).
+watch(theme.setting, (next) => {
+  themeChoice.value = next === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : next;
+});
+
+// Apply + persist the theme immediately on pick (consistent with language/rules,
+// which also save on change rather than waiting for a button).
+async function setTheme(next: 'light' | 'dark') {
+  themeChoice.value = next;
+  try {
+    await theme.set(next);
+  } catch (e) {
+    console.error('[settings] theme save failed', e);
+    showToast(t('settings.saveFailed'));
+  }
+}
+
+// Auto-save the numeric/toggle preferences. Debounced so rapid stepper clicks
+// collapse into one write + one toast, and one settings-changed broadcast.
+async function persistSettings() {
+  try {
+    await saveSettings({
+      staleDays: staleDays.value,
+      idleSeconds: idleSeconds.value,
+      audioEnabled: audioEnabled.value,
+      notificationsEnabled: notificationsEnabled.value,
+    });
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    showToast(t('settings.saved'));
+  } catch (e) {
+    console.error('[settings] save failed', e);
+    showToast(t('settings.saveFailed'));
+  }
+}
+
+watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled], () => {
+  if (!loaded.value) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(persistSettings, 400);
+});
+
+// Re-show the first-run intro on the dashboard. Clearing `onboarded` makes the
+// dashboard's showOnboarding turn true again; emit('changed') reloads it.
+async function replayOnboarding() {
+  try {
+    await saveSettings({ onboarded: false });
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    emit('changed');
+    showToast(t('settings.introShown'));
+  } catch (e) {
+    console.error('[settings] replay onboarding failed', e);
+    showToast(t('settings.saveFailed'));
+  }
+}
 
 async function addRule() {
   const pattern = newPattern.value.trim().toLowerCase();
@@ -104,24 +166,6 @@ async function removeRule(pattern: string) {
   } catch (e) {
     console.error('[settings] remove rule failed', e);
     showToast(t('settings.ruleRemoveFailed'));
-  }
-}
-
-async function save() {
-  try {
-    staleDays.value = Math.max(1, staleDays.value);
-    idleSeconds.value = Math.max(15, idleSeconds.value);
-    await saveSettings({
-      staleDays: staleDays.value,
-      idleSeconds: idleSeconds.value,
-      audioEnabled: audioEnabled.value,
-    });
-    await theme.set(themeChoice.value);
-    await browser.runtime.sendMessage({ type: 'settings-changed' });
-    showToast(t('settings.saved'));
-  } catch (e) {
-    console.error('[settings] save failed', e);
-    showToast(t('settings.saveFailed'));
   }
 }
 
@@ -215,7 +259,10 @@ function stageParsed(text: string) {
   try {
     pendingRestore.value = parseBackup(text);
   } catch (e) {
-    restoreError.value = (e as Error).message || 'Invalid backup file.';
+    // Map every parse failure to one generic, localized message rather than
+    // surfacing raw library/engine error text to the user.
+    console.error('[settings] parse backup failed', e);
+    restoreError.value = t('settings.restoreInvalid');
   }
 }
 
@@ -255,7 +302,9 @@ async function decryptRestore() {
       restorePass.value = '';
     }
   } catch (e) {
-    restoreError.value = (e as Error).message;
+    // Wrong passphrase or a corrupted/tampered envelope — one generic message.
+    console.error('[settings] decrypt backup failed', e);
+    restoreError.value = t('settings.restoreWrongPass');
   }
 }
 
@@ -273,6 +322,7 @@ onBeforeUnmount(() => {
   restorePass.value = '';
   restoreRaw.value = null;
   clearTimeout(toastTimer);
+  clearTimeout(saveTimer);
 });
 
 async function confirmRestore() {
@@ -354,7 +404,7 @@ async function confirmWipe() {
         :model-value="themeChoice"
         :options="THEME_OPTIONS"
         :label="t('settings.theme')"
-        @update:model-value="themeChoice = $event as 'light' | 'dark'"
+        @update:model-value="setTheme($event as 'light' | 'dark')"
       />
     </div>
     <div class="field">
@@ -370,8 +420,13 @@ async function confirmWipe() {
       <span class="field-label">{{ t('settings.countAudio') }}</span>
       <ToggleSwitch v-model="audioEnabled" :label="t('settings.countAudio')" />
     </div>
+    <div class="field check">
+      <span class="field-label">{{ t('settings.notifications') }}</span>
+      <ToggleSwitch v-model="notificationsEnabled" :label="t('settings.notifications')" />
+    </div>
+    <p class="field-hint">{{ t('settings.notificationsHint') }}</p>
     <div class="actions">
-      <button class="save" @click="save">{{ t('settings.save') }}</button>
+      <button type="button" class="intro-link" @click="replayOnboarding">{{ t('settings.showIntro') }}</button>
       <button class="wipe" @click="showWipeModal = true">{{ t('settings.wipe') }}</button>
     </div>
 
@@ -538,13 +593,15 @@ button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
-.save {
-  background: var(--accent-grad-strong);
-  color: var(--on-accent);
-  transition: filter 150ms ease;
+.intro-link {
+  background: transparent;
+  color: var(--text-3);
+  border: 1px solid var(--border);
+  transition: border-color 150ms ease, color 150ms ease;
 }
-.save:hover {
-  filter: brightness(1.08);
+.intro-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 .wipe {
   background: transparent;

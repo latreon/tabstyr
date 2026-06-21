@@ -250,7 +250,13 @@
     "confirmWipeAria": "Löschen aller Daten bestätigen",
     "languageAuto": "Automatisch",
     "idleHint": "Die Erfassung pausiert nach dieser Zeit ohne Maus- oder Tastatureingabe. Erhöhe den Wert, wenn du ohne Scrollen liest.",
-    "backupNote": "JSON-Backups enthalten die Titel offener Tabs. Verschlüssle das Backup, wenn Titel sensibel sein können."
+    "backupNote": "JSON-Backups enthalten die Titel offener Tabs. Verschlüssle das Backup, wenn Titel sensibel sein können.",
+    "notifications": "Erinnerungen an alte Tabs",
+    "notificationsHint": "Eine tägliche Benachrichtigung, wenn Tabs länger als die Schwelle unberührt bleiben.",
+    "showIntro": "Einführung erneut anzeigen",
+    "introShown": "Einführung wird im Dashboard angezeigt",
+    "restoreInvalid": "Diese Datei ist kein gültiges TabStyr-Backup.",
+    "restoreWrongPass": "Falsche Passphrase oder beschädigte Datei."
   },
   "onboarding": {
     "title": "Willkommen bei TabStyr",

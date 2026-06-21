@@ -250,7 +250,13 @@
     "confirmWipeAria": "Tüm verileri silmeyi onayla",
     "languageAuto": "Otomatik",
     "idleHint": "Fare veya klavye girişi olmadan bu süre geçince izleme duraklatılır. Kaydırmadan okuyorsanız artırın.",
-    "backupNote": "JSON yedekleri açık sekme başlıklarını içerir. Başlıklar hassas olabiliyorsa yedeği şifreleyin."
+    "backupNote": "JSON yedekleri açık sekme başlıklarını içerir. Başlıklar hassas olabiliyorsa yedeği şifreleyin.",
+    "notifications": "Durağan sekme hatırlatıcıları",
+    "notificationsHint": "Sekmeler eşik süresini aşarak dokunulmadan kaldığında günde bir bildirim.",
+    "showIntro": "Tanıtımı tekrar göster",
+    "introShown": "Tanıtım panoda gösterilecek",
+    "restoreInvalid": "Bu dosya geçerli bir TabStyr yedeği değil.",
+    "restoreWrongPass": "Yanlış parola veya bozuk dosya."
   },
   "onboarding": {
     "title": "TabStyr'a hoş geldiniz",

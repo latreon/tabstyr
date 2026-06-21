@@ -46,7 +46,7 @@ export default defineConfig({
       ...(!chromium && manifestVersion === 2
         ? {
             content_security_policy:
-              "script-src 'self'; object-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'",
+              "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'none'; base-uri 'none'; form-action 'none'",
           }
         : {}),
       // Firefox (AMO) requirements:

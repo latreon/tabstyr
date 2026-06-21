@@ -75,6 +75,7 @@ const hideTip = () => (tooltip.value = null);
               v-for="p in points"
               :key="p.key"
               class="bar-col"
+              role="img"
               tabindex="0"
               :aria-label="tipText(p)"
               @mouseenter="showTip($event, p)"

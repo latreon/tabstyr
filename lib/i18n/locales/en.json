@@ -250,7 +250,13 @@
     "confirmWipeAria": "Confirm wipe all data",
     "languageAuto": "Automatic",
     "idleHint": "Tracking pauses after this long without mouse or keyboard input. Raise it if you read without scrolling.",
-    "backupNote": "JSON backups include open-tab titles. Encrypt the backup if titles may be sensitive."
+    "backupNote": "JSON backups include open-tab titles. Encrypt the backup if titles may be sensitive.",
+    "notifications": "Stale-tab reminders",
+    "notificationsHint": "A once-a-day notification when tabs sit untouched past the stale threshold.",
+    "showIntro": "Show intro again",
+    "introShown": "Intro will show on the dashboard",
+    "restoreInvalid": "That file isn't a valid TabStyr backup.",
+    "restoreWrongPass": "Wrong passphrase or corrupted file."
   },
   "onboarding": {
     "title": "Welcome to TabStyr",

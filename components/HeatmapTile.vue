@@ -80,12 +80,21 @@ function seconds(day: number, hour: number): number {
 }
 
 // Perceptual (sqrt) ramp so light activity is still visible; floor non-zero cells.
-function cellStyle(day: number, hour: number): Record<string, string> {
-  const sec = seconds(day, hour);
-  if (!sec) return {};
-  const pct = Math.max(12, Math.round(Math.sqrt(sec / props.data.max) * 100));
-  return { background: `color-mix(in oklab, var(--accent) ${pct}%, transparent)` };
-}
+// Precomputed into a 7×24 lookup so a re-render (locale switch, tooltip, keyboard
+// nav) doesn't re-run the sqrt+string build for all 168 cells — it only recomputes
+// when the underlying data changes.
+const cellStyles = computed(() => {
+  const out: Record<string, string>[][] = [];
+  for (let day = 0; day < 7; day++) {
+    out[day] = [];
+    for (let hour = 0; hour < 24; hour++) {
+      const sec = props.data.grid[day]?.[hour] ?? 0;
+      const pct = sec ? Math.max(12, Math.round(Math.sqrt(sec / props.data.max) * 100)) : 0;
+      out[day][hour] = sec ? { background: `color-mix(in oklab, var(--accent) ${pct}%, transparent)` } : {};
+    }
+  }
+  return out;
+});
 
 function cellLabel(day: number, hour: number): string {
   return `${weekdays.value[day]} ${pad(hour)}:00–${pad(hour + 1)}:00 · ${formatDuration(seconds(day, hour))}`;
@@ -112,7 +121,7 @@ const LEGEND = [0, 25, 50, 75, 100];
             :key="`${day}-${h}`"
             type="button"
             class="hm-cell"
-            :style="cellStyle(day, h)"
+            :style="cellStyles[day][h]"
             :aria-label="cellLabel(day, h)"
             :tabindex="isActive(day, h) ? 0 : -1"
             :data-cell="`${day}-${h}`"

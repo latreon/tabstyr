@@ -250,7 +250,13 @@
     "confirmWipeAria": "Conferma cancellazione di tutti i dati",
     "languageAuto": "Automatico",
     "idleHint": "Il monitoraggio si interrompe dopo questo tempo senza mouse o tastiera. Aumentalo se leggi senza scorrere.",
-    "backupNote": "I backup JSON includono i titoli delle schede aperte. Cifra il backup se i titoli possono essere sensibili."
+    "backupNote": "I backup JSON includono i titoli delle schede aperte. Cifra il backup se i titoli possono essere sensibili.",
+    "notifications": "Promemoria schede inattive",
+    "notificationsHint": "Una notifica al giorno quando le schede restano inutilizzate oltre la soglia.",
+    "showIntro": "Rivedi l'introduzione",
+    "introShown": "L'introduzione apparirà nella dashboard",
+    "restoreInvalid": "Questo file non è un backup TabStyr valido.",
+    "restoreWrongPass": "Passphrase errata o file danneggiato."
   },
   "onboarding": {
     "title": "Benvenuto in TabStyr",

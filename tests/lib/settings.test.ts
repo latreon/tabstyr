@@ -54,6 +54,14 @@ describe('settings', () => {
     expect(await getSettings()).toEqual({ ...DEFAULT_SETTINGS, staleDays: 1, idleSeconds: 600 });
   });
 
+  test('notificationsEnabled round-trips and a non-boolean falls back to the default', async () => {
+    await saveSettings({ notificationsEnabled: false });
+    expect((await getSettings()).notificationsEnabled).toBe(false);
+    invalidateSettings();
+    await fakeBrowser.storage.local.set({ settings: { notificationsEnabled: 'yes' } });
+    expect((await getSettings()).notificationsEnabled).toBe(true); // default
+  });
+
   test('invalid theme value is ignored, default wins', async () => {
     await fakeBrowser.storage.local.set({ settings: { theme: 'neon' } });
     expect((await getSettings()).theme).toBe('system');

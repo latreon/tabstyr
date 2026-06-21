@@ -180,11 +180,24 @@ describe('TrackerEngine boundary safety', () => {
     expect(e.getState().focused?.tabId).toBe(1);
   });
 
-  test('continuous background audio is not capped while it keeps playing', () => {
+  test('continuous background audio counts fully across regular heartbeats', () => {
     const e = new TrackerEngine();
     e.syncAudio([{ tabId: 2, url: 'https://music.com/x' }], T0);
-    const closed = e.checkpoint(T0 + 60 * 60_000); // 1h of continuous playback
-    expect(closed[0].end - closed[0].start).toBe(60 * 60_000); // full hour
+    // The heartbeat fires every minute; an hour of playback accrues as 60 slices.
+    let total = 0;
+    for (let m = 1; m <= 60; m++) {
+      for (const s of e.checkpoint(T0 + m * 60_000)) total += s.end - s.start;
+    }
+    expect(total).toBe(60 * 60_000); // full hour, no clipping of genuine playback
+  });
+
+  test('checkpoint force-caps a media session across a long unobserved gap (sleep)', () => {
+    const e = new TrackerEngine();
+    e.syncAudio([{ tabId: 2, url: 'https://music.com/x' }], T0);
+    // No heartbeat for 4h means the worker was stalled (system slept), not 4h of
+    // real listening — cap it at the 30-minute backstop instead of booking 4h.
+    const closed = e.checkpoint(T0 + 4 * 60 * 60_000);
+    expect(closed[0].end - closed[0].start).toBe(30 * 60_000);
   });
 
   test('lock/sleep caps everything, even media sessions', () => {

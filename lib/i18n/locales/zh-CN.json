@@ -250,7 +250,13 @@
     "confirmWipeAria": "确认清除所有数据",
     "languageAuto": "自动",
     "idleHint": "在此时长内没有鼠标或键盘输入时将暂停计时。如果阅读时不滚动，请调高此值。",
-    "backupNote": "JSON 备份包含打开标签页的标题。如果标题可能涉及隐私，请加密备份。"
+    "backupNote": "JSON 备份包含打开标签页的标题。如果标题可能涉及隐私，请加密备份。",
+    "notifications": "陈旧标签页提醒",
+    "notificationsHint": "当标签页超过陈旧阈值未使用时，每天提醒一次。",
+    "showIntro": "再次显示介绍",
+    "introShown": "介绍将在仪表盘中显示",
+    "restoreInvalid": "该文件不是有效的 TabStyr 备份。",
+    "restoreWrongPass": "密码错误或文件已损坏。"
   },
   "onboarding": {
     "title": "欢迎使用 TabStyr",

@@ -1,5 +1,5 @@
 import { addDays, dateKey, dayLabel, monthLabel } from './time';
-import { categorize, CATEGORY_PRODUCTIVITY, type Category, type CategoryRule } from './categories';
+import { makeCategorizer, CATEGORY_PRODUCTIVITY, type Category, type CategoryRule } from './categories';
 import type { TrendMode } from './trend';
 import type { DailyStat } from './types';
 
@@ -19,10 +19,11 @@ export function dailyFocus(
   rules: readonly CategoryRule[] = [],
 ): Map<string, DayFocus> {
   const byDate = new Map<string, DayFocus>();
+  const categoryOf = makeCategorizer(overrides, rules);
   for (const s of stats) {
     const f =
       byDate.get(s.date) ?? { date: s.date, productive: 0, distracting: 0, neutral: 0, total: 0, focusPct: 0 };
-    f[CATEGORY_PRODUCTIVITY[categorize(s.domain, overrides, rules)]] += s.seconds;
+    f[CATEGORY_PRODUCTIVITY[categoryOf(s.domain)]] += s.seconds;
     f.total += s.seconds;
     byDate.set(s.date, f);
   }

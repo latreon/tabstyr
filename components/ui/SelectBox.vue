@@ -69,6 +69,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
       :id="`${uid}-list`"
       class="menu"
       role="listbox"
+      :aria-label="label"
       :aria-activedescendant="`${uid}-opt-${activeIndex}`"
     >
       <li

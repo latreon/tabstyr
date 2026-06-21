@@ -250,7 +250,13 @@
     "confirmWipeAria": "모든 데이터 지우기 확인",
     "languageAuto": "자동",
     "idleHint": "마우스나 키보드 입력이 이 시간 동안 없으면 추적이 일시 중지됩니다. 스크롤 없이 읽는다면 늘리세요.",
-    "backupNote": "JSON 백업에는 열린 탭의 제목이 포함됩니다. 제목이 민감할 수 있으면 백업을 암호화하세요."
+    "backupNote": "JSON 백업에는 열린 탭의 제목이 포함됩니다. 제목이 민감할 수 있으면 백업을 암호화하세요.",
+    "notifications": "오래된 탭 알림",
+    "notificationsHint": "탭이 기준일을 넘겨 방치되면 하루에 한 번 알림을 보냅니다.",
+    "showIntro": "소개 다시 보기",
+    "introShown": "대시보드에 소개가 표시됩니다",
+    "restoreInvalid": "유효한 TabStyr 백업 파일이 아닙니다.",
+    "restoreWrongPass": "암호가 틀렸거나 파일이 손상되었습니다."
   },
   "onboarding": {
     "title": "TabStyr에 오신 것을 환영합니다",

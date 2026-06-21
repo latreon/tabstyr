@@ -109,16 +109,26 @@ export class TrackerEngine {
   checkpoint(now: number): ClosedSession[] {
     const out: ClosedSession[] = [];
     if (this.focused) {
-      const emitted = this.closed(this.focused, now);
+      const emitted = this.closed(this.focused, now, this.stalled(this.focused, now));
       out.push(...emitted);
       if (emitted.length) this.focused = { ...this.focused, start: now };
     }
     for (const [tabId, open] of this.audio) {
-      const emitted = this.closed(open, now);
+      const emitted = this.closed(open, now, this.stalled(open, now));
       out.push(...emitted);
       if (emitted.length) this.audio.set(tabId, { ...open, start: now });
     }
     return out;
+  }
+
+  // The heartbeat fires ~once a minute. A single slice far longer than that means
+  // the heartbeat didn't fire on schedule — the system slept or the alarm was
+  // heavily throttled, not genuine continuous use. Force-cap even a media session
+  // in that case so a multi-hour nap with a video/audio tab left open can't book
+  // hours of phantom time. Real playback still accrues fully because each on-time
+  // heartbeat emits a ≤1-minute slice (well under this threshold).
+  private stalled(open: OpenSession, now: number): boolean {
+    return now - open.start > MAX_SESSION_MS;
   }
 
   /**
@@ -207,7 +217,9 @@ export class TrackerEngine {
    * `now` is unused but kept for signature symmetry with the other handlers.
    */
   handleTabReplaced(removedTabId: number, addedTabId: number, _now: number): ClosedSession[] {
-    if (this.focused?.tabId === removedTabId) this.focused.tabId = addedTabId;
+    // Replace, don't mutate in place — the rest of the engine treats OpenSession
+    // as immutable (handleUrlChange/checkpoint always build new objects).
+    if (this.focused?.tabId === removedTabId) this.focused = { ...this.focused, tabId: addedTabId };
     const a = this.audio.get(removedTabId);
     if (a) {
       this.audio.delete(removedTabId);

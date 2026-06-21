@@ -18,6 +18,7 @@ export const DEFAULT_SETTINGS: Settings = {
   categoryOverrides: {},
   categoryRules: [],
   onboarded: false,
+  notificationsEnabled: true,
   language: 'auto',
 };
 
@@ -66,6 +67,7 @@ function coerce(raw: unknown): Partial<Settings> {
     ...(overrides && { categoryOverrides: overrides }),
     ...(rules && { categoryRules: rules }),
     ...(typeof r.onboarded === 'boolean' && { onboarded: r.onboarded }),
+    ...(typeof r.notificationsEnabled === 'boolean' && { notificationsEnabled: r.notificationsEnabled }),
     ...(typeof r.language === 'string' && { language: r.language.slice(0, 20) }),
   };
 }

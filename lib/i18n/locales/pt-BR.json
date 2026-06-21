@@ -250,7 +250,13 @@
     "confirmWipeAria": "Confirmar exclusão de todos os dados",
     "languageAuto": "Automático",
     "idleHint": "O rastreamento pausa após esse tempo sem mouse ou teclado. Aumente se você lê sem rolar.",
-    "backupNote": "Os backups JSON incluem os títulos das abas abertas. Criptografe o backup se os títulos puderem ser sensíveis."
+    "backupNote": "Os backups JSON incluem os títulos das abas abertas. Criptografe o backup se os títulos puderem ser sensíveis.",
+    "notifications": "Lembretes de abas inativas",
+    "notificationsHint": "Uma notificação por dia quando há abas sem uso além do limite.",
+    "showIntro": "Ver introdução novamente",
+    "introShown": "A introdução aparecerá no painel",
+    "restoreInvalid": "Esse arquivo não é um backup válido do TabStyr.",
+    "restoreWrongPass": "Senha incorreta ou arquivo corrompido."
   },
   "onboarding": {
     "title": "Bem-vindo ao TabStyr",
