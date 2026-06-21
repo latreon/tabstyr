@@ -2,6 +2,8 @@
   "common": {
     "loading": "Caricamento…",
     "loadError": "Impossibile caricare i dati — ricarica la pagina.",
+    "retry": "Riprova",
+    "storageFull": "Spazio pieno: la nuova attività non viene salvata. Esporta un backup ed elimina i vecchi dati nelle Impostazioni.",
     "today": "Oggi",
     "nothingYet": "Ancora niente.",
     "nothingTracked": "Ancora nulla registrato.",

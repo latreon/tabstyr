@@ -2,6 +2,8 @@
   "common": {
     "loading": "Yükleniyor…",
     "loadError": "Veriler yüklenemedi — sayfayı yeniden yükleyin.",
+    "retry": "Yeniden dene",
+    "storageFull": "Depolama dolu — yeni etkinlik kaydedilmiyor. Yedek dışa aktarın ve Ayarlar'dan eski verileri silin.",
     "today": "Bugün",
     "nothingYet": "Henüz bir şey yok.",
     "nothingTracked": "Henüz hiçbir şey kaydedilmedi.",

@@ -2,9 +2,10 @@ import { browser } from 'wxt/browser';
 import { TrackerEngine } from '@/lib/tracker/engine';
 import { rollup } from '@/lib/tracker/aggregate';
 import { findStale, rematchTabMeta, shouldNotify } from '@/lib/tracker/stale';
-import { staleNotification } from '@/lib/i18n/notify';
+import { staleNotification, storageFullNotification } from '@/lib/i18n/notify';
 import { getSettings } from '@/lib/settings';
 import * as repo from '@/lib/db/repo';
+import { isQuotaError } from '@/lib/db/errors';
 import { addDays, dateKey } from '@/lib/time';
 import { domainOf, isWebDomain } from '@/lib/domain';
 import type { ClosedSession, EngineState, Session } from '@/lib/types';
@@ -102,9 +103,64 @@ export default defineBackground(() => {
     if (closed.length) {
       const sessions = await stampKeys(closed);
       // Sessions + their daily rollup committed atomically (single transaction).
-      await repo.commitSessions(sessions, rollup(sessions));
+      await commitWithRecovery(sessions, rollup(sessions));
     }
     await sessionStore.set({ engineState: eng.getState() });
+  }
+
+  // Commit sessions, recovering from a full disk instead of silently dropping
+  // data. On QuotaExceededError: reclaim space by pruning past-retention rows and
+  // retry once; if it still fails, warn the user (throttled) and leave a flag the
+  // dashboard surfaces. Non-quota errors propagate to the guard() logger unchanged.
+  async function commitWithRecovery(sessions: Session[], deltas: ReturnType<typeof rollup>): Promise<void> {
+    try {
+      await repo.commitSessions(sessions, deltas);
+      await clearStorageWarning();
+    } catch (e) {
+      if (!isQuotaError(e)) throw e;
+      const now = Date.now();
+      try {
+        await repo.pruneBefore(addDays(dateKey(now), -RETENTION_DAYS), now - RETENTION_DAYS * DAY_MS);
+        await repo.commitSessions(sessions, deltas);
+        await clearStorageWarning();
+        return;
+      } catch (retryErr) {
+        if (isQuotaError(retryErr)) await warnStorageFull();
+        throw retryErr;
+      }
+    }
+  }
+
+  // Persistent flag + one notification per day so a full disk is visible to the
+  // user (notification + dashboard banner) without spamming on every write.
+  async function warnStorageFull(): Promise<void> {
+    try {
+      const today = dateKey(Date.now());
+      const { storageWarnDate } = await browser.storage.local.get('storageWarnDate');
+      await browser.storage.local.set({ storageWarning: true });
+      if (storageWarnDate === today) return; // already notified today
+      await browser.storage.local.set({ storageWarnDate: today });
+      if (browser.notifications) {
+        const settings = await getSettings();
+        await browser.notifications.create('tab-time-storage-full', {
+          type: 'basic',
+          iconUrl: browser.runtime.getURL('/icon/128.png'),
+          title: 'TabStyr',
+          message: storageFullNotification(settings.language),
+        });
+      }
+    } catch {
+      /* storage.local itself may be full — nothing more we can do */
+    }
+  }
+
+  async function clearStorageWarning(): Promise<void> {
+    try {
+      const { storageWarning } = await browser.storage.local.get('storageWarning');
+      if (storageWarning) await browser.storage.local.set({ storageWarning: false });
+    } catch {
+      /* ignore */
+    }
   }
 
   async function syncAudioSessions(eng: TrackerEngine, now: number): Promise<ClosedSession[]> {

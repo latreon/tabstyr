@@ -2,6 +2,8 @@
   "common": {
     "loading": "加载中…",
     "loadError": "无法加载数据 — 请重新加载页面。",
+    "retry": "重试",
+    "storageFull": "存储已满 — 新的活动未被保存。请导出备份，然后在设置中清除旧数据。",
     "today": "今天",
     "nothingYet": "暂无内容。",
     "nothingTracked": "尚未记录任何内容。",

@@ -73,8 +73,12 @@ onMounted(async () => {
       </div>
     </header>
     <p v-if="s.loading.value" class="label" role="status" aria-live="polite" aria-busy="true">{{ t('common.loading') }}</p>
-    <p v-else-if="s.loadError.value" class="label" role="alert">{{ t('common.loadError') }}</p>
+    <div v-else-if="s.loadError.value" class="load-error" role="alert">
+      <p class="label">{{ t('common.loadError') }}</p>
+      <button type="button" class="retry-btn" @click="s.load()">{{ t('common.retry') }}</button>
+    </div>
     <template v-else>
+      <p v-if="s.storageWarning.value" class="storage-warn" role="alert">{{ t('common.storageFull') }}</p>
       <OnboardingCard v-if="s.showOnboarding.value" @dismiss="s.dismissOnboarding" />
       <section class="bento" :aria-label="t('dashboard.statsAria')">
       <HeroTile
@@ -173,6 +177,35 @@ onMounted(async () => {
 }
 .privacy-badge:hover { border-color: var(--accent); color: var(--text); }
 .privacy-badge:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.load-error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.retry-btn {
+  height: 32px;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--card-strong);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.retry-btn:hover { border-color: var(--accent); }
+.retry-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.storage-warn {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--warn, #b0552f);
+  background: color-mix(in srgb, var(--warn, #b0552f) 12%, transparent);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+}
 .privacy-badge .shield {
   width: 13px;
   height: 13px;

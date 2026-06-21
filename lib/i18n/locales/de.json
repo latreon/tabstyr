@@ -2,6 +2,8 @@
   "common": {
     "loading": "Wird geladen…",
     "loadError": "Daten konnten nicht geladen werden — Seite neu laden.",
+    "retry": "Erneut versuchen",
+    "storageFull": "Speicher voll – neue Aktivität wird nicht gespeichert. Exportiere ein Backup und lösche alte Daten in den Einstellungen.",
     "today": "Heute",
     "nothingYet": "Noch nichts.",
     "nothingTracked": "Noch nichts erfasst.",

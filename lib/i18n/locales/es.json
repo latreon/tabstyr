@@ -2,6 +2,8 @@
   "common": {
     "loading": "Cargando…",
     "loadError": "No se pudieron cargar los datos: recarga la página.",
+    "retry": "Reintentar",
+    "storageFull": "El almacenamiento está lleno: la actividad nueva no se guarda. Exporta una copia y borra los datos antiguos en Ajustes.",
     "today": "Hoy",
     "nothingYet": "Nada todavía.",
     "nothingTracked": "Nada registrado todavía.",

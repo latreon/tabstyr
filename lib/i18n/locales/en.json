@@ -2,6 +2,8 @@
   "common": {
     "loading": "Loading…",
     "loadError": "Could not load data — reload the page.",
+    "retry": "Retry",
+    "storageFull": "Storage is full — new activity isn't being saved. Export a backup, then clear old data in Settings.",
     "today": "Today",
     "nothingYet": "Nothing yet.",
     "nothingTracked": "Nothing tracked yet.",

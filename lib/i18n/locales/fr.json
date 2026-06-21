@@ -2,6 +2,8 @@
   "common": {
     "loading": "Chargement…",
     "loadError": "Impossible de charger les données — rechargez la page.",
+    "retry": "Réessayer",
+    "storageFull": "Stockage plein – la nouvelle activité n'est pas enregistrée. Exporte une sauvegarde, puis efface les anciennes données dans les Réglages.",
     "today": "Aujourd'hui",
     "nothingYet": "Rien pour l'instant.",
     "nothingTracked": "Rien de suivi pour l'instant.",

@@ -2,6 +2,8 @@
   "common": {
     "loading": "Carregando…",
     "loadError": "Não foi possível carregar os dados — recarregue a página.",
+    "retry": "Tentar novamente",
+    "storageFull": "Armazenamento cheio — a nova atividade não está sendo salva. Exporte um backup e apague dados antigos nas Configurações.",
     "today": "Hoje",
     "nothingYet": "Nada ainda.",
     "nothingTracked": "Nada registrado ainda.",

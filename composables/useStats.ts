@@ -34,6 +34,9 @@ export function useStats() {
   const recentSessions = ref<Session[]>([]); // last 90 days, for per-domain detail
   const loading = ref(true);
   const loadError = ref(false);
+  // Set by the background worker when a write hit the storage quota. Surfaced as a
+  // dashboard banner so a full disk isn't a silent data-loss failure.
+  const storageWarning = ref(false);
 
   const todayKey = ref(dateKey(Date.now()));
 
@@ -152,6 +155,14 @@ export function useStats() {
   async function load(opts: { silent?: boolean } = {}): Promise<void> {
     if (!opts.silent) loading.value = true;
     loadError.value = false;
+    // storage.local is independent of IndexedDB, so read the quota flag even if the
+    // main data load below fails.
+    try {
+      const { storageWarning: warn } = await browser.storage.local.get('storageWarning');
+      storageWarning.value = !!warn;
+    } catch {
+      /* storage.local unavailable — leave the flag as-is */
+    }
     try {
       todayKey.value = dateKey(Date.now());
       const today = todayKey.value;
@@ -205,7 +216,7 @@ export function useStats() {
 
   return {
     stats, activeStats, tabRows, staleTabs, openTabCount, settings, heatmap, recentSessions,
-    loading, loadError, todayKey,
+    loading, loadError, storageWarning, todayKey,
     todaySeconds, todayAudioSeconds, weeklyAvgSeconds, weeklyActiveDays,
     todayByDomain, todayByCategory, productivity, overrides, categoryRules, showOnboarding,
     load, closeTab, snoozeTab, setCategoryOverride, addCategoryRule, removeCategoryRule, dismissOnboarding,

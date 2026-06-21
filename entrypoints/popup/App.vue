@@ -33,7 +33,9 @@ const deltaPct = computed(() => {
 });
 const maxSeconds = computed(() => Math.max(1, ...topDomains.value.map((d) => d.seconds)));
 
-onMounted(async () => {
+async function load() {
+  loading.value = true;
+  loadError.value = false;
   try {
     await locale.load();
     const today = dateKey(Date.now());
@@ -77,7 +79,9 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
-});
+}
+
+onMounted(load);
 
 function openDashboard(hash = '') {
   void browser.tabs.create({ url: browser.runtime.getURL(`/dashboard.html${hash}`) });
@@ -110,7 +114,10 @@ function openPrivacy() {
       <div class="sk sk-row" v-for="i in 3" :key="i" aria-hidden="true" />
     </div>
 
-    <p v-else-if="loadError" class="label error" role="alert">{{ t('popup.loadError') }}</p>
+    <div v-else-if="loadError" class="load-error" role="alert">
+      <p class="label error">{{ t('popup.loadError') }}</p>
+      <button type="button" class="retry-btn" @click="load()">{{ t('common.retry') }}</button>
+    </div>
 
     <template v-else>
       <section class="hero">
@@ -170,6 +177,25 @@ function openPrivacy() {
   gap: 12px;
   overflow: hidden;
 }
+.load-error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.retry-btn {
+  height: 30px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--card-strong);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.retry-btn:hover { border-color: var(--accent); }
+.retry-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .glow {
   position: absolute;
   inset: 0;
