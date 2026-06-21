@@ -1,7 +1,7 @@
 import * as repo from './db/repo';
 import { SCHEMA_VERSION } from './export';
 import { saveSettings } from './settings';
-import { isWebDomain } from './domain';
+import { isWebDomain, pageOf } from './domain';
 import type { DailyStat, Session, Settings, TabMeta } from './types';
 
 export interface ParsedBackup {
@@ -112,10 +112,17 @@ export function parseBackup(text: string): ParsedBackup {
   }
   return {
     dailyStats: Array.isArray(o.dailyStats) ? o.dailyStats.filter(isStat).slice(0, MAX_STATS) : [],
+    // Re-normalize urls on import: a backup from an older build may carry raw
+    // query/fragment values — strip them so restored data also holds no tokens.
     sessions: Array.isArray(o.sessions)
-      ? o.sessions.filter(isSession).slice(0, MAX_SESSIONS).map((s) => ({ ...s, tabKey: s.tabKey ?? '' }))
+      ? o.sessions
+          .filter(isSession)
+          .slice(0, MAX_SESSIONS)
+          .map((s) => ({ ...s, url: pageOf(s.url), tabKey: s.tabKey ?? '' }))
       : [],
-    tabMeta: Array.isArray(o.tabMeta) ? o.tabMeta.filter(isMeta).slice(0, MAX_TABMETA) : [],
+    tabMeta: Array.isArray(o.tabMeta)
+      ? o.tabMeta.filter(isMeta).slice(0, MAX_TABMETA).map((m) => ({ ...m, url: pageOf(m.url) }))
+      : [],
     settings: safeSettings(o.settings),
     exportedAt: isExportedAt(o.exportedAt) ? o.exportedAt : undefined,
   };

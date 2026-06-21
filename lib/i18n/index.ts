@@ -92,6 +92,9 @@ export async function setLocale(code: LocaleCode): Promise<void> {
   await ensureMessages(code);
   g.locale.value = code;
   setDateLocale(code);
+  // Keep <html lang> in sync so assistive tech reads the UI in the right language
+  // (the static index.html ships lang="en").
+  if (typeof document !== 'undefined') document.documentElement.lang = code;
   try {
     localStorage.setItem(CACHE_KEY, code);
   } catch {

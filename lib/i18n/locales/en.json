@@ -11,6 +11,12 @@
     "decrease": "Decrease {label}",
     "increase": "Increase {label}"
   },
+  "datePicker": {
+    "pickDay": "Pick a day",
+    "chooseDate": "Choose a date",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month"
+  },
   "privacy": {
     "title": "Privacy",
     "badge": "0 bytes leave your device",

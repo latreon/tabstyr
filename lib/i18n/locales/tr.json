@@ -11,6 +11,12 @@
     "decrease": "Azalt {label}",
     "increase": "Artır {label}"
   },
+  "datePicker": {
+    "pickDay": "Bir gün seç",
+    "chooseDate": "Bir tarih seç",
+    "prevMonth": "Önceki ay",
+    "nextMonth": "Sonraki ay"
+  },
   "privacy": {
     "title": "Gizlilik",
     "badge": "Cihazınızdan 0 bayt ayrılır",

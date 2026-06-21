@@ -11,6 +11,12 @@
     "decrease": "줄이기 {label}",
     "increase": "늘리기 {label}"
   },
+  "datePicker": {
+    "pickDay": "날짜 선택",
+    "chooseDate": "날짜 선택",
+    "prevMonth": "이전 달",
+    "nextMonth": "다음 달"
+  },
   "privacy": {
     "title": "개인정보 보호",
     "badge": "0바이트만 기기를 떠납니다",

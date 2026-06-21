@@ -11,6 +11,12 @@
     "decrease": "减少 {label}",
     "increase": "增加 {label}"
   },
+  "datePicker": {
+    "pickDay": "选择某天",
+    "chooseDate": "选择日期",
+    "prevMonth": "上个月",
+    "nextMonth": "下个月"
+  },
   "privacy": {
     "title": "隐私",
     "badge": "0 字节离开你的设备",

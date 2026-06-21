@@ -100,6 +100,21 @@ describe('parseBackup', () => {
     expect(p.sessions).toHaveLength(1);
   });
 
+  test('strips query/fragment from imported session and tabMeta urls', () => {
+    const text = JSON.stringify({
+      app: 'tabstyr',
+      sessions: [
+        { domain: 'a.com', url: 'https://a.com/p?token=secret#x', start: 1, end: 2, audio: false },
+      ],
+      tabMeta: [
+        { tabId: 1, key: 'k', url: 'https://a.com/p?token=secret', title: 'A', lastActiveAt: 1, createdAt: 1 },
+      ],
+    });
+    const p = parseBackup(text);
+    expect(p.sessions[0].url).toBe('https://a.com/p');
+    expect(p.tabMeta[0].url).toBe('https://a.com/p');
+  });
+
   test('rejects an oversized payload before parsing', () => {
     const huge = 'x'.repeat(MAX_BACKUP_BYTES + 1);
     expect(() => parseBackup(huge)).toThrow(/too large/i);

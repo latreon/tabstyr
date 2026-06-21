@@ -25,6 +25,22 @@ describe('settings', () => {
     expect(await getSettings()).toEqual({ ...DEFAULT_SETTINGS, staleDays: 7, idleSeconds: 90 });
   });
 
+  test('saveSettings sanitizes the patch before persisting (clamp + drop junk)', async () => {
+    // Cast through unknown to simulate a hostile/invalid patch (e.g. from import).
+    await saveSettings({ idleSeconds: 99999, junkKey: 'x' } as unknown as Parameters<typeof saveSettings>[0]);
+    const stored = (await fakeBrowser.storage.local.get('settings')).settings as Record<string, unknown>;
+    expect(stored.idleSeconds).toBe(600); // clamped at write time, not only read time
+    expect('junkKey' in stored).toBe(false); // unknown key never persisted
+  });
+
+  test('saveSettings caps a huge categoryOverrides object', async () => {
+    const overrides: Record<string, string> = {};
+    for (let i = 0; i < 6000; i++) overrides[`d${i}.com`] = 'Work';
+    await saveSettings({ categoryOverrides: overrides } as Parameters<typeof saveSettings>[0]);
+    const stored = (await fakeBrowser.storage.local.get('settings')).settings as { categoryOverrides: object };
+    expect(Object.keys(stored.categoryOverrides).length).toBeLessThanOrEqual(5000);
+  });
+
   test('malformed stored values are ignored, defaults win', async () => {
     await fakeBrowser.storage.local.set({ settings: { staleDays: 'seven', audioEnabled: false } });
     expect(await getSettings()).toEqual({ ...DEFAULT_SETTINGS, audioEnabled: false });

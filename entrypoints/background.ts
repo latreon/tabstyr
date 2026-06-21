@@ -7,7 +7,7 @@ import { getSettings } from '@/lib/settings';
 import * as repo from '@/lib/db/repo';
 import { isQuotaError } from '@/lib/db/errors';
 import { addDays, dateKey } from '@/lib/time';
-import { domainOf, isWebDomain } from '@/lib/domain';
+import { domainOf, isWebDomain, pageOf } from '@/lib/domain';
 import type { ClosedSession, EngineState, Session } from '@/lib/types';
 
 // Firefox MV2 builds expose browserAction; Chromium MV3 exposes action.
@@ -189,12 +189,27 @@ export default defineBackground(() => {
     await repo.upsertTabMeta({
       tabId: tab.id,
       key: existing?.key ?? crypto.randomUUID(),
-      url: tab.url ?? '',
+      // Normalize: strip query + non-route fragments so tokens/PII never reach
+      // tabMeta (which is included in JSON exports). pageOf keeps scheme+host+path
+      // (+ #/ SPA route) — enough to rematch and display.
+      url: pageOf(tab.url ?? ''),
       title: tab.title ?? '',
       lastActiveAt: now,
       createdAt: existing?.createdAt ?? now,
       snoozedUntil: existing?.snoozedUntil,
     });
+  }
+
+  // True only when `windowId` is the browser's currently focused window. `tab.active`
+  // is per-window (every window has one active tab), so without this a background
+  // window's active tab could steal focus/audio tracking on URL/audio updates.
+  // Platforms without the windows API degrade open (treat as focused) so tracking
+  // still works there.
+  async function isInFocusedWindow(windowId?: number): Promise<boolean> {
+    if (windowId === undefined) return false;
+    if (!browser.windows?.getLastFocused) return true;
+    const win = await browser.windows.getLastFocused().catch(() => null);
+    return !!win && win.focused === true && win.id === windowId;
   }
 
   async function updateBadge(): Promise<void> {
@@ -246,6 +261,13 @@ export default defineBackground(() => {
     const tab = await browser.tabs.get(tabId).catch(() => null);
     if (!tab?.url || tab.incognito) {
       await persist(eng, eng.handleBlur(now));
+      return;
+    }
+    // Activation in a background window must not steal focus from the focused
+    // window. Record the tab's metadata but leave the focused session intact.
+    if (!(await isInFocusedWindow(tab.windowId))) {
+      await touchTab(tabId, now, tab);
+      await persist(eng, []);
       return;
     }
     const closed = eng.handleFocus(tabId, tab.url, now, !!tab.audible);
@@ -301,7 +323,10 @@ export default defineBackground(() => {
     const closed: ClosedSession[] = [];
     if (changeInfo.url) {
       const focusedTabId = eng.getState().focused?.tabId;
-      if (tab.active && focusedTabId !== tabId && isWebDomain(domainOf(changeInfo.url))) {
+      // `tab.active` alone is per-window — require the genuinely focused window so
+      // a background window's active tab can't hijack the focused session.
+      const inFocusedWin = !!tab.active && (await isInFocusedWindow(tab.windowId));
+      if (inFocusedWin && focusedTabId !== tabId && isWebDomain(domainOf(changeInfo.url))) {
         // The active tab navigated from an untracked page (new-tab/internal/redirect)
         // to a real web page. The engine isn't tracking it yet, and no onActivated
         // will fire for an in-tab navigation — so start the session here. Without
@@ -313,7 +338,8 @@ export default defineBackground(() => {
       if (tab.active) await touchTab(tabId, now, tab);
     }
     if (changeInfo.audible !== undefined) {
-      if (tab.active) eng.setFocusedAudible(changeInfo.audible); // focused tab started/stopped media
+      // Only the focused window's active tab is the "focused media" tab.
+      if (tab.active && (await isInFocusedWindow(tab.windowId))) eng.setFocusedAudible(changeInfo.audible);
       closed.push(...(await syncAudioSessions(eng, now)));
     }
     await persist(eng, closed);
@@ -429,7 +455,9 @@ export default defineBackground(() => {
   browser.runtime.onStartup.addListener(guard(async () => {
     // Tab IDs reset on browser restart: re-match saved tabMeta to live tabs by URL.
     const [metas, tabs] = await Promise.all([repo.getAllTabMeta(), browser.tabs.query({})]);
-    const live = tabs.flatMap((t) => (t.id && t.url && !t.incognito ? [{ id: t.id, url: t.url }] : []));
+    // Normalize the live URL the same way touchTab stores it, so the exact-URL
+    // match still hits (stored meta.url is now pageOf-normalized).
+    const live = tabs.flatMap((t) => (t.id && t.url && !t.incognito ? [{ id: t.id, url: pageOf(t.url) }] : []));
     await repo.replaceAllTabMeta(rematchTabMeta(metas, live));
     await updateBadge();
   }));

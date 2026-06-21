@@ -7,7 +7,7 @@ import { getDateLocale } from '@/lib/locale';
 const props = defineProps<{ modelValue: string; min: string; max: string }>();
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>();
 
-const { locale } = useI18n();
+const { t, locale } = useI18n();
 
 // Narrow weekday initials in the active locale, Sunday-first (the grid starts on
 // getDay() === 0). 2023-01-01 was a Sunday. Reactive to a language switch.
@@ -149,7 +149,7 @@ onBeforeUnmount(() => {
       class="trigger"
       :aria-expanded="open"
       aria-haspopup="dialog"
-      aria-label="Pick a day"
+      :aria-label="t('datePicker.pickDay')"
       @click="toggle"
     >
       <svg class="cal-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -159,11 +159,11 @@ onBeforeUnmount(() => {
       <span>{{ triggerLabel }}</span>
     </button>
 
-    <div v-if="open" class="cal" role="dialog" aria-label="Choose a date">
+    <div v-if="open" class="cal" role="dialog" :aria-label="t('datePicker.chooseDate')">
       <div class="cal-head">
-        <button type="button" class="mnav" :disabled="!canPrev" aria-label="Previous month" @click="stepMonth(-1)">‹</button>
+        <button type="button" class="mnav" :disabled="!canPrev" :aria-label="t('datePicker.prevMonth')" @click="stepMonth(-1)">‹</button>
         <span class="cal-title">{{ monthTitle }}</span>
-        <button type="button" class="mnav" :disabled="!canNext" aria-label="Next month" @click="stepMonth(1)">›</button>
+        <button type="button" class="mnav" :disabled="!canNext" :aria-label="t('datePicker.nextMonth')" @click="stepMonth(1)">›</button>
       </div>
       <div class="weekdays" aria-hidden="true">
         <span v-for="(w, i) in WEEKDAYS" :key="i">{{ w }}</span><!-- localized initials -->

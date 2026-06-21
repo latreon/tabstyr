@@ -11,6 +11,12 @@
     "decrease": "Уменьшить {label}",
     "increase": "Увеличить {label}"
   },
+  "datePicker": {
+    "pickDay": "Выбрать день",
+    "chooseDate": "Выбрать дату",
+    "prevMonth": "Предыдущий месяц",
+    "nextMonth": "Следующий месяц"
+  },
   "privacy": {
     "title": "Конфиденциальность",
     "badge": "0 байт покидают ваше устройство",

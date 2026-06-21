@@ -11,6 +11,12 @@
     "decrease": "減らす {label}",
     "increase": "増やす {label}"
   },
+  "datePicker": {
+    "pickDay": "日を選択",
+    "chooseDate": "日付を選択",
+    "prevMonth": "前の月",
+    "nextMonth": "次の月"
+  },
   "privacy": {
     "title": "プライバシー",
     "badge": "デバイスから出るのは0バイト",

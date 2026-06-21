@@ -5,6 +5,8 @@ import type { Settings } from './types';
 // Guardrails so a corrupt or hostile stored value can't bloat memory or break the UI.
 const MAX_RULES = 100;
 const MAX_PATTERN_LEN = 100;
+const MAX_OVERRIDES = 5_000;
+const MAX_DOMAIN_LEN = 253;
 
 export const DEFAULT_SETTINGS: Settings = {
   staleDays: 3,
@@ -24,8 +26,12 @@ const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n
 function sanitizeOverrides(raw: unknown): Record<string, Category> | undefined {
   if (!raw || typeof raw !== 'object') return undefined;
   const out: Record<string, Category> = {};
+  let count = 0;
   for (const [domain, value] of Object.entries(raw as Record<string, unknown>)) {
-    if (typeof domain === 'string' && domain && isCategory(value)) out[domain] = value;
+    if (typeof domain === 'string' && domain && domain.length <= MAX_DOMAIN_LEN && isCategory(value)) {
+      out[domain] = value;
+      if (++count >= MAX_OVERRIDES) break; // cap so a crafted file can't bloat storage
+    }
   }
   return out;
 }
@@ -70,7 +76,10 @@ export async function getSettings(): Promise<Settings> {
 }
 
 export async function saveSettings(patch: Partial<Settings>): Promise<Settings> {
-  const next = { ...(await getSettings()), ...patch };
+  // Sanitize the MERGED result before persisting — never write a raw patch. A
+  // hostile/oversized value (e.g. from an imported backup) is clamped/dropped here
+  // rather than only when read back, so it can't bloat or corrupt stored settings.
+  const next = { ...DEFAULT_SETTINGS, ...coerce({ ...(await getSettings()), ...patch }) };
   await browser.storage.local.set({ settings: next });
   return next;
 }

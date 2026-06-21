@@ -85,6 +85,7 @@ test('tracking accumulates time for a browsed tab', async ({ context, extensionI
   await page.waitForTimeout(2_000);
   const dash = await context.newPage();
   await dash.goto(`chrome-extension://${extensionId}/dashboard.html`);
+  await dismissOnboarding(dash); // onboarding inerts the background, hiding the site list
   await expect(dash.getByText('example.com').first()).toBeVisible({ timeout: 10_000 });
 });
 
