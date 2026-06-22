@@ -89,6 +89,9 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds + d.aud
   height: 8px;
 }
 .time {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   text-align: right;
   font-weight: 600;
   font-size: 12px;
@@ -97,6 +100,6 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds + d.aud
   color: var(--text-3);
   font-style: normal;
   font-weight: 400;
-  margin-left: 6px;
+  margin-top: 2px;
 }
 </style>

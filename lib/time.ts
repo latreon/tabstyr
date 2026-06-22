@@ -1,13 +1,21 @@
 import { getDateLocale } from './locale';
 
 export function formatDuration(seconds: number): string {
-  if (seconds <= 0) return '0m';
-  const m = Math.round(seconds / 60);
-  if (m < 1) return '<1m';
-  if (m < 60) return `${m}m`;
-  const h = Math.floor(m / 60);
+  // Round to whole seconds first so the m/s split is an exact reconstruction of
+  // the (integer-seconds) input — no rounding drift, no "<1m" approximation.
+  const total = Math.max(0, Math.round(seconds));
+  // Under an hour, show exact minutes + seconds ("5m 23s", "45s", "30m").
+  if (total < 3600) {
+    const m = Math.floor(total / 60);
+    const s = total % 60;
+    if (m === 0) return `${s}s`;
+    return s === 0 ? `${m}m` : `${m}m ${s}s`;
+  }
+  // An hour or more: hours + minutes (seconds omitted to stay legible).
+  const totalMin = Math.floor(total / 60);
+  const h = Math.floor(totalMin / 60);
   if (h < 24) {
-    const rem = m % 60;
+    const rem = totalMin % 60;
     return rem === 0 ? `${h}h` : `${h}h ${rem}m`;
   }
   // Roll hours into days so large totals stay legible ("41d 3h", not "987h").
