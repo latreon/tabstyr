@@ -105,7 +105,7 @@ const prodWidth = computed(() => `${props.summary.todayFocusPct}%`);
   display: flex;
   flex-direction: column;
   gap: 3px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-3);
 }
 .pl {
@@ -133,7 +133,7 @@ const prodWidth = computed(() => `${props.summary.todayFocusPct}%`);
 }
 .prod-note {
   margin: 0;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.4;
   color: var(--text-3);
 }

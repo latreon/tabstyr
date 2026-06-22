@@ -124,7 +124,7 @@ function ago(ts: number): string {
   color: var(--text-2);
 }
 .tt-sub {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-3);
 }
 table {

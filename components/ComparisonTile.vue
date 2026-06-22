@@ -119,7 +119,7 @@ const dir = (pct: number | null) => (pct === null ? '' : pct > 0 ? 'up' : pct < 
   color: var(--text-2);
 }
 .sub {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-3);
 }
 .toggle {
