@@ -1,0 +1,168 @@
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import RingLogo from './RingLogo.vue';
+import { FORMSPREE_ENDPOINT, LINKS } from '@/site';
+
+const CATEGORIES = ['Feature idea', 'Improvement', 'Bug report', 'Other'] as const;
+
+const category = ref<(typeof CATEGORIES)[number]>('Feature idea');
+const message = ref('');
+const email = ref('');
+const honeypot = ref(''); // spam trap — real users never fill this
+const state = ref<'idle' | 'sending' | 'done' | 'error'>('idle');
+
+// Until a real Formspree id is pasted in site.ts, disable the form and explain.
+const configured = computed(() => !FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID'));
+const canSend = computed(() => configured.value && message.value.trim().length > 0 && state.value !== 'sending');
+
+async function submit() {
+  if (!canSend.value) return;
+  if (honeypot.value) return; // bot filled the trap — silently drop
+  state.value = 'sending';
+  try {
+    const res = await fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: JSON.stringify({
+        category: category.value,
+        message: message.value.trim(),
+        email: email.value.trim() || undefined,
+        _subject: `TabStyr idea — ${category.value}`,
+      }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    state.value = 'done';
+    message.value = '';
+    email.value = '';
+  } catch {
+    state.value = 'error';
+  }
+}
+</script>
+
+<template>
+  <div class="idea">
+    <div class="orb" aria-hidden="true" />
+
+    <header class="bar">
+      <div class="container bar-inner">
+        <a href="#/" class="brand"><RingLogo :size="24" /> <span>TabStyr</span></a>
+        <a href="#/" class="back">← Back to site</a>
+      </div>
+    </header>
+
+    <main class="container body">
+      <span class="eyebrow">Share an idea</span>
+      <h1 class="title">What should <span class="gradient-text">TabStyr</span> do next?</h1>
+      <p class="lead">
+        Feature requests, rough ideas, papercuts — all welcome. It goes straight to the
+        maker. No account, no tracking.
+      </p>
+
+      <div class="card glass">
+        <!-- Success -->
+        <div v-if="state === 'done'" class="result">
+          <div class="check" aria-hidden="true">✓</div>
+          <h2>Thank you!</h2>
+          <p>Your idea is in. Want to discuss it in the open instead?
+            <a :href="LINKS.discussions" target="_blank" rel="noopener">Join the discussions ↗</a>
+          </p>
+          <button type="button" class="btn btn-secondary" @click="state = 'idle'">Send another</button>
+        </div>
+
+        <!-- Not configured yet -->
+        <p v-else-if="!configured" class="notice">
+          The idea form isn’t connected yet. Paste your Formspree endpoint in
+          <code>landing/src/site.ts</code> (<code>FORMSPREE_ENDPOINT</code>). Meanwhile you can
+          <a :href="LINKS.discussions" target="_blank" rel="noopener">post in Discussions ↗</a>.
+        </p>
+
+        <!-- Form -->
+        <form v-else class="form" @submit.prevent="submit">
+          <label class="field">
+            <span class="label">Type</span>
+            <select v-model="category" class="control">
+              <option v-for="c in CATEGORIES" :key="c" :value="c">{{ c }}</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span class="label">Your idea <span class="req">*</span></span>
+            <textarea
+              v-model="message"
+              class="control"
+              rows="5"
+              required
+              maxlength="2000"
+              placeholder="I'd love it if TabStyr could…"
+            />
+          </label>
+
+          <label class="field">
+            <span class="label">Email <span class="opt">(optional — only if you want a reply)</span></span>
+            <input v-model="email" type="email" class="control" placeholder="you@example.com" autocomplete="email" />
+          </label>
+
+          <!-- honeypot: visually hidden, off-screen; bots fill it, humans don't -->
+          <input v-model="honeypot" class="gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+          <div class="actions">
+            <button type="submit" class="btn btn-primary" :disabled="!canSend">
+              {{ state === 'sending' ? 'Sending…' : 'Send idea' }}
+            </button>
+            <p v-if="state === 'error'" class="err" role="alert">
+              Couldn’t send — try again, or <a :href="LINKS.discussions" target="_blank" rel="noopener">use Discussions ↗</a>.
+            </p>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</template>
+
+<style scoped>
+.idea { position: relative; min-height: 100vh; }
+.orb {
+  position: fixed; top: -180px; left: 50%; transform: translateX(-50%);
+  width: 700px; height: 380px; pointer-events: none; z-index: 0;
+  background: radial-gradient(ellipse, rgba(124, 92, 240, 0.18), transparent 70%); filter: blur(60px);
+}
+.bar { position: relative; z-index: 1; border-bottom: 1px solid var(--border); }
+.bar-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+.brand { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 700; font-size: 18px; }
+.back { font-size: 14px; color: var(--text-2); transition: color 160ms ease; }
+.back:hover { color: var(--text); }
+.body { position: relative; z-index: 1; max-width: 680px; padding-top: 56px; padding-bottom: 96px; }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.title { font-size: clamp(2rem, 1.5rem + 2.6vw, 3rem); font-weight: 700; margin: 12px 0 0; }
+.lead { color: var(--text-2); margin: 16px 0 28px; font-size: 16px; line-height: 1.6; max-width: 540px; }
+.card { padding: 28px; }
+.form { display: flex; flex-direction: column; gap: 18px; }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.label { font-size: 13px; font-weight: 600; color: var(--text-2); }
+.req { color: var(--accent); }
+.opt { color: var(--text-3); font-weight: 400; }
+.control {
+  width: 100%; box-sizing: border-box;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+  color: var(--text); font: inherit; font-size: 15px; padding: 11px 13px;
+  transition: border-color 160ms ease;
+}
+.control:focus { outline: none; border-color: var(--accent); }
+textarea.control { resize: vertical; min-height: 110px; line-height: 1.5; }
+.gotcha { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.err { color: #ff8080; font-size: 14px; margin: 0; }
+.notice { color: var(--text-2); font-size: 15px; line-height: 1.6; margin: 0; }
+.notice code { background: var(--accent-muted); color: var(--accent); padding: 1px 6px; border-radius: 6px; font-size: 13px; }
+.result { text-align: center; padding: 16px 0; }
+.result h2 { font-size: 22px; font-weight: 700; margin: 14px 0 6px; }
+.result p { color: var(--text-2); margin: 0 0 20px; }
+.check {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--accent-muted); color: var(--accent); font-size: 26px; font-weight: 700;
+}
+a { color: var(--accent); }
+</style>

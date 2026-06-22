@@ -11,17 +11,20 @@ import FeedbackSection from '@/components/FeedbackSection.vue';
 import CtaSection from '@/components/CtaSection.vue';
 import SiteFooter from '@/components/SiteFooter.vue';
 import PrivacyPage from '@/components/PrivacyPage.vue';
+import IdeaPage from '@/components/IdeaPage.vue';
 
-// Tiny hash router: '#/privacy' shows the policy page, anything else is the landing.
+// Tiny hash router: '#/privacy' = policy page, '#/ideas' = idea form, else landing.
 const hash = ref(window.location.hash);
 const onHash = () => (hash.value = window.location.hash);
-const isPrivacy = computed(() => hash.value.replace(/^#\/?/, '') === 'privacy');
+const route = computed(() => hash.value.replace(/^#\/?/, ''));
+const isPrivacy = computed(() => route.value === 'privacy');
+const isIdeas = computed(() => route.value === 'ideas');
 
 const { run: runReveal } = useReveal();
 
-watch(isPrivacy, () => {
+// On any route change: jump to top and re-scan scroll-reveal targets.
+watch(hash, () => {
   window.scrollTo(0, 0);
-  // Re-scan for .reveal targets after the landing remounts.
   void nextTick(() => runReveal());
 });
 
@@ -34,6 +37,7 @@ onBeforeUnmount(() => window.removeEventListener('hashchange', onHash));
     <div class="grain" aria-hidden="true" />
 
     <PrivacyPage v-if="isPrivacy" />
+    <IdeaPage v-else-if="isIdeas" />
 
     <template v-else>
       <SiteNav />

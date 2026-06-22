@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import RingLogo from './RingLogo.vue';
-import { LINKS, AUTHOR } from '@/site';
+import { LINKS, AUTHOR, CF_ANALYTICS_TOKEN } from '@/site';
 const year = 2026;
+const analyticsOn = !!CF_ANALYTICS_TOKEN;
 </script>
 
 <template>
@@ -31,12 +32,13 @@ const year = 2026;
           <a :href="LINKS.github" target="_blank" rel="noopener">GitHub</a>
           <a :href="LINKS.issues" target="_blank" rel="noopener">Report a bug</a>
           <a :href="LINKS.discussions" target="_blank" rel="noopener">Discussions</a>
-          <a :href="LINKS.coffee" target="_blank" rel="noopener">Buy me a coffee</a>
+          <a :href="LINKS.coffee" target="_blank" rel="noopener">Support on Ko-fi</a>
         </div>
         <div class="col">
           <span class="head">Legal</span>
           <a :href="LINKS.privacy">Privacy policy</a>
           <span class="muted">MIT licensed</span>
+          <span v-if="analyticsOn" class="muted">Cookieless analytics</span>
         </div>
       </nav>
     </div>

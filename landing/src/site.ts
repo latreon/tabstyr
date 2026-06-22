@@ -10,11 +10,22 @@ export const LINKS = {
   github: 'https://github.com/latreon/tabstyr',
   issues: 'https://github.com/latreon/tabstyr/issues',
   discussions: 'https://github.com/latreon/tabstyr/discussions',
-  coffee: 'https://www.buymeacoffee.com/latreon',
+  coffee: 'https://ko-fi.com/latreon',
 };
 
 // The person behind the project — shown in the footer. Handle only by default.
 export const AUTHOR = { name: 'latreon', url: 'https://github.com/latreon' };
+
+// ── Paste your own values below ──────────────────────────────────────────────
+// Formspree endpoint that receives the in-app "Share an idea" form. Create a
+// form at https://formspree.io → copy its endpoint (https://formspree.io/f/XXXX).
+// Until you paste a real id, the form shows a "not configured yet" notice.
+export const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+
+// Cloudflare Web Analytics beacon token (cookieless, no PII). Create a free site
+// at https://www.cloudflare.com/web-analytics/ for the deployed URL and paste the
+// token. Leave '' to ship with zero analytics — the beacon only loads when set.
+export const CF_ANALYTICS_TOKEN = '';
 
 export const STATS = [
   { value: '0', unit: 'bytes', label: 'leave your device' },

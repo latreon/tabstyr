@@ -8,20 +8,23 @@ const cards = [
     body: 'Something off? Open an issue on GitHub — every report is read.',
     cta: 'Open an issue',
     icon: 'bug',
+    external: true,
   },
   {
-    href: LINKS.discussions,
+    href: '#/ideas',
     title: 'Share an idea',
-    body: 'Want a feature or a new metric? Start a discussion and shape the roadmap.',
-    cta: 'Start a discussion',
+    body: 'Want a feature or a new metric? Tell me right here — no account needed.',
+    cta: 'Share an idea',
     icon: 'spark',
+    external: false,
   },
   {
     href: LINKS.coffee,
     title: 'Support the project',
-    body: 'TabStyr is free and open source. A coffee keeps it caffeinated.',
-    cta: 'Buy me a coffee',
+    body: 'TabStyr is free and open source. A tip on Ko-fi keeps it going.',
+    cta: 'Support on Ko-fi',
     icon: 'heart',
+    external: true,
   },
 ] as const;
 </script>
@@ -44,8 +47,8 @@ const cards = [
           :key="c.title"
           class="card glass reveal"
           :href="c.href"
-          target="_blank"
-          rel="noopener"
+          :target="c.external ? '_blank' : undefined"
+          :rel="c.external ? 'noopener' : undefined"
         >
           <span class="chip" aria-hidden="true">
             <svg v-if="c.icon === 'bug'" viewBox="0 0 24 24"><path d="M9 7a3 3 0 0 1 6 0M5 11h14M6 15h12M12 8v11M8 11v5a4 4 0 0 0 8 0v-5M4 9l2 2M20 9l-2 2M4 18l2-1M20 18l-2-1"/></svg>
