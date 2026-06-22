@@ -27,8 +27,17 @@ const test = base.extend<{ context: BrowserContext; extensionId: string }>({
 });
 
 test('SPA pushState navigations record distinct sub-page sessions', async ({ context, extensionId }) => {
+  // Prime the service worker, then open + focus the tab so the focus-gated tracker
+  // opens a session (Playwright tabs aren't "focused" until brought to front; a
+  // cold-start focus event is dropped).
+  const warm = await context.newPage();
+  await warm.goto(`chrome-extension://${extensionId}/dashboard.html`);
+  await warm.waitForTimeout(400);
+  await warm.close();
   const page = await context.newPage();
   await page.goto('https://example.com/');
+  await page.bringToFront();
+  await page.evaluate(() => window.focus());
   await page.waitForTimeout(1500); // accrue time on "/"
 
   // In-page navigations (no reload) — the webNavigation listener should split.
