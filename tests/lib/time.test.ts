@@ -2,14 +2,26 @@ import { describe, expect, test } from 'vitest';
 import { addDays, dateKey, dayLabel, formatDuration, monthLabel } from '@/lib/time';
 
 describe('formatDuration', () => {
-  test('formats sub-minute as <1m', () => {
-    expect(formatDuration(20)).toBe('<1m');
+  test('formats sub-minute as exact seconds', () => {
+    expect(formatDuration(20)).toBe('20s');
   });
-  test('formats minutes', () => {
+  test('formats minutes + exact seconds under an hour', () => {
+    expect(formatDuration(5 * 60 + 23)).toBe('5m 23s');
+  });
+  test('omits seconds when a whole number of minutes', () => {
     expect(formatDuration(52 * 60)).toBe('52m');
   });
-  test('formats hours and minutes', () => {
+  test('formats hours and minutes (seconds dropped at/over 1h)', () => {
     expect(formatDuration(4 * 3600 + 12 * 60)).toBe('4h 12m');
+    expect(formatDuration(3600 + 23)).toBe('1h'); // 1h 0m 23s → seconds omitted
+  });
+  test('the m/s split exactly reconstructs the input', () => {
+    for (const s of [0, 1, 59, 60, 61, 599, 3599]) {
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      const expected = m === 0 ? `${sec}s` : sec === 0 ? `${m}m` : `${m}m ${sec}s`;
+      expect(formatDuration(s)).toBe(expected);
+    }
   });
 });
 
@@ -26,13 +38,18 @@ describe('addDays', () => {
   });
 });
 
-test('zero and negative input render as 0m', () => {
-  expect(formatDuration(0)).toBe('0m');
-  expect(formatDuration(-30)).toBe('0m');
+test('zero and negative input render as 0s', () => {
+  expect(formatDuration(0)).toBe('0s');
+  expect(formatDuration(-30)).toBe('0s');
 });
-test('rounds to nearest minute at the 30-second boundary', () => {
-  expect(formatDuration(29)).toBe('<1m');
-  expect(formatDuration(30)).toBe('1m');
+test('shows exact seconds, not rounded to a minute', () => {
+  expect(formatDuration(29)).toBe('29s');
+  expect(formatDuration(30)).toBe('30s');
+  expect(formatDuration(90)).toBe('1m 30s');
+});
+test('rounds fractional seconds to the nearest whole second', () => {
+  expect(formatDuration(45.4)).toBe('45s');
+  expect(formatDuration(45.6)).toBe('46s');
 });
 test('suppresses zero minutes on exact hours', () => {
   expect(formatDuration(3600)).toBe('1h');
