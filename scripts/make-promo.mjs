@@ -60,6 +60,9 @@ const assets = [
 ];
 
 for (const a of assets) {
-  await sharp(Buffer.from(svg(a))).png().toFile(resolve(OUT, `${a.name}.png`));
+  // removeAlpha → 24-bit, no alpha channel. The design is fully opaque (a bg rect
+  // covers the canvas), but sharp emits RGBA by default and the Chrome Web Store
+  // rejects any alpha channel on promo tiles. Strip it.
+  await sharp(Buffer.from(svg(a))).removeAlpha().png().toFile(resolve(OUT, `${a.name}.png`));
   console.log(`wrote docs/store/promo/${a.name}.png`);
 }
