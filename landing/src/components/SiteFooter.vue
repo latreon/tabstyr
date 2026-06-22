@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import RingLogo from './RingLogo.vue';
-import { LINKS } from '@/site';
+import { LINKS, AUTHOR } from '@/site';
 const year = 2026;
 </script>
 
@@ -27,6 +27,13 @@ const year = 2026;
           <a :href="LINKS.firefox" target="_blank" rel="noopener">Firefox</a>
         </div>
         <div class="col">
+          <span class="head">Community</span>
+          <a :href="LINKS.github" target="_blank" rel="noopener">GitHub</a>
+          <a :href="LINKS.issues" target="_blank" rel="noopener">Report a bug</a>
+          <a :href="LINKS.discussions" target="_blank" rel="noopener">Discussions</a>
+          <a :href="LINKS.coffee" target="_blank" rel="noopener">Buy me a coffee</a>
+        </div>
+        <div class="col">
           <span class="head">Legal</span>
           <a :href="LINKS.privacy">Privacy policy</a>
           <span class="muted">MIT licensed</span>
@@ -34,7 +41,9 @@ const year = 2026;
       </nav>
     </div>
     <div class="container bottom">
-      <span>© {{ year }} TabStyr</span>
+      <span>© {{ year }} TabStyr · Built by
+        <a class="author" :href="AUTHOR.url" target="_blank" rel="noopener">{{ AUTHOR.name }}</a>
+      </span>
       <span class="badge">0 bytes leave your device</span>
     </div>
   </footer>
@@ -45,7 +54,7 @@ const year = 2026;
 .inner { display: grid; grid-template-columns: 1.4fr 2fr; gap: 40px; }
 .brand { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 700; font-size: 18px; }
 .tag { color: var(--text-3); margin: 14px 0 0; font-size: 14px; max-width: 240px; }
-.cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
 .col { display: flex; flex-direction: column; gap: 10px; }
 .col .head { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); margin-bottom: 4px; }
 .col a { font-size: 14px; color: var(--text-2); transition: color 160ms ease; }
@@ -61,9 +70,11 @@ const year = 2026;
   padding: 6px 12px; border-radius: 999px;
   background: var(--accent-muted); color: var(--accent); font-weight: 600;
 }
+.author { color: var(--text-2); font-weight: 600; transition: color 160ms ease; }
+.author:hover { color: var(--accent); }
 @media (max-width: 760px) {
   .inner { grid-template-columns: 1fr; gap: 32px; }
-  .cols { grid-template-columns: repeat(3, 1fr); }
+  .cols { grid-template-columns: repeat(2, 1fr); }
   .bottom { flex-direction: column; gap: 12px; }
 }
 @media (max-width: 460px) { .cols { grid-template-columns: 1fr 1fr; } }

@@ -21,6 +21,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
         <a href="#showcase">Dashboard</a>
         <a href="#privacy">Privacy</a>
         <a href="#faq">FAQ</a>
+        <a href="#feedback">Feedback</a>
       </nav>
       <a :href="LINKS.chrome" target="_blank" rel="noopener" class="btn btn-primary cta">
         Add to Chrome

@@ -5,7 +5,16 @@ export const LINKS = {
   edge: 'https://microsoftedge.microsoft.com/addons', // ← replace with Edge listing
   firefox: 'https://addons.mozilla.org/firefox/', // ← replace with AMO listing
   privacy: '#/privacy', // in-app privacy page (PrivacyPage.vue)
+  // Community / source. Discussions must be enabled on the repo
+  // (Settings → Features → Discussions) or that link 404s.
+  github: 'https://github.com/latreon/tabstyr',
+  issues: 'https://github.com/latreon/tabstyr/issues',
+  discussions: 'https://github.com/latreon/tabstyr/discussions',
+  coffee: 'https://www.buymeacoffee.com/latreon',
 };
+
+// The person behind the project — shown in the footer. Handle only by default.
+export const AUTHOR = { name: 'latreon', url: 'https://github.com/latreon' };
 
 export const STATS = [
   { value: '0', unit: 'bytes', label: 'leave your device' },

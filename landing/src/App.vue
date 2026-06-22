@@ -7,6 +7,7 @@ import FeatureGrid from '@/components/FeatureGrid.vue';
 import ShowcaseSection from '@/components/ShowcaseSection.vue';
 import PrivacySection from '@/components/PrivacySection.vue';
 import FaqSection from '@/components/FaqSection.vue';
+import FeedbackSection from '@/components/FeedbackSection.vue';
 import CtaSection from '@/components/CtaSection.vue';
 import SiteFooter from '@/components/SiteFooter.vue';
 import PrivacyPage from '@/components/PrivacyPage.vue';
@@ -42,6 +43,7 @@ onBeforeUnmount(() => window.removeEventListener('hashchange', onHash));
         <ShowcaseSection />
         <PrivacySection />
         <FaqSection />
+        <FeedbackSection />
         <CtaSection />
       </main>
       <SiteFooter />
