@@ -4,7 +4,7 @@ import { categorize, groupByCategory, isCategory, CATEGORIES } from '@/lib/categ
 describe('categorize', () => {
   test('maps known domains to their default category', () => {
     expect(categorize('github.com')).toBe('Dev');
-    expect(categorize('gitlab.elnino.tech')).toBe('Dev');
+    expect(categorize('gitlab.example.com')).toBe('Dev');
     expect(categorize('www.youtube.com')).toBe('Media');
     expect(categorize('twitter.com')).toBe('Social');
     expect(categorize('mail.google.com')).toBe('Work');
