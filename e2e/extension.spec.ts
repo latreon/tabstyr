@@ -42,7 +42,30 @@ test('dashboard renders bento tiles', async ({ context, extensionId }) => {
 // doesn't intercept clicks or duplicate text matches.
 async function dismissOnboarding(page: import('@playwright/test').Page) {
   const got = page.getByRole('button', { name: 'Got it' });
-  if (await got.count()) await got.click();
+  if (await got.count()) {
+    await got.click();
+    // Wait for the card (and its backdrop) to leave the DOM so a following click
+    // or visibility check doesn't race the dismissal transition.
+    await got.waitFor({ state: 'detached' }).catch(() => {});
+  }
+}
+
+// Playwright-launched Chromium doesn't treat a programmatically opened tab as the
+// focused window until it's explicitly brought to front, and the focus-gated
+// tracker also needs the service worker already warm (a cold-start focus event is
+// dropped). Prime the SW, then open + focus the page so a session opens — this
+// mirrors a real user clicking the tab.
+async function browseFocused(context: BrowserContext, extensionId: string, url: string) {
+  const warm = await context.newPage();
+  await warm.goto(`chrome-extension://${extensionId}/dashboard.html`);
+  await warm.waitForTimeout(400);
+  await warm.close();
+  const page = await context.newPage();
+  await page.goto(url);
+  await page.bringToFront();
+  await page.evaluate(() => window.focus());
+  await page.waitForTimeout(2_500);
+  return page;
 }
 
 test('dashboard renders all analytics tiles', async ({ context, extensionId }) => {
@@ -63,8 +86,10 @@ test('settings export buttons are present', async ({ context, extensionId }) => 
   const page = await context.newPage();
   await page.goto(`chrome-extension://${extensionId}/dashboard.html`);
   await dismissOnboarding(page); // onboarding inerts the background until dismissed
-  await expect(page.getByRole('button', { name: 'Export JSON' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Export CSV' })).toBeVisible();
+  // SettingsPanel sits deep in the dashboard and mounts after data load; give it
+  // the same headroom the other post-load assertions use.
+  await expect(page.getByRole('button', { name: 'Export JSON' })).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByRole('button', { name: 'Export CSV' })).toBeVisible({ timeout: 10_000 });
 });
 
 test('theme toggle flips data-theme', async ({ context, extensionId }) => {
@@ -80,9 +105,7 @@ test('theme toggle flips data-theme', async ({ context, extensionId }) => {
 });
 
 test('tracking accumulates time for a browsed tab', async ({ context, extensionId }) => {
-  const page = await context.newPage();
-  await page.goto('https://example.com');
-  await page.waitForTimeout(2_000);
+  await browseFocused(context, extensionId, 'https://example.com');
   const dash = await context.newPage();
   await dash.goto(`chrome-extension://${extensionId}/dashboard.html`);
   await dismissOnboarding(dash); // onboarding inerts the background, hiding the site list
@@ -90,9 +113,7 @@ test('tracking accumulates time for a browsed tab', async ({ context, extensionI
 });
 
 test('clicking a tab row focuses that tab', async ({ context, extensionId }) => {
-  const page = await context.newPage();
-  await page.goto('https://example.com');
-  await page.waitForTimeout(2_000);
+  await browseFocused(context, extensionId, 'https://example.com');
   const dash = await context.newPage();
   await dash.goto(`chrome-extension://${extensionId}/dashboard.html`);
   await dismissOnboarding(dash);
