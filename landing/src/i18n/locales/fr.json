@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "TabStyr — Suivi du temps de navigation privé",
-    "description": "Découvrez où passe vraiment votre temps de navigation — temps actif par site, tendances, cartes de chaleur, concentration et rappels d'onglets oubliés. 100% local. 0 bytes ne quittent votre appareil.",
+    "description": "Découvrez où passe vraiment votre temps de navigation — temps actif par site, tendances, cartes de chaleur, concentration et rappels d'onglets oubliés. 100% local. 0 octets ne quittent votre appareil.",
     "ogDescription": "Temps actif par site, tendances, cartes de chaleur, concentration. 100% local — rien ne quitte votre appareil.",
     "privacyTitle": "Politique de confidentialité — TabStyr",
     "privacyDescription": "TabStyr ne collecte rien. Aucun serveur, aucune analyse, aucun compte, aucune requête réseau. Tout reste sur votre appareil.",
@@ -28,10 +28,22 @@
     "micro": "Aucun compte · aucun serveur · aucun suivi · sous licence MIT",
     "previewAlt": "Tableau de bord TabStyr affichant le temps actif du jour, la répartition par catégorie, les tendances et une carte de chaleur d'activité",
     "stats": [
-      { "unit": "bytes", "label": "quittent votre appareil" },
-      { "unit": "days", "label": "d'historique, élagué automatiquement" },
-      { "unit": "languages", "label": "dès l'installation" },
-      { "unit": "%", "label": "local et ouvert par conception" }
+      {
+        "unit": "octets",
+        "label": "quittent votre appareil"
+      },
+      {
+        "unit": "jours",
+        "label": "d'historique, élagué automatiquement"
+      },
+      {
+        "unit": "langues",
+        "label": "dès l'installation"
+      },
+      {
+        "unit": "%",
+        "label": "local et ouvert par conception"
+      }
     ]
   },
   "features": {
@@ -84,14 +96,26 @@
   },
   "privacyBand": {
     "eyebrow": "La confidentialité, non comme une fonctionnalité — mais comme le fondement",
-    "h2Num": "0 bytes",
+    "h2Num": "0 octets",
     "h2Rest": "quittent votre appareil.",
     "lede": "Vos données vivent dans la base de données propre à votre navigateur (IndexedDB), élaguée sur une fenêtre glissante de 90 jours. Vous pouvez les exporter, les restaurer ou les effacer — à tout moment, entièrement hors ligne.",
     "points": [
-      { "k": "Aucun serveur", "v": "Rien n'est téléversé. Il n'existe aucun backend vers lequel envoyer des données." },
-      { "k": "Aucun compte", "v": "Installez et c'est parti. Aucune inscription, aucun e-mail, aucun profil." },
-      { "k": "Aucun traceur", "v": "Aucune analyse, aucune publicité, aucun script tiers." },
-      { "k": "Aucune lecture de page", "v": "Uniquement les métadonnées des onglets (URL/titre) issues des API standard du navigateur." }
+      {
+        "k": "Aucun serveur",
+        "v": "Rien n'est téléversé. Il n'existe aucun backend vers lequel envoyer des données."
+      },
+      {
+        "k": "Aucun compte",
+        "v": "Installez et c'est parti. Aucune inscription, aucun e-mail, aucun profil."
+      },
+      {
+        "k": "Aucun traceur",
+        "v": "Aucune analyse, aucune publicité, aucun script tiers."
+      },
+      {
+        "k": "Aucune lecture de page",
+        "v": "Uniquement les métadonnées des onglets (URL/titre) issues des API standard du navigateur."
+      }
     ],
     "policyLink": "Lire la politique de confidentialité complète →"
   },
@@ -159,23 +183,35 @@
     "shareIdea": "Partager une idée",
     "coffee": "Offrez-moi un café",
     "builtBy": "Créé par",
-    "badge": "0 bytes leave your device"
+    "badge": "0 octet ne quitte votre appareil"
   },
   "privacyPage": {
     "back": "← Retour au site",
     "backCta": "← Retour à TabStyr",
     "eyebrow": "Politique de confidentialité",
-    "titleNum": "0 bytes",
+    "titleNum": "0 octets",
     "titleRest": "quittent votre appareil.",
     "updated": "Dernière mise à jour : 2026-06-12",
     "leadStrong": "TabStyr ne collecte, ne transmet ni ne partage aucune donnée.",
     "leadRest": "Tout ce qu'il enregistre reste sur votre appareil. Il n'y a aucun serveur, aucune analyse, aucun compte et aucune requête réseau d'aucune sorte.",
     "storesTitle": "Ce qu'il stocke (localement, dans l'IndexedDB de votre navigateur)",
     "stores": [
-      { "label": "Enregistrements de session", "body": "heures de début/fin, le domaine de la page et si l'onglet a diffusé de l'audio." },
-      { "label": "Totaux quotidiens par domaine", "body": "secondes par site par jour." },
-      { "label": "Métadonnées des onglets ouverts", "body": "titre, URL, heure de dernière activité, et un identifiant local aléatoire utilisé pour attribuer le temps." },
-      { "label": "Paramètres", "body": "seuil d'inactivité, délai d'inactivité, thème, comptage de l'audio, règles de catégorie." }
+      {
+        "label": "Enregistrements de session",
+        "body": "heures de début/fin, le domaine de la page et si l'onglet a diffusé de l'audio."
+      },
+      {
+        "label": "Totaux quotidiens par domaine",
+        "body": "secondes par site par jour."
+      },
+      {
+        "label": "Métadonnées des onglets ouverts",
+        "body": "titre, URL, heure de dernière activité, et un identifiant local aléatoire utilisé pour attribuer le temps."
+      },
+      {
+        "label": "Paramètres",
+        "body": "seuil d'inactivité, délai d'inactivité, thème, comptage de l'audio, règles de catégorie."
+      }
     ],
     "retention": "Les données sont conservées sur une fenêtre glissante de 90 jours, puis élaguées automatiquement.",
     "notTitle": "Ce qu'il ne fait PAS",
@@ -188,12 +224,30 @@
     "permCol": "Autorisation",
     "purposeCol": "Objectif",
     "perms": [
-      { "perm": "tabs", "why": "Voir l'URL/titre de l'onglet actif pour attribuer le temps au bon site." },
-      { "perm": "storage", "why": "Enregistrer vos statistiques et paramètres localement." },
-      { "perm": "idle", "why": "Mettre le suivi en pause lorsque vous vous éloignez pour garder des totaux exacts." },
-      { "perm": "alarms", "why": "Points de contrôle périodiques et tâche de maintenance quotidienne." },
-      { "perm": "notifications", "why": "Rappel facultatif d'onglet oublié, une fois par jour au maximum." },
-      { "perm": "favicon (Chromium)", "why": "Afficher les icônes des sites dans les listes." }
+      {
+        "perm": "tabs",
+        "why": "Voir l'URL/titre de l'onglet actif pour attribuer le temps au bon site."
+      },
+      {
+        "perm": "storage",
+        "why": "Enregistrer vos statistiques et paramètres localement."
+      },
+      {
+        "perm": "idle",
+        "why": "Mettre le suivi en pause lorsque vous vous éloignez pour garder des totaux exacts."
+      },
+      {
+        "perm": "alarms",
+        "why": "Points de contrôle périodiques et tâche de maintenance quotidienne."
+      },
+      {
+        "perm": "notifications",
+        "why": "Rappel facultatif d'onglet oublié, une fois par jour au maximum."
+      },
+      {
+        "perm": "favicon (Chromium)",
+        "why": "Afficher les icônes des sites dans les listes."
+      }
     ],
     "noHost": "Aucune autorisation d'hôte n'est demandée — l'extension ne peut pas accéder au contenu des pages que vous visitez.",
     "controlTitle": "Votre contrôle",
@@ -223,6 +277,11 @@
     "send": "Envoyer l'idée",
     "sending": "Envoi…",
     "error": "Échec de l'envoi — veuillez réessayer dans un instant.",
-    "categories": ["Idée de fonctionnalité", "Amélioration", "Rapport de bug", "Autre"]
+    "categories": [
+      "Idée de fonctionnalité",
+      "Amélioration",
+      "Rapport de bug",
+      "Autre"
+    ]
   }
 }

@@ -28,10 +28,22 @@
     "micro": "Sem conta · sem servidores · sem rastreamento · licença MIT",
     "previewAlt": "Painel do TabStyr exibindo o tempo ativo de hoje, divisão por categoria, tendências e um mapa de calor de atividade",
     "stats": [
-      { "unit": "bytes", "label": "saem do seu dispositivo" },
-      { "unit": "dias", "label": "de histórico, podados automaticamente" },
-      { "unit": "idiomas", "label": "prontos para usar" },
-      { "unit": "%", "label": "local e aberto por concepção" }
+      {
+        "unit": "bytes",
+        "label": "saem do seu dispositivo"
+      },
+      {
+        "unit": "dias",
+        "label": "de histórico, podados automaticamente"
+      },
+      {
+        "unit": "idiomas",
+        "label": "prontos para usar"
+      },
+      {
+        "unit": "%",
+        "label": "local e aberto por concepção"
+      }
     ]
   },
   "features": {
@@ -88,10 +100,22 @@
     "h2Rest": "saem do seu dispositivo.",
     "lede": "Seus dados vivem no próprio banco de dados do seu navegador (IndexedDB), podados para uma janela contínua de 90 dias. Você pode exportá-los, restaurá-los ou apagá-los — a qualquer momento, tudo offline.",
     "points": [
-      { "k": "Sem servidores", "v": "Nada é enviado. Não existe um backend para receber dados." },
-      { "k": "Sem contas", "v": "Instale e use. Sem cadastro, sem e-mail, sem perfil." },
-      { "k": "Sem rastreadores", "v": "Sem análises, sem anúncios, sem scripts de terceiros." },
-      { "k": "Sem leitura de páginas", "v": "Apenas metadados de abas (URL/título) das APIs padrão do navegador." }
+      {
+        "k": "Sem servidores",
+        "v": "Nada é enviado. Não existe um backend para receber dados."
+      },
+      {
+        "k": "Sem contas",
+        "v": "Instale e use. Sem cadastro, sem e-mail, sem perfil."
+      },
+      {
+        "k": "Sem rastreadores",
+        "v": "Sem análises, sem anúncios, sem scripts de terceiros."
+      },
+      {
+        "k": "Sem leitura de páginas",
+        "v": "Apenas metadados de abas (URL/título) das APIs padrão do navegador."
+      }
     ],
     "policyLink": "Leia a política de privacidade completa →"
   },
@@ -172,10 +196,22 @@
     "leadRest": "Tudo o que ele registra permanece no seu dispositivo. Não há servidores, nem análises, nem contas, nem requisições de rede de qualquer tipo.",
     "storesTitle": "O que ele armazena (localmente, no IndexedDB do seu navegador)",
     "stores": [
-      { "label": "Registros de sessão", "body": "horários de início/fim, o domínio da página e se a aba reproduziu áudio." },
-      { "label": "Totais diários por domínio", "body": "segundos por site por dia." },
-      { "label": "Metadados de abas abertas", "body": "título, URL, horário da última atividade e um id local aleatório usado para atribuir o tempo." },
-      { "label": "Configurações", "body": "limite de inatividade, tempo limite ocioso, tema, contagem de áudio, regras de categoria." }
+      {
+        "label": "Registros de sessão",
+        "body": "horários de início/fim, o domínio da página e se a aba reproduziu áudio."
+      },
+      {
+        "label": "Totais diários por domínio",
+        "body": "segundos por site por dia."
+      },
+      {
+        "label": "Metadados de abas abertas",
+        "body": "título, URL, horário da última atividade e um id local aleatório usado para atribuir o tempo."
+      },
+      {
+        "label": "Configurações",
+        "body": "limite de inatividade, tempo limite ocioso, tema, contagem de áudio, regras de categoria."
+      }
     ],
     "retention": "Os dados são mantidos por uma janela contínua de 90 dias e, em seguida, podados automaticamente.",
     "notTitle": "O que ele NÃO faz",
@@ -188,12 +224,30 @@
     "permCol": "Permissão",
     "purposeCol": "Finalidade",
     "perms": [
-      { "perm": "tabs", "why": "Ver a URL/título da aba ativa para atribuir o tempo ao site correto." },
-      { "perm": "storage", "why": "Salvar suas estatísticas e configurações localmente." },
-      { "perm": "idle", "why": "Pausar o monitoramento quando você se afasta para que os totais permaneçam precisos." },
-      { "perm": "alarms", "why": "Checkpoints periódicos e a tarefa de manutenção diária." },
-      { "perm": "notifications", "why": "Lembrete opcional de abas esquecidas, no máximo uma vez por dia." },
-      { "perm": "favicon (Chromium)", "why": "Exibir ícones dos sites nas listas." }
+      {
+        "perm": "tabs",
+        "why": "Ver a URL/título da aba ativa para atribuir o tempo ao site correto."
+      },
+      {
+        "perm": "storage",
+        "why": "Salvar suas estatísticas e configurações localmente."
+      },
+      {
+        "perm": "idle",
+        "why": "Pausar o monitoramento quando você se afasta para que os totais permaneçam precisos."
+      },
+      {
+        "perm": "alarms",
+        "why": "Checkpoints periódicos e a tarefa de manutenção diária."
+      },
+      {
+        "perm": "notifications",
+        "why": "Lembrete opcional de abas esquecidas, no máximo uma vez por dia."
+      },
+      {
+        "perm": "favicon (Chromium)",
+        "why": "Exibir ícones dos sites nas listas."
+      }
     ],
     "noHost": "Nenhuma permissão de host é solicitada — a extensão não consegue acessar o conteúdo das páginas que você visita.",
     "controlTitle": "Seu controle",
@@ -223,6 +277,11 @@
     "send": "Enviar ideia",
     "sending": "Enviando…",
     "error": "Não foi possível enviar — tente novamente em instantes.",
-    "categories": ["Ideia de recurso", "Melhoria", "Relato de bug", "Outro"]
+    "categories": [
+      "Ideia de recurso",
+      "Melhoria",
+      "Relato de bug",
+      "Outro"
+    ]
   }
 }

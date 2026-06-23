@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "TabStyr — Gizli tarayıcı zaman takibi",
-    "description": "Tarayıcı zamanınızın gerçekte nereye gittiğini görün — site başına aktif süre, eğilimler, ısı haritaları, odak ve eskimiş sekme uyarıları. %100 yerel. Cihazınızdan 0 bytes ayrılmaz.",
+    "description": "Tarayıcı zamanınızın gerçekte nereye gittiğini görün — site başına aktif süre, eğilimler, ısı haritaları, odak ve eskimiş sekme uyarıları. %100 yerel. Cihazınızdan 0 bayt ayrılmaz.",
     "ogDescription": "Site başına aktif süre, eğilimler, ısı haritaları, odak. %100 yerel — cihazınızdan hiçbir şey ayrılmaz.",
     "privacyTitle": "Gizlilik politikası — TabStyr",
     "privacyDescription": "TabStyr hiçbir şey toplamaz. Sunucu yok, analiz yok, hesap yok, ağ isteği yok. Her şey cihazınızda kalır.",
@@ -28,10 +28,22 @@
     "micro": "Hesap yok · sunucu yok · takip yok · MIT lisanslı",
     "previewAlt": "TabStyr panelinin bugünkü aktif süreyi, kategori dağılımını, eğilimleri ve bir aktivite ısı haritasını gösterdiği ekran",
     "stats": [
-      { "unit": "bytes", "label": "cihazınızdan ayrılır" },
-      { "unit": "gün", "label": "geçmiş, otomatik budanır" },
-      { "unit": "dil", "label": "kutudan çıktığı gibi" },
-      { "unit": "%", "label": "yerel ve tasarımı gereği açık" }
+      {
+        "unit": "bayt",
+        "label": "cihazınızdan ayrılır"
+      },
+      {
+        "unit": "gün",
+        "label": "geçmiş, otomatik budanır"
+      },
+      {
+        "unit": "dil",
+        "label": "kutudan çıktığı gibi"
+      },
+      {
+        "unit": "%",
+        "label": "yerel ve tasarımı gereği açık"
+      }
     ]
   },
   "features": {
@@ -84,14 +96,26 @@
   },
   "privacyBand": {
     "eyebrow": "Gizlilik, bir özellik olarak değil — temel olarak",
-    "h2Num": "0 bytes",
+    "h2Num": "0 bayt",
     "h2Rest": "cihazınızdan ayrılır.",
     "lede": "Verileriniz tarayıcınızın kendi veritabanında (IndexedDB) bulunur ve sürekli kayan 90 günlük bir pencereye budanır. Dışa aktarabilir, geri yükleyebilir veya silebilirsiniz — istediğiniz zaman, tamamen çevrimdışı.",
     "points": [
-      { "k": "Sunucu yok", "v": "Hiçbir şey yüklenmez. Veri gönderilecek bir arka uç yoktur." },
-      { "k": "Hesap yok", "v": "Kurun ve kullanın. Kayıt yok, e-posta yok, profil yok." },
-      { "k": "İzleyici yok", "v": "Analiz yok, reklam yok, üçüncü taraf betiği yok." },
-      { "k": "Sayfa okuma yok", "v": "Yalnızca standart tarayıcı API'lerinden gelen sekme meta verileri (URL/başlık)." }
+      {
+        "k": "Sunucu yok",
+        "v": "Hiçbir şey yüklenmez. Veri gönderilecek bir arka uç yoktur."
+      },
+      {
+        "k": "Hesap yok",
+        "v": "Kurun ve kullanın. Kayıt yok, e-posta yok, profil yok."
+      },
+      {
+        "k": "İzleyici yok",
+        "v": "Analiz yok, reklam yok, üçüncü taraf betiği yok."
+      },
+      {
+        "k": "Sayfa okuma yok",
+        "v": "Yalnızca standart tarayıcı API'lerinden gelen sekme meta verileri (URL/başlık)."
+      }
     ],
     "policyLink": "Tam gizlilik politikasını okuyun →"
   },
@@ -159,23 +183,35 @@
     "shareIdea": "Bir fikir paylaşın",
     "coffee": "Bana bir kahve ısmarla",
     "builtBy": "Geliştiren",
-    "badge": "Cihazınızdan 0 bytes ayrılır"
+    "badge": "Cihazınızdan 0 bayt ayrılır"
   },
   "privacyPage": {
     "back": "← Siteye dön",
     "backCta": "← TabStyr'a dön",
     "eyebrow": "Gizlilik politikası",
-    "titleNum": "0 bytes",
+    "titleNum": "0 bayt",
     "titleRest": "cihazınızdan ayrılır.",
     "updated": "Son güncelleme: 2026-06-12",
     "leadStrong": "TabStyr hiçbir veri toplamaz, iletmez veya paylaşmaz.",
     "leadRest": "Kaydettiği her şey cihazınızda kalır. Sunucu yok, analiz yok, hesap yok ve hiçbir türden ağ isteği yok.",
     "storesTitle": "Neyi saklar (yerel olarak, tarayıcınızın IndexedDB'sinde)",
     "stores": [
-      { "label": "Oturum kayıtları", "body": "başlangıç/bitiş zamanları, sayfanın etki alanı ve sekmenin ses çalıp çalmadığı." },
-      { "label": "Günlük etki alanı başına toplamlar", "body": "gün başına site başına saniye." },
-      { "label": "Açık sekme meta verileri", "body": "başlık, URL, son aktif olma zamanı ve süreyi ilişkilendirmek için kullanılan rastgele bir yerel kimlik." },
-      { "label": "Ayarlar", "body": "eskime eşiği, boşta kalma zaman aşımı, tema, ses sayımı, kategori kuralları." }
+      {
+        "label": "Oturum kayıtları",
+        "body": "başlangıç/bitiş zamanları, sayfanın etki alanı ve sekmenin ses çalıp çalmadığı."
+      },
+      {
+        "label": "Günlük etki alanı başına toplamlar",
+        "body": "gün başına site başına saniye."
+      },
+      {
+        "label": "Açık sekme meta verileri",
+        "body": "başlık, URL, son aktif olma zamanı ve süreyi ilişkilendirmek için kullanılan rastgele bir yerel kimlik."
+      },
+      {
+        "label": "Ayarlar",
+        "body": "eskime eşiği, boşta kalma zaman aşımı, tema, ses sayımı, kategori kuralları."
+      }
     ],
     "retention": "Veriler sürekli kayan 90 günlük bir pencerede tutulur, ardından otomatik olarak budanır.",
     "notTitle": "Neyi YAPMAZ",
@@ -188,12 +224,30 @@
     "permCol": "İzin",
     "purposeCol": "Amaç",
     "perms": [
-      { "perm": "tabs", "why": "Süreyi doğru siteye ilişkilendirmek için aktif sekmenin URL/başlığını görme." },
-      { "perm": "storage", "why": "İstatistiklerinizi ve ayarlarınızı yerel olarak kaydetme." },
-      { "perm": "idle", "why": "Uzaklaştığınızda takibi duraklatarak toplamların doğru kalmasını sağlama." },
-      { "perm": "alarms", "why": "Periyodik kontrol noktaları ve günde bir kez yapılan bakım görevi." },
-      { "perm": "notifications", "why": "İsteğe bağlı, günde en fazla bir kez eskimiş sekme hatırlatması." },
-      { "perm": "favicon (Chromium)", "why": "Listelerde site simgelerini gösterme." }
+      {
+        "perm": "tabs",
+        "why": "Süreyi doğru siteye ilişkilendirmek için aktif sekmenin URL/başlığını görme."
+      },
+      {
+        "perm": "storage",
+        "why": "İstatistiklerinizi ve ayarlarınızı yerel olarak kaydetme."
+      },
+      {
+        "perm": "idle",
+        "why": "Uzaklaştığınızda takibi duraklatarak toplamların doğru kalmasını sağlama."
+      },
+      {
+        "perm": "alarms",
+        "why": "Periyodik kontrol noktaları ve günde bir kez yapılan bakım görevi."
+      },
+      {
+        "perm": "notifications",
+        "why": "İsteğe bağlı, günde en fazla bir kez eskimiş sekme hatırlatması."
+      },
+      {
+        "perm": "favicon (Chromium)",
+        "why": "Listelerde site simgelerini gösterme."
+      }
     ],
     "noHost": "Hiçbir ana bilgisayar izni istenmez — uzantı ziyaret ettiğiniz sayfaların içeriğine erişemez.",
     "controlTitle": "Sizin kontrolünüz",
@@ -223,6 +277,11 @@
     "send": "Fikri gönder",
     "sending": "Gönderiliyor…",
     "error": "Gönderilemedi — lütfen birazdan tekrar deneyin.",
-    "categories": ["Özellik fikri", "İyileştirme", "Hata bildirimi", "Diğer"]
+    "categories": [
+      "Özellik fikri",
+      "İyileştirme",
+      "Hata bildirimi",
+      "Diğer"
+    ]
   }
 }

@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "TabStyr — Private Zeiterfassung im Browser",
-    "description": "Sieh, wohin deine Browser-Zeit wirklich fließt — aktive Zeit pro Seite, Trends, Heatmaps, Fokus und sanfte Hinweise auf liegengebliebene Tabs. 100 % lokal. 0 bytes verlassen dein Gerät.",
+    "description": "Sieh, wohin deine Browser-Zeit wirklich fließt — aktive Zeit pro Seite, Trends, Heatmaps, Fokus und sanfte Hinweise auf liegengebliebene Tabs. 100 % lokal. 0 Bytes verlassen dein Gerät.",
     "ogDescription": "Aktive Zeit pro Seite, Trends, Heatmaps, Fokus. 100 % lokal — nichts verlässt dein Gerät.",
     "privacyTitle": "Datenschutzerklärung — TabStyr",
     "privacyDescription": "TabStyr sammelt nichts. Keine Server, kein Tracking, keine Konten, keine Netzwerkanfragen. Alles bleibt auf deinem Gerät.",
@@ -28,10 +28,22 @@
     "micro": "Kein Konto · keine Server · kein Tracking · MIT-lizenziert",
     "previewAlt": "TabStyr-Dashboard mit der heutigen aktiven Zeit, Kategorienaufteilung, Trends und einer Aktivitäts-Heatmap",
     "stats": [
-      { "unit": "bytes", "label": "verlassen dein Gerät" },
-      { "unit": "days", "label": "Verlauf, automatisch bereinigt" },
-      { "unit": "languages", "label": "von Haus aus" },
-      { "unit": "%", "label": "lokal & offen von Grund auf" }
+      {
+        "unit": "Bytes",
+        "label": "verlassen dein Gerät"
+      },
+      {
+        "unit": "Tage",
+        "label": "Verlauf, automatisch bereinigt"
+      },
+      {
+        "unit": "Sprachen",
+        "label": "von Haus aus"
+      },
+      {
+        "unit": "%",
+        "label": "lokal & offen von Grund auf"
+      }
     ]
   },
   "features": {
@@ -84,14 +96,26 @@
   },
   "privacyBand": {
     "eyebrow": "Datenschutz, nicht als Funktion — als Fundament",
-    "h2Num": "0 bytes",
+    "h2Num": "0 Bytes",
     "h2Rest": "verlassen dein Gerät.",
     "lede": "Deine Daten leben in der eigenen Datenbank deines Browsers (IndexedDB), bereinigt auf ein rollierendes 90-Tage-Fenster. Du kannst sie exportieren, wiederherstellen oder löschen — jederzeit, komplett offline.",
     "points": [
-      { "k": "Keine Server", "v": "Es wird nichts hochgeladen. Es gibt kein Backend, an das Daten gesendet werden." },
-      { "k": "Keine Konten", "v": "Installieren und loslegen. Keine Anmeldung, keine E-Mail, kein Profil." },
-      { "k": "Keine Tracker", "v": "Kein Tracking, keine Werbung, keine Skripte von Drittanbietern." },
-      { "k": "Kein Mitlesen von Seiten", "v": "Nur Tab-Metadaten (URL/Titel) aus den Standard-Browser-APIs." }
+      {
+        "k": "Keine Server",
+        "v": "Es wird nichts hochgeladen. Es gibt kein Backend, an das Daten gesendet werden."
+      },
+      {
+        "k": "Keine Konten",
+        "v": "Installieren und loslegen. Keine Anmeldung, keine E-Mail, kein Profil."
+      },
+      {
+        "k": "Keine Tracker",
+        "v": "Kein Tracking, keine Werbung, keine Skripte von Drittanbietern."
+      },
+      {
+        "k": "Kein Mitlesen von Seiten",
+        "v": "Nur Tab-Metadaten (URL/Titel) aus den Standard-Browser-APIs."
+      }
     ],
     "policyLink": "Vollständige Datenschutzerklärung lesen →"
   },
@@ -159,23 +183,35 @@
     "shareIdea": "Idee teilen",
     "coffee": "Spendier mir einen Kaffee",
     "builtBy": "Entwickelt von",
-    "badge": "0 bytes verlassen dein Gerät"
+    "badge": "0 Bytes verlassen dein Gerät"
   },
   "privacyPage": {
     "back": "← Zurück zur Seite",
     "backCta": "← Zurück zu TabStyr",
     "eyebrow": "Datenschutzerklärung",
-    "titleNum": "0 bytes",
+    "titleNum": "0 Bytes",
     "titleRest": "verlassen dein Gerät.",
     "updated": "Zuletzt aktualisiert: 2026-06-12",
     "leadStrong": "TabStyr sammelt, überträgt oder teilt keinerlei Daten.",
     "leadRest": "Alles, was es aufzeichnet, bleibt auf deinem Gerät. Es gibt keine Server, kein Tracking, keine Konten und keinerlei Netzwerkanfragen.",
     "storesTitle": "Was es speichert (lokal, im IndexedDB deines Browsers)",
     "stores": [
-      { "label": "Sitzungsdatensätze", "body": "Start-/Endzeiten, die Domain der Seite und ob der Tab Audio abgespielt hat." },
-      { "label": "Tägliche Summen pro Domain", "body": "Sekunden pro Seite pro Tag." },
-      { "label": "Metadaten offener Tabs", "body": "Titel, URL, Zeitpunkt der letzten Aktivität und eine zufällige lokale ID zur Zuordnung der Zeit." },
-      { "label": "Einstellungen", "body": "Schwelle für liegengebliebene Tabs, Leerlauf-Timeout, Theme, Audio-Zählung, Kategorieregeln." }
+      {
+        "label": "Sitzungsdatensätze",
+        "body": "Start-/Endzeiten, die Domain der Seite und ob der Tab Audio abgespielt hat."
+      },
+      {
+        "label": "Tägliche Summen pro Domain",
+        "body": "Sekunden pro Seite pro Tag."
+      },
+      {
+        "label": "Metadaten offener Tabs",
+        "body": "Titel, URL, Zeitpunkt der letzten Aktivität und eine zufällige lokale ID zur Zuordnung der Zeit."
+      },
+      {
+        "label": "Einstellungen",
+        "body": "Schwelle für liegengebliebene Tabs, Leerlauf-Timeout, Theme, Audio-Zählung, Kategorieregeln."
+      }
     ],
     "retention": "Daten werden für ein rollierendes 90-Tage-Fenster aufbewahrt und danach automatisch bereinigt.",
     "notTitle": "Was es NICHT tut",
@@ -188,12 +224,30 @@
     "permCol": "Berechtigung",
     "purposeCol": "Zweck",
     "perms": [
-      { "perm": "tabs", "why": "Die URL/den Titel des aktiven Tabs sehen, um die Zeit der richtigen Seite zuzuordnen." },
-      { "perm": "storage", "why": "Deine Statistiken und Einstellungen lokal speichern." },
-      { "perm": "idle", "why": "Die Erfassung pausieren, wenn du weggehst, damit die Summen korrekt bleiben." },
-      { "perm": "alarms", "why": "Regelmäßige Checkpoints und die einmal tägliche Wartungsaufgabe." },
-      { "perm": "notifications", "why": "Optionaler, höchstens einmal täglicher Hinweis auf liegengebliebene Tabs." },
-      { "perm": "favicon (Chromium)", "why": "Seitensymbole in Listen anzeigen." }
+      {
+        "perm": "tabs",
+        "why": "Die URL/den Titel des aktiven Tabs sehen, um die Zeit der richtigen Seite zuzuordnen."
+      },
+      {
+        "perm": "storage",
+        "why": "Deine Statistiken und Einstellungen lokal speichern."
+      },
+      {
+        "perm": "idle",
+        "why": "Die Erfassung pausieren, wenn du weggehst, damit die Summen korrekt bleiben."
+      },
+      {
+        "perm": "alarms",
+        "why": "Regelmäßige Checkpoints und die einmal tägliche Wartungsaufgabe."
+      },
+      {
+        "perm": "notifications",
+        "why": "Optionaler, höchstens einmal täglicher Hinweis auf liegengebliebene Tabs."
+      },
+      {
+        "perm": "favicon (Chromium)",
+        "why": "Seitensymbole in Listen anzeigen."
+      }
     ],
     "noHost": "Es werden keine Host-Berechtigungen angefordert — die Erweiterung kann nicht auf die Inhalte der Seiten zugreifen, die du besuchst.",
     "controlTitle": "Deine Kontrolle",
@@ -223,6 +277,11 @@
     "send": "Idee senden",
     "sending": "Wird gesendet …",
     "error": "Senden fehlgeschlagen — bitte versuche es gleich noch einmal.",
-    "categories": ["Funktionsidee", "Verbesserung", "Fehlerbericht", "Sonstiges"]
+    "categories": [
+      "Funktionsidee",
+      "Verbesserung",
+      "Fehlerbericht",
+      "Sonstiges"
+    ]
   }
 }

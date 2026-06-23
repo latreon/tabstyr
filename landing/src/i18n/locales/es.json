@@ -28,10 +28,22 @@
     "micro": "Sin cuenta · sin servidores · sin seguimiento · licencia MIT",
     "previewAlt": "Panel de TabStyr que muestra el tiempo activo de hoy, el desglose por categorías, las tendencias y un mapa de calor de actividad",
     "stats": [
-      { "unit": "bytes", "label": "salen de tu dispositivo" },
-      { "unit": "días", "label": "de historial, depurado automáticamente" },
-      { "unit": "idiomas", "label": "desde el primer momento" },
-      { "unit": "%", "label": "local y abierto por diseño" }
+      {
+        "unit": "bytes",
+        "label": "salen de tu dispositivo"
+      },
+      {
+        "unit": "días",
+        "label": "de historial, depurado automáticamente"
+      },
+      {
+        "unit": "idiomas",
+        "label": "desde el primer momento"
+      },
+      {
+        "unit": "%",
+        "label": "local y abierto por diseño"
+      }
     ]
   },
   "features": {
@@ -88,10 +100,22 @@
     "h2Rest": "salen de tu dispositivo.",
     "lede": "Tus datos viven en la propia base de datos de tu navegador (IndexedDB), depurada en una ventana móvil de 90 días. Puedes exportarlos, restaurarlos o borrarlos cuando quieras, todo sin conexión.",
     "points": [
-      { "k": "Sin servidores", "v": "No se sube nada. No hay ningún backend al que enviar datos." },
-      { "k": "Sin cuentas", "v": "Instala y listo. Sin registro, sin correo, sin perfil." },
-      { "k": "Sin rastreadores", "v": "Sin analíticas, sin anuncios, sin scripts de terceros." },
-      { "k": "Sin leer páginas", "v": "Solo metadatos de las pestañas (URL/título) desde las API estándar del navegador." }
+      {
+        "k": "Sin servidores",
+        "v": "No se sube nada. No hay ningún backend al que enviar datos."
+      },
+      {
+        "k": "Sin cuentas",
+        "v": "Instala y listo. Sin registro, sin correo, sin perfil."
+      },
+      {
+        "k": "Sin rastreadores",
+        "v": "Sin analíticas, sin anuncios, sin scripts de terceros."
+      },
+      {
+        "k": "Sin leer páginas",
+        "v": "Solo metadatos de las pestañas (URL/título) desde las API estándar del navegador."
+      }
     ],
     "policyLink": "Lee la política de privacidad completa →"
   },
@@ -172,10 +196,22 @@
     "leadRest": "Todo lo que registra permanece en tu dispositivo. No hay servidores, ni analíticas, ni cuentas, ni solicitudes de red de ningún tipo.",
     "storesTitle": "Qué almacena (localmente, en el IndexedDB de tu navegador)",
     "stores": [
-      { "label": "Registros de sesión", "body": "horas de inicio/fin, el dominio de la página y si la pestaña reprodujo audio." },
-      { "label": "Totales diarios por dominio", "body": "segundos por sitio y por día." },
-      { "label": "Metadatos de las pestañas abiertas", "body": "título, URL, hora de última actividad y un id local aleatorio que se usa para atribuir el tiempo." },
-      { "label": "Ajustes", "body": "umbral de pestañas olvidadas, tiempo de inactividad, tema, conteo de audio y reglas de categorías." }
+      {
+        "label": "Registros de sesión",
+        "body": "horas de inicio/fin, el dominio de la página y si la pestaña reprodujo audio."
+      },
+      {
+        "label": "Totales diarios por dominio",
+        "body": "segundos por sitio y por día."
+      },
+      {
+        "label": "Metadatos de las pestañas abiertas",
+        "body": "título, URL, hora de última actividad y un id local aleatorio que se usa para atribuir el tiempo."
+      },
+      {
+        "label": "Ajustes",
+        "body": "umbral de pestañas olvidadas, tiempo de inactividad, tema, conteo de audio y reglas de categorías."
+      }
     ],
     "retention": "Los datos se conservan en una ventana móvil de 90 días y luego se depuran automáticamente.",
     "notTitle": "Qué NO hace",
@@ -188,12 +224,30 @@
     "permCol": "Permiso",
     "purposeCol": "Propósito",
     "perms": [
-      { "perm": "tabs", "why": "Ver la URL/título de la pestaña activa para atribuir el tiempo al sitio correcto." },
-      { "perm": "storage", "why": "Guardar tus estadísticas y ajustes localmente." },
-      { "perm": "idle", "why": "Pausar el seguimiento cuando te alejas para que los totales sigan siendo precisos." },
-      { "perm": "alarms", "why": "Puntos de control periódicos y la tarea de mantenimiento diaria." },
-      { "perm": "notifications", "why": "Recordatorio opcional de pestañas olvidadas, como mucho una vez al día." },
-      { "perm": "favicon (Chromium)", "why": "Mostrar los iconos de los sitios en las listas." }
+      {
+        "perm": "tabs",
+        "why": "Ver la URL/título de la pestaña activa para atribuir el tiempo al sitio correcto."
+      },
+      {
+        "perm": "storage",
+        "why": "Guardar tus estadísticas y ajustes localmente."
+      },
+      {
+        "perm": "idle",
+        "why": "Pausar el seguimiento cuando te alejas para que los totales sigan siendo precisos."
+      },
+      {
+        "perm": "alarms",
+        "why": "Puntos de control periódicos y la tarea de mantenimiento diaria."
+      },
+      {
+        "perm": "notifications",
+        "why": "Recordatorio opcional de pestañas olvidadas, como mucho una vez al día."
+      },
+      {
+        "perm": "favicon (Chromium)",
+        "why": "Mostrar los iconos de los sitios en las listas."
+      }
     ],
     "noHost": "No se solicitan permisos de host: la extensión no puede acceder al contenido de las páginas que visitas.",
     "controlTitle": "Tu control",
@@ -223,6 +277,11 @@
     "send": "Enviar idea",
     "sending": "Enviando…",
     "error": "No se pudo enviar: inténtalo de nuevo en un momento.",
-    "categories": ["Idea de función", "Mejora", "Informe de error", "Otro"]
+    "categories": [
+      "Idea de función",
+      "Mejora",
+      "Informe de error",
+      "Otro"
+    ]
   }
 }
