@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import RingLogo from './RingLogo.vue';
-import { FORMSPREE_ENDPOINT } from '@/site';
+import { FORMSPREE_ENDPOINT, HCAPTCHA_SITEKEY } from '@/site';
 import SelectBox from './SelectBox.vue';
 
 const home = import.meta.env.BASE_URL;
@@ -14,13 +14,73 @@ const email = ref('');
 const honeypot = ref(''); // spam trap — real users never fill this
 const state = ref<'idle' | 'sending' | 'done' | 'error'>('idle');
 
+// hCaptcha (optional) — renders only when a sitekey is configured. The script is
+// loaded on this page only, so the third-party request stays off the rest of the site.
+const captchaEl = ref<HTMLElement | null>(null);
+const captchaSolved = ref(false);
+let widgetId: string | undefined;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const hc = (): any => (window as unknown as { hcaptcha?: any }).hcaptcha;
+
+function loadHcaptchaScript(): Promise<void> {
+  if (hc()) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://js.hcaptcha.com/1/api.js?render=explicit';
+    s.async = true;
+    s.defer = true;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error('hCaptcha failed to load'));
+    document.head.appendChild(s);
+  });
+}
+
+onMounted(async () => {
+  if (!HCAPTCHA_SITEKEY) return;
+  try {
+    await loadHcaptchaScript();
+    if (hc() && captchaEl.value) {
+      widgetId = hc().render(captchaEl.value, {
+        sitekey: HCAPTCHA_SITEKEY,
+        callback: () => (captchaSolved.value = true),
+        'expired-callback': () => (captchaSolved.value = false),
+        'error-callback': () => (captchaSolved.value = false),
+      });
+    }
+  } catch {
+    // Captcha blocked/offline. The form still posts; Formspree's honeypot + limits
+    // remain. If Formspree REQUIRES the captcha, the submit fails closed — intended.
+  }
+});
+
+onBeforeUnmount(() => {
+  if (HCAPTCHA_SITEKEY && hc() && widgetId !== undefined) {
+    try { hc().reset(widgetId); } catch { /* noop */ }
+  }
+});
+
 // Until a real Formspree id is pasted in site.ts, disable the form and explain.
 const configured = computed(() => !FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID'));
-const canSend = computed(() => configured.value && message.value.trim().length > 0 && state.value !== 'sending');
+const canSend = computed(
+  () =>
+    configured.value &&
+    message.value.trim().length > 0 &&
+    state.value !== 'sending' &&
+    (!HCAPTCHA_SITEKEY || captchaSolved.value),
+);
+
+function resetCaptcha() {
+  if (HCAPTCHA_SITEKEY && hc() && widgetId !== undefined) {
+    try { hc().reset(widgetId); } catch { /* noop */ }
+    captchaSolved.value = false;
+  }
+}
 
 async function submit() {
   if (!canSend.value) return;
   if (honeypot.value) return; // bot filled the trap — silently drop
+  const captchaToken: string = HCAPTCHA_SITEKEY && hc() ? hc().getResponse(widgetId) || '' : '';
+  if (HCAPTCHA_SITEKEY && !captchaToken) return; // captcha required but unsolved
   state.value = 'sending';
   try {
     const res = await fetch(FORMSPREE_ENDPOINT, {
@@ -34,14 +94,19 @@ async function submit() {
         // Formspree's server-side spam trap: a non-empty value here is dropped by
         // Formspree itself, so bots that bypass our client check are still filtered.
         _gotcha: honeypot.value,
+        // hCaptcha token — Formspree validates this server-side when hCaptcha is
+        // enabled on the form. Omitted entirely when no sitekey is configured.
+        ...(captchaToken ? { 'h-captcha-response': captchaToken } : {}),
       }),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     state.value = 'done';
     message.value = '';
     email.value = '';
+    resetCaptcha();
   } catch {
     state.value = 'error';
+    resetCaptcha();
   }
 }
 </script>
@@ -108,6 +173,9 @@ async function submit() {
                name="_gotcha" engages Formspree's own server-side spam filter too. -->
           <input v-model="honeypot" name="_gotcha" class="gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
+          <!-- hCaptcha widget — rendered only when VITE_HCAPTCHA_SITEKEY is set -->
+          <div v-if="HCAPTCHA_SITEKEY" ref="captchaEl" class="captcha" />
+
           <div class="actions">
             <button type="submit" class="btn btn-primary" :disabled="!canSend">
               {{ state === 'sending' ? 'Sending…' : 'Send idea' }}
@@ -153,6 +221,7 @@ async function submit() {
 .control:focus { outline: none; border-color: var(--accent); }
 textarea.control { resize: vertical; min-height: 110px; line-height: 1.5; }
 .gotcha { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.captcha { min-height: 78px; }
 .actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 .err { color: #ff8080; font-size: 14px; margin: 0; }
