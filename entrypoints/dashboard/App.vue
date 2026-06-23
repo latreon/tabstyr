@@ -20,7 +20,7 @@ import OnboardingCard from '@/components/OnboardingCard.vue';
 import RingLogo from '@/components/RingLogo.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
 import PrivacyDialog from '@/components/PrivacyDialog.vue';
-// import { COFFEE_URL } from '@/lib/support'; // Buy me a coffee — hidden until the account is set up
+import { COFFEE_URL } from '@/lib/support';
 
 const { t } = useI18n();
 const locale = useLocale();
@@ -63,12 +63,10 @@ onMounted(async () => {
           </svg>
           {{ t('privacy.badge') }}
         </button>
-        <!-- Buy me a coffee — hidden until the account is set up; re-enable this block + the COFFEE_URL import.
         <a class="coffee-badge tip-right" :href="COFFEE_URL" target="_blank" rel="noopener"
            :data-tip="t('support.coffee')" :aria-label="t('support.coffee')">
           <span aria-hidden="true">☕</span>
         </a>
-        -->
         <ThemeToggle />
       </div>
     </header>

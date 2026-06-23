@@ -1,10 +1,25 @@
-// Fill these in once the extension is live. Until then they point at the store
-// homepages so nothing 404s. Search the repo for these names to update in one place.
+// Public site origin (no trailing slash) — used to build absolute social/SEO URLs.
+export const SITE_URL = 'https://latreon.github.io/tabstyr';
+
+// Flip a store to `true` once its public listing is live, then paste the real
+// listing URL into LINKS below. While a flag is false the UI renders a
+// non-clickable "coming soon" state instead of dead-ending at a store homepage.
+export const STORE_LIVE: Record<'chrome' | 'edge' | 'firefox', boolean> = {
+  chrome: false,
+  edge: false,
+  firefox: false,
+};
+export const ANY_STORE_LIVE = Object.values(STORE_LIVE).some(Boolean);
+
+// Fill these in once the extension is live, then flip the matching STORE_LIVE
+// flag above. Search the repo for these names to update in one place.
 export const LINKS = {
   chrome: 'https://chromewebstore.google.com/', // ← replace with your CWS listing URL
   edge: 'https://microsoftedge.microsoft.com/addons', // ← replace with Edge listing
   firefox: 'https://addons.mozilla.org/firefox/', // ← replace with AMO listing
-  privacy: '#/privacy', // in-app privacy page (PrivacyPage.vue)
+  // In-app routes (clean URLs, handled by the history router in App.vue).
+  privacy: import.meta.env.BASE_URL + 'privacy',
+  ideas: import.meta.env.BASE_URL + 'ideas',
   // Community / source. Discussions must be enabled on the repo
   // (Settings → Features → Discussions) or that link 404s.
   github: 'https://github.com/latreon/tabstyr',

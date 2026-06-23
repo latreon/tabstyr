@@ -154,30 +154,40 @@ export function useStats() {
     settings.value = await saveSettings({ onboarded: true });
   }
 
+  // Monotonic token so overlapping load() calls (mount + post-mutation refreshes)
+  // can't clobber each other: a stale earlier load that resolves last is ignored
+  // because its token no longer matches the latest.
+  let loadToken = 0;
+
   // `silent` refreshes data in place without flipping `loading` — used after
   // settings changes so the dashboard never unmounts (which would jump scroll
   // back to the top). The first load always shows the loading state.
   async function load(opts: { silent?: boolean } = {}): Promise<void> {
+    const token = ++loadToken;
     if (!opts.silent) loading.value = true;
     loadError.value = false;
     // storage.local is independent of IndexedDB, so read the quota flag even if the
     // main data load below fails.
     try {
       const { storageWarning: warn } = await browser.storage.local.get('storageWarning');
-      storageWarning.value = !!warn;
+      if (token === loadToken) storageWarning.value = !!warn;
     } catch {
       /* storage.local unavailable — leave the flag as-is */
     }
+
+    // Stage 1 — headline stats, tabs, and stale list. Light queries that gate the
+    // loading spinner so the dashboard paints fast.
+    let stage1Ok = true;
     try {
       todayKey.value = dateKey(Date.now());
       const today = todayKey.value;
-      const [loadedSettings, loadedStats, metas, tabs, loadedSessions] = await Promise.all([
+      const [loadedSettings, loadedStats, metas, tabs] = await Promise.all([
         getSettings(),
         repo.getStatsRange(addDays(today, -90), today),
         repo.getAllTabMeta(),
         browser.tabs.query({}),
-        repo.getSessionsSince(Date.now() - RETENTION_MS),
       ]);
+      if (token !== loadToken) return; // a newer load() superseded this one
       settings.value = loadedSettings;
       stats.value = loadedStats;
 
@@ -186,12 +196,6 @@ export function useStats() {
       const realTabs = tabs.filter((t) => t.id && t.url && !t.url.startsWith(ownPrefix));
       openTabCount.value = realTabs.length;
 
-      // Heatmap & per-domain detail use FOREGROUND web sessions only (no background
-      // audio, no internal pages) to match the active-time metric everywhere else.
-      const foreground = loadedSessions.filter((sx) => !sx.audio && isWebDomain(sx.domain));
-      recentSessions.value = foreground;
-      heatmap.value = buildHourlyHeatmap(foreground);
-
       const liveIds = new Set(realTabs.map((t) => t.id as number));
       // Only tabs we actually interacted with (have a meta = were focused at least
       // once). Tabs merely open in the background are never listed.
@@ -199,10 +203,29 @@ export function useStats() {
       openMetas.value = liveMetas;
       staleTabs.value = findStale(liveMetas, Date.now(), loadedSettings.staleDays);
     } catch (e) {
-      console.error('[dashboard] load failed', e);
-      loadError.value = true;
+      stage1Ok = false;
+      if (token === loadToken) {
+        console.error('[dashboard] load failed', e);
+        loadError.value = true;
+      }
     } finally {
-      loading.value = false;
+      if (token === loadToken) loading.value = false;
+    }
+    if (!stage1Ok) return;
+
+    // Stage 2 — the heavy 90-day session scan + synchronous heatmap build. Kept off
+    // the first-paint critical path: the heatmap ref is seeded with a zero grid, so
+    // it fills in a beat after the headline renders instead of blocking it.
+    try {
+      const loadedSessions = await repo.getSessionsSince(Date.now() - RETENTION_MS);
+      if (token !== loadToken) return;
+      // FOREGROUND web sessions only (no background audio, no internal pages) to
+      // match the active-time metric everywhere else.
+      const foreground = loadedSessions.filter((sx) => !sx.audio && isWebDomain(sx.domain));
+      recentSessions.value = foreground;
+      heatmap.value = buildHourlyHeatmap(foreground);
+    } catch (e) {
+      if (token === loadToken) console.error('[dashboard] session/heatmap load failed', e);
     }
   }
 

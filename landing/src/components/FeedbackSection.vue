@@ -11,7 +11,7 @@ const cards = [
     external: true,
   },
   {
-    href: '#/ideas',
+    href: LINKS.ideas,
     title: 'Share an idea',
     body: 'Want a feature or a new metric? Tell me right here — no account needed.',
     cta: 'Share an idea',

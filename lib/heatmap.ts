@@ -38,8 +38,11 @@ export function buildHourlyHeatmap(sessions: Array<{ start: number; end: number 
       // while still honouring local time + DST (plain ms arithmetic would break for
       // half-hour timezones and DST shifts).
       const boundary = d.setHours(hour + 1, 0, 0, 0);
-      const segEnd = Math.min(s.end, boundary);
-      if (segEnd <= cursor) break; // guard against clock edge cases (e.g. DST)
+      // On a DST fall-back edge the next-hour boundary can fail to advance past the
+      // cursor. Rather than `break` (which would drop the rest of the session),
+      // attribute the remainder to the current hour bucket so no time is lost; the
+      // assignment below sets cursor past s.end and ends the loop.
+      const segEnd = boundary > cursor ? Math.min(s.end, boundary) : s.end;
       const secs = (segEnd - cursor) / 1000;
       grid[dow][hour] += secs;
       total += secs;

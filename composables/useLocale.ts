@@ -7,13 +7,15 @@ const language = ref<string>('auto');
 
 export function useLocale() {
   async function load(): Promise<void> {
-    language.value = (await getSettings()).language;
+    // Fall back to 'auto' (browser locale) if settings can't be read.
+    try { language.value = (await getSettings()).language; } catch (e) { console.error('[locale] load failed', e); }
     await setLocale(resolveLocale(language.value));
   }
 
   async function setLanguage(pref: string): Promise<void> {
     language.value = pref;
-    await saveSettings({ language: pref });
+    // Switch the active locale even if persisting the preference fails.
+    try { await saveSettings({ language: pref }); } catch (e) { console.error('[locale] save failed', e); }
     await setLocale(resolveLocale(pref));
   }
 

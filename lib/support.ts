@@ -1,3 +1,5 @@
-// "Buy me a coffee" support link, shown in the popup footer and the dashboard
-// header. Single source of truth — change the handle to your own page.
-export const COFFEE_URL = 'https://www.buymeacoffee.com/latreon';
+// Ko-fi support link, rendered in the popup footer and the dashboard header.
+// Clicking it opens ko-fi.com in a new tab (user-initiated navigation — the
+// extension itself never makes a network request). Single source of truth —
+// change the handle to your own.
+export const COFFEE_URL = 'https://ko-fi.com/latreon';

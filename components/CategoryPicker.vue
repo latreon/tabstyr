@@ -36,6 +36,16 @@ function onKey(e: KeyboardEvent) {
     open.value = false;
   }
 }
+// Roving focus across the menu items (role="menu" promises arrow-key navigation).
+function onMenuKey(e: KeyboardEvent) {
+  const items = Array.from(menu.value?.querySelectorAll<HTMLButtonElement>('.opt') ?? []);
+  if (!items.length) return;
+  const idx = items.indexOf(document.activeElement as HTMLButtonElement);
+  if (e.key === 'ArrowDown') { e.preventDefault(); items[(idx + 1 + items.length) % items.length].focus(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); items[(idx - 1 + items.length) % items.length].focus(); }
+  else if (e.key === 'Home') { e.preventDefault(); items[0].focus(); }
+  else if (e.key === 'End') { e.preventDefault(); items[items.length - 1].focus(); }
+}
 onMounted(() => {
   document.addEventListener('click', onClickOutside);
   document.addEventListener('keydown', onKey);
@@ -60,7 +70,7 @@ onBeforeUnmount(() => {
       <span class="dot" :style="{ background: CATEGORY_META[current].color }" />
     </button>
 
-    <div v-if="open" ref="menu" class="menu" :class="{ up: dropUp }" role="menu">
+    <div v-if="open" ref="menu" class="menu" :class="{ up: dropUp }" role="menu" @keydown="onMenuKey">
       <button
         v-for="c in CATEGORIES"
         :key="c"

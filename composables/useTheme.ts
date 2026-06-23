@@ -24,18 +24,21 @@ export function useTheme() {
 
   async function cycle() {
     setting.value = CYCLE[(CYCLE.indexOf(setting.value) + 1) % CYCLE.length];
-    await saveSettings({ theme: setting.value });
+    // Apply in-session regardless; a storage failure shouldn't break the toggle.
+    try { await saveSettings({ theme: setting.value }); } catch (e) { console.error('[theme] save failed', e); }
     apply();
   }
 
   async function set(next: ThemeSetting) {
     setting.value = next;
-    await saveSettings({ theme: next });
+    try { await saveSettings({ theme: next }); } catch (e) { console.error('[theme] save failed', e); }
     apply();
   }
 
   onMounted(async () => {
-    setting.value = (await getSettings()).theme;
+    // If settings can't be read, keep the default and still wire up the system
+    // listener so theme tracking works for the session.
+    try { setting.value = (await getSettings()).theme; } catch (e) { console.error('[theme] load failed', e); }
     apply();
     media.addEventListener('change', apply);
   });

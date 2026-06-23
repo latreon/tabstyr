@@ -34,7 +34,7 @@ function onLeave(el: Element) {
 
 <template>
   <section id="faq" class="section">
-    <div class="container narrow">
+    <div class="container">
       <div class="head reveal">
         <span class="eyebrow">Questions</span>
         <h2 class="h2">Good to know</h2>
@@ -58,7 +58,6 @@ function onLeave(el: Element) {
 </template>
 
 <style scoped>
-.narrow { max-width: 760px; }
 .head { text-align: center; margin-bottom: 40px; }
 .h2 { font-size: clamp(1.9rem, 1.4rem + 2vw, 2.6rem); font-weight: 700; margin-top: 12px; }
 .list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }

@@ -10,8 +10,11 @@ export function rollup(sessions: ClosedSession[]): DailyStat[] {
     while (cursor < s.end) {
       const d = new Date(cursor);
       const midnight = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1, 0, 0, 0, 0).getTime();
-      const segEnd = Math.min(s.end, midnight);
-      if (segEnd <= cursor) break; // guard against clock edge cases
+      // On a DST fall-back edge the computed boundary can fail to advance past the
+      // cursor. Rather than `break` (which would drop the rest of the session),
+      // attribute the whole remainder to the current day so no time is lost; the
+      // assignment below sets cursor past s.end and ends the loop.
+      const segEnd = midnight > cursor ? Math.min(s.end, midnight) : s.end;
       const date = dateKey(cursor);
       const key = `${date}|${s.domain}`;
       const stat = map.get(key) ?? { date, domain: s.domain, seconds: 0, audioSeconds: 0 };

@@ -2,10 +2,13 @@
 import { computed, ref } from 'vue';
 import RingLogo from './RingLogo.vue';
 import { FORMSPREE_ENDPOINT, LINKS } from '@/site';
+import SelectBox from './SelectBox.vue';
 
-const CATEGORIES = ['Feature idea', 'Improvement', 'Bug report', 'Other'] as const;
+const home = import.meta.env.BASE_URL;
 
-const category = ref<(typeof CATEGORIES)[number]>('Feature idea');
+const CATEGORIES = ['Feature idea', 'Improvement', 'Bug report', 'Other'];
+
+const category = ref(CATEGORIES[0]);
 const message = ref('');
 const email = ref('');
 const honeypot = ref(''); // spam trap — real users never fill this
@@ -28,6 +31,9 @@ async function submit() {
         message: message.value.trim(),
         email: email.value.trim() || undefined,
         _subject: `TabStyr idea — ${category.value}`,
+        // Formspree's server-side spam trap: a non-empty value here is dropped by
+        // Formspree itself, so bots that bypass our client check are still filtered.
+        _gotcha: honeypot.value,
       }),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -46,8 +52,8 @@ async function submit() {
 
     <header class="bar">
       <div class="container bar-inner">
-        <a href="#/" class="brand"><RingLogo :size="24" /> <span>TabStyr</span></a>
-        <a href="#/" class="back">← Back to site</a>
+        <a :href="home" class="brand"><RingLogo :size="24" /> <span>TabStyr</span></a>
+        <a :href="home" class="back">← Back to site</a>
       </div>
     </header>
 
@@ -61,7 +67,7 @@ async function submit() {
 
       <div class="card glass">
         <!-- Success -->
-        <div v-if="state === 'done'" class="result">
+        <div v-if="state === 'done'" class="result" role="status" aria-live="polite">
           <div class="check" aria-hidden="true">✓</div>
           <h2>Thank you!</h2>
           <p>Your idea is in. Want to discuss it in the open instead?
@@ -79,12 +85,10 @@ async function submit() {
 
         <!-- Form -->
         <form v-else class="form" @submit.prevent="submit">
-          <label class="field">
+          <div class="field">
             <span class="label">Type</span>
-            <select v-model="category" class="control">
-              <option v-for="c in CATEGORIES" :key="c" :value="c">{{ c }}</option>
-            </select>
-          </label>
+            <SelectBox v-model="category" :options="CATEGORIES" label="Idea type" />
+          </div>
 
           <label class="field">
             <span class="label">Your idea <span class="req">*</span></span>
@@ -103,8 +107,9 @@ async function submit() {
             <input v-model="email" type="email" class="control" placeholder="you@example.com" autocomplete="email" />
           </label>
 
-          <!-- honeypot: visually hidden, off-screen; bots fill it, humans don't -->
-          <input v-model="honeypot" class="gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <!-- honeypot: visually hidden, off-screen; bots fill it, humans don't.
+               name="_gotcha" engages Formspree's own server-side spam filter too. -->
+          <input v-model="honeypot" name="_gotcha" class="gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
           <div class="actions">
             <button type="submit" class="btn btn-primary" :disabled="!canSend">
@@ -132,7 +137,7 @@ async function submit() {
 .brand { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 700; font-size: 18px; }
 .back { font-size: 14px; color: var(--text-2); transition: color 160ms ease; }
 .back:hover { color: var(--text); }
-.body { position: relative; z-index: 1; max-width: 680px; padding-top: 56px; padding-bottom: 96px; }
+.body { position: relative; z-index: 1; padding-top: 56px; padding-bottom: 96px; }
 .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
 .title { font-size: clamp(2rem, 1.5rem + 2.6vw, 3rem); font-weight: 700; margin: 12px 0 0; }
 .lead { color: var(--text-2); margin: 16px 0 28px; font-size: 16px; line-height: 1.6; max-width: 540px; }

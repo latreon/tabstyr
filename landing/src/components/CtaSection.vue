@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LINKS } from '@/site';
+import { LINKS, STORE_LIVE, ANY_STORE_LIVE } from '@/site';
 </script>
 
 <template>
@@ -11,16 +11,20 @@ import { LINKS } from '@/site';
         <p class="sub">Install in two clicks. Your data never leaves the device. Uninstall removes everything.</p>
 
         <div class="actions">
-          <a :href="LINKS.chrome" target="_blank" rel="noopener" class="btn btn-primary">Add to Chrome — free</a>
+          <a v-if="STORE_LIVE.chrome" :href="LINKS.chrome" target="_blank" rel="noopener" class="btn btn-primary">Add to Chrome — free</a>
+          <span v-else class="btn btn-primary is-soon" role="button" aria-disabled="true">Coming soon to Chrome</span>
         </div>
 
         <div class="stores">
-          <a :href="LINKS.edge" target="_blank" rel="noopener">Edge Add-ons</a>
+          <a v-if="STORE_LIVE.edge" :href="LINKS.edge" target="_blank" rel="noopener">Edge Add-ons</a>
+          <span v-else class="muted">Edge soon</span>
           <span aria-hidden="true">·</span>
-          <a :href="LINKS.firefox" target="_blank" rel="noopener">Firefox</a>
+          <a v-if="STORE_LIVE.firefox" :href="LINKS.firefox" target="_blank" rel="noopener">Firefox</a>
+          <span v-else class="muted">Firefox soon</span>
           <span aria-hidden="true">·</span>
           <span class="muted">Safari soon</span>
         </div>
+        <p v-if="!ANY_STORE_LIVE" class="soon-note">Store listings are on the way — star the repo to hear when they land.</p>
       </div>
     </div>
   </section>
@@ -48,4 +52,6 @@ import { LINKS } from '@/site';
 .stores a { font-weight: 600; transition: color 160ms ease; }
 .stores a:hover { color: var(--accent); }
 .stores .muted { color: var(--text-3); }
+.is-soon { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
+.soon-note { position: relative; margin: 16px 0 0; font-size: 13px; color: var(--text-3); }
 </style>

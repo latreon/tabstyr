@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import RingLogo from './RingLogo.vue';
-import { LINKS, AUTHOR, CF_ANALYTICS_TOKEN } from '@/site';
+import { LINKS, AUTHOR, CF_ANALYTICS_TOKEN, STORE_LIVE } from '@/site';
 const year = 2026;
 const analyticsOn = !!CF_ANALYTICS_TOKEN;
 </script>
@@ -23,9 +23,12 @@ const analyticsOn = !!CF_ANALYTICS_TOKEN;
         </div>
         <div class="col">
           <span class="head">Install</span>
-          <a :href="LINKS.chrome" target="_blank" rel="noopener">Chrome</a>
-          <a :href="LINKS.edge" target="_blank" rel="noopener">Edge</a>
-          <a :href="LINKS.firefox" target="_blank" rel="noopener">Firefox</a>
+          <a v-if="STORE_LIVE.chrome" :href="LINKS.chrome" target="_blank" rel="noopener">Chrome</a>
+          <span v-else class="muted">Chrome (soon)</span>
+          <a v-if="STORE_LIVE.edge" :href="LINKS.edge" target="_blank" rel="noopener">Edge</a>
+          <span v-else class="muted">Edge (soon)</span>
+          <a v-if="STORE_LIVE.firefox" :href="LINKS.firefox" target="_blank" rel="noopener">Firefox</a>
+          <span v-else class="muted">Firefox (soon)</span>
         </div>
         <div class="col">
           <span class="head">Community</span>

@@ -56,6 +56,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
       :aria-expanded="open"
       aria-haspopup="listbox"
       :aria-controls="`${uid}-list`"
+      :aria-activedescendant="open ? `${uid}-opt-${activeIndex}` : undefined"
       @click="toggle"
       @keydown="onKeydown"
     >

@@ -40,7 +40,9 @@ WHAT YOU GET
 
 PRIVACY FIRST — 0 BYTES LEAVE YOUR DEVICE
 • 100% local. Stored in your browser (IndexedDB), pruned to a 90-day window.
-• No servers, no accounts, no analytics, no ads, no network requests — none.
+• No servers, no accounts, no analytics, no ads. The extension makes no automated
+  network requests — the only outbound link is the optional "Buy me a coffee"
+  button, which opens ko-fi.com in a new tab when you choose to click it.
 • Doesn't read page content — only the tab info the browser already provides.
 • Your data is portable without a cloud: passphrase-encrypted backup (AES-256-GCM),
   restore on any device, or wipe everything in one click.

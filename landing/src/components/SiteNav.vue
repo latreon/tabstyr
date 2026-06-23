@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue';
 import RingLogo from './RingLogo.vue';
-import { LINKS } from '@/site';
+import { LINKS, STORE_LIVE } from '@/site';
 
 const scrolled = ref(false);
 const onScroll = () => (scrolled.value = window.scrollY > 12);
@@ -23,9 +23,12 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
         <a href="#faq">FAQ</a>
         <a href="#feedback">Feedback</a>
       </nav>
-      <a :href="LINKS.chrome" target="_blank" rel="noopener" class="btn btn-primary cta">
+      <a v-if="STORE_LIVE.chrome" :href="LINKS.chrome" target="_blank" rel="noopener" class="btn btn-primary cta">
         Add to Chrome
       </a>
+      <span v-else class="btn btn-primary cta is-soon" role="button" aria-disabled="true">
+        Coming soon
+      </span>
     </div>
   </header>
 </template>
@@ -74,6 +77,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
 }
 .links a:hover { color: var(--text); }
 .cta { height: 40px; padding: 0 16px; font-size: 14px; }
+.cta.is-soon { display: inline-flex; align-items: center; opacity: 0.6; cursor: not-allowed; pointer-events: none; }
 @media (max-width: 760px) {
   .links { display: none; }
   .cta { margin-left: auto; }

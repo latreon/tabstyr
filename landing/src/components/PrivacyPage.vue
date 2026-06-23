@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import RingLogo from './RingLogo.vue';
 
+const home = import.meta.env.BASE_URL;
+
 const stores = [
   { perm: 'tabs', why: 'See the active tab’s URL/title to attribute time to the right site.' },
   { perm: 'storage', why: 'Save your stats and settings locally.' },
@@ -17,8 +19,8 @@ const stores = [
 
     <header class="bar">
       <div class="container bar-inner">
-        <a href="#/" class="brand"><RingLogo :size="24" /> <span>TabStyr</span></a>
-        <a href="#/" class="back">← Back to site</a>
+        <a :href="home" class="brand"><RingLogo :size="24" /> <span>TabStyr</span></a>
+        <a :href="home" class="back">← Back to site</a>
       </div>
     </header>
 
@@ -67,7 +69,7 @@ const stores = [
         </ul>
       </div>
 
-      <a href="#/" class="back-cta">← Back to TabStyr</a>
+      <a :href="home" class="back-cta">← Back to TabStyr</a>
     </main>
   </div>
 </template>

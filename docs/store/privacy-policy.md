@@ -5,8 +5,10 @@ _Last updated: 2026-06-12_
 ## Summary
 
 **TabStyr does not collect, transmit, or share any data.** Everything it records
-stays on your device. There are no servers, no analytics, no accounts, and no
-network requests of any kind.
+stays on your device. There are no servers, no analytics, no accounts, and the
+extension makes no automated network requests. The only outbound connection is
+one you initiate yourself: clicking the optional "Buy me a coffee" link opens
+ko-fi.com in a new browser tab.
 
 ## What the extension stores
 
@@ -31,6 +33,8 @@ automatically.
 - It does **not** contain ads or trackers.
 - It does **not** read page contents — only tab metadata (URL/title) provided by
   the browser's standard extension APIs.
+- It does **not** contact any server on its own. The optional "Buy me a coffee"
+  link only opens ko-fi.com in a new tab when you click it; nothing is sent.
 
 ## Permissions and why they're needed
 

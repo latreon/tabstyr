@@ -10,7 +10,7 @@ import { addDays, dateKey, formatDuration } from '@/lib/time';
 import { isWebDomain, displayDomain } from '@/lib/domain';
 import { activeSeconds as active } from '@/lib/metrics';
 import { openDomain } from '@/lib/navigate';
-// import { COFFEE_URL } from '@/lib/support'; // Buy me a coffee — hidden until the account is set up
+import { COFFEE_URL } from '@/lib/support';
 import FaviconChip from '@/components/FaviconChip.vue';
 import RingLogo from '@/components/RingLogo.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
@@ -86,15 +86,9 @@ onMounted(load);
 function openDashboard(hash = '') {
   void browser.tabs.create({ url: browser.runtime.getURL(`/dashboard.html${hash}`) });
 }
-function openPrivacy() {
-  // Open the dashboard and show the in-app privacy overlay (no separate .html page).
-  openDashboard('#privacy');
+function openCoffee() {
+  void browser.tabs.create({ url: COFFEE_URL });
 }
-// Buy me a coffee — hidden until the account is set up. Re-enable: uncomment this,
-// the COFFEE_URL import above, and the button in the template.
-// function openCoffee() {
-//   void browser.tabs.create({ url: COFFEE_URL });
-// }
 </script>
 
 <template>
@@ -149,21 +143,10 @@ function openPrivacy() {
         <button v-if="staleCount" class="stale-btn" @click="openDashboard('#stale')">{{ t('popup.stale', { count: staleCount }) }}</button>
       </footer>
 
-      <button class="privacy" :aria-label="t('privacy.viewPolicy')" @click="openPrivacy">
-        <svg class="shield" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 3l7 3v5.5c0 4-3 7-7 8.5-4-1.5-7-4.5-7-8.5V6z" />
-          <path d="M9 12l2 2 4-4.5" />
-        </svg>
-        <span>{{ t('privacy.badge') }}</span>
-        <span class="privacy-arrow" aria-hidden="true">↗</span>
-      </button>
-
-      <!-- Buy me a coffee — hidden until the account is set up; re-enable this block.
       <button class="coffee tip-above" :aria-label="t('support.coffee')" :data-tip="t('support.coffee')" @click="openCoffee">
         <span aria-hidden="true">☕</span>
         <span>{{ t('support.coffee') }}</span>
       </button>
-      -->
     </template>
   </main>
 </template>
@@ -322,36 +305,6 @@ function openPrivacy() {
   font-family: inherit;
 }
 .stale-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.privacy {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  width: 100%;
-  margin-top: 2px;
-  padding: 8px 10px;
-  background: var(--row-hover);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-2);
-  font-size: 11px;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-}
-.privacy:hover { border-color: var(--accent); color: var(--text); }
-.privacy:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.privacy .shield {
-  width: 14px;
-  height: 14px;
-  flex: none;
-  fill: none;
-  stroke: var(--positive);
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.privacy .privacy-arrow { margin-left: auto; color: var(--accent); font-weight: 700; }
 .coffee {
   position: relative;
   display: flex;

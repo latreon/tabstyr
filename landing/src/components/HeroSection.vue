@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LINKS, STATS } from '@/site';
+import { LINKS, STATS, STORE_LIVE } from '@/site';
 import dashboardDark from '@/assets/dashboard-dark.png';
 </script>
 
@@ -26,10 +26,14 @@ import dashboardDark from '@/assets/dashboard-dark.png';
       </p>
 
       <div class="actions reveal">
-        <a :href="LINKS.chrome" target="_blank" rel="noopener" class="btn btn-primary">
+        <a v-if="STORE_LIVE.chrome" :href="LINKS.chrome" target="_blank" rel="noopener" class="btn btn-primary">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3.2" /><path d="M12 3v6M21 12h-9M5 18l4.5-7" /></svg>
           Add to Chrome — free
         </a>
+        <span v-else class="btn btn-primary is-soon" role="button" aria-disabled="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3.2" /><path d="M12 3v6M21 12h-9M5 18l4.5-7" /></svg>
+          Coming soon to Chrome
+        </span>
       </div>
 
       <p class="micro reveal">No account · no servers · no tracking · MIT licensed</p>
@@ -98,6 +102,7 @@ import dashboardDark from '@/assets/dashboard-dark.png';
   color: var(--text-2);
 }
 .actions { display: flex; gap: 14px; margin-top: 34px; flex-wrap: wrap; justify-content: center; }
+.is-soon { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
 .micro { margin-top: 18px; font-size: 13px; color: var(--text-3); }
 
 .preview {
