@@ -36,13 +36,13 @@ WHAT YOU GET
 • Stale-tab nudges — a badge count and an optional once-a-day reminder for tabs
   you've forgotten.
 • Week-over-week & month-over-month comparison, with per-category deltas.
-• Export — JSON or CSV, plus passphrase-encrypted backups you can restore on any device.
+• Export — your full history as JSON, plus passphrase-encrypted backups you can restore on any device.
 
 PRIVACY FIRST — 0 BYTES LEAVE YOUR DEVICE
 • 100% local. Stored in your browser (IndexedDB), pruned to a 90-day window.
 • No servers, no accounts, no analytics, no ads. The extension makes no automated
   network requests — the only outbound link is the optional "Buy me a coffee"
-  button, which opens ko-fi.com in a new tab when you choose to click it.
+  button, which opens a Polar checkout page in a new tab when you choose to click it.
 • Doesn't read page content — only the tab info the browser already provides.
 • Your data is portable without a cloud: passphrase-encrypted backup (AES-256-GCM),
   restore on any device, or wipe everything in one click.
@@ -90,10 +90,10 @@ entirely on your own device, to help you understand and manage your browsing.
 
 ## Privacy policy URL
 
-Use (renders publicly today, no extra hosting needed):
+Use the live policy page on the marketing site:
 
-  https://github.com/latreon/tabstyr/blob/main/docs/store/privacy-policy.md
+  https://tabstyr.com/privacy
 
 The same policy also ships inside the extension at `/privacy.html` (linked from the
-popup and dashboard). If GitHub Pages is enabled later, prefer a Pages URL
-(e.g. `https://latreon.github.io/tabstyr/privacy.html`) for a cleaner listing.
+popup and dashboard). Keep the wording on tabstyr.com/privacy, this file, and the
+in-extension page in sync.

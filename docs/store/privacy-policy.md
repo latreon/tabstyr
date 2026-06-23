@@ -8,7 +8,7 @@ _Last updated: 2026-06-12_
 stays on your device. There are no servers, no analytics, no accounts, and the
 extension makes no automated network requests. The only outbound connection is
 one you initiate yourself: clicking the optional "Buy me a coffee" link opens
-ko-fi.com in a new browser tab.
+a Polar checkout page (buy.polar.sh) in a new browser tab.
 
 ## What the extension stores
 
@@ -34,7 +34,7 @@ automatically.
 - It does **not** read page contents — only tab metadata (URL/title) provided by
   the browser's standard extension APIs.
 - It does **not** contact any server on its own. The optional "Buy me a coffee"
-  link only opens ko-fi.com in a new tab when you click it; nothing is sent.
+  link only opens a Polar checkout page in a new tab when you click it; nothing is sent.
 
 ## Permissions and why they're needed
 
@@ -53,7 +53,7 @@ pages you visit.
 
 ## Your control over your data
 
-- **Export** your full history any time (JSON or CSV) from Settings.
+- **Export** your full history any time (JSON) from Settings.
 - **Encrypted backup** — optionally protect a JSON backup with a passphrase
   (AES-256-GCM, key derived via PBKDF2). The passphrase never leaves your device
   and cannot be recovered.

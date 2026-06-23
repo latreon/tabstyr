@@ -29,7 +29,7 @@ const features = [
   },
   {
     title: 'Encrypted backups',
-    body: 'Export JSON or CSV, optionally passphrase-encrypted (AES-256-GCM). Restore on any device.',
+    body: 'Export your full history as JSON, optionally passphrase-encrypted (AES-256-GCM). Restore on any device.',
     icon: 'M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6zM9.5 12l1.8 1.8L15 10',
   },
 ];

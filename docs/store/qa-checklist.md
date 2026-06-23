@@ -19,7 +19,7 @@ Load the build (`dist/chrome-mv3`, or `dist/firefox-mv2` for Firefox), then:
 - [ ] Click a top-site → per-domain detail modal opens; Esc closes.
 - [ ] Change a site's category → category/focus update.
 - [ ] **Stale tabs**: badge shows the count; reminder fires at most once/day.
-- [ ] **Settings** persist across reopen; **Export** downloads JSON + CSV; **Wipe** clears everything.
+- [ ] **Settings** persist across reopen; **Export** downloads JSON; **Wipe** clears everything.
 - [ ] Theme: system / dark / light all look correct; favicons (incl. monochrome like GitHub) are visible in both themes.
 - [ ] Reload the extension → data persists; no `VersionError` in the console.
 

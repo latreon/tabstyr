@@ -63,7 +63,7 @@ const stores = [
 
         <h2>Your control</h2>
         <ul>
-          <li><strong>Export</strong> your full history (JSON or CSV), optionally passphrase-encrypted (AES-256-GCM).</li>
+          <li><strong>Export</strong> your full history as JSON, optionally passphrase-encrypted (AES-256-GCM).</li>
           <li><strong>Restore</strong> from a backup on this or another device.</li>
           <li><strong>Wipe all data</strong> in one click; removing the extension deletes everything.</li>
         </ul>
