@@ -2,16 +2,16 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { buildTrend } from '@/lib/trend';
-import { buildHourlyHeatmap } from '@/lib/heatmap';
+// import { buildHourlyHeatmap } from '@/lib/heatmap'; // Activity heatmap hidden in the site modal (commented out, not removed)
 import { coalesceSessions } from '@/lib/sessionize';
 import { topSubPages } from '@/lib/subpages';
 import { formatDuration } from '@/lib/time';
-import { openDomain } from '@/lib/navigate';
+import { openDomain, openPage } from '@/lib/navigate';
 import { isWebDomain, displayDomain } from '@/lib/domain';
 import { CATEGORIES, categorize, type Category, type CategoryRule } from '@/lib/categories';
 import type { DailyStat, Session } from '@/lib/types';
 import FaviconChip from '@/components/FaviconChip.vue';
-import HeatmapTile from '@/components/HeatmapTile.vue';
+// import HeatmapTile from '@/components/HeatmapTile.vue'; // Activity heatmap hidden in the site modal (commented out, not removed)
 import SelectBox from '@/components/ui/SelectBox.vue';
 import { useFocusTrap } from '@/composables/useFocusTrap';
 
@@ -64,18 +64,23 @@ const pageLabel = (path: string) => (path === '/' ? t('domainDetail.homePath') :
 
 const trend = computed(() => buildTrend(domainStats.value, 'day', props.now));
 const trendMax = computed(() => Math.max(1, ...trend.value.map((p) => p.seconds)));
-const domainHeatmap = computed(() => buildHourlyHeatmap(domainSessions.value));
+// const domainHeatmap = computed(() => buildHourlyHeatmap(domainSessions.value)); // Activity heatmap hidden in the site modal (commented out, not removed)
 
-const tip = ref<{ text: string; x: number } | null>(null);
+const tip = ref<{ text: string; x: number; bottom: number } | null>(null);
 function showTip(e: Event, label: string, seconds: number) {
   const col = e.currentTarget as HTMLElement;
   const host = col.closest('.bars') as HTMLElement;
   const rect = col.getBoundingClientRect();
   const hostRect = host.getBoundingClientRect();
+  // Sit the tooltip just above this bar's filled top, so it tracks bar height
+  // (matches the dashboard trend chart) instead of pinning to the chart's top.
+  const fill = col.querySelector('.bar-fill') as HTMLElement | null;
+  const fillH = fill ? fill.getBoundingClientRect().height : 0;
   const halfW = 64;
   tip.value = {
     text: `${label} — ${formatDuration(seconds)}`,
     x: Math.max(halfW, Math.min(rect.left - hostRect.left + rect.width / 2, hostRect.width - halfW)),
+    bottom: fillH + 8,
   };
 }
 const hideTip = () => (tip.value = null);
@@ -153,7 +158,7 @@ onUnmounted(() => {
           >
             <div class="bar-fill" :style="{ height: `${(p.seconds / trendMax) * 100}%` }" />
           </div>
-          <div v-if="tip" class="bar-tip" :style="{ left: `${tip.x}px` }" aria-hidden="true">{{ tip.text }}</div>
+          <div v-if="tip" class="bar-tip" :style="{ left: `${tip.x}px`, bottom: `${tip.bottom}px` }" aria-hidden="true">{{ tip.text }}</div>
         </div>
         <div class="bar-labels">
           <span>{{ trend[0]?.label }}</span>
@@ -165,7 +170,14 @@ onUnmounted(() => {
         <span class="label">{{ t('domainDetail.topPages') }}</span>
         <ul class="pages">
           <li v-for="p in subPages.pages" :key="p.path" class="page-row">
-            <span class="page-path" :title="pageLabel(p.path)">{{ pageLabel(p.path) }}</span>
+            <button
+              v-if="isWebDomain(domain)"
+              type="button"
+              class="page-path page-link"
+              :title="pageLabel(p.path)"
+              @click="openPage(domain, p.path)"
+            >{{ pageLabel(p.path) }}</button>
+            <span v-else class="page-path" :title="pageLabel(p.path)">{{ pageLabel(p.path) }}</span>
             <span class="page-bar-track" aria-hidden="true">
               <span class="page-bar-fill" :style="{ width: `${(p.seconds / subPageMax) * 100}%` }" />
             </span>
@@ -177,9 +189,11 @@ onUnmounted(() => {
         </p>
       </section>
 
+      <!-- Activity heatmap hidden in the site modal for now (commented out, not removed).
       <section class="block" :aria-label="t('domainDetail.byHourAria')">
         <HeatmapTile :data="domainHeatmap" />
       </section>
+      -->
     </div>
   </div>
   </Teleport>
@@ -345,12 +359,26 @@ onUnmounted(() => {
   gap: 10px;
 }
 .page-path {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-2);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.page-link {
+  all: unset;
+  box-sizing: border-box;
+  display: block;
+  font-size: 13px;
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.page-link:hover { color: var(--accent); text-decoration: underline; }
+.page-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .page-bar-track {
   height: 6px;
   border-radius: 3px;
@@ -365,7 +393,7 @@ onUnmounted(() => {
   background: var(--accent-gradient);
 }
 .page-time {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-3);
   font-variant-numeric: tabular-nums;
@@ -373,7 +401,7 @@ onUnmounted(() => {
 }
 .pages-more {
   margin: 2px 0 0;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-3);
 }
 /* The embedded heatmap is not in the dashboard grid here — neutralise its span. */

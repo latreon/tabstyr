@@ -16,6 +16,21 @@ export function openDomain(domain: string): void {
   void browser.tabs.create({ url });
 }
 
+export function openPage(domain: string, path: string): void {
+  // Same hardening as openDomain, but for a specific sub-page path. The re-parse
+  // confirms the result is https on the SAME host, so a tampered path can't
+  // smuggle a different origin or a javascript:/data:/file: navigation.
+  if (!isWebDomain(domain)) return;
+  const url = `https://${domain}${path.startsWith('/') ? path : `/${path}`}`;
+  try {
+    const u = new URL(url);
+    if (u.protocol !== 'https:' || u.hostname !== domain) return;
+  } catch {
+    return;
+  }
+  void browser.tabs.create({ url });
+}
+
 export async function focusTab(tabId: number): Promise<void> {
   try {
     const tab = await browser.tabs.update(tabId, { active: true });

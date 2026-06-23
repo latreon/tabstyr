@@ -143,7 +143,7 @@ function openCoffee() {
         <button v-if="staleCount" class="stale-btn" @click="openDashboard('#stale')">{{ t('popup.stale', { count: staleCount }) }}</button>
       </footer>
 
-      <button class="coffee tip-above" :aria-label="t('support.coffee')" :data-tip="t('support.coffee')" @click="openCoffee">
+      <button class="coffee" :aria-label="t('support.coffee')" @click="openCoffee">
         <span aria-hidden="true">☕</span>
         <span>{{ t('support.coffee') }}</span>
       </button>
@@ -290,8 +290,14 @@ function openCoffee() {
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
+  transition: filter 140ms ease, transform 140ms ease, box-shadow 140ms ease;
 }
-.cta:hover { filter: brightness(1.05); }
+.cta:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px var(--accent-muted);
+}
+.cta:active { transform: translateY(0); }
 .cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .stale-btn {
   background: var(--warn-bg);
@@ -315,7 +321,7 @@ function openCoffee() {
   margin-top: 2px;
   padding: 8px 10px;
   background: transparent;
-  border: 1px solid var(--border);
+  border: 1px solid color-mix(in oklab, var(--accent) 40%, var(--border));
   border-radius: var(--radius-sm);
   color: var(--text-3);
   font-size: 11px;
