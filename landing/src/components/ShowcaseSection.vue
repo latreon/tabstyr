@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useI18n } from '@/i18n';
 import popupDark from '@/assets/popup-dark.png';
 import popupLight from '@/assets/popup-light.png';
 
+const { t, tm } = useI18n();
+
 const theme = ref<'light' | 'dark'>('dark');
 const popupSrc = computed(() => (theme.value === 'dark' ? popupDark : popupLight));
+const themeWord = computed(() => (theme.value === 'dark' ? t('showcase.dark') : t('showcase.light')));
+const bullets = computed(() => tm<string[]>('showcase.bullets'));
 </script>
 
 <template>
@@ -12,32 +17,26 @@ const popupSrc = computed(() => (theme.value === 'dark' ? popupDark : popupLight
     <div class="orb" aria-hidden="true" />
     <div class="container">
       <div class="head reveal">
-        <span class="eyebrow">Glance from anywhere</span>
-        <h2 class="h2">A quiet, premium view of your day</h2>
-        <p class="sub">
-          Open the toolbar popup for an instant read; jump to the full dashboard for the
-          detail. Both themes, designed to be glanced at — not studied.
-        </p>
+        <span class="eyebrow">{{ t('showcase.eyebrow') }}</span>
+        <h2 class="h2">{{ t('showcase.title') }}</h2>
+        <p class="sub">{{ t('showcase.sub') }}</p>
 
-        <div class="toggle" role="tablist" aria-label="Theme preview">
-          <button role="tab" :aria-selected="theme === 'dark'" :class="{ active: theme === 'dark' }" @click="theme = 'dark'">Dark</button>
-          <button role="tab" :aria-selected="theme === 'light'" :class="{ active: theme === 'light' }" @click="theme = 'light'">Light</button>
+        <div class="toggle" role="tablist" :aria-label="t('showcase.themeAria')">
+          <button role="tab" :aria-selected="theme === 'dark'" :class="{ active: theme === 'dark' }" @click="theme = 'dark'">{{ t('showcase.dark') }}</button>
+          <button role="tab" :aria-selected="theme === 'light'" :class="{ active: theme === 'light' }" @click="theme = 'light'">{{ t('showcase.light') }}</button>
         </div>
       </div>
 
       <div class="popups reveal">
         <figure>
           <div class="figure-glow" aria-hidden="true" />
-          <img :src="popupSrc" :alt="`TabStyr ${theme} popup with today's total and top sites`" width="360" height="600" />
+          <img :src="popupSrc" :alt="t('showcase.popupAlt', { theme: themeWord })" width="360" height="600" />
         </figure>
         <div class="popup-copy">
-          <h3>Today, in two clicks</h3>
-          <p>The popup gives you an instant read on today — then gets out of the way.</p>
+          <h3>{{ t('showcase.copyTitle') }}</h3>
+          <p>{{ t('showcase.copyBody') }}</p>
           <ul>
-            <li>Live "active today" total vs your weekly average</li>
-            <li>Top sites with real favicons</li>
-            <li>Stale-tab reminder, at most once a day</li>
-            <li>Light and dark, following your system or your choice</li>
+            <li v-for="(b, i) in bullets" :key="i">{{ b }}</li>
           </ul>
         </div>
       </div>

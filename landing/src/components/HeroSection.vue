@@ -1,6 +1,18 @@
 <script setup lang="ts">
-import { LINKS, STATS, STORE_LIVE } from '@/site';
+import { computed } from 'vue';
+import { LINKS, STAT_VALUES, STORE_LIVE } from '@/site';
+import { useI18n } from '@/i18n';
 import dashboardDark from '@/assets/dashboard-dark.png';
+
+const { t, tm } = useI18n();
+
+// Numeric values live in site.ts; their unit + label are translated. Zip them.
+const stats = computed(() =>
+  STAT_VALUES.map((value, i) => {
+    const meta = tm<{ unit: string; label: string }[]>('hero.stats')[i] ?? { unit: '', label: '' };
+    return { value, ...meta };
+  }),
+);
 </script>
 
 <template>
@@ -11,41 +23,36 @@ import dashboardDark from '@/assets/dashboard-dark.png';
 
     <div class="container hero-inner">
       <span class="eyebrow reveal">
-        <span class="dot" aria-hidden="true" /> 100% local · open by design
+        <span class="dot" aria-hidden="true" /> {{ t('hero.eyebrow') }}
       </span>
 
       <h1 class="title reveal">
-        See where your browser<br />
-        time <span class="gradient-text">really goes.</span>
+        {{ t('hero.titleLead') }} <span class="gradient-text">{{ t('hero.titleAccent') }}</span>
       </h1>
 
-      <p class="lede reveal">
-        TabStyr quietly measures active time per tab and site, then turns it into a
-        calm dashboard — trends, an activity heatmap, focus scoring, and gentle
-        stale-tab nudges. Every byte stays on your device.
-      </p>
+      <p class="lede reveal">{{ t('hero.lede') }}</p>
 
       <div class="actions reveal">
         <a v-if="STORE_LIVE.chrome" :href="LINKS.chrome" target="_blank" rel="noopener" class="btn btn-primary">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3.2" /><path d="M12 3v6M21 12h-9M5 18l4.5-7" /></svg>
-          Add to Chrome — free
+          {{ t('hero.ctaPrimary') }}
         </a>
         <span v-else class="btn btn-primary is-soon" role="button" aria-disabled="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3.2" /><path d="M12 3v6M21 12h-9M5 18l4.5-7" /></svg>
-          Coming soon to Chrome
+          {{ t('hero.ctaComingSoon') }}
         </span>
       </div>
 
-      <p class="micro reveal">No account · no servers · no tracking · MIT licensed</p>
+      <p class="micro reveal">{{ t('hero.micro') }}</p>
 
       <!-- dashboard preview -->
       <div class="preview reveal">
         <div class="preview-glow" aria-hidden="true" />
-        <img :src="dashboardDark" alt="TabStyr dashboard showing today's active time, category breakdown, trends and an activity heatmap" width="1120" height="700" />
+        <img :src="dashboardDark" :alt="t('hero.previewAlt')" width="1120" height="700" />
       </div>
 
       <dl class="stats reveal">
-        <div v-for="s in STATS" :key="s.label" class="stat">
+        <div v-for="s in stats" :key="s.label" class="stat">
           <dt class="stat-value"><span class="gradient-text">{{ s.value }}</span><em>{{ s.unit }}</em></dt>
           <dd class="stat-label">{{ s.label }}</dd>
         </div>

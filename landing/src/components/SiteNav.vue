@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue';
 import RingLogo from './RingLogo.vue';
+import LangSwitch from './LangSwitch.vue';
 import { LINKS, STORE_LIVE } from '@/site';
+import { useI18n } from '@/i18n';
+
+const { t } = useI18n();
 
 const scrolled = ref(false);
 const onScroll = () => (scrolled.value = window.scrollY > 12);
@@ -17,17 +21,18 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
         <span>TabStyr</span>
       </a>
       <nav class="links" aria-label="Primary">
-        <a href="#features">Features</a>
-        <a href="#showcase">Dashboard</a>
-        <a href="#privacy">Privacy</a>
-        <a href="#faq">FAQ</a>
-        <a href="#feedback">Feedback</a>
+        <a href="#features">{{ t('nav.features') }}</a>
+        <a href="#showcase">{{ t('nav.dashboard') }}</a>
+        <a href="#privacy">{{ t('nav.privacy') }}</a>
+        <a href="#faq">{{ t('nav.faq') }}</a>
+        <a href="#feedback">{{ t('nav.feedback') }}</a>
       </nav>
+      <LangSwitch />
       <a v-if="STORE_LIVE.chrome" :href="LINKS.chrome" target="_blank" rel="noopener" class="btn btn-primary cta">
-        Add to Chrome
+        {{ t('nav.addToChrome') }}
       </a>
       <span v-else class="btn btn-primary cta is-soon" role="button" aria-disabled="true">
-        Coming soon
+        {{ t('nav.comingSoon') }}
       </span>
     </div>
   </header>

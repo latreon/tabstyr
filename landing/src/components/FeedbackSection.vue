@@ -1,36 +1,37 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { LINKS } from '@/site';
+import { localizedPath, locale, useI18n } from '@/i18n';
 
-const cards = [
+const { t } = useI18n();
+
+const cards = computed(() => [
   {
-    href: LINKS.ideas,
-    title: 'Share an idea or report a bug',
-    body: 'Want a feature, a new metric, or hit something broken? Tell me right here — no account needed.',
-    cta: 'Open the form',
+    href: localizedPath(locale.value, 'ideas'),
+    title: t('feedback.ideaTitle'),
+    body: t('feedback.ideaBody'),
+    cta: t('feedback.ideaCta'),
     icon: 'spark',
     external: false,
   },
   {
     href: LINKS.coffee,
-    title: 'Support the project',
-    body: 'TabStyr is free and open source. A small tip keeps it going.',
-    cta: 'Buy me a coffee',
+    title: t('feedback.supportTitle'),
+    body: t('feedback.supportBody'),
+    cta: t('feedback.supportCta'),
     icon: 'heart',
     external: true,
   },
-] as const;
+]);
 </script>
 
 <template>
   <section id="feedback" class="section">
     <div class="container">
       <div class="head reveal">
-        <span class="eyebrow">Feedback &amp; ideas</span>
-        <h2 class="h2">Built in the open — with you.</h2>
-        <p class="sub">
-          No tracking, no feedback widgets phoning home. Just a simple form — no account,
-          no sign-in, and nothing stored about you.
-        </p>
+        <span class="eyebrow">{{ t('feedback.eyebrow') }}</span>
+        <h2 class="h2">{{ t('feedback.title') }}</h2>
+        <p class="sub">{{ t('feedback.sub') }}</p>
       </div>
 
       <div class="grid">

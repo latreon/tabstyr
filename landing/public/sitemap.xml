@@ -1,17 +1,563 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://tabstyr.com/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/" />
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/es</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/" />
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/de</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/" />
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/" />
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/it</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/" />
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/pt-br</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/" />
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/ru</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/" />
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/tr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/" />
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/ja</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/" />
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/ko</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/" />
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/zh-cn</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/" />
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://tabstyr.com/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/privacy" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/privacy" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/privacy" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/privacy" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/privacy" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/es/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/privacy" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/privacy" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/privacy" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/privacy" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/privacy" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/de/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/privacy" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/privacy" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/privacy" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/privacy" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/privacy" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/fr/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/privacy" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/privacy" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/privacy" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/privacy" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/privacy" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/it/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/privacy" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/privacy" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/privacy" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/privacy" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/privacy" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/pt-br/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/privacy" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/privacy" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/privacy" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/privacy" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/privacy" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/ru/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/privacy" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/privacy" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/privacy" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/privacy" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/privacy" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/tr/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/privacy" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/privacy" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/privacy" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/privacy" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/privacy" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/ja/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/privacy" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/privacy" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/privacy" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/privacy" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/privacy" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/ko/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/privacy" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/privacy" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/privacy" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/privacy" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/privacy" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/zh-cn/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/privacy" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/privacy" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/privacy" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/privacy" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/privacy" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/privacy" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/privacy" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/privacy" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/privacy" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/privacy" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/privacy" />
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://tabstyr.com/ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/ideas" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/ideas" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/ideas" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/ideas" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/ideas" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/ideas" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/ideas" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/ideas" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/ideas" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/ideas" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/ideas" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/es/ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/ideas" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/ideas" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/ideas" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/ideas" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/ideas" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/ideas" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/ideas" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/ideas" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/ideas" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/ideas" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/ideas" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/de/ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/ideas" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/ideas" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/ideas" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/ideas" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/ideas" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/ideas" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/ideas" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/ideas" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/ideas" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/ideas" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/ideas" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/fr/ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/ideas" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/ideas" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/ideas" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/ideas" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/ideas" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/ideas" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/ideas" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/ideas" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/ideas" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/ideas" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/ideas" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/it/ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/ideas" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/ideas" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/ideas" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/ideas" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/ideas" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/ideas" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/ideas" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/ideas" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/ideas" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/ideas" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/ideas" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/pt-br/ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/ideas" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/ideas" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/ideas" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/ideas" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/ideas" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/ideas" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/ideas" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/ideas" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/ideas" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/ideas" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/ideas" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/ru/ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/ideas" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/ideas" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/ideas" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/ideas" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/ideas" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/ideas" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/ideas" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/ideas" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/ideas" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/ideas" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/ideas" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/tr/ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/ideas" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/ideas" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/ideas" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/ideas" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/ideas" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/ideas" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/ideas" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/ideas" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/ideas" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/ideas" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/ideas" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/ja/ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/ideas" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/ideas" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/ideas" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/ideas" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/ideas" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/ideas" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/ideas" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/ideas" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/ideas" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/ideas" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/ideas" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/ko/ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/ideas" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/ideas" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/ideas" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/ideas" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/ideas" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/ideas" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/ideas" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/ideas" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/ideas" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/ideas" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/ideas" />
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/zh-cn/ideas</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/ideas" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/ideas" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/ideas" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/ideas" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/ideas" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/ideas" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/ideas" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/ideas" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/ideas" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/ideas" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/ideas" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/ideas" />
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>

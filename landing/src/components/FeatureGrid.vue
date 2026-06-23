@@ -1,52 +1,40 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useI18n } from '@/i18n';
+
+const { t, tm } = useI18n();
+
 // Inline SVG paths (Lucide-style, thin stroke) keep the bundle dependency-free.
-const features = [
-  {
-    title: 'Active-time tracking',
-    body: 'Per tab and per site, second by second. Background audio is counted separately, so totals never exceed real time at the screen.',
-    icon: 'M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
-    big: true,
-  },
-  {
-    title: 'Trends & comparison',
-    body: 'Day / week / month activity trends, plus this-week-vs-last-week by category.',
-    icon: 'M3 3v18h18M7 14l3-3 3 3 5-6',
-  },
-  {
-    title: 'Focus score',
-    body: 'Productive ÷ distracting, a daily streak, and a focus trend over time.',
-    icon: 'M12 12m-3 0a3 3 0 1 0 6 0 3 3 0 1 0-6 0M12 2v3M12 19v3M2 12h3M19 12h3',
-  },
-  {
-    title: 'Activity heatmap',
-    body: 'Which hours of which days you actually browse — at a glance.',
-    icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z',
-  },
-  {
-    title: 'Auto-categorized',
-    body: 'Work, Dev, Social, Media and more — recognized automatically. Re-classify any site with one click.',
-    icon: 'M3 7h18M3 12h18M3 17h12',
-  },
-  {
-    title: 'Encrypted backups',
-    body: 'Export your full history as JSON, optionally passphrase-encrypted (AES-256-GCM). Restore on any device.',
-    icon: 'M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6zM9.5 12l1.8 1.8L15 10',
-  },
+// Icons + the "big" flag are presentational; title/body come from i18n by index.
+const meta = [
+  { icon: 'M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z', big: true },
+  { icon: 'M3 3v18h18M7 14l3-3 3 3 5-6' },
+  { icon: 'M12 12m-3 0a3 3 0 1 0 6 0 3 3 0 1 0-6 0M12 2v3M12 19v3M2 12h3M19 12h3' },
+  { icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z' },
+  { icon: 'M3 7h18M3 12h18M3 17h12' },
+  { icon: 'M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6zM9.5 12l1.8 1.8L15 10' },
 ];
+
+const features = computed(() =>
+  meta.map((m, i) => {
+    const item = tm<{ title: string; body: string }[]>('features.items')[i] ?? { title: '', body: '' };
+    return { ...m, ...item };
+  }),
+);
 </script>
 
 <template>
   <section id="features" class="section">
     <div class="container">
       <div class="head reveal">
-        <span class="eyebrow">What it does</span>
-        <h2 class="h2">Everything you need to understand your time —<br /><span class="gradient-text">nothing you didn't ask for.</span></h2>
+        <span class="eyebrow">{{ t('features.eyebrow') }}</span>
+        <h2 class="h2">{{ t('features.titleLead') }} <span class="gradient-text">{{ t('features.titleAccent') }}</span></h2>
       </div>
 
       <div class="grid">
         <article
           v-for="(f, i) in features"
-          :key="f.title"
+          :key="i"
           class="card glass reveal"
           :class="{ big: f.big }"
           :style="{ transitionDelay: `${(i % 3) * 70}ms` }"

@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { LINKS } from '@/site';
-const points = [
-  { k: 'No servers', v: 'Nothing is uploaded. There is no backend to send data to.' },
-  { k: 'No accounts', v: 'Install and go. No sign-up, no email, no profile.' },
-  { k: 'No trackers', v: 'No analytics, no ads, no third-party scripts.' },
-  { k: 'No page reading', v: 'Only tab metadata (URL/title) from standard browser APIs.' },
-];
+import { computed } from 'vue';
+import { localizedPath, locale, useI18n } from '@/i18n';
+
+const { t, tm } = useI18n();
+const points = computed(() => tm<{ k: string; v: string }[]>('privacyBand.points'));
+const privacyHref = computed(() => localizedPath(locale.value, 'privacy'));
 </script>
 
 <template>
@@ -13,17 +12,14 @@ const points = [
     <div class="container">
       <div class="panel glass reveal">
         <div class="badge-glow" aria-hidden="true" />
-        <span class="eyebrow">Privacy, not as a feature — as the foundation</span>
+        <span class="eyebrow">{{ t('privacyBand.eyebrow') }}</span>
         <h2 class="h2">
-          <span class="num gradient-text">0 bytes</span> leave your device.
+          <span class="num gradient-text">{{ t('privacyBand.h2Num') }}</span> {{ t('privacyBand.h2Rest') }}
         </h2>
-        <p class="lede">
-          Your data lives in your browser's own database (IndexedDB), pruned to a rolling
-          90-day window. You can export it, restore it, or wipe it — any time, all offline.
-        </p>
+        <p class="lede">{{ t('privacyBand.lede') }}</p>
 
         <ul class="points">
-          <li v-for="p in points" :key="p.k">
+          <li v-for="(p, i) in points" :key="i">
             <span class="check" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7" /></svg>
             </span>
@@ -31,7 +27,7 @@ const points = [
           </li>
         </ul>
 
-        <a :href="LINKS.privacy" class="policy-link">Read the full privacy policy →</a>
+        <a :href="privacyHref" class="policy-link">{{ t('privacyBand.policyLink') }}</a>
       </div>
     </div>
   </section>

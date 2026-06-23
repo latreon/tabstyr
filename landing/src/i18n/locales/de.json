@@ -1,0 +1,228 @@
+{
+  "meta": {
+    "title": "TabStyr — Private Zeiterfassung im Browser",
+    "description": "Sieh, wohin deine Browser-Zeit wirklich fließt — aktive Zeit pro Seite, Trends, Heatmaps, Fokus und sanfte Hinweise auf liegengebliebene Tabs. 100 % lokal. 0 bytes verlassen dein Gerät.",
+    "ogDescription": "Aktive Zeit pro Seite, Trends, Heatmaps, Fokus. 100 % lokal — nichts verlässt dein Gerät.",
+    "privacyTitle": "Datenschutzerklärung — TabStyr",
+    "privacyDescription": "TabStyr sammelt nichts. Keine Server, kein Tracking, keine Konten, keine Netzwerkanfragen. Alles bleibt auf deinem Gerät.",
+    "ideasTitle": "Idee teilen — TabStyr",
+    "ideasDescription": "Schlage eine Funktion vor oder melde einen Fehler für TabStyr. Kein Konto, kein Tracking — es geht direkt an den Entwickler."
+  },
+  "nav": {
+    "features": "Funktionen",
+    "dashboard": "Dashboard",
+    "privacy": "Datenschutz",
+    "faq": "FAQ",
+    "feedback": "Feedback",
+    "addToChrome": "Zu Chrome hinzufügen",
+    "comingSoon": "Demnächst",
+    "language": "Sprache"
+  },
+  "hero": {
+    "eyebrow": "100 % lokal · offen von Grund auf",
+    "titleLead": "Sieh, wohin deine Browser-Zeit",
+    "titleAccent": "wirklich fließt.",
+    "lede": "TabStyr misst unauffällig die aktive Zeit pro Tab und Seite und macht daraus ein ruhiges Dashboard — Trends, eine Aktivitäts-Heatmap, ein Fokus-Score und sanfte Hinweise auf liegengebliebene Tabs. Jedes Byte bleibt auf deinem Gerät.",
+    "ctaPrimary": "Zu Chrome hinzufügen — kostenlos",
+    "ctaComingSoon": "Demnächst für Chrome",
+    "micro": "Kein Konto · keine Server · kein Tracking · MIT-lizenziert",
+    "previewAlt": "TabStyr-Dashboard mit der heutigen aktiven Zeit, Kategorienaufteilung, Trends und einer Aktivitäts-Heatmap",
+    "stats": [
+      { "unit": "bytes", "label": "verlassen dein Gerät" },
+      { "unit": "days", "label": "Verlauf, automatisch bereinigt" },
+      { "unit": "languages", "label": "von Haus aus" },
+      { "unit": "%", "label": "lokal & offen von Grund auf" }
+    ]
+  },
+  "features": {
+    "eyebrow": "Was es kann",
+    "titleLead": "Alles, was du brauchst, um deine Zeit zu verstehen —",
+    "titleAccent": "nichts, wonach du nicht gefragt hast.",
+    "items": [
+      {
+        "title": "Aktive-Zeit-Erfassung",
+        "body": "Pro Tab und pro Seite, Sekunde für Sekunde. Hintergrund-Audio wird separat gezählt, sodass die Summen nie die tatsächliche Zeit am Bildschirm überschreiten."
+      },
+      {
+        "title": "Trends & Vergleich",
+        "body": "Aktivitätstrends nach Tag / Woche / Monat, plus diese Woche gegen letzte Woche nach Kategorie."
+      },
+      {
+        "title": "Fokus-Score",
+        "body": "Produktiv ÷ ablenkend, eine tägliche Serie und ein Fokus-Trend über die Zeit."
+      },
+      {
+        "title": "Aktivitäts-Heatmap",
+        "body": "Zu welchen Stunden an welchen Tagen du tatsächlich surfst — auf einen Blick."
+      },
+      {
+        "title": "Automatisch kategorisiert",
+        "body": "Arbeit, Dev, Social, Medien und mehr — automatisch erkannt. Klassifiziere jede Seite mit einem Klick neu."
+      },
+      {
+        "title": "Verschlüsselte Backups",
+        "body": "Exportiere deinen gesamten Verlauf als JSON, optional passwortverschlüsselt (AES-256-GCM). Stelle ihn auf jedem Gerät wieder her."
+      }
+    ]
+  },
+  "showcase": {
+    "eyebrow": "Von überall ein Blick",
+    "title": "Eine ruhige, hochwertige Sicht auf deinen Tag",
+    "sub": "Öffne das Symbolleisten-Popup für einen sofortigen Überblick; springe für die Details ins vollständige Dashboard. Beide Themes, gestaltet zum Hinschauen — nicht zum Studieren.",
+    "themeAria": "Theme-Vorschau",
+    "dark": "Dunkel",
+    "light": "Hell",
+    "popupAlt": "TabStyr-{theme}-Popup mit der heutigen Gesamtzeit und den Top-Seiten",
+    "copyTitle": "Heute, in zwei Klicks",
+    "copyBody": "Das Popup gibt dir einen sofortigen Überblick über heute — und tritt dann in den Hintergrund.",
+    "bullets": [
+      "Live-Gesamtwert „heute aktiv“ gegenüber deinem Wochendurchschnitt",
+      "Top-Seiten mit echten Favicons",
+      "Hinweis auf liegengebliebene Tabs, höchstens einmal am Tag",
+      "Hell und Dunkel, je nach System oder deiner Wahl"
+    ]
+  },
+  "privacyBand": {
+    "eyebrow": "Datenschutz, nicht als Funktion — als Fundament",
+    "h2Num": "0 bytes",
+    "h2Rest": "verlassen dein Gerät.",
+    "lede": "Deine Daten leben in der eigenen Datenbank deines Browsers (IndexedDB), bereinigt auf ein rollierendes 90-Tage-Fenster. Du kannst sie exportieren, wiederherstellen oder löschen — jederzeit, komplett offline.",
+    "points": [
+      { "k": "Keine Server", "v": "Es wird nichts hochgeladen. Es gibt kein Backend, an das Daten gesendet werden." },
+      { "k": "Keine Konten", "v": "Installieren und loslegen. Keine Anmeldung, keine E-Mail, kein Profil." },
+      { "k": "Keine Tracker", "v": "Kein Tracking, keine Werbung, keine Skripte von Drittanbietern." },
+      { "k": "Kein Mitlesen von Seiten", "v": "Nur Tab-Metadaten (URL/Titel) aus den Standard-Browser-APIs." }
+    ],
+    "policyLink": "Vollständige Datenschutzerklärung lesen →"
+  },
+  "faq": {
+    "eyebrow": "Fragen",
+    "title": "Gut zu wissen",
+    "items": [
+      {
+        "q": "Sind meine Browserdaten wirklich privat?",
+        "a": "Ja. TabStyr stellt null Netzwerkanfragen — seine Content-Security-Policy blockiert sie sogar. Alles wird lokal in deinem Browser gespeichert und nach 90 Tagen bereinigt. Du kannst es jederzeit exportieren oder löschen."
+      },
+      {
+        "q": "Was genau wird erfasst?",
+        "a": "Die aktive Vordergrundzeit pro Seite — der Tab, den du tatsächlich ansiehst — plus separat gezähltes Hintergrund-Audio. Es liest niemals Seiteninhalte, nur die URL/den Titel, die der Browser ohnehin schon an Erweiterungen weitergibt."
+      },
+      {
+        "q": "Verlangsamt es meinen Browser?",
+        "a": "Nein. Es ist ereignisgesteuert mit einem Checkpoint pro Minute, nutzt eine effiziente lokale Datenbank und liefert ~130 KB gzip-komprimiertes JavaScript. Kein Hintergrund-Polling, keine Remote-Aufrufe."
+      },
+      {
+        "q": "Welche Browser werden unterstützt?",
+        "a": "Chrome, Edge, Brave, Opera, Arc und andere Chromium-Browser vollständig. Firefox 115+ wird unterstützt (Favicons erscheinen als Buchstaben-Chips). Safari funktioniert nach einer Xcode-Konvertierung."
+      },
+      {
+        "q": "Ist es kostenlos? Open Source?",
+        "a": "Kostenlos nutzbar und MIT-lizenziert. Keine Werbung, kein Konto, keine Bezahlschranke für die Kernfunktionen."
+      },
+      {
+        "q": "Kann ich meine Daten auf ein anderes Gerät übertragen?",
+        "a": "Ja — exportiere ein vollständiges Backup (JSON, optional passwortverschlüsselt mit AES-256-GCM) und stelle es überall wieder her."
+      }
+    ]
+  },
+  "feedback": {
+    "eyebrow": "Feedback & Ideen",
+    "title": "Offen entwickelt — mit dir.",
+    "sub": "Kein Tracking, keine Feedback-Widgets, die nach Hause funken. Nur ein einfaches Formular — kein Konto, keine Anmeldung und nichts, was über dich gespeichert wird.",
+    "ideaTitle": "Idee teilen oder Fehler melden",
+    "ideaBody": "Wünschst du dir eine Funktion, eine neue Kennzahl, oder ist etwas kaputt? Sag es mir direkt hier — kein Konto nötig.",
+    "ideaCta": "Formular öffnen",
+    "supportTitle": "Unterstütze das Projekt",
+    "supportBody": "TabStyr ist kostenlos und Open Source. Ein kleines Trinkgeld hält es am Laufen.",
+    "supportCta": "Spendier mir einen Kaffee"
+  },
+  "cta": {
+    "title": "Hol dir deine Browser-Zeit zurück.",
+    "sub": "In zwei Klicks installiert. Deine Daten verlassen nie das Gerät. Beim Deinstallieren wird alles entfernt.",
+    "primary": "Zu Chrome hinzufügen — kostenlos",
+    "comingSoon": "Demnächst für Chrome",
+    "edge": "Edge-Add-ons",
+    "edgeSoon": "Edge demnächst",
+    "firefox": "Firefox",
+    "firefoxSoon": "Firefox demnächst",
+    "safariSoon": "Safari demnächst",
+    "soonNote": "Die Store-Einträge sind in Arbeit — markiere das Repo mit einem Stern, um zu erfahren, wann sie erscheinen."
+  },
+  "footer": {
+    "tag": "Private, lokale Einblicke in deine Browser-Zeit.",
+    "product": "Produkt",
+    "install": "Installieren",
+    "feedback": "Feedback",
+    "chromeSoon": "Chrome (demnächst)",
+    "edgeSoon": "Edge (demnächst)",
+    "firefoxSoon": "Firefox (demnächst)",
+    "shareIdea": "Idee teilen",
+    "coffee": "Spendier mir einen Kaffee",
+    "builtBy": "Entwickelt von",
+    "badge": "0 bytes verlassen dein Gerät"
+  },
+  "privacyPage": {
+    "back": "← Zurück zur Seite",
+    "backCta": "← Zurück zu TabStyr",
+    "eyebrow": "Datenschutzerklärung",
+    "titleNum": "0 bytes",
+    "titleRest": "verlassen dein Gerät.",
+    "updated": "Zuletzt aktualisiert: 2026-06-12",
+    "leadStrong": "TabStyr sammelt, überträgt oder teilt keinerlei Daten.",
+    "leadRest": "Alles, was es aufzeichnet, bleibt auf deinem Gerät. Es gibt keine Server, kein Tracking, keine Konten und keinerlei Netzwerkanfragen.",
+    "storesTitle": "Was es speichert (lokal, im IndexedDB deines Browsers)",
+    "stores": [
+      { "label": "Sitzungsdatensätze", "body": "Start-/Endzeiten, die Domain der Seite und ob der Tab Audio abgespielt hat." },
+      { "label": "Tägliche Summen pro Domain", "body": "Sekunden pro Seite pro Tag." },
+      { "label": "Metadaten offener Tabs", "body": "Titel, URL, Zeitpunkt der letzten Aktivität und eine zufällige lokale ID zur Zuordnung der Zeit." },
+      { "label": "Einstellungen", "body": "Schwelle für liegengebliebene Tabs, Leerlauf-Timeout, Theme, Audio-Zählung, Kategorieregeln." }
+    ],
+    "retention": "Daten werden für ein rollierendes 90-Tage-Fenster aufbewahrt und danach automatisch bereinigt.",
+    "notTitle": "Was es NICHT tut",
+    "notItems": [
+      "Sendet keine Daten von deinem Gerät weg und nutzt keine Server, keine Cloud-Synchronisierung und kein Tracking.",
+      "Enthält keine Werbung und keine Tracker.",
+      "Liest keine Seiteninhalte — nur Tab-Metadaten (URL/Titel) aus den Standard-Erweiterungs-APIs."
+    ],
+    "permsTitle": "Berechtigungen",
+    "permCol": "Berechtigung",
+    "purposeCol": "Zweck",
+    "perms": [
+      { "perm": "tabs", "why": "Die URL/den Titel des aktiven Tabs sehen, um die Zeit der richtigen Seite zuzuordnen." },
+      { "perm": "storage", "why": "Deine Statistiken und Einstellungen lokal speichern." },
+      { "perm": "idle", "why": "Die Erfassung pausieren, wenn du weggehst, damit die Summen korrekt bleiben." },
+      { "perm": "alarms", "why": "Regelmäßige Checkpoints und die einmal tägliche Wartungsaufgabe." },
+      { "perm": "notifications", "why": "Optionaler, höchstens einmal täglicher Hinweis auf liegengebliebene Tabs." },
+      { "perm": "favicon (Chromium)", "why": "Seitensymbole in Listen anzeigen." }
+    ],
+    "noHost": "Es werden keine Host-Berechtigungen angefordert — die Erweiterung kann nicht auf die Inhalte der Seiten zugreifen, die du besuchst.",
+    "controlTitle": "Deine Kontrolle",
+    "controlItems": [
+      "Exportiere deinen gesamten Verlauf als JSON, optional passwortverschlüsselt (AES-256-GCM).",
+      "Stelle ihn aus einem Backup auf diesem oder einem anderen Gerät wieder her.",
+      "Lösche alle Daten mit einem Klick; das Entfernen der Erweiterung löscht alles."
+    ]
+  },
+  "ideaPage": {
+    "back": "← Zurück zur Seite",
+    "eyebrow": "Idee teilen",
+    "titleLead": "Was soll",
+    "titleAccent": "TabStyr",
+    "titleTail": "als Nächstes können?",
+    "lead": "Funktionswünsche, grobe Ideen, kleine Ärgernisse — alles willkommen. Es geht direkt an den Entwickler. Kein Konto, kein Tracking.",
+    "thankYou": "Danke!",
+    "successBody": "Deine Idee ist angekommen — sie geht direkt an den Entwickler. Wenn du eine E-Mail hinterlassen hast, hörst du vielleicht zurück.",
+    "sendAnother": "Noch eine senden",
+    "notConfigured": "Das Ideen-Formular ist noch nicht verbunden. Füge deinen Formspree-Endpunkt in landing/src/site.ts ein (FORMSPREE_ENDPOINT).",
+    "typeLabel": "Typ",
+    "ideaTypeAria": "Art der Idee",
+    "ideaLabel": "Deine Idee",
+    "emailLabel": "E-Mail",
+    "emailOpt": "(optional — nur falls du eine Antwort möchtest)",
+    "placeholder": "Ich würde es lieben, wenn TabStyr …",
+    "send": "Idee senden",
+    "sending": "Wird gesendet …",
+    "error": "Senden fehlgeschlagen — bitte versuche es gleich noch einmal.",
+    "categories": ["Funktionsidee", "Verbesserung", "Fehlerbericht", "Sonstiges"]
+  }
+}

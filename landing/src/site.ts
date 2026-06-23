@@ -52,9 +52,6 @@ export const CF_ANALYTICS_TOKEN = '98d31c2e37914d69ac3870a84b965aa9';
 // Formspree form — otherwise Formspree rejects submissions for a missing token.
 export const HCAPTCHA_SITEKEY = (import.meta.env.VITE_HCAPTCHA_SITEKEY || '') as string;
 
-export const STATS = [
-  { value: '0', unit: 'bytes', label: 'leave your device' },
-  { value: '90', unit: 'days', label: 'of history, auto-pruned' },
-  { value: '11', unit: 'languages', label: 'out of the box' },
-  { value: '100', unit: '%', label: 'local & open by design' },
-];
+// Headline stat numbers. Units + labels are translated (see i18n `hero.stats`) and
+// zipped by index in HeroSection. Keep this in the same order as `hero.stats`.
+export const STAT_VALUES = ['0', '90', '11', '100'];

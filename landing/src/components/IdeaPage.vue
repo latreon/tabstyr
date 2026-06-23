@@ -1,14 +1,21 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import RingLogo from './RingLogo.vue';
 import { FORMSPREE_ENDPOINT, HCAPTCHA_SITEKEY } from '@/site';
+import { localizedPath, locale, useI18n } from '@/i18n';
 import SelectBox from './SelectBox.vue';
 
-const home = import.meta.env.BASE_URL;
+const { t, tm } = useI18n();
+const home = computed(() => localizedPath(locale.value, ''));
 
-const CATEGORIES = ['Feature idea', 'Improvement', 'Bug report', 'Other'];
+const CATEGORIES = computed(() => tm<string[]>('ideaPage.categories'));
 
-const category = ref(CATEGORIES[0]);
+const category = ref(CATEGORIES.value[0]);
+// When the language switches, the category labels change — keep the selection on a
+// valid option (default to the first) so the dropdown and submitted value stay in sync.
+watch(CATEGORIES, (next) => {
+  if (!next.includes(category.value)) category.value = next[0];
+});
 const message = ref('');
 const email = ref('');
 const honeypot = ref(''); // spam trap — real users never fill this
@@ -118,54 +125,48 @@ async function submit() {
     <header class="bar">
       <div class="container bar-inner">
         <a :href="home" class="brand"><RingLogo :size="24" /> <span>TabStyr</span></a>
-        <a :href="home" class="back">← Back to site</a>
+        <a :href="home" class="back">{{ t('ideaPage.back') }}</a>
       </div>
     </header>
 
     <main class="container body">
-      <span class="eyebrow">Share an idea</span>
-      <h1 class="title">What should <span class="gradient-text">TabStyr</span> do next?</h1>
-      <p class="lead">
-        Feature requests, rough ideas, papercuts — all welcome. It goes straight to the
-        maker. No account, no tracking.
-      </p>
+      <span class="eyebrow">{{ t('ideaPage.eyebrow') }}</span>
+      <h1 class="title">{{ t('ideaPage.titleLead') }} <span class="gradient-text">{{ t('ideaPage.titleAccent') }}</span> {{ t('ideaPage.titleTail') }}</h1>
+      <p class="lead">{{ t('ideaPage.lead') }}</p>
 
       <div class="card glass">
         <!-- Success -->
         <div v-if="state === 'done'" class="result" role="status" aria-live="polite">
           <div class="check" aria-hidden="true">✓</div>
-          <h2>Thank you!</h2>
-          <p>Your idea is in — it goes straight to the maker. If you left an email, you might hear back.</p>
-          <button type="button" class="btn btn-secondary" @click="state = 'idle'">Send another</button>
+          <h2>{{ t('ideaPage.thankYou') }}</h2>
+          <p>{{ t('ideaPage.successBody') }}</p>
+          <button type="button" class="btn btn-secondary" @click="state = 'idle'">{{ t('ideaPage.sendAnother') }}</button>
         </div>
 
         <!-- Not configured yet -->
-        <p v-else-if="!configured" class="notice">
-          The idea form isn’t connected yet. Paste your Formspree endpoint in
-          <code>landing/src/site.ts</code> (<code>FORMSPREE_ENDPOINT</code>).
-        </p>
+        <p v-else-if="!configured" class="notice">{{ t('ideaPage.notConfigured') }}</p>
 
         <!-- Form -->
         <form v-else class="form" @submit.prevent="submit">
           <div class="field">
-            <span class="label">Type</span>
-            <SelectBox v-model="category" :options="CATEGORIES" label="Idea type" />
+            <span class="label">{{ t('ideaPage.typeLabel') }}</span>
+            <SelectBox v-model="category" :options="CATEGORIES" :label="t('ideaPage.ideaTypeAria')" />
           </div>
 
           <label class="field">
-            <span class="label">Your idea <span class="req">*</span></span>
+            <span class="label">{{ t('ideaPage.ideaLabel') }} <span class="req">*</span></span>
             <textarea
               v-model="message"
               class="control"
               rows="5"
               required
               maxlength="2000"
-              placeholder="I'd love it if TabStyr could…"
+              :placeholder="t('ideaPage.placeholder')"
             />
           </label>
 
           <label class="field">
-            <span class="label">Email <span class="opt">(optional — only if you want a reply)</span></span>
+            <span class="label">{{ t('ideaPage.emailLabel') }} <span class="opt">{{ t('ideaPage.emailOpt') }}</span></span>
             <input v-model="email" type="email" class="control" placeholder="you@example.com" autocomplete="email" />
           </label>
 
@@ -178,11 +179,9 @@ async function submit() {
 
           <div class="actions">
             <button type="submit" class="btn btn-primary" :disabled="!canSend">
-              {{ state === 'sending' ? 'Sending…' : 'Send idea' }}
+              {{ state === 'sending' ? t('ideaPage.sending') : t('ideaPage.send') }}
             </button>
-            <p v-if="state === 'error'" class="err" role="alert">
-              Couldn’t send — please try again in a moment.
-            </p>
+            <p v-if="state === 'error'" class="err" role="alert">{{ t('ideaPage.error') }}</p>
           </div>
         </form>
       </div>

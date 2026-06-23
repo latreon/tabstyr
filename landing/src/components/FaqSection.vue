@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+import { useI18n } from '@/i18n';
 
-const faqs = [
-  { q: 'Is my browsing data really private?', a: 'Yes. TabStyr makes zero network requests — its content-security policy even blocks them. Everything is stored locally in your browser and pruned after 90 days. You can export or wipe it anytime.' },
-  { q: 'What exactly does it track?', a: 'Active foreground time per site — the tab you are actually looking at — plus background audio counted separately. It never reads page contents, only the URL/title the browser already exposes to extensions.' },
-  { q: 'Does it slow down my browser?', a: 'No. It is event-driven with a once-a-minute checkpoint, uses an efficient local database, and ships ~130 KB of gzipped JavaScript. No background polling, no remote calls.' },
-  { q: 'Which browsers are supported?', a: 'Chrome, Edge, Brave, Opera, Arc and other Chromium browsers fully. Firefox 115+ is supported (favicons show as letter chips). Safari works after an Xcode conversion.' },
-  { q: 'Is it free? Open source?', a: 'Free to use and MIT-licensed. No ads, no account, no paid wall on the core experience.' },
-  { q: 'Can I move my data to another device?', a: 'Yes — export a full backup (JSON, optionally passphrase-encrypted with AES-256-GCM) and restore it anywhere.' },
-];
+const { t, tm } = useI18n();
+const faqs = computed(() => tm<{ q: string; a: string }[]>('faq.items'));
 
 const open = ref<number | null>(0);
 const toggle = (i: number) => (open.value = open.value === i ? null : i);
@@ -36,8 +31,8 @@ function onLeave(el: Element) {
   <section id="faq" class="section">
     <div class="container">
       <div class="head reveal">
-        <span class="eyebrow">Questions</span>
-        <h2 class="h2">Good to know</h2>
+        <span class="eyebrow">{{ t('faq.eyebrow') }}</span>
+        <h2 class="h2">{{ t('faq.title') }}</h2>
       </div>
 
       <ul class="list">

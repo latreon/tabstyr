@@ -1,0 +1,228 @@
+{
+  "meta": {
+    "title": "TabStyr — Suivi du temps de navigation privé",
+    "description": "Découvrez où passe vraiment votre temps de navigation — temps actif par site, tendances, cartes de chaleur, concentration et rappels d'onglets oubliés. 100% local. 0 bytes ne quittent votre appareil.",
+    "ogDescription": "Temps actif par site, tendances, cartes de chaleur, concentration. 100% local — rien ne quitte votre appareil.",
+    "privacyTitle": "Politique de confidentialité — TabStyr",
+    "privacyDescription": "TabStyr ne collecte rien. Aucun serveur, aucune analyse, aucun compte, aucune requête réseau. Tout reste sur votre appareil.",
+    "ideasTitle": "Partager une idée — TabStyr",
+    "ideasDescription": "Proposez une fonctionnalité ou signalez un bug pour TabStyr. Aucun compte, aucun suivi — cela arrive directement au créateur."
+  },
+  "nav": {
+    "features": "Fonctionnalités",
+    "dashboard": "Tableau de bord",
+    "privacy": "Confidentialité",
+    "faq": "FAQ",
+    "feedback": "Retours",
+    "addToChrome": "Ajouter à Chrome",
+    "comingSoon": "Bientôt disponible",
+    "language": "Langue"
+  },
+  "hero": {
+    "eyebrow": "100% local · ouvert par conception",
+    "titleLead": "Découvrez où passe vraiment",
+    "titleAccent": "votre temps de navigation.",
+    "lede": "TabStyr mesure discrètement le temps actif par onglet et par site, puis le transforme en un tableau de bord apaisant — tendances, carte de chaleur d'activité, score de concentration et rappels en douceur pour les onglets oubliés. Chaque byte reste sur votre appareil.",
+    "ctaPrimary": "Ajouter à Chrome — gratuit",
+    "ctaComingSoon": "Bientôt disponible sur Chrome",
+    "micro": "Aucun compte · aucun serveur · aucun suivi · sous licence MIT",
+    "previewAlt": "Tableau de bord TabStyr affichant le temps actif du jour, la répartition par catégorie, les tendances et une carte de chaleur d'activité",
+    "stats": [
+      { "unit": "bytes", "label": "quittent votre appareil" },
+      { "unit": "days", "label": "d'historique, élagué automatiquement" },
+      { "unit": "languages", "label": "dès l'installation" },
+      { "unit": "%", "label": "local et ouvert par conception" }
+    ]
+  },
+  "features": {
+    "eyebrow": "Ce qu'il fait",
+    "titleLead": "Tout ce qu'il vous faut pour comprendre votre temps —",
+    "titleAccent": "rien que vous n'ayez demandé.",
+    "items": [
+      {
+        "title": "Suivi du temps actif",
+        "body": "Par onglet et par site, seconde par seconde. L'audio en arrière-plan est compté séparément, de sorte que les totaux ne dépassent jamais le temps réellement passé à l'écran."
+      },
+      {
+        "title": "Tendances et comparaison",
+        "body": "Tendances d'activité par jour / semaine / mois, ainsi qu'une comparaison cette-semaine-vs-semaine-dernière par catégorie."
+      },
+      {
+        "title": "Score de concentration",
+        "body": "Productif ÷ distrayant, une série quotidienne et une tendance de concentration au fil du temps."
+      },
+      {
+        "title": "Carte de chaleur d'activité",
+        "body": "Quelles heures de quels jours vous naviguez réellement — en un coup d'œil."
+      },
+      {
+        "title": "Catégorisation automatique",
+        "body": "Travail, Dev, Réseaux sociaux, Médias et plus encore — reconnus automatiquement. Reclassez n'importe quel site en un clic."
+      },
+      {
+        "title": "Sauvegardes chiffrées",
+        "body": "Exportez l'intégralité de votre historique au format JSON, chiffré par phrase secrète en option (AES-256-GCM). Restaurez sur n'importe quel appareil."
+      }
+    ]
+  },
+  "showcase": {
+    "eyebrow": "Un aperçu depuis n'importe où",
+    "title": "Une vue posée et premium de votre journée",
+    "sub": "Ouvrez la fenêtre de la barre d'outils pour une lecture instantanée ; accédez au tableau de bord complet pour le détail. Les deux thèmes, conçus pour être consultés d'un coup d'œil — pas étudiés.",
+    "themeAria": "Aperçu du thème",
+    "dark": "Sombre",
+    "light": "Clair",
+    "popupAlt": "Fenêtre {theme} de TabStyr avec le total du jour et les sites principaux",
+    "copyTitle": "Aujourd'hui, en deux clics",
+    "copyBody": "La fenêtre vous donne une lecture instantanée de la journée — puis s'efface.",
+    "bullets": [
+      "Total « actif aujourd'hui » en direct comparé à votre moyenne hebdomadaire",
+      "Sites principaux avec leurs vrais favicons",
+      "Rappel d'onglet oublié, une fois par jour au maximum",
+      "Clair et sombre, selon votre système ou votre choix"
+    ]
+  },
+  "privacyBand": {
+    "eyebrow": "La confidentialité, non comme une fonctionnalité — mais comme le fondement",
+    "h2Num": "0 bytes",
+    "h2Rest": "quittent votre appareil.",
+    "lede": "Vos données vivent dans la base de données propre à votre navigateur (IndexedDB), élaguée sur une fenêtre glissante de 90 jours. Vous pouvez les exporter, les restaurer ou les effacer — à tout moment, entièrement hors ligne.",
+    "points": [
+      { "k": "Aucun serveur", "v": "Rien n'est téléversé. Il n'existe aucun backend vers lequel envoyer des données." },
+      { "k": "Aucun compte", "v": "Installez et c'est parti. Aucune inscription, aucun e-mail, aucun profil." },
+      { "k": "Aucun traceur", "v": "Aucune analyse, aucune publicité, aucun script tiers." },
+      { "k": "Aucune lecture de page", "v": "Uniquement les métadonnées des onglets (URL/titre) issues des API standard du navigateur." }
+    ],
+    "policyLink": "Lire la politique de confidentialité complète →"
+  },
+  "faq": {
+    "eyebrow": "Questions",
+    "title": "Bon à savoir",
+    "items": [
+      {
+        "q": "Mes données de navigation sont-elles vraiment privées ?",
+        "a": "Oui. TabStyr ne fait aucune requête réseau — sa politique de sécurité du contenu les bloque même. Tout est stocké localement dans votre navigateur et élagué après 90 jours. Vous pouvez les exporter ou les effacer à tout moment."
+      },
+      {
+        "q": "Que suit-il exactement ?",
+        "a": "Le temps actif au premier plan par site — l'onglet que vous regardez réellement — plus l'audio en arrière-plan compté séparément. Il ne lit jamais le contenu des pages, uniquement l'URL/titre que le navigateur expose déjà aux extensions."
+      },
+      {
+        "q": "Ralentit-il mon navigateur ?",
+        "a": "Non. Il fonctionne par événements avec un point de contrôle une fois par minute, utilise une base de données locale efficace et embarque environ 130 KB de JavaScript compressé en gzip. Aucun sondage en arrière-plan, aucun appel distant."
+      },
+      {
+        "q": "Quels navigateurs sont pris en charge ?",
+        "a": "Chrome, Edge, Brave, Opera, Arc et les autres navigateurs Chromium entièrement. Firefox 115+ est pris en charge (les favicons s'affichent sous forme de pastilles de lettres). Safari fonctionne après une conversion via Xcode."
+      },
+      {
+        "q": "Est-il gratuit ? Open source ?",
+        "a": "Gratuit à utiliser et sous licence MIT. Aucune publicité, aucun compte, aucun paywall sur l'expérience principale."
+      },
+      {
+        "q": "Puis-je transférer mes données vers un autre appareil ?",
+        "a": "Oui — exportez une sauvegarde complète (JSON, chiffrée par phrase secrète en option avec AES-256-GCM) et restaurez-la n'importe où."
+      }
+    ]
+  },
+  "feedback": {
+    "eyebrow": "Retours et idées",
+    "title": "Construit au grand jour — avec vous.",
+    "sub": "Aucun suivi, aucun widget de retour qui appelle la maison. Juste un formulaire simple — aucun compte, aucune connexion, et rien de stocké à votre sujet.",
+    "ideaTitle": "Partager une idée ou signaler un bug",
+    "ideaBody": "Vous voulez une fonctionnalité, une nouvelle métrique, ou vous avez rencontré un problème ? Dites-le-moi ici même — aucun compte requis.",
+    "ideaCta": "Ouvrir le formulaire",
+    "supportTitle": "Soutenir le projet",
+    "supportBody": "TabStyr est gratuit et open source. Un petit pourboire le maintient en vie.",
+    "supportCta": "Offrez-moi un café"
+  },
+  "cta": {
+    "title": "Reprenez le contrôle de votre temps de navigation.",
+    "sub": "Installez en deux clics. Vos données ne quittent jamais l'appareil. La désinstallation supprime tout.",
+    "primary": "Ajouter à Chrome — gratuit",
+    "comingSoon": "Bientôt disponible sur Chrome",
+    "edge": "Modules Edge",
+    "edgeSoon": "Edge bientôt",
+    "firefox": "Firefox",
+    "firefoxSoon": "Firefox bientôt",
+    "safariSoon": "Safari bientôt",
+    "soonNote": "Les fiches sur les stores arrivent — mettez le dépôt en favori pour savoir quand elles sortent."
+  },
+  "footer": {
+    "tag": "Des analyses du temps de navigation privées et locales.",
+    "product": "Produit",
+    "install": "Installer",
+    "feedback": "Retours",
+    "chromeSoon": "Chrome (bientôt)",
+    "edgeSoon": "Edge (bientôt)",
+    "firefoxSoon": "Firefox (bientôt)",
+    "shareIdea": "Partager une idée",
+    "coffee": "Offrez-moi un café",
+    "builtBy": "Créé par",
+    "badge": "0 bytes leave your device"
+  },
+  "privacyPage": {
+    "back": "← Retour au site",
+    "backCta": "← Retour à TabStyr",
+    "eyebrow": "Politique de confidentialité",
+    "titleNum": "0 bytes",
+    "titleRest": "quittent votre appareil.",
+    "updated": "Dernière mise à jour : 2026-06-12",
+    "leadStrong": "TabStyr ne collecte, ne transmet ni ne partage aucune donnée.",
+    "leadRest": "Tout ce qu'il enregistre reste sur votre appareil. Il n'y a aucun serveur, aucune analyse, aucun compte et aucune requête réseau d'aucune sorte.",
+    "storesTitle": "Ce qu'il stocke (localement, dans l'IndexedDB de votre navigateur)",
+    "stores": [
+      { "label": "Enregistrements de session", "body": "heures de début/fin, le domaine de la page et si l'onglet a diffusé de l'audio." },
+      { "label": "Totaux quotidiens par domaine", "body": "secondes par site par jour." },
+      { "label": "Métadonnées des onglets ouverts", "body": "titre, URL, heure de dernière activité, et un identifiant local aléatoire utilisé pour attribuer le temps." },
+      { "label": "Paramètres", "body": "seuil d'inactivité, délai d'inactivité, thème, comptage de l'audio, règles de catégorie." }
+    ],
+    "retention": "Les données sont conservées sur une fenêtre glissante de 90 jours, puis élaguées automatiquement.",
+    "notTitle": "Ce qu'il ne fait PAS",
+    "notItems": [
+      "N'envoie pas de données hors de votre appareil, et n'utilise ni serveurs, ni synchronisation cloud, ni analyse.",
+      "Ne contient ni publicités ni traceurs.",
+      "Ne lit pas le contenu des pages — uniquement les métadonnées des onglets (URL/titre) issues des API standard d'extension."
+    ],
+    "permsTitle": "Autorisations",
+    "permCol": "Autorisation",
+    "purposeCol": "Objectif",
+    "perms": [
+      { "perm": "tabs", "why": "Voir l'URL/titre de l'onglet actif pour attribuer le temps au bon site." },
+      { "perm": "storage", "why": "Enregistrer vos statistiques et paramètres localement." },
+      { "perm": "idle", "why": "Mettre le suivi en pause lorsque vous vous éloignez pour garder des totaux exacts." },
+      { "perm": "alarms", "why": "Points de contrôle périodiques et tâche de maintenance quotidienne." },
+      { "perm": "notifications", "why": "Rappel facultatif d'onglet oublié, une fois par jour au maximum." },
+      { "perm": "favicon (Chromium)", "why": "Afficher les icônes des sites dans les listes." }
+    ],
+    "noHost": "Aucune autorisation d'hôte n'est demandée — l'extension ne peut pas accéder au contenu des pages que vous visitez.",
+    "controlTitle": "Votre contrôle",
+    "controlItems": [
+      "Exportez l'intégralité de votre historique au format JSON, chiffré par phrase secrète en option (AES-256-GCM).",
+      "Restaurez depuis une sauvegarde sur cet appareil ou un autre.",
+      "Effacez toutes les données en un clic ; supprimer l'extension supprime tout."
+    ]
+  },
+  "ideaPage": {
+    "back": "← Retour au site",
+    "eyebrow": "Partager une idée",
+    "titleLead": "Que devrait faire",
+    "titleAccent": "TabStyr",
+    "titleTail": "ensuite ?",
+    "lead": "Demandes de fonctionnalités, idées en vrac, petits agacements — tout est le bienvenu. Cela arrive directement au créateur. Aucun compte, aucun suivi.",
+    "thankYou": "Merci !",
+    "successBody": "Votre idée est bien reçue — elle arrive directement au créateur. Si vous avez laissé un e-mail, vous aurez peut-être une réponse.",
+    "sendAnother": "En envoyer une autre",
+    "notConfigured": "Le formulaire d'idées n'est pas encore connecté. Collez votre point de terminaison Formspree dans landing/src/site.ts (FORMSPREE_ENDPOINT).",
+    "typeLabel": "Type",
+    "ideaTypeAria": "Type d'idée",
+    "ideaLabel": "Votre idée",
+    "emailLabel": "E-mail",
+    "emailOpt": "(facultatif — uniquement si vous souhaitez une réponse)",
+    "placeholder": "J'adorerais que TabStyr puisse…",
+    "send": "Envoyer l'idée",
+    "sending": "Envoi…",
+    "error": "Échec de l'envoi — veuillez réessayer dans un instant.",
+    "categories": ["Idée de fonctionnalité", "Amélioration", "Rapport de bug", "Autre"]
+  }
+}

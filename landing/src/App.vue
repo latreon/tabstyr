@@ -1,6 +1,14 @@
 <script setup lang="ts">
-import { computed, onMounted, onBeforeUnmount, ref, nextTick } from 'vue';
+import { computed, onMounted, onBeforeUnmount, provide, ref, nextTick } from 'vue';
 import { useReveal } from '@/composables/useReveal';
+import {
+  applyHead,
+  DEFAULT_LOCALE,
+  localizedPath,
+  preferredLocale,
+  setLocale,
+  splitLocale,
+} from '@/i18n';
 import SiteNav from '@/components/SiteNav.vue';
 import HeroSection from '@/components/HeroSection.vue';
 import FeatureGrid from '@/components/FeatureGrid.vue';
@@ -13,18 +21,25 @@ import SiteFooter from '@/components/SiteFooter.vue';
 import PrivacyPage from '@/components/PrivacyPage.vue';
 import IdeaPage from '@/components/IdeaPage.vue';
 
-// Clean-URL router (no '#'): '/privacy' = policy page, '/ideas' = idea form, else
-// landing. Works on GitHub Pages via a 404.html that mirrors index.html, so a deep
-// link boots the SPA and this reads the path. BASE is the Pages subpath ('/tabstyr/').
+// Clean-URL router (no '#') with a leading locale slug: '/', '/de', '/fr/privacy',
+// '/pt-br/ideas'. English is the un-prefixed root. Works on static hosts via a
+// 404.html mirroring index.html, so any deep link boots the SPA and this reads it.
+// BASE is the deploy base path ('/' on the custom domain).
 const BASE = import.meta.env.BASE_URL;
-const readRoute = (): string => {
+const pathFromBase = (): string => {
   let p = window.location.pathname;
   if (p.startsWith(BASE)) p = p.slice(BASE.length);
-  return p.replace(/^\/+|\/+$/g, '');
+  return p;
 };
-const route = ref(readRoute());
-const isPrivacy = computed(() => route.value === 'privacy');
-const isIdeas = computed(() => route.value === 'ideas');
+
+// `rest` is the route with any locale slug stripped: '', 'privacy', or 'ideas'.
+const rest = ref(splitLocale(pathFromBase()).rest);
+const isPrivacy = computed(() => rest.value === 'privacy');
+const isIdeas = computed(() => rest.value === 'ideas');
+
+// Expose the current locale-less route so the language switcher can build links
+// that keep the visitor on the same page in another language.
+provide('route', rest);
 
 const { run: runReveal } = useReveal();
 
@@ -32,9 +47,21 @@ const afterNav = () => {
   window.scrollTo(0, 0);
   void nextTick(() => runReveal());
 };
-const go = (to: string) => {
-  history.pushState(null, '', BASE + to);
-  route.value = readRoute();
+
+// Apply the locale dictated by the current URL (URL is the source of truth), then
+// refresh <title>/description/hreflang for the new locale + route.
+const syncFromUrl = async () => {
+  const { code, rest: r } = splitLocale(pathFromBase());
+  rest.value = r;
+  await setLocale(code, false);
+  applyHead(r);
+};
+
+const go = async (code: string, to: string) => {
+  history.pushState(null, '', localizedPath(code, to));
+  await syncFromUrl();
+  // Persist an explicit language pick so a future visit to the bare root honors it.
+  setLocale(code, true);
   afterNav();
 };
 
@@ -58,16 +85,30 @@ const onClick = (e: MouseEvent) => {
   if (/^(https?:)?\/\//.test(href) || href.startsWith('mailto:')) return;
   if (!href.startsWith(BASE)) return;
   e.preventDefault();
-  go(href.slice(BASE.length).replace(/^\/+|\/+$/g, ''));
+  const { code, rest: r } = splitLocale(href.slice(BASE.length));
+  void go(code, r);
 };
 const onPop = () => {
-  route.value = readRoute();
-  afterNav();
+  void syncFromUrl().then(afterNav);
 };
 
 onMounted(() => {
   document.addEventListener('click', onClick);
   window.addEventListener('popstate', onPop);
+
+  // First paint: if the URL carries an explicit locale, honor it. A bare root visit
+  // adopts the visitor's stored/browser preference (replaceState — no extra history
+  // entry, and crawlers still see '/' as canonical English via the hreflang tags).
+  const { code, rest: r } = splitLocale(pathFromBase());
+  if (code !== DEFAULT_LOCALE) {
+    void syncFromUrl();
+  } else {
+    const pref = preferredLocale();
+    if (pref !== DEFAULT_LOCALE) {
+      history.replaceState(null, '', localizedPath(pref, r));
+    }
+    void syncFromUrl();
+  }
 });
 onBeforeUnmount(() => {
   document.removeEventListener('click', onClick);

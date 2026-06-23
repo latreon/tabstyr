@@ -1,0 +1,228 @@
+{
+  "meta": {
+    "title": "TabStyr — Private browser time tracking",
+    "description": "See where your browser time really goes — active time per site, trends, heatmaps, focus, and stale-tab nudges. 100% local. 0 bytes leave your device.",
+    "ogDescription": "Active time per site, trends, heatmaps, focus. 100% local — nothing leaves your device.",
+    "privacyTitle": "Privacy policy — TabStyr",
+    "privacyDescription": "TabStyr collects nothing. No servers, no analytics, no accounts, no network requests. Everything stays on your device.",
+    "ideasTitle": "Share an idea — TabStyr",
+    "ideasDescription": "Suggest a feature or report a bug for TabStyr. No account, no tracking — it goes straight to the maker."
+  },
+  "nav": {
+    "features": "Features",
+    "dashboard": "Dashboard",
+    "privacy": "Privacy",
+    "faq": "FAQ",
+    "feedback": "Feedback",
+    "addToChrome": "Add to Chrome",
+    "comingSoon": "Coming soon",
+    "language": "Language"
+  },
+  "hero": {
+    "eyebrow": "100% local · open by design",
+    "titleLead": "See where your browser time",
+    "titleAccent": "really goes.",
+    "lede": "TabStyr quietly measures active time per tab and site, then turns it into a calm dashboard — trends, an activity heatmap, focus scoring, and gentle stale-tab nudges. Every byte stays on your device.",
+    "ctaPrimary": "Add to Chrome — free",
+    "ctaComingSoon": "Coming soon to Chrome",
+    "micro": "No account · no servers · no tracking · MIT licensed",
+    "previewAlt": "TabStyr dashboard showing today's active time, category breakdown, trends and an activity heatmap",
+    "stats": [
+      { "unit": "bytes", "label": "leave your device" },
+      { "unit": "days", "label": "of history, auto-pruned" },
+      { "unit": "languages", "label": "out of the box" },
+      { "unit": "%", "label": "local & open by design" }
+    ]
+  },
+  "features": {
+    "eyebrow": "What it does",
+    "titleLead": "Everything you need to understand your time —",
+    "titleAccent": "nothing you didn't ask for.",
+    "items": [
+      {
+        "title": "Active-time tracking",
+        "body": "Per tab and per site, second by second. Background audio is counted separately, so totals never exceed real time at the screen."
+      },
+      {
+        "title": "Trends & comparison",
+        "body": "Day / week / month activity trends, plus this-week-vs-last-week by category."
+      },
+      {
+        "title": "Focus score",
+        "body": "Productive ÷ distracting, a daily streak, and a focus trend over time."
+      },
+      {
+        "title": "Activity heatmap",
+        "body": "Which hours of which days you actually browse — at a glance."
+      },
+      {
+        "title": "Auto-categorized",
+        "body": "Work, Dev, Social, Media and more — recognized automatically. Re-classify any site with one click."
+      },
+      {
+        "title": "Encrypted backups",
+        "body": "Export your full history as JSON, optionally passphrase-encrypted (AES-256-GCM). Restore on any device."
+      }
+    ]
+  },
+  "showcase": {
+    "eyebrow": "Glance from anywhere",
+    "title": "A quiet, premium view of your day",
+    "sub": "Open the toolbar popup for an instant read; jump to the full dashboard for the detail. Both themes, designed to be glanced at — not studied.",
+    "themeAria": "Theme preview",
+    "dark": "Dark",
+    "light": "Light",
+    "popupAlt": "TabStyr {theme} popup with today's total and top sites",
+    "copyTitle": "Today, in two clicks",
+    "copyBody": "The popup gives you an instant read on today — then gets out of the way.",
+    "bullets": [
+      "Live \"active today\" total vs your weekly average",
+      "Top sites with real favicons",
+      "Stale-tab reminder, at most once a day",
+      "Light and dark, following your system or your choice"
+    ]
+  },
+  "privacyBand": {
+    "eyebrow": "Privacy, not as a feature — as the foundation",
+    "h2Num": "0 bytes",
+    "h2Rest": "leave your device.",
+    "lede": "Your data lives in your browser's own database (IndexedDB), pruned to a rolling 90-day window. You can export it, restore it, or wipe it — any time, all offline.",
+    "points": [
+      { "k": "No servers", "v": "Nothing is uploaded. There is no backend to send data to." },
+      { "k": "No accounts", "v": "Install and go. No sign-up, no email, no profile." },
+      { "k": "No trackers", "v": "No analytics, no ads, no third-party scripts." },
+      { "k": "No page reading", "v": "Only tab metadata (URL/title) from standard browser APIs." }
+    ],
+    "policyLink": "Read the full privacy policy →"
+  },
+  "faq": {
+    "eyebrow": "Questions",
+    "title": "Good to know",
+    "items": [
+      {
+        "q": "Is my browsing data really private?",
+        "a": "Yes. TabStyr makes zero network requests — its content-security policy even blocks them. Everything is stored locally in your browser and pruned after 90 days. You can export or wipe it anytime."
+      },
+      {
+        "q": "What exactly does it track?",
+        "a": "Active foreground time per site — the tab you are actually looking at — plus background audio counted separately. It never reads page contents, only the URL/title the browser already exposes to extensions."
+      },
+      {
+        "q": "Does it slow down my browser?",
+        "a": "No. It is event-driven with a once-a-minute checkpoint, uses an efficient local database, and ships ~130 KB of gzipped JavaScript. No background polling, no remote calls."
+      },
+      {
+        "q": "Which browsers are supported?",
+        "a": "Chrome, Edge, Brave, Opera, Arc and other Chromium browsers fully. Firefox 115+ is supported (favicons show as letter chips). Safari works after an Xcode conversion."
+      },
+      {
+        "q": "Is it free? Open source?",
+        "a": "Free to use and MIT-licensed. No ads, no account, no paid wall on the core experience."
+      },
+      {
+        "q": "Can I move my data to another device?",
+        "a": "Yes — export a full backup (JSON, optionally passphrase-encrypted with AES-256-GCM) and restore it anywhere."
+      }
+    ]
+  },
+  "feedback": {
+    "eyebrow": "Feedback & ideas",
+    "title": "Built in the open — with you.",
+    "sub": "No tracking, no feedback widgets phoning home. Just a simple form — no account, no sign-in, and nothing stored about you.",
+    "ideaTitle": "Share an idea or report a bug",
+    "ideaBody": "Want a feature, a new metric, or hit something broken? Tell me right here — no account needed.",
+    "ideaCta": "Open the form",
+    "supportTitle": "Support the project",
+    "supportBody": "TabStyr is free and open source. A small tip keeps it going.",
+    "supportCta": "Buy me a coffee"
+  },
+  "cta": {
+    "title": "Take back your browser time.",
+    "sub": "Install in two clicks. Your data never leaves the device. Uninstall removes everything.",
+    "primary": "Add to Chrome — free",
+    "comingSoon": "Coming soon to Chrome",
+    "edge": "Edge Add-ons",
+    "edgeSoon": "Edge soon",
+    "firefox": "Firefox",
+    "firefoxSoon": "Firefox soon",
+    "safariSoon": "Safari soon",
+    "soonNote": "Store listings are on the way — star the repo to hear when they land."
+  },
+  "footer": {
+    "tag": "Private, local browser-time insights.",
+    "product": "Product",
+    "install": "Install",
+    "feedback": "Feedback",
+    "chromeSoon": "Chrome (soon)",
+    "edgeSoon": "Edge (soon)",
+    "firefoxSoon": "Firefox (soon)",
+    "shareIdea": "Share an idea",
+    "coffee": "Buy me a coffee",
+    "builtBy": "Built by",
+    "badge": "0 bytes leave your device"
+  },
+  "privacyPage": {
+    "back": "← Back to site",
+    "backCta": "← Back to TabStyr",
+    "eyebrow": "Privacy policy",
+    "titleNum": "0 bytes",
+    "titleRest": "leave your device.",
+    "updated": "Last updated: 2026-06-12",
+    "leadStrong": "TabStyr does not collect, transmit, or share any data.",
+    "leadRest": "Everything it records stays on your device. There are no servers, no analytics, no accounts, and no network requests of any kind.",
+    "storesTitle": "What it stores (locally, in your browser's IndexedDB)",
+    "stores": [
+      { "label": "Session records", "body": "start/end times, the page's domain, and whether the tab played audio." },
+      { "label": "Daily per-domain totals", "body": "seconds per site per day." },
+      { "label": "Open-tab metadata", "body": "title, URL, last-active time, and a random local id used to attribute time." },
+      { "label": "Settings", "body": "stale threshold, idle timeout, theme, audio counting, category rules." }
+    ],
+    "retention": "Data is kept for a rolling 90-day window, then pruned automatically.",
+    "notTitle": "What it does NOT do",
+    "notItems": [
+      "Does not send data off your device, or use servers, cloud sync, or analytics.",
+      "Does not contain ads or trackers.",
+      "Does not read page contents — only tab metadata (URL/title) from standard extension APIs."
+    ],
+    "permsTitle": "Permissions",
+    "permCol": "Permission",
+    "purposeCol": "Purpose",
+    "perms": [
+      { "perm": "tabs", "why": "See the active tab's URL/title to attribute time to the right site." },
+      { "perm": "storage", "why": "Save your stats and settings locally." },
+      { "perm": "idle", "why": "Pause tracking when you step away so totals stay accurate." },
+      { "perm": "alarms", "why": "Periodic checkpoints and the once-daily maintenance task." },
+      { "perm": "notifications", "why": "Optional, at-most-once-a-day stale-tab reminder." },
+      { "perm": "favicon (Chromium)", "why": "Show site icons in lists." }
+    ],
+    "noHost": "No host permissions are requested — the extension cannot access the content of the pages you visit.",
+    "controlTitle": "Your control",
+    "controlItems": [
+      "Export your full history as JSON, optionally passphrase-encrypted (AES-256-GCM).",
+      "Restore from a backup on this or another device.",
+      "Wipe all data in one click; removing the extension deletes everything."
+    ]
+  },
+  "ideaPage": {
+    "back": "← Back to site",
+    "eyebrow": "Share an idea",
+    "titleLead": "What should",
+    "titleAccent": "TabStyr",
+    "titleTail": "do next?",
+    "lead": "Feature requests, rough ideas, papercuts — all welcome. It goes straight to the maker. No account, no tracking.",
+    "thankYou": "Thank you!",
+    "successBody": "Your idea is in — it goes straight to the maker. If you left an email, you might hear back.",
+    "sendAnother": "Send another",
+    "notConfigured": "The idea form isn't connected yet. Paste your Formspree endpoint in landing/src/site.ts (FORMSPREE_ENDPOINT).",
+    "typeLabel": "Type",
+    "ideaTypeAria": "Idea type",
+    "ideaLabel": "Your idea",
+    "emailLabel": "Email",
+    "emailOpt": "(optional — only if you want a reply)",
+    "placeholder": "I'd love it if TabStyr could…",
+    "send": "Send idea",
+    "sending": "Sending…",
+    "error": "Couldn't send — please try again in a moment.",
+    "categories": ["Feature idea", "Improvement", "Bug report", "Other"]
+  }
+}

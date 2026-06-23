@@ -1,0 +1,228 @@
+{
+  "meta": {
+    "title": "TabStyr — Gizli tarayıcı zaman takibi",
+    "description": "Tarayıcı zamanınızın gerçekte nereye gittiğini görün — site başına aktif süre, eğilimler, ısı haritaları, odak ve eskimiş sekme uyarıları. %100 yerel. Cihazınızdan 0 bytes ayrılmaz.",
+    "ogDescription": "Site başına aktif süre, eğilimler, ısı haritaları, odak. %100 yerel — cihazınızdan hiçbir şey ayrılmaz.",
+    "privacyTitle": "Gizlilik politikası — TabStyr",
+    "privacyDescription": "TabStyr hiçbir şey toplamaz. Sunucu yok, analiz yok, hesap yok, ağ isteği yok. Her şey cihazınızda kalır.",
+    "ideasTitle": "Bir fikir paylaşın — TabStyr",
+    "ideasDescription": "TabStyr için bir özellik önerin veya bir hata bildirin. Hesap yok, takip yok — doğrudan geliştiriciye ulaşır."
+  },
+  "nav": {
+    "features": "Özellikler",
+    "dashboard": "Panel",
+    "privacy": "Gizlilik",
+    "faq": "SSS",
+    "feedback": "Geri bildirim",
+    "addToChrome": "Chrome'a ekle",
+    "comingSoon": "Yakında",
+    "language": "Dil"
+  },
+  "hero": {
+    "eyebrow": "%100 yerel · tasarımı gereği açık",
+    "titleLead": "Tarayıcı zamanınızın gerçekte nereye",
+    "titleAccent": "gittiğini görün.",
+    "lede": "TabStyr, sekme ve site başına aktif süreyi sessizce ölçer ve bunu sakin bir panele dönüştürür — eğilimler, bir aktivite ısı haritası, odak puanlaması ve nazik eskimiş sekme uyarıları. Her byte cihazınızda kalır.",
+    "ctaPrimary": "Chrome'a ekle — ücretsiz",
+    "ctaComingSoon": "Yakında Chrome'da",
+    "micro": "Hesap yok · sunucu yok · takip yok · MIT lisanslı",
+    "previewAlt": "TabStyr panelinin bugünkü aktif süreyi, kategori dağılımını, eğilimleri ve bir aktivite ısı haritasını gösterdiği ekran",
+    "stats": [
+      { "unit": "bytes", "label": "cihazınızdan ayrılır" },
+      { "unit": "gün", "label": "geçmiş, otomatik budanır" },
+      { "unit": "dil", "label": "kutudan çıktığı gibi" },
+      { "unit": "%", "label": "yerel ve tasarımı gereği açık" }
+    ]
+  },
+  "features": {
+    "eyebrow": "Ne yapar",
+    "titleLead": "Zamanınızı anlamak için ihtiyacınız olan her şey —",
+    "titleAccent": "istemediğiniz hiçbir şey değil.",
+    "items": [
+      {
+        "title": "Aktif süre takibi",
+        "body": "Sekme ve site başına, saniye saniye. Arka plandaki ses ayrı olarak sayılır, böylece toplamlar ekran başındaki gerçek süreyi asla aşmaz."
+      },
+      {
+        "title": "Eğilimler ve karşılaştırma",
+        "body": "Gün / hafta / ay aktivite eğilimleri, ayrıca kategoriye göre bu hafta ile geçen hafta karşılaştırması."
+      },
+      {
+        "title": "Odak puanı",
+        "body": "Verimli ÷ dikkat dağıtıcı, günlük bir seri ve zaman içindeki bir odak eğilimi."
+      },
+      {
+        "title": "Aktivite ısı haritası",
+        "body": "Hangi günlerin hangi saatlerinde gerçekten gezindiğinizi — bir bakışta."
+      },
+      {
+        "title": "Otomatik kategorize",
+        "body": "İş, Geliştirme, Sosyal, Medya ve daha fazlası — otomatik olarak tanınır. Herhangi bir siteyi tek tıkla yeniden sınıflandırın."
+      },
+      {
+        "title": "Şifreli yedekler",
+        "body": "Tüm geçmişinizi JSON olarak, isteğe bağlı olarak parolayla şifrelenmiş (AES-256-GCM) şekilde dışa aktarın. Herhangi bir cihazda geri yükleyin."
+      }
+    ]
+  },
+  "showcase": {
+    "eyebrow": "Her yerden bir bakış",
+    "title": "Gününüzün sakin, premium bir görünümü",
+    "sub": "Anında bir okuma için araç çubuğu açılır penceresini açın; ayrıntı için tam panele geçin. Her iki tema da, üzerinde çalışılmak için değil — bir bakışta görülmek için tasarlandı.",
+    "themeAria": "Tema önizlemesi",
+    "dark": "Koyu",
+    "light": "Açık",
+    "popupAlt": "Bugünkü toplam ve en çok kullanılan siteleri gösteren TabStyr {theme} açılır penceresi",
+    "copyTitle": "Bugün, iki tıkla",
+    "copyBody": "Açılır pencere size bugün hakkında anında bir okuma sunar — sonra yoldan çekilir.",
+    "bullets": [
+      "Haftalık ortalamanıza karşı canlı \"bugün aktif\" toplamı",
+      "Gerçek favicon'larla en çok kullanılan siteler",
+      "Günde en fazla bir kez, eskimiş sekme hatırlatması",
+      "Açık ve koyu, sisteminizi veya tercihinizi takip eder"
+    ]
+  },
+  "privacyBand": {
+    "eyebrow": "Gizlilik, bir özellik olarak değil — temel olarak",
+    "h2Num": "0 bytes",
+    "h2Rest": "cihazınızdan ayrılır.",
+    "lede": "Verileriniz tarayıcınızın kendi veritabanında (IndexedDB) bulunur ve sürekli kayan 90 günlük bir pencereye budanır. Dışa aktarabilir, geri yükleyebilir veya silebilirsiniz — istediğiniz zaman, tamamen çevrimdışı.",
+    "points": [
+      { "k": "Sunucu yok", "v": "Hiçbir şey yüklenmez. Veri gönderilecek bir arka uç yoktur." },
+      { "k": "Hesap yok", "v": "Kurun ve kullanın. Kayıt yok, e-posta yok, profil yok." },
+      { "k": "İzleyici yok", "v": "Analiz yok, reklam yok, üçüncü taraf betiği yok." },
+      { "k": "Sayfa okuma yok", "v": "Yalnızca standart tarayıcı API'lerinden gelen sekme meta verileri (URL/başlık)." }
+    ],
+    "policyLink": "Tam gizlilik politikasını okuyun →"
+  },
+  "faq": {
+    "eyebrow": "Sorular",
+    "title": "Bilmekte fayda var",
+    "items": [
+      {
+        "q": "Gezinme verilerim gerçekten gizli mi?",
+        "a": "Evet. TabStyr sıfır ağ isteği yapar — içerik güvenlik politikası bunları engeller bile. Her şey tarayıcınızda yerel olarak saklanır ve 90 günden sonra budanır. İstediğiniz zaman dışa aktarabilir veya silebilirsiniz."
+      },
+      {
+        "q": "Tam olarak neyi takip eder?",
+        "a": "Site başına aktif ön plan süresini — gerçekten baktığınız sekmeyi — artı ayrı olarak sayılan arka plan sesini. Sayfa içeriklerini asla okumaz, yalnızca tarayıcının zaten uzantılara açtığı URL/başlığı kullanır."
+      },
+      {
+        "q": "Tarayıcımı yavaşlatır mı?",
+        "a": "Hayır. Dakikada bir kez kontrol noktasıyla olay tabanlı çalışır, verimli bir yerel veritabanı kullanır ve ~130 KB gzip'lenmiş JavaScript ile gelir. Arka plan yoklaması yok, uzak çağrı yok."
+      },
+      {
+        "q": "Hangi tarayıcılar destekleniyor?",
+        "a": "Chrome, Edge, Brave, Opera, Arc ve diğer Chromium tarayıcıları tam olarak. Firefox 115+ desteklenir (favicon'lar harf etiketleri olarak görünür). Safari, bir Xcode dönüşümünden sonra çalışır."
+      },
+      {
+        "q": "Ücretsiz mi? Açık kaynak mı?",
+        "a": "Kullanımı ücretsiz ve MIT lisanslı. Reklam yok, hesap yok, temel deneyimde ücretli duvar yok."
+      },
+      {
+        "q": "Verilerimi başka bir cihaza taşıyabilir miyim?",
+        "a": "Evet — tam bir yedek dışa aktarın (JSON, isteğe bağlı olarak AES-256-GCM ile parolayla şifrelenmiş) ve istediğiniz yerde geri yükleyin."
+      }
+    ]
+  },
+  "feedback": {
+    "eyebrow": "Geri bildirim ve fikirler",
+    "title": "Açıkça inşa edildi — sizinle birlikte.",
+    "sub": "Takip yok, eve telefon eden geri bildirim widget'ları yok. Sadece basit bir form — hesap yok, oturum açma yok ve hakkınızda hiçbir şey saklanmaz.",
+    "ideaTitle": "Bir fikir paylaşın veya bir hata bildirin",
+    "ideaBody": "Bir özellik, yeni bir metrik mi istiyorsunuz ya da bozuk bir şeye mi rastladınız? Tam burada söyleyin — hesap gerekmez.",
+    "ideaCta": "Formu aç",
+    "supportTitle": "Projeyi destekleyin",
+    "supportBody": "TabStyr ücretsiz ve açık kaynaktır. Küçük bir bahşiş devam etmesini sağlar.",
+    "supportCta": "Bana bir kahve ısmarla"
+  },
+  "cta": {
+    "title": "Tarayıcı zamanınızı geri alın.",
+    "sub": "İki tıkla kurun. Verileriniz cihazdan asla ayrılmaz. Kaldırma her şeyi siler.",
+    "primary": "Chrome'a ekle — ücretsiz",
+    "comingSoon": "Yakında Chrome'da",
+    "edge": "Edge Eklentileri",
+    "edgeSoon": "Edge yakında",
+    "firefox": "Firefox",
+    "firefoxSoon": "Firefox yakında",
+    "safariSoon": "Safari yakında",
+    "soonNote": "Mağaza girişleri yolda — indikleri zaman haberdar olmak için depoyu yıldızlayın."
+  },
+  "footer": {
+    "tag": "Gizli, yerel tarayıcı zamanı içgörüleri.",
+    "product": "Ürün",
+    "install": "Kur",
+    "feedback": "Geri bildirim",
+    "chromeSoon": "Chrome (yakında)",
+    "edgeSoon": "Edge (yakında)",
+    "firefoxSoon": "Firefox (yakında)",
+    "shareIdea": "Bir fikir paylaşın",
+    "coffee": "Bana bir kahve ısmarla",
+    "builtBy": "Geliştiren",
+    "badge": "Cihazınızdan 0 bytes ayrılır"
+  },
+  "privacyPage": {
+    "back": "← Siteye dön",
+    "backCta": "← TabStyr'a dön",
+    "eyebrow": "Gizlilik politikası",
+    "titleNum": "0 bytes",
+    "titleRest": "cihazınızdan ayrılır.",
+    "updated": "Son güncelleme: 2026-06-12",
+    "leadStrong": "TabStyr hiçbir veri toplamaz, iletmez veya paylaşmaz.",
+    "leadRest": "Kaydettiği her şey cihazınızda kalır. Sunucu yok, analiz yok, hesap yok ve hiçbir türden ağ isteği yok.",
+    "storesTitle": "Neyi saklar (yerel olarak, tarayıcınızın IndexedDB'sinde)",
+    "stores": [
+      { "label": "Oturum kayıtları", "body": "başlangıç/bitiş zamanları, sayfanın etki alanı ve sekmenin ses çalıp çalmadığı." },
+      { "label": "Günlük etki alanı başına toplamlar", "body": "gün başına site başına saniye." },
+      { "label": "Açık sekme meta verileri", "body": "başlık, URL, son aktif olma zamanı ve süreyi ilişkilendirmek için kullanılan rastgele bir yerel kimlik." },
+      { "label": "Ayarlar", "body": "eskime eşiği, boşta kalma zaman aşımı, tema, ses sayımı, kategori kuralları." }
+    ],
+    "retention": "Veriler sürekli kayan 90 günlük bir pencerede tutulur, ardından otomatik olarak budanır.",
+    "notTitle": "Neyi YAPMAZ",
+    "notItems": [
+      "Verileri cihazınızdan dışarı göndermez veya sunucu, bulut senkronizasyonu ya da analiz kullanmaz.",
+      "Reklam veya izleyici içermez.",
+      "Sayfa içeriklerini okumaz — yalnızca standart uzantı API'lerinden gelen sekme meta verileri (URL/başlık)."
+    ],
+    "permsTitle": "İzinler",
+    "permCol": "İzin",
+    "purposeCol": "Amaç",
+    "perms": [
+      { "perm": "tabs", "why": "Süreyi doğru siteye ilişkilendirmek için aktif sekmenin URL/başlığını görme." },
+      { "perm": "storage", "why": "İstatistiklerinizi ve ayarlarınızı yerel olarak kaydetme." },
+      { "perm": "idle", "why": "Uzaklaştığınızda takibi duraklatarak toplamların doğru kalmasını sağlama." },
+      { "perm": "alarms", "why": "Periyodik kontrol noktaları ve günde bir kez yapılan bakım görevi." },
+      { "perm": "notifications", "why": "İsteğe bağlı, günde en fazla bir kez eskimiş sekme hatırlatması." },
+      { "perm": "favicon (Chromium)", "why": "Listelerde site simgelerini gösterme." }
+    ],
+    "noHost": "Hiçbir ana bilgisayar izni istenmez — uzantı ziyaret ettiğiniz sayfaların içeriğine erişemez.",
+    "controlTitle": "Sizin kontrolünüz",
+    "controlItems": [
+      "Tüm geçmişinizi JSON olarak, isteğe bağlı olarak parolayla şifrelenmiş (AES-256-GCM) şekilde dışa aktarın.",
+      "Bu veya başka bir cihazda bir yedekten geri yükleyin.",
+      "Tüm verileri tek tıkla silin; uzantıyı kaldırmak her şeyi siler."
+    ]
+  },
+  "ideaPage": {
+    "back": "← Siteye dön",
+    "eyebrow": "Bir fikir paylaşın",
+    "titleLead": "Bundan sonra",
+    "titleAccent": "TabStyr",
+    "titleTail": "ne yapmalı?",
+    "lead": "Özellik istekleri, ham fikirler, küçük sorunlar — hepsi hoş karşılanır. Doğrudan geliştiriciye ulaşır. Hesap yok, takip yok.",
+    "thankYou": "Teşekkürler!",
+    "successBody": "Fikriniz alındı — doğrudan geliştiriciye ulaşır. Bir e-posta bıraktıysanız, yanıt alabilirsiniz.",
+    "sendAnother": "Bir tane daha gönder",
+    "notConfigured": "Fikir formu henüz bağlı değil. Formspree uç noktanızı landing/src/site.ts dosyasına yapıştırın (FORMSPREE_ENDPOINT).",
+    "typeLabel": "Tür",
+    "ideaTypeAria": "Fikir türü",
+    "ideaLabel": "Fikriniz",
+    "emailLabel": "E-posta",
+    "emailOpt": "(isteğe bağlı — yalnızca yanıt isterseniz)",
+    "placeholder": "TabStyr şunu yapabilseydi çok isterdim…",
+    "send": "Fikri gönder",
+    "sending": "Gönderiliyor…",
+    "error": "Gönderilemedi — lütfen birazdan tekrar deneyin.",
+    "categories": ["Özellik fikri", "İyileştirme", "Hata bildirimi", "Diğer"]
+  }
+}

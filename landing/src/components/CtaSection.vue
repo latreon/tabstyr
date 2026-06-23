@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { LINKS, STORE_LIVE, ANY_STORE_LIVE } from '@/site';
+import { useI18n } from '@/i18n';
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -7,24 +10,24 @@ import { LINKS, STORE_LIVE, ANY_STORE_LIVE } from '@/site';
     <div class="container">
       <div class="cta glass reveal">
         <div class="glow" aria-hidden="true" />
-        <h2 class="h2">Take back your browser time.</h2>
-        <p class="sub">Install in two clicks. Your data never leaves the device. Uninstall removes everything.</p>
+        <h2 class="h2">{{ t('cta.title') }}</h2>
+        <p class="sub">{{ t('cta.sub') }}</p>
 
         <div class="actions">
-          <a v-if="STORE_LIVE.chrome" :href="LINKS.chrome" target="_blank" rel="noopener" class="btn btn-primary">Add to Chrome — free</a>
-          <span v-else class="btn btn-primary is-soon" role="button" aria-disabled="true">Coming soon to Chrome</span>
+          <a v-if="STORE_LIVE.chrome" :href="LINKS.chrome" target="_blank" rel="noopener" class="btn btn-primary">{{ t('cta.primary') }}</a>
+          <span v-else class="btn btn-primary is-soon" role="button" aria-disabled="true">{{ t('cta.comingSoon') }}</span>
         </div>
 
         <div class="stores">
-          <a v-if="STORE_LIVE.edge" :href="LINKS.edge" target="_blank" rel="noopener">Edge Add-ons</a>
-          <span v-else class="muted">Edge soon</span>
+          <a v-if="STORE_LIVE.edge" :href="LINKS.edge" target="_blank" rel="noopener">{{ t('cta.edge') }}</a>
+          <span v-else class="muted">{{ t('cta.edgeSoon') }}</span>
           <span aria-hidden="true">·</span>
-          <a v-if="STORE_LIVE.firefox" :href="LINKS.firefox" target="_blank" rel="noopener">Firefox</a>
-          <span v-else class="muted">Firefox soon</span>
+          <a v-if="STORE_LIVE.firefox" :href="LINKS.firefox" target="_blank" rel="noopener">{{ t('cta.firefox') }}</a>
+          <span v-else class="muted">{{ t('cta.firefoxSoon') }}</span>
           <span aria-hidden="true">·</span>
-          <span class="muted">Safari soon</span>
+          <span class="muted">{{ t('cta.safariSoon') }}</span>
         </div>
-        <p v-if="!ANY_STORE_LIVE" class="soon-note">Store listings are on the way — star the repo to hear when they land.</p>
+        <p v-if="!ANY_STORE_LIVE" class="soon-note">{{ t('cta.soonNote') }}</p>
       </div>
     </div>
   </section>

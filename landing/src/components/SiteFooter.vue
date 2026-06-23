@@ -1,7 +1,12 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import RingLogo from './RingLogo.vue';
 import { LINKS, AUTHOR, STORE_LIVE } from '@/site';
+import { localizedPath, locale, useI18n } from '@/i18n';
+
+const { t } = useI18n();
 const year = 2026;
+const ideasHref = computed(() => localizedPath(locale.value, 'ideas'));
 </script>
 
 <template>
@@ -9,38 +14,38 @@ const year = 2026;
     <div class="container inner">
       <div class="brand-col">
         <a href="#top" class="brand"><RingLogo :size="22" /> <span>TabStyr</span></a>
-        <p class="tag">Private, local browser-time insights.</p>
+        <p class="tag">{{ t('footer.tag') }}</p>
       </div>
 
       <nav class="cols" aria-label="Footer">
         <div class="col">
-          <span class="head">Product</span>
-          <a href="#features">Features</a>
-          <a href="#showcase">Dashboard</a>
-          <a href="#privacy">Privacy</a>
-          <a href="#faq">FAQ</a>
+          <span class="head">{{ t('footer.product') }}</span>
+          <a href="#features">{{ t('nav.features') }}</a>
+          <a href="#showcase">{{ t('nav.dashboard') }}</a>
+          <a href="#privacy">{{ t('nav.privacy') }}</a>
+          <a href="#faq">{{ t('nav.faq') }}</a>
         </div>
         <div class="col">
-          <span class="head">Install</span>
+          <span class="head">{{ t('footer.install') }}</span>
           <a v-if="STORE_LIVE.chrome" :href="LINKS.chrome" target="_blank" rel="noopener">Chrome</a>
-          <span v-else class="muted">Chrome (soon)</span>
+          <span v-else class="muted">{{ t('footer.chromeSoon') }}</span>
           <a v-if="STORE_LIVE.edge" :href="LINKS.edge" target="_blank" rel="noopener">Edge</a>
-          <span v-else class="muted">Edge (soon)</span>
+          <span v-else class="muted">{{ t('footer.edgeSoon') }}</span>
           <a v-if="STORE_LIVE.firefox" :href="LINKS.firefox" target="_blank" rel="noopener">Firefox</a>
-          <span v-else class="muted">Firefox (soon)</span>
+          <span v-else class="muted">{{ t('footer.firefoxSoon') }}</span>
         </div>
         <div class="col">
-          <span class="head">Feedback</span>
-          <a :href="LINKS.ideas">Share an idea</a>
-          <a v-if="LINKS.coffee" :href="LINKS.coffee" target="_blank" rel="noopener">Buy me a coffee</a>
+          <span class="head">{{ t('footer.feedback') }}</span>
+          <a :href="ideasHref">{{ t('footer.shareIdea') }}</a>
+          <a v-if="LINKS.coffee" :href="LINKS.coffee" target="_blank" rel="noopener">{{ t('footer.coffee') }}</a>
         </div>
       </nav>
     </div>
     <div class="container bottom">
-      <span>© {{ year }} TabStyr · Built by
+      <span>© {{ year }} TabStyr · {{ t('footer.builtBy') }}
         <a class="author" :href="AUTHOR.url" target="_blank" rel="noopener">{{ AUTHOR.name }}</a>
       </span>
-      <span class="badge">0 bytes leave your device</span>
+      <span class="badge">{{ t('footer.badge') }}</span>
     </div>
   </footer>
 </template>

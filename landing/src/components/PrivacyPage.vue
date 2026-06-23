@@ -1,16 +1,15 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import RingLogo from './RingLogo.vue';
+import { localizedPath, locale, useI18n } from '@/i18n';
 
-const home = import.meta.env.BASE_URL;
+const { t, tm } = useI18n();
+const home = computed(() => localizedPath(locale.value, ''));
 
-const stores = [
-  { perm: 'tabs', why: 'See the active tab’s URL/title to attribute time to the right site.' },
-  { perm: 'storage', why: 'Save your stats and settings locally.' },
-  { perm: 'idle', why: 'Pause tracking when you step away so totals stay accurate.' },
-  { perm: 'alarms', why: 'Periodic checkpoints and the once-daily maintenance task.' },
-  { perm: 'notifications', why: 'Optional, at-most-once-a-day stale-tab reminder.' },
-  { perm: 'favicon (Chromium)', why: 'Show site icons in lists.' },
-];
+const stores = computed(() => tm<{ label: string; body: string }[]>('privacyPage.stores'));
+const notItems = computed(() => tm<string[]>('privacyPage.notItems'));
+const perms = computed(() => tm<{ perm: string; why: string }[]>('privacyPage.perms'));
+const controlItems = computed(() => tm<string[]>('privacyPage.controlItems'));
 </script>
 
 <template>
@@ -20,56 +19,48 @@ const stores = [
     <header class="bar">
       <div class="container bar-inner">
         <a :href="home" class="brand"><RingLogo :size="24" /> <span>TabStyr</span></a>
-        <a :href="home" class="back">← Back to site</a>
+        <a :href="home" class="back">{{ t('privacyPage.back') }}</a>
       </div>
     </header>
 
     <main class="container body">
-      <span class="eyebrow reveal-static">Privacy policy</span>
-      <h1 class="title"><span class="gradient-text">0 bytes</span> leave your device.</h1>
-      <p class="updated">Last updated: 2026-06-12</p>
+      <span class="eyebrow reveal-static">{{ t('privacyPage.eyebrow') }}</span>
+      <h1 class="title"><span class="gradient-text">{{ t('privacyPage.titleNum') }}</span> {{ t('privacyPage.titleRest') }}</h1>
+      <p class="updated">{{ t('privacyPage.updated') }}</p>
 
       <div class="card glass">
         <p class="lead">
-          <strong>TabStyr does not collect, transmit, or share any data.</strong>
-          Everything it records stays on your device. There are no servers, no analytics,
-          no accounts, and no network requests of any kind.
+          <strong>{{ t('privacyPage.leadStrong') }}</strong>
+          {{ t('privacyPage.leadRest') }}
         </p>
 
-        <h2>What it stores (locally, in your browser’s IndexedDB)</h2>
+        <h2>{{ t('privacyPage.storesTitle') }}</h2>
         <ul>
-          <li><strong>Session records</strong> — start/end times, the page’s domain, and whether the tab played audio.</li>
-          <li><strong>Daily per-domain totals</strong> — seconds per site per day.</li>
-          <li><strong>Open-tab metadata</strong> — title, URL, last-active time, and a random local id used to attribute time.</li>
-          <li><strong>Settings</strong> — stale threshold, idle timeout, theme, audio counting, category rules.</li>
+          <li v-for="(s, i) in stores" :key="i"><strong>{{ s.label }}</strong> — {{ s.body }}</li>
         </ul>
-        <p>Data is kept for a rolling <strong>90-day window</strong>, then pruned automatically.</p>
+        <p>{{ t('privacyPage.retention') }}</p>
 
-        <h2>What it does NOT do</h2>
+        <h2>{{ t('privacyPage.notTitle') }}</h2>
         <ul>
-          <li>Does <strong>not</strong> send data off your device, or use servers, cloud sync, or analytics.</li>
-          <li>Does <strong>not</strong> contain ads or trackers.</li>
-          <li>Does <strong>not</strong> read page contents — only tab metadata (URL/title) from standard extension APIs.</li>
+          <li v-for="(n, i) in notItems" :key="i">{{ n }}</li>
         </ul>
 
-        <h2>Permissions</h2>
+        <h2>{{ t('privacyPage.permsTitle') }}</h2>
         <table>
-          <thead><tr><th>Permission</th><th>Purpose</th></tr></thead>
+          <thead><tr><th>{{ t('privacyPage.permCol') }}</th><th>{{ t('privacyPage.purposeCol') }}</th></tr></thead>
           <tbody>
-            <tr v-for="s in stores" :key="s.perm"><td><code>{{ s.perm }}</code></td><td>{{ s.why }}</td></tr>
+            <tr v-for="p in perms" :key="p.perm"><td><code>{{ p.perm }}</code></td><td>{{ p.why }}</td></tr>
           </tbody>
         </table>
-        <p>No host permissions are requested — the extension cannot access the content of the pages you visit.</p>
+        <p>{{ t('privacyPage.noHost') }}</p>
 
-        <h2>Your control</h2>
+        <h2>{{ t('privacyPage.controlTitle') }}</h2>
         <ul>
-          <li><strong>Export</strong> your full history as JSON, optionally passphrase-encrypted (AES-256-GCM).</li>
-          <li><strong>Restore</strong> from a backup on this or another device.</li>
-          <li><strong>Wipe all data</strong> in one click; removing the extension deletes everything.</li>
+          <li v-for="(c, i) in controlItems" :key="i">{{ c }}</li>
         </ul>
       </div>
 
-      <a :href="home" class="back-cta">← Back to TabStyr</a>
+      <a :href="home" class="back-cta">{{ t('privacyPage.backCta') }}</a>
     </main>
   </div>
 </template>
