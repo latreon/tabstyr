@@ -1,44 +1,8 @@
-import { dateKey } from './time';
 import type { DailyStat, Session, Settings, TabMeta } from './types';
 
-function csvCell(value: string | number): string {
-  // Neutralize spreadsheet formula injection: a leading =,+,-,@,tab,CR makes Excel/
-  // Sheets evaluate the cell. CSV-quoting alone does NOT stop that, so prefix a
-  // single quote (the spreadsheet text-escape) before quoting for separators.
-  let s = String(value);
-  if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
-  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-}
-
-function csvRows(header: string[], rows: Array<Array<string | number>>): string {
-  return [header, ...rows].map((cells) => cells.map(csvCell).join(',')).join('\n');
-}
-
-/** Daily per-domain totals — the most human-useful spreadsheet view. */
-export function dailyStatsToCsv(stats: DailyStat[]): string {
-  const sorted = [...stats].sort((a, b) => a.date.localeCompare(b.date) || a.domain.localeCompare(b.domain));
-  return csvRows(
-    ['date', 'domain', 'seconds', 'audio_seconds'],
-    sorted.map((s) => [s.date, s.domain, s.seconds, s.audioSeconds]),
-  );
-}
-
-/** Raw session log — one row per tracked interval, ISO timestamps. */
-export function sessionsToCsv(sessions: Session[]): string {
-  const sorted = [...sessions].sort((a, b) => a.start - b.start);
-  return csvRows(
-    ['date', 'start_iso', 'end_iso', 'seconds', 'domain', 'audio', 'tab_key'],
-    sorted.map((s) => [
-      dateKey(s.start),
-      new Date(s.start).toISOString(),
-      new Date(s.end).toISOString(),
-      Math.round((s.end - s.start) / 1000),
-      s.domain,
-      s.audio ? 1 : 0,
-      s.tabKey ?? '',
-    ]),
-  );
-}
+// JSON is the single, canonical export/restore format. It's the complete dataset
+// (daily stats, raw sessions with URLs + timestamps, tab metadata, settings) and
+// the only format the importer accepts.
 
 export interface BackupData {
   dailyStats: DailyStat[];

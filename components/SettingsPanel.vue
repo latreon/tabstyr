@@ -9,7 +9,7 @@ import { useLocale } from '@/composables/useLocale';
 import { useFocusTrap } from '@/composables/useFocusTrap';
 import { SUPPORTED_LOCALES, resolveLocale } from '@/lib/i18n';
 import * as repo from '@/lib/db/repo';
-import { dailyStatsToCsv, downloadFile, toJsonBackup } from '@/lib/export';
+import { downloadFile, toJsonBackup } from '@/lib/export';
 import { encryptToEnvelope, isEncryptedEnvelope, decryptFromEnvelope, MIN_PASSPHRASE } from '@/lib/crypto';
 import { parseBackup, restoreBackup, MAX_BACKUP_BYTES, type ParsedBackup } from '@/lib/restore';
 import { dateKey } from '@/lib/time';
@@ -171,26 +171,20 @@ async function removeRule(pattern: string) {
 
 const exporting = ref(false);
 
-async function exportData(kind: 'json' | 'csv') {
+async function exportData() {
   if (exporting.value) return;
   exporting.value = true;
   try {
     const stamp = dateKey(Date.now());
-    if (kind === 'json') {
-      const [dailyStats, sessions, tabMeta, settings] = await Promise.all([
-        repo.getAllDailyStats(),
-        repo.getAllSessions(),
-        repo.getAllTabMeta(),
-        getSettings(),
-      ]);
-      const json = toJsonBackup({ dailyStats, sessions, tabMeta, settings }, Date.now());
-      downloadFile(`tabstyr-backup-${stamp}.json`, json, 'application/json');
-      showToast(t('settings.exportedJson'));
-    } else {
-      const csv = dailyStatsToCsv(await repo.getAllDailyStats());
-      downloadFile(`tabstyr-${stamp}.csv`, csv, 'text/csv');
-      showToast(t('settings.exportedCsv'));
-    }
+    const [dailyStats, sessions, tabMeta, settings] = await Promise.all([
+      repo.getAllDailyStats(),
+      repo.getAllSessions(),
+      repo.getAllTabMeta(),
+      getSettings(),
+    ]);
+    const json = toJsonBackup({ dailyStats, sessions, tabMeta, settings }, Date.now());
+    downloadFile(`tabstyr-backup-${stamp}.json`, json, 'application/json');
+    showToast(t('settings.exportedJson'));
   } catch (e) {
     console.error('[settings] export failed', e);
     showToast(t('settings.exportFailed'));
@@ -467,10 +461,11 @@ async function confirmWipe() {
       <span class="field-label">{{ t('settings.backupRestore') }}</span>
       <p class="rules-hint">{{ t('settings.backupNote') }}</p>
       <div class="export-btns">
-        <button :disabled="exporting" @click="exportData('json')">{{ t('settings.exportJson') }}</button>
-        <button :disabled="exporting" @click="exportData('csv')">{{ t('settings.exportCsv') }}</button>
-        <button :disabled="exporting" :aria-expanded="showEncrypt" @click="showEncrypt = !showEncrypt">{{ t('settings.encrypted') }}</button>
-        <button :disabled="exporting" @click="pickRestoreFile">{{ t('settings.restore') }}</button>
+        <button class="export-json" :disabled="exporting" @click="exportData()">{{ t('settings.exportJson') }}</button>
+        <div class="export-btns-row">
+          <button :disabled="exporting" :aria-expanded="showEncrypt" @click="showEncrypt = !showEncrypt">{{ t('settings.encrypted') }}</button>
+          <button :disabled="exporting" @click="pickRestoreFile">{{ t('settings.restore') }}</button>
+        </div>
       </div>
       <input ref="fileInput" type="file" accept="application/json,.json" class="sr-only" aria-hidden="true" tabindex="-1" @change="onRestoreFile" />
 
@@ -479,7 +474,7 @@ async function confirmWipe() {
         <input v-model="encPass" type="password" class="rule-input" :placeholder="t('settings.passphrase')" :aria-label="t('settings.passphrase')" autocomplete="new-password" />
         <input v-model="encPass2" type="password" class="rule-input" :placeholder="t('settings.confirmPassphrase')" :aria-label="t('settings.confirmPassphrase')" autocomplete="new-password" />
         <div class="enc-actions">
-          <button type="submit" class="rule-add-btn" :disabled="exporting">{{ t('settings.downloadEncrypted') }}</button>
+          <button type="submit" class="rule-add-btn primary" :disabled="exporting">{{ t('settings.downloadEncrypted') }}</button>
           <button type="button" class="cancel-link" @click="showEncrypt = false">{{ t('settings.cancel') }}</button>
         </div>
         <p v-if="encError" class="rule-error" role="alert">{{ encError }}</p>
@@ -725,24 +720,29 @@ button:focus-visible {
 }
 .export-btns {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 8px;
 }
 .export-btns button {
-  /* Force the row to wrap before long labels overflow. 96px let all four buttons
-     squeeze into one row at ~768px, where German labels ("Wiederherstellen",
-     "JSON exportieren") then spilled past their boxes and widened the page.
-     A larger floor wraps to multiple rows instead; overflow-wrap is the
-     last-resort break for even longer locales (ru/tr). */
-  min-width: 120px;
-  overflow-wrap: anywhere;
-}
-.export-btns button {
-  flex: 1;
-  background: var(--card-strong);
+  /* Transparent, bordered look — matches the "Show intro again" button. */
+  background: transparent;
   color: var(--text-2);
   border: 1px solid var(--border);
   font-weight: 600;
+  /* overflow-wrap is the last-resort break for long locales (ru/tr/de). */
+  overflow-wrap: anywhere;
+}
+/* Export JSON sits full-width on top; Encrypted + Restore share the row below. */
+.export-json {
+  width: 100%;
+}
+.export-btns-row {
+  display: flex;
+  gap: 8px;
+}
+.export-btns-row button {
+  flex: 1;
+  min-width: 0;
 }
 .export-btns button:hover:not(:disabled) {
   border-color: var(--accent);
@@ -751,6 +751,17 @@ button:focus-visible {
 .export-btns button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+/* Download-encrypted: filled primary so the actual download action stands out. */
+.rule-add-btn.primary {
+  background: var(--accent-grad-strong);
+  color: var(--on-accent);
+  border-color: transparent;
+}
+.rule-add-btn.primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+  border-color: transparent;
+  color: var(--on-accent);
 }
 .sr-only {
   position: absolute;

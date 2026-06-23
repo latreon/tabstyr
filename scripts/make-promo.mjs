@@ -20,11 +20,28 @@ function mark(cx, cy, r) {
 
 function svg({ w, h, markR, title, titleSize, tagline, taglineSize, layout }) {
   const markCX = layout === 'stacked' ? w / 2 : markR + 70;
-  const markCY = layout === 'stacked' ? h * 0.34 : h / 2;
   const textX = layout === 'stacked' ? w / 2 : markCX + markR + 56;
   const anchor = layout === 'stacked' ? 'middle' : 'start';
-  const titleY = layout === 'stacked' ? h * 0.66 : h / 2 - titleSize * 0.1;
-  const tagY = layout === 'stacked' ? h * 0.66 + taglineSize * 1.8 : h / 2 + titleSize * 0.75;
+
+  let markCY, titleY, tagY;
+  if (layout === 'stacked') {
+    // Lay the icon, title and tagline out as a vertically-centered stack with an
+    // explicit gap between the icon and the title. (The old fixed 0.34h / 0.66h
+    // positions let the title collide with the icon on the small/large tiles.)
+    const gapIconTitle = titleSize * 0.6; // clear vertical space, icon → title
+    const titleCap = titleSize * 0.72; // approx cap height of the title text
+    const gapTitleTag = titleSize * 0.42; // space between title and tagline
+    const tagCap = taglineSize * 0.72;
+    const stackH = 2 * markR + gapIconTitle + titleCap + gapTitleTag + tagCap;
+    const startY = (h - stackH) / 2;
+    markCY = startY + markR; // icon center
+    titleY = startY + 2 * markR + gapIconTitle + titleCap; // title baseline
+    tagY = titleY + gapTitleTag + tagCap; // tagline baseline
+  } else {
+    markCY = h / 2;
+    titleY = h / 2 - titleSize * 0.1;
+    tagY = h / 2 + titleSize * 0.75;
+  }
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
   <defs>
