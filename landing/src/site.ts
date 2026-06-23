@@ -1,5 +1,5 @@
 // Public site origin (no trailing slash) — used to build absolute social/SEO URLs.
-export const SITE_URL = 'https://latreon.github.io/tabstyr';
+export const SITE_URL = 'https://tabstyr.com';
 
 // Flip a store to `true` once its public listing is live, then paste the real
 // listing URL into LINKS below. While a flag is false the UI renders a
@@ -20,12 +20,11 @@ export const LINKS = {
   // In-app routes (clean URLs, handled by the history router in App.vue).
   privacy: import.meta.env.BASE_URL + 'privacy',
   ideas: import.meta.env.BASE_URL + 'ideas',
-  // Community / source. Discussions must be enabled on the repo
-  // (Settings → Features → Discussions) or that link 404s.
-  github: 'https://github.com/latreon/tabstyr',
-  issues: 'https://github.com/latreon/tabstyr/issues',
-  discussions: 'https://github.com/latreon/tabstyr/discussions',
-  coffee: 'https://ko-fi.com/latreon',
+  // No public repo links: the source repo is private, so bug reports and ideas
+  // route through the in-app /ideas form (Formspree) instead of GitHub issues /
+  // Discussions. Re-add github/issues/discussions here if the repo goes public.
+  // Support / tip — Polar pay-what-you-want checkout ($5 prefilled, adjustable).
+  coffee: 'https://buy.polar.sh/polar_cl_RkZPHoSH8zAQndHySXwKoDhLRykeX8BuMANlE3FoBSo?amount=500',
 };
 
 // The person behind the project — shown in the footer. Handle only by default.
@@ -40,7 +39,7 @@ export const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mvzjggkv';
 // Cloudflare Web Analytics beacon token (cookieless, no PII). Create a free site
 // at https://www.cloudflare.com/web-analytics/ for the deployed URL and paste the
 // token. Leave '' to ship with zero analytics — the beacon only loads when set.
-export const CF_ANALYTICS_TOKEN = '';
+export const CF_ANALYTICS_TOKEN = '98d31c2e37914d69ac3870a84b965aa9';
 
 export const STATS = [
   { value: '0', unit: 'bytes', label: 'leave your device' },

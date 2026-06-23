@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import RingLogo from './RingLogo.vue';
-import { FORMSPREE_ENDPOINT, LINKS } from '@/site';
+import { FORMSPREE_ENDPOINT } from '@/site';
 import SelectBox from './SelectBox.vue';
 
 const home = import.meta.env.BASE_URL;
@@ -70,17 +70,14 @@ async function submit() {
         <div v-if="state === 'done'" class="result" role="status" aria-live="polite">
           <div class="check" aria-hidden="true">✓</div>
           <h2>Thank you!</h2>
-          <p>Your idea is in. Want to discuss it in the open instead?
-            <a :href="LINKS.discussions" target="_blank" rel="noopener">Join the discussions ↗</a>
-          </p>
+          <p>Your idea is in — it goes straight to the maker. If you left an email, you might hear back.</p>
           <button type="button" class="btn btn-secondary" @click="state = 'idle'">Send another</button>
         </div>
 
         <!-- Not configured yet -->
         <p v-else-if="!configured" class="notice">
           The idea form isn’t connected yet. Paste your Formspree endpoint in
-          <code>landing/src/site.ts</code> (<code>FORMSPREE_ENDPOINT</code>). Meanwhile you can
-          <a :href="LINKS.discussions" target="_blank" rel="noopener">post in Discussions ↗</a>.
+          <code>landing/src/site.ts</code> (<code>FORMSPREE_ENDPOINT</code>).
         </p>
 
         <!-- Form -->
@@ -116,7 +113,7 @@ async function submit() {
               {{ state === 'sending' ? 'Sending…' : 'Send idea' }}
             </button>
             <p v-if="state === 'error'" class="err" role="alert">
-              Couldn’t send — try again, or <a :href="LINKS.discussions" target="_blank" rel="noopener">use Discussions ↗</a>.
+              Couldn’t send — please try again in a moment.
             </p>
           </div>
         </form>

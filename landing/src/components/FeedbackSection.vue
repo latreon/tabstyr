@@ -3,26 +3,18 @@ import { LINKS } from '@/site';
 
 const cards = [
   {
-    href: LINKS.issues,
-    title: 'Report a bug',
-    body: 'Something off? Open an issue on GitHub — every report is read.',
-    cta: 'Open an issue',
-    icon: 'bug',
-    external: true,
-  },
-  {
     href: LINKS.ideas,
-    title: 'Share an idea',
-    body: 'Want a feature or a new metric? Tell me right here — no account needed.',
-    cta: 'Share an idea',
+    title: 'Share an idea or report a bug',
+    body: 'Want a feature, a new metric, or hit something broken? Tell me right here — no account needed.',
+    cta: 'Open the form',
     icon: 'spark',
     external: false,
   },
   {
     href: LINKS.coffee,
     title: 'Support the project',
-    body: 'TabStyr is free and open source. A tip on Ko-fi keeps it going.',
-    cta: 'Support on Ko-fi',
+    body: 'TabStyr is free and open source. A small tip keeps it going.',
+    cta: 'Buy me a coffee',
     icon: 'heart',
     external: true,
   },
@@ -36,8 +28,8 @@ const cards = [
         <span class="eyebrow">Feedback &amp; ideas</span>
         <h2 class="h2">Built in the open — with you.</h2>
         <p class="sub">
-          No tracking, no feedback widgets phoning home. Just GitHub, where you can see
-          everything and have a say.
+          No tracking, no feedback widgets phoning home. Just a simple form — no account,
+          no sign-in, and nothing stored about you.
         </p>
       </div>
 
@@ -51,8 +43,7 @@ const cards = [
           :rel="c.external ? 'noopener' : undefined"
         >
           <span class="chip" aria-hidden="true">
-            <svg v-if="c.icon === 'bug'" viewBox="0 0 24 24"><path d="M9 7a3 3 0 0 1 6 0M5 11h14M6 15h12M12 8v11M8 11v5a4 4 0 0 0 8 0v-5M4 9l2 2M20 9l-2 2M4 18l2-1M20 18l-2-1"/></svg>
-            <svg v-else-if="c.icon === 'spark'" viewBox="0 0 24 24"><path d="M9.5 16.5h5M10 20h4M12 3a6 6 0 0 1 3.5 10.9c-.6.5-1 1.2-1 2H9.5c0-.8-.4-1.5-1-2A6 6 0 0 1 12 3Z"/></svg>
+            <svg v-if="c.icon === 'spark'" viewBox="0 0 24 24"><path d="M9.5 16.5h5M10 20h4M12 3a6 6 0 0 1 3.5 10.9c-.6.5-1 1.2-1 2H9.5c0-.8-.4-1.5-1-2A6 6 0 0 1 12 3Z"/></svg>
             <svg v-else viewBox="0 0 24 24"><path d="M12 20s-7-4.3-9.3-8.5A4.7 4.7 0 0 1 12 6a4.7 4.7 0 0 1 9.3 5.5C19 15.7 12 20 12 20Z"/></svg>
           </span>
           <h3 class="card-title">{{ c.title }}</h3>
@@ -73,7 +64,7 @@ const cards = [
 .h2 { font-size: clamp(1.8rem, 1.3rem + 2.2vw, 2.6rem); font-weight: 700; margin: 12px 0 0; }
 .sub { color: var(--text-2); margin: 14px 0 0; font-size: 16px; line-height: 1.6; }
 
-.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 
 .card {
   display: flex; flex-direction: column; align-items: flex-start;

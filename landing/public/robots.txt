@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://latreon.github.io/tabstyr/sitemap.xml
+Sitemap: https://tabstyr.com/sitemap.xml

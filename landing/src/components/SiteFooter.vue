@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import RingLogo from './RingLogo.vue';
-import { LINKS, AUTHOR, CF_ANALYTICS_TOKEN, STORE_LIVE } from '@/site';
+import { LINKS, AUTHOR, STORE_LIVE } from '@/site';
 const year = 2026;
-const analyticsOn = !!CF_ANALYTICS_TOKEN;
 </script>
 
 <template>
@@ -31,17 +30,9 @@ const analyticsOn = !!CF_ANALYTICS_TOKEN;
           <span v-else class="muted">Firefox (soon)</span>
         </div>
         <div class="col">
-          <span class="head">Community</span>
-          <a :href="LINKS.github" target="_blank" rel="noopener">GitHub</a>
-          <a :href="LINKS.issues" target="_blank" rel="noopener">Report a bug</a>
-          <a :href="LINKS.discussions" target="_blank" rel="noopener">Discussions</a>
-          <a :href="LINKS.coffee" target="_blank" rel="noopener">Support on Ko-fi</a>
-        </div>
-        <div class="col">
-          <span class="head">Legal</span>
-          <a :href="LINKS.privacy">Privacy policy</a>
-          <span class="muted">MIT licensed</span>
-          <span v-if="analyticsOn" class="muted">Cookieless analytics</span>
+          <span class="head">Feedback</span>
+          <a :href="LINKS.ideas">Share an idea</a>
+          <a :href="LINKS.coffee" target="_blank" rel="noopener">Buy me a coffee</a>
         </div>
       </nav>
     </div>
@@ -59,7 +50,7 @@ const analyticsOn = !!CF_ANALYTICS_TOKEN;
 .inner { display: grid; grid-template-columns: 1.4fr 2fr; gap: 40px; }
 .brand { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 700; font-size: 18px; }
 .tag { color: var(--text-3); margin: 14px 0 0; font-size: 14px; max-width: 240px; }
-.cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+.cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .col { display: flex; flex-direction: column; gap: 10px; }
 .col .head { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); margin-bottom: 4px; }
 .col a { font-size: 14px; color: var(--text-2); transition: color 160ms ease; }
