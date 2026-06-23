@@ -89,7 +89,8 @@ test('settings export buttons are present', async ({ context, extensionId }) => 
   // SettingsPanel sits deep in the dashboard and mounts after data load; give it
   // the same headroom the other post-load assertions use.
   await expect(page.getByRole('button', { name: 'Export JSON' })).toBeVisible({ timeout: 10_000 });
-  await expect(page.getByRole('button', { name: 'Export CSV' })).toBeVisible({ timeout: 10_000 });
+  // JSON is the only export format now (CSV removed). Restore is the other action.
+  await expect(page.getByRole('button', { name: 'Restore' })).toBeVisible();
 });
 
 test('theme toggle flips data-theme', async ({ context, extensionId }) => {
@@ -133,6 +134,10 @@ test('clicking a tab row focuses that tab', async ({ context, extensionId }) => 
 });
 
 test('screenshots for visual review', async ({ context, extensionId }) => {
+  // Local capture utility, not a CI assertion: it navigates to real sites to warm
+  // Chrome's favicon cache, which is slow/blocked on CI runners and blows the test
+  // timeout. Skip on CI; run locally (`npm run e2e`) to refresh store screenshots.
+  test.skip(!!process.env.CI, 'Visual capture — needs real network for favicons; run locally.');
   // Seed a realistic dataset and dismiss onboarding so the captures show a
   // populated dashboard (trend, heatmap, categories, focus, comparison, top
   // sites, work log) rather than an empty first-run state.
