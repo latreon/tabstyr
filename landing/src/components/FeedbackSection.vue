@@ -35,7 +35,7 @@ const cards = [
 
       <div class="grid">
         <a
-          v-for="c in cards"
+          v-for="c in cards.filter((c) => c.href)"
           :key="c.title"
           class="card glass reveal"
           :href="c.href"

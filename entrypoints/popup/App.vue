@@ -143,7 +143,7 @@ function openCoffee() {
         <button v-if="staleCount" class="stale-btn" @click="openDashboard('#stale')">{{ t('popup.stale', { count: staleCount }) }}</button>
       </footer>
 
-      <button class="coffee" :aria-label="t('support.coffee')" @click="openCoffee">
+      <button v-if="COFFEE_URL" class="coffee" :aria-label="t('support.coffee')" @click="openCoffee">
         <span aria-hidden="true">☕</span>
         <span>{{ t('support.coffee') }}</span>
       </button>

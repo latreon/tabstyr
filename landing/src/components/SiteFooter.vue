@@ -32,7 +32,7 @@ const year = 2026;
         <div class="col">
           <span class="head">Feedback</span>
           <a :href="LINKS.ideas">Share an idea</a>
-          <a :href="LINKS.coffee" target="_blank" rel="noopener">Buy me a coffee</a>
+          <a v-if="LINKS.coffee" :href="LINKS.coffee" target="_blank" rel="noopener">Buy me a coffee</a>
         </div>
       </nav>
     </div>

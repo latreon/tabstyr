@@ -24,7 +24,12 @@ export const LINKS = {
   // route through the in-app /ideas form (Formspree) instead of GitHub issues /
   // Discussions. Re-add github/issues/discussions here if the repo goes public.
   // Support / tip — Polar pay-what-you-want checkout ($5 prefilled, adjustable).
-  coffee: 'https://buy.polar.sh/polar_cl_RkZPHoSH8zAQndHySXwKoDhLRykeX8BuMANlE3FoBSo?amount=500',
+  // Read from env (VITE_POLAR_CHECKOUT_URL in landing/.env, gitignored — see
+  // .env.example) to keep the URL out of source. Public URL; empty hides the
+  // support links. Set it before `npm run build`.
+  coffee: import.meta.env.VITE_POLAR_CHECKOUT_URL
+    ? `${import.meta.env.VITE_POLAR_CHECKOUT_URL}?amount=500`
+    : '',
 };
 
 // The person behind the project — shown in the footer. Handle only by default.

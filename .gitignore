@@ -5,3 +5,8 @@ dist/
 test-results/
 playwright-report/
 e2e/__screenshots__/
+
+# Local environment config (extension + landing). Never commit real values.
+.env
+.env.*
+!.env.example

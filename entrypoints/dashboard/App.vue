@@ -63,7 +63,7 @@ onMounted(async () => {
           </svg>
           {{ t('privacy.badge') }}
         </button>
-        <a class="coffee-badge tip-right" :href="COFFEE_URL" target="_blank" rel="noopener"
+        <a v-if="COFFEE_URL" class="coffee-badge tip-right" :href="COFFEE_URL" target="_blank" rel="noopener"
            :data-tip="t('support.coffee')" :aria-label="t('support.coffee')">
           <span aria-hidden="true">☕</span>
         </a>

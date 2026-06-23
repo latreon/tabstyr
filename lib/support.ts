@@ -9,13 +9,13 @@
 // NEVER bundle the Polar access token in the extension; the SDK/`checkouts.create`
 // flow is server-only and would leak the secret.
 //
-// Production Polar checkout link (pay-what-you-want tip). Opening it mints a
-// short-lived hosted checkout session — no access token, no backend.
-const POLAR_CHECKOUT_LINK =
-  'https://buy.polar.sh/polar_cl_RkZPHoSH8zAQndHySXwKoDhLRykeX8BuMANlE3FoBSo';
+// Polar checkout link read from build-time env (WXT_POLAR_CHECKOUT_URL in .env,
+// which is gitignored — see .env.example). Keeps the URL out of source. It is a
+// PUBLIC checkout URL (it ships in the built extension), so this is for config
+// hygiene, not secrecy. Opening it mints a short-lived hosted checkout — no
+// access token, no backend.
+const POLAR_CHECKOUT_LINK = (import.meta.env.WXT_POLAR_CHECKOUT_URL || '') as string;
 
-// $5 prefilled (pay-what-you-want); user can adjust at checkout.
-export const COFFEE_URL = `${POLAR_CHECKOUT_LINK}?amount=500`;
-
-// Previous Ko-fi link, kept for easy rollback:
-// export const COFFEE_URL = 'https://ko-fi.com/latreon';
+// $5 prefilled (pay-what-you-want); user can adjust at checkout. Empty when
+// unconfigured — the popup + dashboard hide the support button in that case.
+export const COFFEE_URL = POLAR_CHECKOUT_LINK ? `${POLAR_CHECKOUT_LINK}?amount=500` : '';
