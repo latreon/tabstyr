@@ -52,7 +52,12 @@ HONEST METRICS
 The headline number is your active foreground time. Background audio is counted
 and shown separately, so your totals never exceed real time at the computer.
 
-Open source. Works on Chrome, Edge, Brave, Opera, Vivaldi, Arc, and Firefox.
+Open source. Works on Chrome and other Chromium-based browsers.
+
+> Chrome Web Store note: do NOT list competing browser brands (Edge, Brave, Opera,
+> Vivaldi, Arc, Firefox, …) in the CWS description — it is rejected as "keyword
+> spam" (irrelevant/excessive keywords). Keep the per-browser support matrix in
+> README.md / docs/store/browser-support.md instead.
 
 ## Category
 
@@ -60,7 +65,7 @@ Productivity
 
 ## Keywords / tags
 
-time tracking, screen time, productivity, browsing time, tab manager, focus,
+time tracking, screen time, productivity, browsing time, focus,
 privacy, local, heatmap, website usage
 
 ## Single purpose (Chrome Web Store requirement)
