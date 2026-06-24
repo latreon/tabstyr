@@ -355,6 +355,14 @@
       },
       "persona": {
         "kicker": "Bu yıl şuydunuz"
+      },
+      "sites": {
+        "kicker": "Keşfedilen siteler",
+        "caption": "farklı site ziyaret ettin"
+      },
+      "busiest": {
+        "kicker": "En yoğun günün",
+        "caption": "en çok gezdiğin gün"
       }
     },
     "chronotype": {

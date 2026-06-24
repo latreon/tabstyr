@@ -355,6 +355,14 @@
       },
       "persona": {
         "kicker": "Este año, fuiste"
+      },
+      "sites": {
+        "kicker": "Sitios explorados",
+        "caption": "sitios diferentes que visitaste"
+      },
+      "busiest": {
+        "kicker": "Tu día más activo",
+        "caption": "tu día con más navegación"
       }
     },
     "chronotype": {

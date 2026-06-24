@@ -355,6 +355,14 @@
       },
       "persona": {
         "kicker": "今年のあなたは"
+      },
+      "sites": {
+        "kicker": "訪れたサイト数",
+        "caption": "種類のサイトを閲覧"
+      },
+      "busiest": {
+        "kicker": "最も活発な日",
+        "caption": "最も多く閲覧した日"
       }
     },
     "chronotype": {

@@ -50,6 +50,8 @@ const RAW = {
   pause: { paths: ['M6 4h4v16H6z', 'M14 4h4v16h-4z'], filled: true },
   restart: { paths: ['M3 12a9 9 0 1 0 3-6.7L3 8', 'M3 3v5h5'] },
   check: { paths: ['M20 6 9 17l-5-5'] },
+  calendar: { paths: ['M8 2v4', 'M16 2v4', 'M3 10h18', 'M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z'] },
+  globe: { paths: ['M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z', 'M2 12h20', 'M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'] },
 } as const;
 
 export type IconName = keyof typeof RAW;

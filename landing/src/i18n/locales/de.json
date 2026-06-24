@@ -358,6 +358,14 @@
       },
       "persona": {
         "kicker": "Dieses Jahr warst du"
+      },
+      "sites": {
+        "kicker": "Erkundete Seiten",
+        "caption": "verschiedene Websites besucht"
+      },
+      "busiest": {
+        "kicker": "Dein größter Tag",
+        "caption": "dein meistgenutzter Tag"
       }
     },
     "chronotype": {

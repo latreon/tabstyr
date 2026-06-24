@@ -355,6 +355,14 @@
       },
       "persona": {
         "kicker": "这一年，你是"
+      },
+      "sites": {
+        "kicker": "探索的网站",
+        "caption": "个不同的网站"
+      },
+      "busiest": {
+        "kicker": "最忙碌的一天",
+        "caption": "浏览最多的一天"
       }
     },
     "chronotype": {

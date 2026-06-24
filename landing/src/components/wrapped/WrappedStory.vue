@@ -17,7 +17,7 @@ const emit = defineEmits<{ (e: 'restart'): void }>();
 const { t } = useI18n();
 
 interface StorySlide {
-  kind: 'msg' | 'num' | 'list' | 'share';
+  kind: 'msg' | 'num' | 'list' | 'bars' | 'share';
   id: string;
   icon?: IconName;
   kicker?: string;
@@ -26,6 +26,7 @@ interface StorySlide {
   format?: (n: number) => string;
   caption?: string;
   list?: Array<{ domain: string; label: string; value: string; color: string }>;
+  bars?: Array<{ label: string; pct: number; color: string }>;
   dot?: string;
   chip?: { domain: string; color: string };
 }
@@ -59,6 +60,8 @@ const slides = computed<StorySlide[]>(() => {
 
   out.push({ kind: 'num', id: 'total', icon: 'timer', kicker: t('wrapped.slide.total.kicker'), value: d.totalSeconds, format: formatDuration, caption: t('wrapped.slide.total.caption', { avg: formatDuration(d.dailyAverageSeconds) }) });
 
+  out.push({ kind: 'num', id: 'sites', icon: 'globe', kicker: t('wrapped.slide.sites.kicker'), value: d.distinctDomains, caption: t('wrapped.slide.sites.caption') });
+
   if (d.topSite) {
     const pct = Math.round((d.topSite.seconds / d.totalSeconds) * 100);
     out.push({ kind: 'num', id: 'topSite', icon: 'eye', kicker: t('wrapped.slide.topSite.kicker'), title: d.topSite.label, value: d.topSite.seconds, format: formatDuration, caption: t('wrapped.slide.topSite.caption', { pct }), chip: { domain: d.topSite.domain, color: CATEGORY_META[d.topSite.category].color } });
@@ -68,8 +71,12 @@ const slides = computed<StorySlide[]>(() => {
     out.push({ kind: 'list', id: 'top5', icon: 'trophy', kicker: t('wrapped.slide.top5.kicker'), list: d.topSites.map((s) => ({ domain: s.domain, label: s.label, value: formatDuration(s.seconds), color: CATEGORY_META[s.category].color })) });
   }
 
-  if (d.topCategory) {
-    out.push({ kind: 'num', id: 'category', icon: 'layers', kicker: t('wrapped.slide.category.kicker'), title: t(`categories.${d.topCategory.category}`), value: d.topCategory.pct, format: formatPct, caption: t('wrapped.slide.category.caption'), dot: CATEGORY_META[d.topCategory.category].color });
+  if (d.categories.length) {
+    out.push({ kind: 'bars', id: 'breakdown', icon: 'layers', kicker: t('wrapped.slide.category.kicker'), bars: d.categories.slice(0, 5).map((c) => ({ label: t(`categories.${c.category}`), pct: c.pct, color: CATEGORY_META[c.category].color })) });
+  }
+
+  if (d.busiestDate) {
+    out.push({ kind: 'num', id: 'busiest', icon: 'calendar', kicker: t('wrapped.slide.busiest.kicker'), title: longDateLabel(d.busiestDate), value: d.busiestDateSeconds, format: formatDuration, caption: t('wrapped.slide.busiest.caption') });
   }
 
   if (d.peak) {
@@ -166,7 +173,9 @@ const rootStyle = computed(() => ({ '--w-a': persona.value.accentA, '--w-b': per
       <button v-if="!onShare" type="button" class="icon-btn" :aria-label="paused ? t('wrapped.play') : t('wrapped.pause')" @click="togglePause">
         <WrappedIcon :name="paused ? 'play' : 'pause'" :size="15" />
       </button>
-      <span v-else class="spacer" />
+      <button v-else type="button" class="icon-btn" :aria-label="t('wrapped.prev')" @click="prev">
+        <WrappedIcon name="chevronLeft" :size="15" />
+      </button>
       <button type="button" class="icon-btn" :aria-label="t('wrapped.startOver')" @click="emit('restart')">
         <WrappedIcon name="restart" :size="15" />
       </button>
@@ -177,6 +186,21 @@ const rootStyle = computed(() => ({ '--w-a': persona.value.accentA, '--w-b': per
         <div :key="current?.id" class="slide">
           <template v-if="current?.kind === 'share'">
             <WrappedShareCard :data="data" />
+          </template>
+
+          <template v-else-if="current?.kind === 'bars'">
+            <span class="badge"><WrappedIcon :name="current.icon!" :size="40" /></span>
+            <p class="kicker">{{ current.kicker }}</p>
+            <ul class="cats">
+              <li v-for="(b, i) in current.bars" :key="i" class="cat-row">
+                <span class="cat-head">
+                  <span class="cat-dot" :style="{ background: b.color }" aria-hidden="true" />
+                  <span class="cat-label">{{ b.label }}</span>
+                  <span class="cat-pct">{{ b.pct }}%</span>
+                </span>
+                <span class="cat-track"><span class="cat-fill" :style="{ width: Math.max(b.pct, 2) + '%', background: b.color }" /></span>
+              </li>
+            </ul>
           </template>
 
           <template v-else-if="current?.kind === 'list'">
@@ -283,6 +307,15 @@ const rootStyle = computed(() => ({ '--w-a': persona.value.accentA, '--w-b': per
 .rank-n { font-weight: 800; opacity: 0.8; width: 16px; text-align: center; }
 .rank-label { flex: 1; font-weight: 600; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rank-value { font-weight: 700; font-variant-numeric: tabular-nums; opacity: 0.95; }
+
+.cats { list-style: none; margin: 0; padding: 0; width: 100%; display: flex; flex-direction: column; gap: 16px; }
+.cat-row { display: flex; flex-direction: column; gap: 8px; }
+.cat-head { display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 600; }
+.cat-dot { width: 12px; height: 12px; border-radius: 50%; flex: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12); }
+.cat-label { flex: 1; text-align: left; }
+.cat-pct { font-weight: 700; font-variant-numeric: tabular-nums; opacity: 0.9; }
+.cat-track { height: 10px; border-radius: 6px; background: rgba(255, 255, 255, 0.18); overflow: hidden; }
+.cat-fill { display: block; height: 100%; border-radius: 6px; }
 
 .nav { display: flex; align-items: center; justify-content: center; gap: 18px; padding: 14px; position: relative; z-index: 2; }
 .nav-btn {

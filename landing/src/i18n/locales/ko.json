@@ -358,6 +358,14 @@
       },
       "persona": {
         "kicker": "올해의 당신은"
+      },
+      "sites": {
+        "kicker": "방문한 사이트",
+        "caption": "개의 다른 사이트를 방문"
+      },
+      "busiest": {
+        "kicker": "가장 바빴던 날",
+        "caption": "가장 많이 본 날"
       }
     },
     "chronotype": {
