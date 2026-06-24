@@ -8,6 +8,7 @@ import { PERSONA_META } from '@ext/wrapped-persona';
 import { CATEGORY_META } from '@ext/categories';
 import { renderWrappedCard, canvasToImageBlob, type WrappedCardContent } from '@ext/wrapped-card';
 import type { WrappedData } from '@ext/wrapped';
+import { faviconUrl } from '@/lib/favicon';
 import WrappedIcon from './WrappedIcon.vue';
 
 const props = defineProps<{ data: WrappedData }>();
@@ -18,6 +19,9 @@ const status = ref(''); // error message only
 const canShareFiles = ref(false);
 const preparing = ref(false);
 const saved = ref(false);
+// Real top-site favicon, preloaded CORS-clean so it can be drawn on the export
+// canvas; null until it loads (card falls back to a letter chip meanwhile/forever).
+const siteIcon = ref<HTMLImageElement | null>(null);
 
 // The encoded PNG is cached so repeated Save/Share clicks never re-encode the
 // 2160×3840 canvas; it's invalidated whenever the card is redrawn.
@@ -55,6 +59,7 @@ const content = computed<WrappedCardContent>(() => {
       chip: {
         initial: d.topSite.label.replace(/^www\./, '').charAt(0).toUpperCase() || '?',
         color: CATEGORY_META[d.topSite.category].color,
+        image: siteIcon.value,
       },
     });
   if (d.topCategory) rows.push({ label: t('wrapped.card.topCategory'), value: `${t('categories.' + d.topCategory.category)} · ${d.topCategory.pct}%` });
@@ -78,6 +83,25 @@ const content = computed<WrappedCardContent>(() => {
 });
 
 const fileName = computed(() => `tabstyr-wrapped-${props.data.endDate}.jpg`);
+
+// Preload the top-site favicon CORS-clean so it can be drawn onto the export canvas
+// without tainting it. On success `content` recomputes → the draw watcher repaints
+// with the real logo; on failure it stays a letter chip.
+function loadSiteIcon(): void {
+  siteIcon.value = null;
+  const url = props.data.topSite ? faviconUrl(props.data.topSite.domain) : null;
+  if (!url) return;
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.referrerPolicy = 'no-referrer';
+  img.onload = () => {
+    if (img.naturalWidth > 0) siteIcon.value = img;
+  };
+  img.onerror = () => {
+    siteIcon.value = null;
+  };
+  img.src = url;
+}
 
 function draw(): void {
   if (!canvas.value) return;
@@ -171,9 +195,11 @@ async function share(): Promise<void> {
 
 onMounted(() => {
   canShareFiles.value = typeof navigator !== 'undefined' && typeof navigator.canShare === 'function';
+  loadSiteIcon();
   void nextTick(draw);
 });
 watch(content, () => void nextTick(draw));
+watch(() => props.data, loadSiteIcon);
 onBeforeUnmount(() => {
   cancelPreencode();
   clearTimeout(savedTimer);
@@ -227,7 +253,9 @@ const downloadLabel = computed(() =>
    card's natural size. Aspect ratio drives the width. */
 .card-frame {
   aspect-ratio: 1080 / 1920;
-  height: min(540px, calc(100vh - 300px));
+  /* Leaves room for the kicker, action buttons AND the bottom pagination so the
+     share slide never needs a scrollbar. */
+  height: min(500px, calc(100vh - 366px));
   width: auto;
   max-width: 100%;
   border-radius: 24px;

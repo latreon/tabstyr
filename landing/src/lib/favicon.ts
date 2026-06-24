@@ -1,12 +1,14 @@
-// Real site icons for the Browsing Wrapped story.
+// Real site icons for the Browsing Wrapped story + share card.
 //
 // PRIVACY NOTE: this is the ONLY place the Wrapped tool touches the network. To
-// show a real logo we ask DuckDuckGo's icon proxy for the favicon of each top
-// domain — so those (already-public) hostnames are sent to DuckDuckGo. No stats,
-// totals, sessions, or file contents ever leave the browser; only an icon lookup.
-// DuckDuckGo is used over Google for its no-logging stance, and requests are sent
-// with no referrer. The downloadable share card does NOT use this (it draws a
-// letter chip), so the exported image still involves zero network.
+// show a real logo we ask icon.horse for the favicon of each top domain — so those
+// (already-public) hostnames are sent there. No stats, totals, sessions, or file
+// contents ever leave the browser; only an icon lookup, sent with no referrer.
+//
+// icon.horse is used because it serves icons with `Access-Control-Allow-Origin: *`,
+// so the same image can be displayed in the DOM AND drawn onto the share-card
+// canvas (with crossOrigin='anonymous') without tainting it — letting toBlob()
+// export still succeed. The card falls back to a letter chip if the icon fails.
 
 export function faviconUrl(domain: string): string | null {
   const d = domain.replace(/^www\./, '').toLowerCase();
@@ -15,5 +17,5 @@ export function faviconUrl(domain: string): string | null {
   // third party for their icon, and it keeps private/loopback addresses on-device.
   // The caller falls back to a letter chip when this returns null.
   if (d === 'localhost' || /^\d{1,3}(?:\.\d{1,3}){3}$/.test(d)) return null;
-  return `https://icons.duckduckgo.com/ip3/${encodeURIComponent(d)}.ico`;
+  return `https://icon.horse/icon/${encodeURIComponent(d)}`;
 }

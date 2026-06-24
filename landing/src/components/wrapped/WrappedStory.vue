@@ -173,9 +173,7 @@ const rootStyle = computed(() => ({ '--w-a': persona.value.accentA, '--w-b': per
       <button v-if="!onShare" type="button" class="icon-btn" :aria-label="paused ? t('wrapped.play') : t('wrapped.pause')" @click="togglePause">
         <WrappedIcon :name="paused ? 'play' : 'pause'" :size="15" />
       </button>
-      <button v-else type="button" class="icon-btn" :aria-label="t('wrapped.prev')" @click="prev">
-        <WrappedIcon name="chevronLeft" :size="15" />
-      </button>
+      <span v-else class="spacer" />
       <button type="button" class="icon-btn" :aria-label="t('wrapped.startOver')" @click="emit('restart')">
         <WrappedIcon name="restart" :size="15" />
       </button>
@@ -231,10 +229,10 @@ const rootStyle = computed(() => ({ '--w-a': persona.value.accentA, '--w-b': per
       </Transition>
     </div>
 
-    <div v-if="!onShare" class="nav">
+    <div class="nav">
       <button type="button" class="nav-btn" :disabled="index === 0" :aria-label="t('wrapped.prev')" @click="prev"><WrappedIcon name="chevronLeft" :size="20" /></button>
       <span class="nav-count">{{ index + 1 }} / {{ slides.length }}</span>
-      <button type="button" class="nav-btn" :aria-label="t('wrapped.next')" @click="next"><WrappedIcon name="chevronRight" :size="20" /></button>
+      <button type="button" class="nav-btn" :disabled="index === lastIndex" :aria-label="t('wrapped.next')" @click="next"><WrappedIcon name="chevronRight" :size="20" /></button>
     </div>
   </div>
 </template>

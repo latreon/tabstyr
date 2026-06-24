@@ -14,8 +14,9 @@ export const CARD_HEIGHT = 1920;
 export interface WrappedCardRow {
   label: string;
   value: string;
-  /** Optional favicon-style letter chip drawn at the row's left edge. */
-  chip?: { initial: string; color: string };
+  /** Optional favicon-style chip at the row's left edge: a real (CORS-clean) icon
+   * image when available, else a category-colored letter. */
+  chip?: { initial: string; color: string; image?: CanvasImageSource | null };
 }
 
 export interface WrappedCardContent {
@@ -181,13 +182,30 @@ function paint(ctx: CanvasRenderingContext2D, content: WrappedCardContent, scale
     if (row.chip) {
       const cs = 72;
       const chipY = y + (rowH - cs) / 2;
-      ctx.fillStyle = row.chip.color;
-      roundRect(ctx, textX, chipY, cs, cs, 18);
-      ctx.fill();
-      ctx.fillStyle = '#ffffff';
-      ctx.font = `800 38px ${FONT_STACK}`;
-      ctx.textAlign = 'center';
-      ctx.fillText(row.chip.initial, textX + cs / 2, chipY + cs / 2 + 13);
+      if (row.chip.image) {
+        // White rounded tile + the real icon clipped inside it.
+        ctx.fillStyle = '#ffffff';
+        roundRect(ctx, textX, chipY, cs, cs, 18);
+        ctx.fill();
+        ctx.save();
+        roundRect(ctx, textX, chipY, cs, cs, 18);
+        ctx.clip();
+        const pad = 11;
+        try {
+          ctx.drawImage(row.chip.image, textX + pad, chipY + pad, cs - pad * 2, cs - pad * 2);
+        } catch {
+          /* a tainted/broken image would throw — leave the white tile */
+        }
+        ctx.restore();
+      } else {
+        ctx.fillStyle = row.chip.color;
+        roundRect(ctx, textX, chipY, cs, cs, 18);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `800 38px ${FONT_STACK}`;
+        ctx.textAlign = 'center';
+        ctx.fillText(row.chip.initial, textX + cs / 2, chipY + cs / 2 + 13);
+      }
       textX += cs + 26;
     }
     const textW = rowsW - (textX - rowsX) - padX;
