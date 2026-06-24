@@ -6,7 +6,9 @@
     "privacyTitle": "Política de privacidade — TabStyr",
     "privacyDescription": "O TabStyr não coleta nada. Sem servidores, sem análises, sem contas, sem requisições de rede. Tudo permanece no seu dispositivo.",
     "ideasTitle": "Compartilhe uma ideia — TabStyr",
-    "ideasDescription": "Sugira um recurso ou relate um bug para o TabStyr. Sem conta, sem rastreamento — vai direto para o criador."
+    "ideasDescription": "Sugira um recurso ou relate um bug para o TabStyr. Sem conta, sem rastreamento — vai direto para o criador.",
+    "wrappedTitle": "Retrospectiva de Navegação — TabStyr",
+    "wrappedDescription": "Solte aqui a sua exportação do TabStyr e receba uma linda Retrospectiva de Navegação, pronta para compartilhar — o seu tempo na web, calculado 100% no seu navegador."
   },
   "nav": {
     "features": "Recursos",
@@ -14,6 +16,7 @@
     "privacy": "Privacidade",
     "faq": "Perguntas frequentes",
     "feedback": "Feedback",
+    "wrapped": "Retrospectiva",
     "addToChrome": "Adicionar ao Chrome",
     "comingSoon": "Em breve",
     "language": "Idioma"
@@ -283,5 +286,150 @@
       "Relato de bug",
       "Outro"
     ]
+  },
+  "categories": {
+    "Work": "Trabalho",
+    "Dev": "Desenvolvimento",
+    "Finance": "Finanças",
+    "Social": "Social",
+    "Media": "Mídia",
+    "News": "Notícias",
+    "Shopping": "Compras",
+    "Other": "Outros"
+  },
+  "wrapped": {
+    "daysCovered": "{count} dias",
+    "daysCoveredOne": "{count} dia",
+    "prev": "Anterior",
+    "next": "Próximo",
+    "pause": "Pausar",
+    "play": "Reproduzir",
+    "startOver": "Recomeçar",
+    "page": {
+      "back": "← Voltar ao site"
+    },
+    "drop": {
+      "title": "Retrospectiva de Navegação",
+      "lede": "Veja para onde o seu tempo realmente foi.",
+      "cta": "Solte aqui a sua exportação do TabStyr",
+      "browse": "ou escolha um arquivo",
+      "useMine": "Usar os dados deste navegador",
+      "hint": "Seus dados são processados inteiramente no seu navegador.",
+      "passPrompt": "Este backup está criptografado. Digite a frase secreta para continuar.",
+      "passLabel": "Frase secreta",
+      "decrypt": "Desbloquear",
+      "cancel": "Cancelar"
+    },
+    "error": {
+      "tooLarge": "Esse arquivo é grande demais para ser um backup do TabStyr.",
+      "parse": "Esse arquivo não é um backup válido do TabStyr.",
+      "empty": "Ainda não há atividade registrada suficiente para montar uma Retrospectiva — volte depois de navegar por um tempo.",
+      "wrongPass": "Senha incorreta ou arquivo corrompido.",
+      "readFailed": "Não foi possível ler esses dados."
+    },
+    "slide": {
+      "intro": {
+        "title": "Vamos rebobinar a sua navegação.",
+        "caption": "{days} dias de você, na web."
+      },
+      "total": {
+        "kicker": "Tempo ativo total",
+        "caption": "cerca de {avg} em um dia típico"
+      },
+      "topSite": {
+        "kicker": "Sua obsessão nº 1",
+        "caption": "isso é {pct}% de todo o seu tempo ativo 👀"
+      },
+      "top5": {
+        "kicker": "Seus principais sites"
+      },
+      "category": {
+        "kicker": "Para onde o seu tempo foi",
+        "caption": "sua maior categoria"
+      },
+      "peak": {
+        "kicker": "Sua hora de pico",
+        "caption": "você foi com tudo por volta das {when}"
+      },
+      "focus": {
+        "kicker": "Pontuação de foco",
+        "caption": "tempo produtivo vs. distrativo",
+        "streak": "🔥 sua maior sequência de foco: {count} dias"
+      },
+      "persona": {
+        "kicker": "Neste ano, você foi"
+      }
+    },
+    "chronotype": {
+      "earlyBird": {
+        "title": "Um Madrugador"
+      },
+      "daytimer": {
+        "title": "Uma Pessoa Diurna"
+      },
+      "nightOwl": {
+        "title": "Uma Coruja Noturna"
+      },
+      "allHours": {
+        "title": "Um Navegador de Todas as Horas"
+      }
+    },
+    "persona": {
+      "builder": {
+        "title": "O Construtor",
+        "subtitle": "Código, docs e ferramentas de dev dominaram suas abas."
+      },
+      "operator": {
+        "title": "O Operador",
+        "subtitle": "Caixas de entrada, docs e reuniões — você comandou tudo."
+      },
+      "socialite": {
+        "title": "O Sociável",
+        "subtitle": "Feeds, conversas e threads fizeram companhia a você."
+      },
+      "binger": {
+        "title": "O Maratonista",
+        "subtitle": "Streams, vídeos e música preencheram suas horas."
+      },
+      "analyst": {
+        "title": "O Analista",
+        "subtitle": "Manchetes e análises a fundo mantiveram você por dentro."
+      },
+      "tycoon": {
+        "title": "O Magnata",
+        "subtitle": "Mercados, bancos e dinheiro em movimento."
+      },
+      "collector": {
+        "title": "O Colecionador",
+        "subtitle": "Carrinhos, listas de desejos e a emoção da finalização."
+      },
+      "wanderer": {
+        "title": "O Andarilho",
+        "subtitle": "Um pouco de tudo, fora do caminho comum."
+      },
+      "explorer": {
+        "title": "O Explorador",
+        "subtitle": "Sem uma única rota — você percorreu a web inteira."
+      }
+    },
+    "card": {
+      "heading": "Retrospectiva de Navegação",
+      "shareKicker": "Seu cartão compartilhável",
+      "totalCaption": "navegação ativa total",
+      "topSite": "Site principal",
+      "topCategory": "Categoria principal",
+      "focus": "Pontuação de foco",
+      "peak": "Hora de pico",
+      "days": "Dias registrados",
+      "footer": "TabStyr · 0 bytes saem do seu dispositivo",
+      "shareText": "Minha Retrospectiva de Navegação, feita com o TabStyr 🔒",
+      "download": "Salvar imagem",
+      "share": "Compartilhar",
+      "saved": "Imagem salva ✓",
+      "saveFailed": "Não foi possível criar a imagem.",
+      "preparing": "Preparando…"
+    },
+    "eyebrow": "Seu ano na web",
+    "cta": "Crie sua Retrospectiva"
   }
 }

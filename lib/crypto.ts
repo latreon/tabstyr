@@ -19,6 +19,9 @@ const IV_BYTES = 12;
 // malicious envelope forcing a huge allocation before Web Crypto rejects it.
 const MAX_SALT_B64 = 64;
 const MAX_IV_B64 = 32;
+// Ciphertext base64 ceiling (~96 MB) — bounds the fromBase64 allocation before
+// Web Crypto runs, in case a crafted envelope carries a huge ciphertext string.
+const MAX_CIPHERTEXT_B64 = 96 * 1024 * 1024;
 // Minimum passphrase length, enforced at the crypto layer (not just the UI).
 export const MIN_PASSPHRASE = 10;
 
@@ -118,7 +121,8 @@ export async function decryptFromEnvelope(envelopeText: string, passphrase: stri
     throw new Error('Not an encrypted TabStyr backup.');
   }
   if (typeof env.salt !== 'string' || env.salt.length > MAX_SALT_B64 ||
-      typeof env.iv !== 'string' || env.iv.length > MAX_IV_B64) {
+      typeof env.iv !== 'string' || env.iv.length > MAX_IV_B64 ||
+      typeof env.ciphertext !== 'string' || env.ciphertext.length > MAX_CIPHERTEXT_B64) {
     throw new Error('Malformed backup file.');
   }
   // Clamp the file-supplied iteration count: never below MIN (downgrade attack),

@@ -6,7 +6,9 @@
     "privacyTitle": "プライバシーポリシー — TabStyr",
     "privacyDescription": "TabStyr は何も収集しません。サーバーなし、解析なし、アカウントなし、ネットワーク通信なし。すべてが端末内にとどまります。",
     "ideasTitle": "アイデアを共有 — TabStyr",
-    "ideasDescription": "TabStyr への機能の提案やバグの報告。アカウント不要、トラッキングなし — 作者に直接届きます。"
+    "ideasDescription": "TabStyr への機能の提案やバグの報告。アカウント不要、トラッキングなし — 作者に直接届きます。",
+    "wrappedTitle": "Browsing Wrapped — TabStyr",
+    "wrappedDescription": "TabStyr のエクスポートファイルをドロップすると、美しくシェアできる Browsing Wrapped が完成 — あなたのウェブでの時間を、100% ブラウザ内で算出します。"
   },
   "nav": {
     "features": "機能",
@@ -14,6 +16,7 @@
     "privacy": "プライバシー",
     "faq": "よくある質問",
     "feedback": "フィードバック",
+    "wrapped": "Wrapped",
     "addToChrome": "Chrome に追加",
     "comingSoon": "近日公開",
     "language": "言語"
@@ -283,5 +286,150 @@
       "バグ報告",
       "その他"
     ]
+  },
+  "categories": {
+    "Work": "仕事",
+    "Dev": "開発",
+    "Finance": "金融",
+    "Social": "ソーシャル",
+    "Media": "メディア",
+    "News": "ニュース",
+    "Shopping": "ショッピング",
+    "Other": "その他"
+  },
+  "wrapped": {
+    "daysCovered": "{count}日",
+    "daysCoveredOne": "{count}日",
+    "prev": "前へ",
+    "next": "次へ",
+    "pause": "一時停止",
+    "play": "再生",
+    "startOver": "最初から",
+    "drop": {
+      "title": "Browsing Wrapped",
+      "lede": "あなたの時間が本当はどこへ消えたのか、見てみましょう。",
+      "cta": "TabStyr のエクスポートファイルをここにドロップ",
+      "browse": "またはファイルを選択",
+      "useMine": "代わりにこのブラウザのデータを使う",
+      "hint": "データはすべてブラウザー内で処理されます。",
+      "passPrompt": "このバックアップは暗号化されています。続けるにはパスフレーズを入力してください。",
+      "passLabel": "パスフレーズ",
+      "decrypt": "ロック解除",
+      "cancel": "キャンセル"
+    },
+    "error": {
+      "tooLarge": "このファイルは TabStyr のバックアップにしては大きすぎます。",
+      "parse": "このファイルは有効な TabStyr バックアップではありません。",
+      "empty": "Wrapped を作るにはまだ記録が足りません — しばらく閲覧してからまた来てください。",
+      "wrongPass": "パスフレーズが違うか、ファイルが破損しています。",
+      "readFailed": "そのデータを読み込めませんでした。"
+    },
+    "slide": {
+      "intro": {
+        "title": "あなたの閲覧を振り返りましょう。",
+        "caption": "ウェブで過ごした、あなたの{days}日間。"
+      },
+      "total": {
+        "kicker": "アクティブ時間の合計",
+        "caption": "ふだんの1日でおよそ{avg}"
+      },
+      "topSite": {
+        "kicker": "あなたのいちばんの夢中",
+        "caption": "アクティブ時間の{pct}%がここ 👀"
+      },
+      "top5": {
+        "kicker": "あなたのトップサイト"
+      },
+      "category": {
+        "kicker": "時間の行き先",
+        "caption": "いちばん多かったカテゴリ"
+      },
+      "peak": {
+        "kicker": "あなたのゴールデンアワー",
+        "caption": "{when}ごろがいちばん熱かった"
+      },
+      "focus": {
+        "kicker": "集中スコア",
+        "caption": "生産的な時間と気が散る時間",
+        "streak": "🔥 最長の集中連続記録：{count}日"
+      },
+      "persona": {
+        "kicker": "今年のあなたは"
+      }
+    },
+    "chronotype": {
+      "earlyBird": {
+        "title": "早起きタイプ"
+      },
+      "daytimer": {
+        "title": "昼型タイプ"
+      },
+      "nightOwl": {
+        "title": "夜型タイプ"
+      },
+      "allHours": {
+        "title": "オールタイム・ブラウザー"
+      }
+    },
+    "persona": {
+      "builder": {
+        "title": "ビルダー",
+        "subtitle": "コード、ドキュメント、開発ツールがタブを支配。"
+      },
+      "operator": {
+        "title": "オペレーター",
+        "subtitle": "受信箱、ドキュメント、会議 — あなたが場を回した。"
+      },
+      "socialite": {
+        "title": "ソーシャライト",
+        "subtitle": "フィード、チャット、スレッドがいつもそばに。"
+      },
+      "binger": {
+        "title": "ビンジャー",
+        "subtitle": "配信、動画、音楽が時間を運んでいった。"
+      },
+      "analyst": {
+        "title": "アナリスト",
+        "subtitle": "見出しと深掘りで、いつも情報通。"
+      },
+      "tycoon": {
+        "title": "大物",
+        "subtitle": "市場、銀行、動き続けるお金。"
+      },
+      "collector": {
+        "title": "コレクター",
+        "subtitle": "カート、ほしいものリスト、購入の高揚感。"
+      },
+      "wanderer": {
+        "title": "ワンダラー",
+        "subtitle": "あちこち少しずつ、王道を外れて。"
+      },
+      "explorer": {
+        "title": "エクスプローラー",
+        "subtitle": "ひとつに偏らず、ウェブ全体を旅した。"
+      }
+    },
+    "card": {
+      "heading": "Browsing Wrapped",
+      "shareKicker": "シェアできるあなたのカード",
+      "totalCaption": "アクティブな閲覧時間の合計",
+      "topSite": "トップサイト",
+      "topCategory": "トップカテゴリ",
+      "focus": "集中スコア",
+      "peak": "ゴールデンアワー",
+      "days": "記録日数",
+      "footer": "TabStyr · デバイスから出るのは0バイト",
+      "shareText": "TabStyr で作った私の Browsing Wrapped 🔒",
+      "download": "画像を保存",
+      "share": "シェア",
+      "saved": "画像を保存しました ✓",
+      "saveFailed": "画像を作成できませんでした。",
+      "preparing": "準備中…"
+    },
+    "page": {
+      "back": "← サイトに戻る"
+    },
+    "eyebrow": "あなたのウェブの1年",
+    "cta": "Wrappedを作成"
   }
 }

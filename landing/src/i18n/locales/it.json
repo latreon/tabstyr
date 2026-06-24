@@ -6,7 +6,9 @@
     "privacyTitle": "Informativa sulla privacy — TabStyr",
     "privacyDescription": "TabStyr non raccoglie nulla. Nessun server, nessuna analisi, nessun account, nessuna richiesta di rete. Tutto rimane sul tuo dispositivo.",
     "ideasTitle": "Condividi un'idea — TabStyr",
-    "ideasDescription": "Suggerisci una funzione o segnala un bug per TabStyr. Nessun account, nessun tracciamento — arriva direttamente a chi lo crea."
+    "ideasDescription": "Suggerisci una funzione o segnala un bug per TabStyr. Nessun account, nessun tracciamento — arriva direttamente a chi lo crea.",
+    "wrappedTitle": "Browsing Wrapped — TabStyr",
+    "wrappedDescription": "Trascina il tuo export di TabStyr e ottieni un Browsing Wrapped splendido e condivisibile — il tuo tempo sul web, calcolato al 100% nel tuo browser."
   },
   "nav": {
     "features": "Funzioni",
@@ -16,7 +18,8 @@
     "feedback": "Feedback",
     "addToChrome": "Aggiungi a Chrome",
     "comingSoon": "In arrivo",
-    "language": "Lingua"
+    "language": "Lingua",
+    "wrapped": "Wrapped"
   },
   "hero": {
     "eyebrow": "100% locale · aperto per scelta",
@@ -283,5 +286,150 @@
       "Segnalazione di bug",
       "Altro"
     ]
+  },
+  "categories": {
+    "Work": "Lavoro",
+    "Dev": "Sviluppo",
+    "Finance": "Finanza",
+    "Social": "Social",
+    "Media": "Media",
+    "News": "Notizie",
+    "Shopping": "Acquisti",
+    "Other": "Altro"
+  },
+  "wrapped": {
+    "daysCovered": "{count} giorni",
+    "daysCoveredOne": "{count} giorno",
+    "prev": "Precedente",
+    "next": "Successivo",
+    "pause": "Pausa",
+    "play": "Riproduci",
+    "startOver": "Ricomincia",
+    "drop": {
+      "title": "Browsing Wrapped",
+      "lede": "Scopri dove è finito davvero il tuo tempo.",
+      "cta": "Trascina qui il tuo export di TabStyr",
+      "browse": "oppure scegli un file",
+      "useMine": "Usa invece i dati di questo browser",
+      "hint": "I tuoi dati vengono elaborati interamente nel tuo browser.",
+      "passPrompt": "Questo backup è crittografato. Inserisci la passphrase per continuare.",
+      "passLabel": "Passphrase",
+      "decrypt": "Sblocca",
+      "cancel": "Annulla"
+    },
+    "error": {
+      "tooLarge": "Quel file è troppo grande per essere un backup di TabStyr.",
+      "parse": "Quel file non è un backup TabStyr valido.",
+      "empty": "Attività registrata ancora insufficiente per creare un Wrapped — torna dopo aver navigato un po'.",
+      "wrongPass": "Passphrase errata o file danneggiato.",
+      "readFailed": "Impossibile leggere quei dati."
+    },
+    "slide": {
+      "intro": {
+        "title": "Riavvolgiamo la tua navigazione.",
+        "caption": "{days} giorni di te, sul web."
+      },
+      "total": {
+        "kicker": "Tempo attivo totale",
+        "caption": "circa {avg} in una giornata tipo"
+      },
+      "topSite": {
+        "kicker": "La tua ossessione n°1",
+        "caption": "è il {pct}% di tutto il tuo tempo attivo 👀"
+      },
+      "top5": {
+        "kicker": "I tuoi siti principali"
+      },
+      "category": {
+        "kicker": "Dove è finito il tuo tempo",
+        "caption": "la tua categoria più grande"
+      },
+      "peak": {
+        "kicker": "La tua ora di punta",
+        "caption": "hai dato il massimo intorno alle {when}"
+      },
+      "focus": {
+        "kicker": "Punteggio di concentrazione",
+        "caption": "tempo produttivo vs distraente",
+        "streak": "🔥 la tua serie di concentrazione più lunga: {count} giorni"
+      },
+      "persona": {
+        "kicker": "Quest'anno sei stato"
+      }
+    },
+    "chronotype": {
+      "earlyBird": {
+        "title": "Un Mattiniero"
+      },
+      "daytimer": {
+        "title": "Un Tipo da Giorno"
+      },
+      "nightOwl": {
+        "title": "Un Nottambulo"
+      },
+      "allHours": {
+        "title": "Un Navigatore a Tutte le Ore"
+      }
+    },
+    "persona": {
+      "builder": {
+        "title": "Il Costruttore",
+        "subtitle": "Codice, documentazione e strumenti dev hanno dominato le tue schede."
+      },
+      "operator": {
+        "title": "L'Organizzatore",
+        "subtitle": "Caselle di posta, documenti e riunioni — comandavi tu."
+      },
+      "socialite": {
+        "title": "Il Mondano",
+        "subtitle": "Feed, chat e thread ti hanno tenuto compagnia."
+      },
+      "binger": {
+        "title": "Il Maratoneta",
+        "subtitle": "Streaming, video e musica hanno riempito le tue ore."
+      },
+      "analyst": {
+        "title": "L'Analista",
+        "subtitle": "Titoli e approfondimenti ti hanno tenuto sul pezzo."
+      },
+      "tycoon": {
+        "title": "Il Magnate",
+        "subtitle": "Mercati, banche e soldi in movimento."
+      },
+      "collector": {
+        "title": "Il Collezionista",
+        "subtitle": "Carrelli, liste dei desideri e il brivido del checkout."
+      },
+      "wanderer": {
+        "title": "Il Vagabondo",
+        "subtitle": "Un po' di tutto, fuori dai sentieri battuti."
+      },
+      "explorer": {
+        "title": "L'Esploratore",
+        "subtitle": "Nessuna corsia fissa — hai vagato per tutto il web."
+      }
+    },
+    "card": {
+      "heading": "Browsing Wrapped",
+      "shareKicker": "La tua scheda da condividere",
+      "totalCaption": "navigazione attiva totale",
+      "topSite": "Sito principale",
+      "topCategory": "Categoria principale",
+      "focus": "Punteggio di concentrazione",
+      "peak": "Ora di punta",
+      "days": "Giorni registrati",
+      "footer": "TabStyr · 0 byte lasciano il tuo dispositivo",
+      "shareText": "Il mio Browsing Wrapped, creato con TabStyr 🔒",
+      "download": "Salva immagine",
+      "share": "Condividi",
+      "saved": "Immagine salvata ✓",
+      "saveFailed": "Impossibile creare l'immagine.",
+      "preparing": "Preparazione…"
+    },
+    "page": {
+      "back": "← Torna al sito"
+    },
+    "eyebrow": "Il tuo anno sul web",
+    "cta": "Crea il tuo Wrapped"
   }
 }

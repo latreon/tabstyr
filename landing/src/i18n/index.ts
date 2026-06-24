@@ -1,4 +1,5 @@
 import { shallowRef } from 'vue';
+import { setDateLocale } from '@ext/locale';
 import { SITE_URL } from '@/site';
 import en from './locales/en.json';
 
@@ -33,9 +34,16 @@ export const DEFAULT_LOCALE = 'en';
 const CACHE_KEY = 'tabstyr:lang';
 const BASE = import.meta.env.BASE_URL; // '/' on the custom domain
 
+// Translations are overlays on the English base: a non-English bundle may omit
+// keys not yet translated (e.g. a freshly added section), and t()/tm() fall back to
+// English per-key. Typing the lazy bundles as a deep-partial of `Messages` lets a
+// locale file ship without every key while keeping full safety on the eager `en`.
+type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K] };
+type PartialMessages = DeepPartial<Messages>;
+
 // Lazy message loaders — Vite splits each into its own chunk, so a visitor only
 // downloads the locale they actually view. English is bundled eagerly (fallback).
-const loaders: Record<string, () => Promise<{ default: Messages }>> = {
+const loaders: Record<string, () => Promise<{ default: PartialMessages }>> = {
   es: () => import('./locales/es.json'),
   de: () => import('./locales/de.json'),
   fr: () => import('./locales/fr.json'),
@@ -48,11 +56,11 @@ const loaders: Record<string, () => Promise<{ default: Messages }>> = {
   'zh-CN': () => import('./locales/zh-CN.json'),
 };
 
-const cache: Record<string, Messages> = { en };
+const cache: Record<string, PartialMessages> = { en };
 
 // Reactive state shared across the whole app (single source of truth).
 const locale = shallowRef<string>(DEFAULT_LOCALE);
-const messages = shallowRef<Messages>(en);
+const messages = shallowRef<PartialMessages>(en);
 
 // ── Slug ⇄ code helpers ──────────────────────────────────────────────────────
 export const codeForSlug = (slug: string): string | undefined =>
@@ -143,9 +151,16 @@ function upsertLink(rel: string, href: string, hreflang?: string): HTMLLinkEleme
 /** Sync <html lang>, title, description, canonical and hreflang alternates to the
  * active locale + current route. `rest` is the un-prefixed route ('', 'privacy', 'ideas'). */
 export function applyHead(rest: string): void {
-  const titleKey = rest === 'privacy' ? 'meta.privacyTitle' : rest === 'ideas' ? 'meta.ideasTitle' : 'meta.title';
+  const titleKey =
+    rest === 'privacy' ? 'meta.privacyTitle'
+    : rest === 'ideas' ? 'meta.ideasTitle'
+    : rest === 'wrapped' ? 'meta.wrappedTitle'
+    : 'meta.title';
   const descKey =
-    rest === 'privacy' ? 'meta.privacyDescription' : rest === 'ideas' ? 'meta.ideasDescription' : 'meta.description';
+    rest === 'privacy' ? 'meta.privacyDescription'
+    : rest === 'ideas' ? 'meta.ideasDescription'
+    : rest === 'wrapped' ? 'meta.wrappedDescription'
+    : 'meta.description';
   const loc = localeForCode(locale.value);
 
   document.documentElement.lang = loc.hreflang;
@@ -166,7 +181,7 @@ export function applyHead(rest: string): void {
 }
 
 // ── Locale activation ────────────────────────────────────────────────────────
-export async function loadMessages(code: string): Promise<Messages> {
+export async function loadMessages(code: string): Promise<PartialMessages> {
   if (cache[code]) return cache[code];
   const loader = loaders[code];
   if (!loader) return en;
@@ -184,6 +199,9 @@ export async function setLocale(code: string, persist = true): Promise<void> {
   const next = LOCALES.some((l) => l.code === code) ? code : DEFAULT_LOCALE;
   messages.value = await loadMessages(next);
   locale.value = next;
+  // Keep the shared date formatter (used by @ext/time + the Wrapped tool) aligned
+  // with the active UI language, so weekday/month labels localize too.
+  setDateLocale(next);
   if (persist) {
     try {
       localStorage.setItem(CACHE_KEY, next);

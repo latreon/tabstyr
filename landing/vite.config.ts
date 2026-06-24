@@ -10,6 +10,18 @@ export default defineConfig(() => ({
   // (If you ever revert to a GitHub Pages PROJECT path, set base to '/tabstyr/'.)
   base: '/',
   resolve: {
-    alias: { '@': path.resolve(__dirname, './src') },
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      // The Browsing Wrapped tool reuses the extension's PURE, unit-tested logic
+      // (lib/wrapped*, categories, domain, heatmap, …) as the single source of
+      // truth — no fork. Only pure modules are imported via @ext (nothing that
+      // pulls in wxt/browser or IndexedDB), so the landing build stays standalone.
+      '@ext': path.resolve(__dirname, '../lib'),
+    },
+  },
+  server: {
+    // Let the dev server read the sibling extension `lib/` (outside the landing
+    // root) so `@ext/*` imports resolve during `vite dev`.
+    fs: { allow: [path.resolve(__dirname, '..')] },
   },
 }));

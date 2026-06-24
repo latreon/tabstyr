@@ -6,7 +6,9 @@
     "privacyTitle": "Gizlilik politikası — TabStyr",
     "privacyDescription": "TabStyr hiçbir şey toplamaz. Sunucu yok, analiz yok, hesap yok, ağ isteği yok. Her şey cihazınızda kalır.",
     "ideasTitle": "Bir fikir paylaşın — TabStyr",
-    "ideasDescription": "TabStyr için bir özellik önerin veya bir hata bildirin. Hesap yok, takip yok — doğrudan geliştiriciye ulaşır."
+    "ideasDescription": "TabStyr için bir özellik önerin veya bir hata bildirin. Hesap yok, takip yok — doğrudan geliştiriciye ulaşır.",
+    "wrappedTitle": "Tarama Özeti — TabStyr",
+    "wrappedDescription": "TabStyr dışa aktarımınızı bırakın ve şık, paylaşılabilir bir Tarama Özeti elde edin — web'de geçirdiğiniz zaman, %100 tarayıcınızda hesaplanır."
   },
   "nav": {
     "features": "Özellikler",
@@ -16,7 +18,8 @@
     "feedback": "Geri bildirim",
     "addToChrome": "Chrome'a ekle",
     "comingSoon": "Yakında",
-    "language": "Dil"
+    "language": "Dil",
+    "wrapped": "Özet"
   },
   "hero": {
     "eyebrow": "%100 yerel · tasarımı gereği açık",
@@ -283,5 +286,150 @@
       "Hata bildirimi",
       "Diğer"
     ]
+  },
+  "categories": {
+    "Work": "İş",
+    "Dev": "Geliştirme",
+    "Finance": "Finans",
+    "Social": "Sosyal",
+    "Media": "Medya",
+    "News": "Haberler",
+    "Shopping": "Alışveriş",
+    "Other": "Diğer"
+  },
+  "wrapped": {
+    "daysCovered": "{count} gün",
+    "daysCoveredOne": "{count} gün",
+    "prev": "Önceki",
+    "next": "Sonraki",
+    "pause": "Duraklat",
+    "play": "Oynat",
+    "startOver": "Baştan başla",
+    "drop": {
+      "title": "Tarama Özeti",
+      "lede": "Zamanınızın gerçekte nereye gittiğini görün.",
+      "cta": "TabStyr dışa aktarımınızı buraya bırakın",
+      "browse": "ya da bir dosya seçin",
+      "useMine": "Bunun yerine bu tarayıcının verilerini kullan",
+      "hint": "Verileriniz tamamen tarayıcınızda işlenir.",
+      "passPrompt": "Bu yedek şifreli. Devam etmek için parolasını girin.",
+      "passLabel": "Parola",
+      "decrypt": "Kilidi aç",
+      "cancel": "İptal"
+    },
+    "error": {
+      "tooLarge": "Bu dosya bir TabStyr yedeği olamayacak kadar büyük.",
+      "parse": "Bu dosya geçerli bir TabStyr yedeği değil.",
+      "empty": "Bir Özet oluşturmak için henüz yeterli izlenmiş etkinlik yok — bir süre gezindikten sonra tekrar gelin.",
+      "wrongPass": "Yanlış parola veya bozuk dosya.",
+      "readFailed": "Bu veri okunamadı."
+    },
+    "slide": {
+      "intro": {
+        "title": "Hadi tarama geçmişinizi geri saralım.",
+        "caption": "Web'de geçen {days} gününüz."
+      },
+      "total": {
+        "kicker": "Toplam aktif süre",
+        "caption": "tipik bir günde yaklaşık {avg}"
+      },
+      "topSite": {
+        "kicker": "1 numaralı tutkunuz",
+        "caption": "bu, tüm aktif sürenizin %{pct}'i 👀"
+      },
+      "top5": {
+        "kicker": "En çok ziyaret ettiğiniz siteler"
+      },
+      "category": {
+        "kicker": "Zamanınız nereye gitti",
+        "caption": "en büyük kategoriniz"
+      },
+      "peak": {
+        "kicker": "Altın saatiniz",
+        "caption": "en yoğun anınız {when} civarındaydı"
+      },
+      "focus": {
+        "kicker": "Odak puanı",
+        "caption": "üretken ve dikkat dağıtıcı süre",
+        "streak": "🔥 en uzun odak serininiz: {count} gün"
+      },
+      "persona": {
+        "kicker": "Bu yıl şuydunuz"
+      }
+    },
+    "chronotype": {
+      "earlyBird": {
+        "title": "Bir Erkenci"
+      },
+      "daytimer": {
+        "title": "Bir Gündüzcü"
+      },
+      "nightOwl": {
+        "title": "Bir Gece Kuşu"
+      },
+      "allHours": {
+        "title": "Her Saat Gezen Biri"
+      }
+    },
+    "persona": {
+      "builder": {
+        "title": "Yapımcı",
+        "subtitle": "Kod, dokümanlar ve geliştirici araçları sekmelerinize hâkimdi."
+      },
+      "operator": {
+        "title": "Yürütücü",
+        "subtitle": "Gelen kutuları, dokümanlar ve toplantılar — işleri siz çevirdiniz."
+      },
+      "socialite": {
+        "title": "Sosyetik",
+        "subtitle": "Akışlar, sohbetler ve konu başlıkları size eşlik etti."
+      },
+      "binger": {
+        "title": "Maraton İzleyici",
+        "subtitle": "Yayınlar, videolar ve müzik saatlerinizi taşıdı."
+      },
+      "analyst": {
+        "title": "Analist",
+        "subtitle": "Manşetler ve derinlemesine yazılar sizi haberdar tuttu."
+      },
+      "tycoon": {
+        "title": "Patron",
+        "subtitle": "Piyasalar, bankacılık ve hareket hâlindeki para."
+      },
+      "collector": {
+        "title": "Koleksiyoncu",
+        "subtitle": "Sepetler, istek listeleri ve ödeme anının heyecanı."
+      },
+      "wanderer": {
+        "title": "Gezgin",
+        "subtitle": "Her şeyden biraz, alışılmışın dışında."
+      },
+      "explorer": {
+        "title": "Kâşif",
+        "subtitle": "Tek bir şeride sığmadınız — tüm web'i dolaştınız."
+      }
+    },
+    "card": {
+      "heading": "Tarama Özeti",
+      "shareKicker": "Paylaşılabilir kartınız",
+      "totalCaption": "toplam aktif tarama",
+      "topSite": "En çok kullanılan site",
+      "topCategory": "En çok kullanılan kategori",
+      "focus": "Odak puanı",
+      "peak": "Altın saat",
+      "days": "İzlenen günler",
+      "footer": "TabStyr · cihazınızdan 0 bayt çıkar",
+      "shareText": "TabStyr ile hazırlanan Tarama Özetim 🔒",
+      "download": "Görseli kaydet",
+      "share": "Paylaş",
+      "saved": "Görsel kaydedildi ✓",
+      "saveFailed": "Görsel oluşturulamadı.",
+      "preparing": "Hazırlanıyor…"
+    },
+    "page": {
+      "back": "← Siteye dön"
+    },
+    "eyebrow": "Web’deki yılınız",
+    "cta": "Özetini oluştur"
   }
 }

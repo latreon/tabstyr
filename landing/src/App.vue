@@ -20,6 +20,8 @@ import CtaSection from '@/components/CtaSection.vue';
 import SiteFooter from '@/components/SiteFooter.vue';
 import PrivacyPage from '@/components/PrivacyPage.vue';
 import IdeaPage from '@/components/IdeaPage.vue';
+import WrappedPage from '@/components/WrappedPage.vue';
+import WrappedSection from '@/components/WrappedSection.vue';
 
 // Clean-URL router (no '#') with a leading locale slug: '/', '/de', '/fr/privacy',
 // '/pt-br/ideas'. English is the un-prefixed root. Works on static hosts via a
@@ -36,6 +38,7 @@ const pathFromBase = (): string => {
 const rest = ref(splitLocale(pathFromBase()).rest);
 const isPrivacy = computed(() => rest.value === 'privacy');
 const isIdeas = computed(() => rest.value === 'ideas');
+const isWrapped = computed(() => rest.value === 'wrapped');
 
 // Expose the current locale-less route so the language switcher can build links
 // that keep the visitor on the same page in another language.
@@ -122,6 +125,7 @@ onBeforeUnmount(() => {
 
     <PrivacyPage v-if="isPrivacy" />
     <IdeaPage v-else-if="isIdeas" />
+    <WrappedPage v-else-if="isWrapped" />
 
     <template v-else>
       <SiteNav />
@@ -129,6 +133,7 @@ onBeforeUnmount(() => {
         <HeroSection />
         <FeatureGrid />
         <ShowcaseSection />
+        <WrappedSection />
         <PrivacySection />
         <FaqSection />
         <FeedbackSection />

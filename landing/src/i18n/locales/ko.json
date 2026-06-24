@@ -6,7 +6,9 @@
     "privacyTitle": "개인정보 처리방침 — TabStyr",
     "privacyDescription": "TabStyr는 어떤 데이터도 수집하지 않습니다. 서버도, 분석도, 계정도, 네트워크 요청도 없습니다. 모든 것이 기기 안에 머무릅니다.",
     "ideasTitle": "아이디어 공유 — TabStyr",
-    "ideasDescription": "TabStyr에 대한 기능 제안이나 버그 제보를 보내주세요. 계정도, 추적도 없이 — 곧바로 제작자에게 전달됩니다."
+    "ideasDescription": "TabStyr에 대한 기능 제안이나 버그 제보를 보내주세요. 계정도, 추적도 없이 — 곧바로 제작자에게 전달됩니다.",
+    "wrappedTitle": "브라우징 결산 — TabStyr",
+    "wrappedDescription": "TabStyr 내보내기 파일을 끌어다 놓으면 멋지고 공유 가능한 브라우징 결산이 만들어집니다 — 웹에서 보낸 당신의 시간, 100% 브라우저 안에서 계산됩니다."
   },
   "nav": {
     "features": "기능",
@@ -14,6 +16,7 @@
     "privacy": "개인정보",
     "faq": "자주 묻는 질문",
     "feedback": "피드백",
+    "wrapped": "결산",
     "addToChrome": "Chrome에 추가",
     "comingSoon": "출시 예정",
     "language": "언어"
@@ -283,5 +286,150 @@
       "버그 제보",
       "기타"
     ]
+  },
+  "categories": {
+    "Work": "업무",
+    "Dev": "개발",
+    "Finance": "금융",
+    "Social": "소셜",
+    "Media": "미디어",
+    "News": "뉴스",
+    "Shopping": "쇼핑",
+    "Other": "기타"
+  },
+  "wrapped": {
+    "daysCovered": "{count}일",
+    "daysCoveredOne": "{count}일",
+    "prev": "이전",
+    "next": "다음",
+    "pause": "일시정지",
+    "play": "재생",
+    "startOver": "처음부터 다시",
+    "page": {
+      "back": "← 사이트로 돌아가기"
+    },
+    "drop": {
+      "title": "브라우징 결산",
+      "lede": "당신의 시간이 진짜 어디로 갔는지 확인하세요.",
+      "cta": "TabStyr 내보내기 파일을 여기에 끌어다 놓으세요",
+      "browse": "또는 파일 선택",
+      "useMine": "대신 이 브라우저의 데이터 사용",
+      "hint": "데이터는 모두 브라우저 안에서 처리됩니다.",
+      "passPrompt": "이 백업은 암호화되어 있습니다. 계속하려면 암호 문구를 입력하세요.",
+      "passLabel": "암호 문구",
+      "decrypt": "잠금 해제",
+      "cancel": "취소"
+    },
+    "error": {
+      "tooLarge": "이 파일은 TabStyr 백업이라기에는 너무 큽니다.",
+      "parse": "유효한 TabStyr 백업 파일이 아닙니다.",
+      "empty": "결산을 만들기에는 기록된 활동이 아직 부족합니다 — 잠시 둘러본 뒤 다시 와 주세요.",
+      "wrongPass": "암호가 틀렸거나 파일이 손상되었습니다.",
+      "readFailed": "해당 데이터를 읽을 수 없습니다."
+    },
+    "slide": {
+      "intro": {
+        "title": "당신의 브라우징을 되감아 볼까요.",
+        "caption": "웹에서 보낸 당신의 {days}일."
+      },
+      "total": {
+        "kicker": "총 활동 시간",
+        "caption": "보통 하루 약 {avg}"
+      },
+      "topSite": {
+        "kicker": "당신의 최애 1위",
+        "caption": "전체 활동 시간의 {pct}%나 됩니다 👀"
+      },
+      "top5": {
+        "kicker": "당신의 상위 사이트"
+      },
+      "category": {
+        "kicker": "시간이 향한 곳",
+        "caption": "당신의 최대 카테고리"
+      },
+      "peak": {
+        "kicker": "당신의 전성기 시간대",
+        "caption": "{when}쯤 가장 불타올랐습니다"
+      },
+      "focus": {
+        "kicker": "집중 점수",
+        "caption": "생산적 시간 대 산만한 시간",
+        "streak": "🔥 최장 집중 연속 기록: {count}일"
+      },
+      "persona": {
+        "kicker": "올해의 당신은"
+      }
+    },
+    "chronotype": {
+      "earlyBird": {
+        "title": "아침형 인간"
+      },
+      "daytimer": {
+        "title": "한낮형 인간"
+      },
+      "nightOwl": {
+        "title": "올빼미형 인간"
+      },
+      "allHours": {
+        "title": "시간 불문 브라우저"
+      }
+    },
+    "persona": {
+      "builder": {
+        "title": "빌더",
+        "subtitle": "코드, 문서, 개발 도구가 당신의 탭을 지배했습니다."
+      },
+      "operator": {
+        "title": "오퍼레이터",
+        "subtitle": "받은편지함, 문서, 회의 — 당신이 판을 이끌었습니다."
+      },
+      "socialite": {
+        "title": "소셜리스트",
+        "subtitle": "피드와 채팅, 스레드가 당신과 함께했습니다."
+      },
+      "binger": {
+        "title": "정주행러",
+        "subtitle": "스트리밍, 영상, 음악이 당신의 시간을 채웠습니다."
+      },
+      "analyst": {
+        "title": "애널리스트",
+        "subtitle": "헤드라인과 심층 기사로 늘 흐름을 꿰뚫었습니다."
+      },
+      "tycoon": {
+        "title": "타이쿤",
+        "subtitle": "시장, 금융, 그리고 움직이는 돈."
+      },
+      "collector": {
+        "title": "컬렉터",
+        "subtitle": "장바구니, 위시리스트, 그리고 결제의 짜릿함."
+      },
+      "wanderer": {
+        "title": "방랑자",
+        "subtitle": "이것저것 조금씩, 남들이 가지 않는 길로."
+      },
+      "explorer": {
+        "title": "탐험가",
+        "subtitle": "정해진 길 없이 — 웹 전체를 누볐습니다."
+      }
+    },
+    "card": {
+      "heading": "브라우징 결산",
+      "shareKicker": "공유할 수 있는 당신의 카드",
+      "totalCaption": "총 활동 브라우징",
+      "topSite": "최다 사이트",
+      "topCategory": "최다 카테고리",
+      "focus": "집중 점수",
+      "peak": "전성기 시간대",
+      "days": "기록된 일수",
+      "footer": "TabStyr · 기기를 떠나는 데이터 0바이트",
+      "shareText": "TabStyr로 만든 나의 브라우징 결산 🔒",
+      "download": "이미지 저장",
+      "share": "공유",
+      "saved": "이미지가 저장되었습니다 ✓",
+      "saveFailed": "이미지를 만들지 못했습니다.",
+      "preparing": "준비 중…"
+    },
+    "eyebrow": "웹에서의 1년",
+    "cta": "내 결산 만들기"
   }
 }

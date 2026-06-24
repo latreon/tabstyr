@@ -6,7 +6,9 @@
     "privacyTitle": "Privacy policy — TabStyr",
     "privacyDescription": "TabStyr collects nothing. No servers, no analytics, no accounts, no network requests. Everything stays on your device.",
     "ideasTitle": "Share an idea — TabStyr",
-    "ideasDescription": "Suggest a feature or report a bug for TabStyr. No account, no tracking — it goes straight to the maker."
+    "ideasDescription": "Suggest a feature or report a bug for TabStyr. No account, no tracking — it goes straight to the maker.",
+    "wrappedTitle": "Browsing Wrapped — TabStyr",
+    "wrappedDescription": "Drop your TabStyr export and get a gorgeous, shareable Browsing Wrapped — your time on the web, computed 100% in your browser."
   },
   "nav": {
     "features": "Features",
@@ -14,6 +16,7 @@
     "privacy": "Privacy",
     "faq": "FAQ",
     "feedback": "Feedback",
+    "wrapped": "Wrapped",
     "addToChrome": "Add to Chrome",
     "comingSoon": "Coming soon",
     "language": "Language"
@@ -28,10 +31,22 @@
     "micro": "No account · no servers · no tracking · MIT licensed",
     "previewAlt": "TabStyr dashboard showing today's active time, category breakdown, trends and an activity heatmap",
     "stats": [
-      { "unit": "bytes", "label": "leave your device" },
-      { "unit": "days", "label": "of history, auto-pruned" },
-      { "unit": "languages", "label": "out of the box" },
-      { "unit": "%", "label": "local & open by design" }
+      {
+        "unit": "bytes",
+        "label": "leave your device"
+      },
+      {
+        "unit": "days",
+        "label": "of history, auto-pruned"
+      },
+      {
+        "unit": "languages",
+        "label": "out of the box"
+      },
+      {
+        "unit": "%",
+        "label": "local & open by design"
+      }
     ]
   },
   "features": {
@@ -88,10 +103,22 @@
     "h2Rest": "leave your device.",
     "lede": "Your data lives in your browser's own database (IndexedDB), pruned to a rolling 90-day window. You can export it, restore it, or wipe it — any time, all offline.",
     "points": [
-      { "k": "No servers", "v": "Nothing is uploaded. There is no backend to send data to." },
-      { "k": "No accounts", "v": "Install and go. No sign-up, no email, no profile." },
-      { "k": "No trackers", "v": "No analytics, no ads, no third-party scripts." },
-      { "k": "No page reading", "v": "Only tab metadata (URL/title) from standard browser APIs." }
+      {
+        "k": "No servers",
+        "v": "Nothing is uploaded. There is no backend to send data to."
+      },
+      {
+        "k": "No accounts",
+        "v": "Install and go. No sign-up, no email, no profile."
+      },
+      {
+        "k": "No trackers",
+        "v": "No analytics, no ads, no third-party scripts."
+      },
+      {
+        "k": "No page reading",
+        "v": "Only tab metadata (URL/title) from standard browser APIs."
+      }
     ],
     "policyLink": "Read the full privacy policy →"
   },
@@ -172,10 +199,22 @@
     "leadRest": "Everything it records stays on your device. There are no servers, no analytics, no accounts, and no network requests of any kind.",
     "storesTitle": "What it stores (locally, in your browser's IndexedDB)",
     "stores": [
-      { "label": "Session records", "body": "start/end times, the page's domain, and whether the tab played audio." },
-      { "label": "Daily per-domain totals", "body": "seconds per site per day." },
-      { "label": "Open-tab metadata", "body": "title, URL, last-active time, and a random local id used to attribute time." },
-      { "label": "Settings", "body": "stale threshold, idle timeout, theme, audio counting, category rules." }
+      {
+        "label": "Session records",
+        "body": "start/end times, the page's domain, and whether the tab played audio."
+      },
+      {
+        "label": "Daily per-domain totals",
+        "body": "seconds per site per day."
+      },
+      {
+        "label": "Open-tab metadata",
+        "body": "title, URL, last-active time, and a random local id used to attribute time."
+      },
+      {
+        "label": "Settings",
+        "body": "stale threshold, idle timeout, theme, audio counting, category rules."
+      }
     ],
     "retention": "Data is kept for a rolling 90-day window, then pruned automatically.",
     "notTitle": "What it does NOT do",
@@ -188,12 +227,30 @@
     "permCol": "Permission",
     "purposeCol": "Purpose",
     "perms": [
-      { "perm": "tabs", "why": "See the active tab's URL/title to attribute time to the right site." },
-      { "perm": "storage", "why": "Save your stats and settings locally." },
-      { "perm": "idle", "why": "Pause tracking when you step away so totals stay accurate." },
-      { "perm": "alarms", "why": "Periodic checkpoints and the once-daily maintenance task." },
-      { "perm": "notifications", "why": "Optional, at-most-once-a-day stale-tab reminder." },
-      { "perm": "favicon (Chromium)", "why": "Show site icons in lists." }
+      {
+        "perm": "tabs",
+        "why": "See the active tab's URL/title to attribute time to the right site."
+      },
+      {
+        "perm": "storage",
+        "why": "Save your stats and settings locally."
+      },
+      {
+        "perm": "idle",
+        "why": "Pause tracking when you step away so totals stay accurate."
+      },
+      {
+        "perm": "alarms",
+        "why": "Periodic checkpoints and the once-daily maintenance task."
+      },
+      {
+        "perm": "notifications",
+        "why": "Optional, at-most-once-a-day stale-tab reminder."
+      },
+      {
+        "perm": "favicon (Chromium)",
+        "why": "Show site icons in lists."
+      }
     ],
     "noHost": "No host permissions are requested — the extension cannot access the content of the pages you visit.",
     "controlTitle": "Your control",
@@ -223,6 +280,155 @@
     "send": "Send idea",
     "sending": "Sending…",
     "error": "Couldn't send — please try again in a moment.",
-    "categories": ["Feature idea", "Improvement", "Bug report", "Other"]
+    "categories": [
+      "Feature idea",
+      "Improvement",
+      "Bug report",
+      "Other"
+    ]
+  },
+  "categories": {
+    "Work": "Work",
+    "Dev": "Dev",
+    "Finance": "Finance",
+    "Social": "Social",
+    "Media": "Media",
+    "News": "News",
+    "Shopping": "Shopping",
+    "Other": "Other"
+  },
+  "wrapped": {
+    "daysCovered": "{count} days",
+    "daysCoveredOne": "{count} day",
+    "prev": "Previous",
+    "next": "Next",
+    "pause": "Pause",
+    "play": "Play",
+    "startOver": "Start over",
+    "page": {
+      "back": "← Back to site"
+    },
+    "drop": {
+      "title": "Browsing Wrapped",
+      "lede": "See where your time really went.",
+      "cta": "Drop your TabStyr export here",
+      "browse": "or choose a file",
+      "hint": "Your data is processed entirely in your browser.",
+      "passPrompt": "This backup is encrypted. Enter its passphrase to continue.",
+      "passLabel": "Passphrase",
+      "decrypt": "Unlock",
+      "cancel": "Cancel"
+    },
+    "error": {
+      "tooLarge": "That file is too large to be a TabStyr backup.",
+      "parse": "That file isn't a valid TabStyr backup.",
+      "empty": "Not enough tracked activity in that export to build a Wrapped yet.",
+      "wrongPass": "Wrong passphrase or corrupted file.",
+      "readFailed": "Could not read that file."
+    },
+    "slide": {
+      "intro": {
+        "title": "Let's rewind your browsing.",
+        "caption": "{days} days of you, on the web."
+      },
+      "total": {
+        "kicker": "Total active time",
+        "caption": "about {avg} on a typical day"
+      },
+      "topSite": {
+        "kicker": "Your #1 obsession",
+        "caption": "that's {pct}% of all your active time"
+      },
+      "top5": {
+        "kicker": "Your top sites"
+      },
+      "category": {
+        "kicker": "Where your time went",
+        "caption": "your biggest category"
+      },
+      "peak": {
+        "kicker": "Your power hour",
+        "caption": "you went hardest around {when}"
+      },
+      "focus": {
+        "kicker": "Focus score",
+        "caption": "productive vs. distracting time",
+        "streak": "Your longest focus streak: {count} days"
+      },
+      "persona": {
+        "kicker": "This year, you were"
+      }
+    },
+    "chronotype": {
+      "earlyBird": {
+        "title": "An Early Bird"
+      },
+      "daytimer": {
+        "title": "A Daytimer"
+      },
+      "nightOwl": {
+        "title": "A Night Owl"
+      },
+      "allHours": {
+        "title": "An All-Hours Browser"
+      }
+    },
+    "persona": {
+      "builder": {
+        "title": "The Builder",
+        "subtitle": "Code, docs, and dev tools ruled your tabs."
+      },
+      "operator": {
+        "title": "The Operator",
+        "subtitle": "Inboxes, docs, and meetings — you ran the show."
+      },
+      "socialite": {
+        "title": "The Socialite",
+        "subtitle": "Feeds, chats, and threads kept you company."
+      },
+      "binger": {
+        "title": "The Binger",
+        "subtitle": "Streams, videos, and music carried your hours."
+      },
+      "analyst": {
+        "title": "The Analyst",
+        "subtitle": "Headlines and deep-dives kept you in the know."
+      },
+      "tycoon": {
+        "title": "The Tycoon",
+        "subtitle": "Markets, banking, and money on the move."
+      },
+      "collector": {
+        "title": "The Collector",
+        "subtitle": "Carts, wishlists, and the thrill of checkout."
+      },
+      "wanderer": {
+        "title": "The Wanderer",
+        "subtitle": "A little of everything, off the beaten path."
+      },
+      "explorer": {
+        "title": "The Explorer",
+        "subtitle": "No single lane — you roamed the whole web."
+      }
+    },
+    "card": {
+      "heading": "Browsing Wrapped",
+      "shareKicker": "Your shareable card",
+      "totalCaption": "total active browsing",
+      "topSite": "Top site",
+      "topCategory": "Top category",
+      "focus": "Focus score",
+      "peak": "Power hour",
+      "days": "Days tracked",
+      "footer": "TabStyr · 0 bytes leave your device",
+      "shareText": "My Browsing Wrapped, made with TabStyr",
+      "download": "Save image",
+      "share": "Share",
+      "saved": "Image saved ✓",
+      "saveFailed": "Couldn't create the image.",
+      "preparing": "Preparing…"
+    },
+    "eyebrow": "Your year on the web",
+    "cta": "Create your Wrapped"
   }
 }
