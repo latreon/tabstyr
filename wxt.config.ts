@@ -3,6 +3,17 @@ import { defineConfig } from 'wxt';
 export default defineConfig({
   outDir: 'dist',
   modules: ['@wxt-dev/module-vue'],
+  // Source zip for AMO review must contain ONLY the buildable extension source —
+  // no machine-generated output. Exclude the separate marketing site's bundled
+  // build (landing/dist), and the heavy e2e screenshots / store assets that
+  // bloat the archive without helping a reviewer reproduce the extension.
+  zip: {
+    excludeSources: [
+      'landing/dist/**',
+      'e2e/__screenshots__/**',
+      'docs/store/**',
+    ],
+  },
   // data_collection_permissions is declared in the manifest below (value 'none'),
   // so the generic reminder is already satisfied.
   suppressWarnings: { firefoxDataCollection: true },
