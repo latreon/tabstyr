@@ -57,9 +57,15 @@ export default defineConfig({
       ...(browser === 'firefox'
         ? {
             browser_specific_settings: {
-              gecko: { id: 'tabstyr@latreon.github.io', strict_min_version: '115.0' },
+              gecko: {
+                id: 'tabstyr@latreon.github.io',
+                strict_min_version: '115.0',
+                // AMO only reads data_collection_permissions when it is NESTED
+                // here under gecko — a top-level key is ignored and fails
+                // validation as "missing". Nothing is collected, so 'none'.
+                data_collection_permissions: { required: ['none'] },
+              },
             },
-            data_collection_permissions: { required: ['none'] },
           }
         : {}),
     };
