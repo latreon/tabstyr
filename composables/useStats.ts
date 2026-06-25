@@ -22,10 +22,26 @@ export interface TabRow {
   tabCount: number; // how many open tabs currently sit on this domain
 }
 
+// A flat, presentational view of a single open/stale tab for the tabs modal.
+export interface TabListItem {
+  tabId: number;
+  url: string;
+  title: string;
+  domain: string;
+  lastActiveAt: number; // 0 when the tab was never focused (no meta yet)
+  windowId?: number; // which browser window it lives in, for restoring on undo
+}
+
 export function useStats() {
   const stats = ref<DailyStat[]>([]); // last 90 days
   const openMetas = ref<TabMeta[]>([]); // metas of currently-open, web tabs
   const staleTabs = ref<TabMeta[]>([]);
+  // Every currently-open, non-extension tab, flattened for the tabs modal. Unlike
+  // openMetas this includes tabs never focused (no meta), so it matches openTabCount.
+  const openTabsList = ref<TabListItem[]>([]);
+  // tabId → windowId for the live tabs, so stale items (sourced from metas, which
+  // don't store a window) can still be restored to their original window on undo.
+  const tabWindowById = ref<Map<number, number>>(new Map());
   const openTabCount = ref(0);
   const settings = ref<Settings | null>(null);
   // Seed with a real 7×24 zero grid (not []) so any pre-load template read of
@@ -132,6 +148,21 @@ export function useStats() {
       .sort((a, b) => b.seconds - a.seconds || b.lastActiveAt - a.lastActiveAt);
   });
 
+  // Stale tabs in the same flat shape as the open list, oldest-first (most stale
+  // at the top — the ones most worth closing).
+  const staleTabItems = computed<TabListItem[]>(() =>
+    staleTabs.value
+      .map((m) => ({
+        tabId: m.tabId,
+        url: m.url,
+        title: m.title || displayDomain(domainOf(m.url)),
+        domain: domainOf(m.url),
+        lastActiveAt: m.lastActiveAt,
+        windowId: tabWindowById.value.get(m.tabId),
+      }))
+      .sort((a, b) => a.lastActiveAt - b.lastActiveAt),
+  );
+
   async function setCategoryOverride(domain: string, category: Category): Promise<void> {
     settings.value = await saveSettings({ categoryOverrides: { ...overrides.value, [domain]: category } });
   }
@@ -202,6 +233,30 @@ export function useStats() {
       const liveMetas = metas.filter((m) => liveIds.has(m.tabId));
       openMetas.value = liveMetas;
       staleTabs.value = findStale(liveMetas, Date.now(), loadedSettings.staleDays);
+
+      // Flat list of ALL open tabs (background ones included), enriched with the
+      // last-active time from any meta — newest first.
+      const metaById = new Map(liveMetas.map((m) => [m.tabId, m] as const));
+      tabWindowById.value = new Map(
+        realTabs
+          .filter((tx) => tx.windowId !== undefined)
+          .map((tx) => [tx.id as number, tx.windowId as number] as const),
+      );
+      openTabsList.value = realTabs
+        .map((tx) => {
+          const url = tx.url as string;
+          const domain = domainOf(url);
+          const meta = metaById.get(tx.id as number);
+          return {
+            tabId: tx.id as number,
+            url,
+            title: tx.title || meta?.title || displayDomain(domain),
+            domain,
+            lastActiveAt: meta?.lastActiveAt ?? 0,
+            windowId: tx.windowId,
+          };
+        })
+        .sort((a, b) => b.lastActiveAt - a.lastActiveAt);
     } catch (e) {
       stage1Ok = false;
       if (token === loadToken) {
@@ -231,22 +286,31 @@ export function useStats() {
 
   async function closeTab(tabId: number): Promise<void> {
     await browser.tabs.remove(tabId).catch(() => undefined);
-    await repo.removeTabMeta(tabId);
-    await load();
+    await repo.removeTabMeta(tabId).catch(() => undefined);
+    // Silent: refresh data in place so the open modal stays mounted (no spinner,
+    // no scroll jump) while the user keeps closing tabs.
+    await load({ silent: true });
+  }
+
+  // Close several tabs at once (e.g. "Close all stale"), then refresh once.
+  async function closeTabs(tabIds: number[]): Promise<void> {
+    await Promise.all(tabIds.map((id) => browser.tabs.remove(id).catch(() => undefined)));
+    await Promise.all(tabIds.map((id) => repo.removeTabMeta(id).catch(() => undefined)));
+    await load({ silent: true });
   }
 
   async function snoozeTab(tabId: number): Promise<void> {
     const m = await repo.getTabMeta(tabId);
     if (!m || !settings.value) return;
     await repo.upsertTabMeta({ ...m, snoozedUntil: Date.now() + settings.value.staleDays * 86_400_000 });
-    await load();
+    await load({ silent: true });
   }
 
   return {
-    stats, activeStats, tabRows, staleTabs, openTabCount, settings, heatmap, recentSessions,
+    stats, activeStats, tabRows, staleTabs, staleTabItems, openTabsList, openTabCount, settings, heatmap, recentSessions,
     loading, loadError, storageWarning, todayKey,
     todaySeconds, todayAudioSeconds, weeklyAvgSeconds, weeklyActiveDays,
     todayByDomain, todayByCategory, productivity, overrides, categoryRules, showOnboarding,
-    load, closeTab, snoozeTab, setCategoryOverride, addCategoryRule, removeCategoryRule, dismissOnboarding,
+    load, closeTab, closeTabs, snoozeTab, setCategoryOverride, addCategoryRule, removeCategoryRule, dismissOnboarding,
   };
 }

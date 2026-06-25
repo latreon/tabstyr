@@ -19,6 +19,9 @@ Load the build (`dist/chrome-mv3`, or `dist/firefox-mv2` for Firefox), then:
 - [ ] Click a top-site → per-domain detail modal opens; Esc closes.
 - [ ] Change a site's category → category/focus update.
 - [ ] **Stale tabs**: badge shows the count; reminder fires at most once/day.
+- [ ] **Tab manager**: click the **Open tabs** and **Stale tabs** tiles → centered modal lists tabs alphabetically with favicon, domain, and last-active time; Esc / backdrop closes.
+- [ ] In the manager: **Jump to tab** focuses it; **Close** removes one; **Close all** clears the list; each shows an **Undo** toast that reopens the tab(s) in their original window.
+- [ ] Popup **stale count button** opens the dashboard with the stale-tab manager already open.
 - [ ] **Settings** persist across reopen; **Export** downloads JSON; **Wipe** clears everything.
 - [ ] Theme: system / dark / light all look correct; favicons (incl. monochrome like GitHub) are visible in both themes.
 - [ ] Reload the extension → data persists; no `VersionError` in the console.

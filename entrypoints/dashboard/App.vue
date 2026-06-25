@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { browser } from 'wxt/browser';
 import { useI18n } from 'vue-i18n';
-import { useStats } from '@/composables/useStats';
+import { useStats, type TabListItem } from '@/composables/useStats';
 import { useLocale } from '@/composables/useLocale';
+import { focusTab } from '@/lib/navigate';
+import TabsModal from '@/components/TabsModal.vue';
 import HeroTile from '@/components/HeroTile.vue';
 import StatTile from '@/components/StatTile.vue';
 import TopSitesChart from '@/components/TopSitesChart.vue';
@@ -31,6 +34,74 @@ const showPrivacy = ref(false);
 function openDetail(domain: string) {
   selected.value = { domain, now: Date.now() };
 }
+
+// --- Tabs modal (open tabs / stale tabs) ---------------------------------
+const tabsMode = ref<'open' | 'stale' | null>(null);
+const tabsNow = ref(Date.now());
+const tabsItems = computed<TabListItem[]>(() =>
+  tabsMode.value === 'stale' ? s.staleTabItems.value : s.openTabsList.value,
+);
+function openTabsModal(mode: 'open' | 'stale') {
+  tabsNow.value = Date.now();
+  tabsMode.value = mode;
+}
+
+// --- Toast with optional undo --------------------------------------------
+const toast = ref<{ message: string; undo?: () => void } | null>(null);
+let toastTimer: ReturnType<typeof setTimeout> | undefined;
+function showToast(message: string, undo?: () => void) {
+  toast.value = { message, undo };
+  clearTimeout(toastTimer);
+  // Give a little longer when an action is offered.
+  toastTimer = setTimeout(() => (toast.value = null), undo ? 6000 : 2600);
+}
+
+async function reopenTabs(items: TabListItem[]) {
+  // Cache which windows still exist so we restore each tab into its original
+  // window when possible (e.g. a second monitor window), falling back to the
+  // current window if that window was since closed.
+  const liveWindows = new Set<number>(
+    await browser.windows.getAll().then((ws) => ws.map((w) => w.id as number)).catch(() => []),
+  );
+  for (const item of items) {
+    try {
+      const u = new URL(item.url);
+      if (u.protocol !== 'https:' && u.protocol !== 'http:') continue;
+      const windowId = item.windowId !== undefined && liveWindows.has(item.windowId) ? item.windowId : undefined;
+      await browser.tabs.create({ url: item.url, active: false, ...(windowId !== undefined ? { windowId } : {}) }).catch(() => undefined);
+    } catch {
+      /* skip unparseable / non-web urls (chrome://, etc.) */
+    }
+  }
+  await s.load({ silent: true });
+}
+
+function buildUndo(items: TabListItem[]): (() => void) | undefined {
+  // Only http(s) tabs can be reopened by URL — internal pages can't, so don't
+  // promise an undo we can't honor.
+  const reopenable = items.filter((i) => /^https?:/.test(i.url));
+  if (!reopenable.length) return undefined;
+  return () => {
+    toast.value = null;
+    clearTimeout(toastTimer);
+    void reopenTabs(reopenable);
+  };
+}
+
+async function onCloseTab(item: TabListItem) {
+  await s.closeTab(item.tabId);
+  showToast(t('tabs.closed', { count: 1 }, 1), buildUndo([item]));
+}
+
+async function onCloseAll(items: TabListItem[]) {
+  await s.closeTabs(items.map((i) => i.tabId));
+  showToast(t('tabs.closed', { count: items.length }, items.length), buildUndo(items));
+}
+
+function onGoto(tabId: number) {
+  tabsMode.value = null;
+  void focusTab(tabId);
+}
 onMounted(async () => {
   await locale.load();
   await s.load();
@@ -40,12 +111,10 @@ onMounted(async () => {
     history.replaceState(null, '', location.pathname); // drop the hash from the URL
   }
   if (location.hash === '#stale') {
-    const el = document.getElementById('stale-section');
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    el?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
-    // Brief pulse so the jump is obvious — the stale count is a small tile.
-    el?.classList.add('flash');
-    setTimeout(() => el?.classList.remove('flash'), 1600);
+    history.replaceState(null, '', location.pathname); // drop the hash from the URL
+    // Opened from the popup's stale button — jump straight into the actionable
+    // list instead of just flashing a number the user can't do anything with.
+    if (s.staleTabItems.value.length) openTabsModal('stale');
   }
 });
 </script>
@@ -86,12 +155,21 @@ onMounted(async () => {
         :today-audio-seconds="s.todayAudioSeconds.value"
         :stats="s.activeStats.value"
       />
-      <StatTile :label="t('stat.openTabs')" :value="String(s.openTabCount.value)" />
+      <StatTile
+        :label="t('stat.openTabs')"
+        :value="String(s.openTabCount.value)"
+        :clickable="s.openTabsList.value.length > 0"
+        :action-hint="t('tabs.manage')"
+        @activate="openTabsModal('open')"
+      />
       <StatTile
         id="stale-section"
         :label="t('stat.staleTabs')"
         :value="String(s.staleTabs.value.length)"
         :warn="s.staleTabs.value.length > 0"
+        :clickable="s.staleTabs.value.length > 0"
+        :action-hint="t('tabs.review')"
+        @activate="openTabsModal('stale')"
       />
       <!-- Today by category fills the space below Open tabs / Stale tabs, beside the tall hero -->
       <CategoryChart :slices="s.todayByCategory.value" />
@@ -124,6 +202,27 @@ onMounted(async () => {
   />
 
   <PrivacyDialog v-if="showPrivacy" @close="showPrivacy = false" />
+
+  <TabsModal
+    v-if="tabsMode"
+    :mode="tabsMode"
+    :items="tabsItems"
+    :stale-days="s.settings.value?.staleDays ?? 3"
+    :now="tabsNow"
+    @close="tabsMode = null"
+    @goto="onGoto"
+    @close-tab="onCloseTab"
+    @close-all="onCloseAll"
+  />
+
+  <Teleport to="body">
+    <Transition name="toast">
+      <div v-if="toast" class="toast" role="status" aria-live="polite">
+        <span class="toast-msg">{{ toast.message }}</span>
+        <button v-if="toast.undo" type="button" class="toast-undo" @click="toast.undo">{{ t('tabs.undo') }}</button>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <style scoped>
@@ -257,16 +356,49 @@ onMounted(async () => {
 }
 </style>
 
-<!-- Unscoped: targets the StatTile root by id, which scoped styles can't reach. -->
+<!-- Unscoped: the toast is teleported to <body>, outside this component's scope. -->
 <style>
-#stale-section.flash {
-  animation: stale-flash 1.6s ease;
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: min(440px, calc(100vw - 32px));
+  padding: 11px 14px 11px 16px;
+  border-radius: 12px;
+  background: var(--popover);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.32);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
 }
-@keyframes stale-flash {
-  0%, 100% { box-shadow: 0 0 0 0 transparent; }
-  20% { box-shadow: 0 0 0 3px var(--warn, #b0552f); }
+.toast-msg { white-space: nowrap; }
+.toast-undo {
+  flex: none;
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent-grad-strong);
+  color: var(--on-accent);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
 }
+.toast-undo:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.toast-enter-active,
+.toast-leave-active { transition: opacity 180ms ease, transform 180ms ease; }
+.toast-enter-from,
+.toast-leave-to { opacity: 0; transform: translate(-50%, 12px); }
 @media (prefers-reduced-motion: reduce) {
-  #stale-section.flash { animation: none; }
+  .toast-enter-active,
+  .toast-leave-active { transition: opacity 180ms ease; }
+  .toast-enter-from,
+  .toast-leave-to { transform: translateX(-50%); }
 }
 </style>

@@ -65,7 +65,7 @@ network requests. Your data lives in your browser's database and never leaves it
 
 ### Dashboard
 - **Today** — active time with a sparkline and a vs-weekly-average delta.
-- **Open / stale tab counts.**
+- **Open / stale tab counts** — click either tile to open a tab manager (below).
 - **Trend** — day, week, and month views.
 - **This week vs last week** — period comparison (week or month) broken down by
   category, with per-category deltas.
@@ -78,12 +78,16 @@ network requests. Your data lives in your browser's database and never leaves it
   and heatmap).
 - **Open tabs by time** — for each site you have open, its total active time over
   the last 90 days, sortable, with a per-site open-tab count.
-- **Stale tabs** — list with one-click Close / Keep.
+- **Tab manager** — click the **Open tabs** or **Stale tabs** tile for a centered
+  modal listing those tabs alphabetically, each with its favicon, domain, and
+  last-active time. Jump to any tab, close one, or close them all — every close
+  shows an **Undo** toast that reopens the tabs in their original window.
 - **What did I work on?** — pick any day and copy a clean site list for standups
   or invoices.
 
 ### Popup
-- Today's active total, top sites with favicons, and the stale-tab count.
+- Today's active total, top sites with favicons, and the stale-tab count. The
+  stale count is a button that opens the dashboard's stale-tab manager directly.
 
 ### Data
 - **Export** — full JSON backup, or CSV (daily totals or raw session log).

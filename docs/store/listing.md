@@ -35,6 +35,8 @@ WHAT YOU GET
   standups and invoices.
 • Stale-tab nudges — a badge count and an optional once-a-day reminder for tabs
   you've forgotten.
+• Tab manager — click the Open-tabs or Stale-tabs tile for a tidy, alphabetical
+  list: jump to any tab, close one or close them all, with one-tap Undo.
 • Week-over-week & month-over-month comparison, with per-category deltas.
 • Export — your full history as JSON, plus passphrase-encrypted backups you can restore on any device.
 

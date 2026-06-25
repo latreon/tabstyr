@@ -29,6 +29,27 @@ so they aren't mistaken for defects during review or QA.
   stable per-tab key can be assigned to the wrong one of them. This only scrambles
   per-tab display attribution after a restart, not totals.
 
+## Tab manager
+
+- **Undo reopens a fresh tab, not the original.** Closing a tab from the manager
+  removes it; the Undo toast re-creates it via `browser.tabs.create` from the
+  stored URL (`entrypoints/dashboard/App.vue`). The tab's scroll position, form
+  state, and history stack are not restored — only the URL. Undo is also limited
+  to `http(s)` URLs; internal pages (`chrome://`, extension pages) can't be
+  reopened by URL, so no Undo is offered when only those were closed.
+
+- **Window restore is best-effort.** Undo reopens each tab in its original window
+  when that window still exists, else the current window. Window identity comes
+  from the live `windowId` at load time; stale-tab items only carry it when the
+  tab is still open at that moment.
+
+- **Single browser instance only.** The manager lists `browser.tabs.query({})`
+  for the local browser instance. A second device — or a separate Chrome install
+  on another monitor/machine — runs its own copy of the extension with its own
+  tab list and storage. Tabs that appear to cross devices do so via Chrome's own
+  profile sync, which the extension can neither read nor target, so it can't know
+  or restore which device/sync session a tab belonged to.
+
 ## Performance
 
 - **Domain-detail modal recomputes on open.** Opening a site's detail view filters
