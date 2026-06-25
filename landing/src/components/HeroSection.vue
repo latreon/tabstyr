@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { LINKS, STAT_VALUES, STORE_LIVE } from '@/site';
 import { useI18n } from '@/i18n';
-import dashboardDark from '@/assets/dashboard-dark.png';
+import dashboardDark from '@/assets/dashboard-dark.webp';
 
 const { t, tm } = useI18n();
 
@@ -48,7 +48,9 @@ const stats = computed(() =>
       <!-- dashboard preview -->
       <div class="preview reveal">
         <div class="preview-glow" aria-hidden="true" />
-        <img :src="dashboardDark" :alt="t('hero.previewAlt')" width="1120" height="700" />
+        <!-- LCP element: load eagerly at high priority. width/height match the
+             asset's true 1280×2714 ratio so the box is reserved up front (CLS 0). -->
+        <img :src="dashboardDark" :alt="t('hero.previewAlt')" width="1280" height="2714" fetchpriority="high" decoding="async" />
       </div>
 
       <dl class="stats reveal">

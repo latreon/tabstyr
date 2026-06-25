@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useI18n } from '@/i18n';
-import popupDark from '@/assets/popup-dark.png';
-import popupLight from '@/assets/popup-light.png';
+import popupDark from '@/assets/popup-dark.webp';
+import popupLight from '@/assets/popup-light.webp';
 
 const { t, tm } = useI18n();
 
@@ -30,7 +30,7 @@ const bullets = computed(() => tm<string[]>('showcase.bullets'));
       <div class="popups reveal">
         <figure>
           <div class="figure-glow" aria-hidden="true" />
-          <img :src="popupSrc" :alt="t('showcase.popupAlt', { theme: themeWord })" width="360" height="600" />
+          <img :src="popupSrc" :alt="t('showcase.popupAlt', { theme: themeWord })" width="360" height="620" loading="lazy" decoding="async" />
         </figure>
         <div class="popup-copy">
           <h3>{{ t('showcase.copyTitle') }}</h3>

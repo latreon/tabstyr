@@ -36,7 +36,7 @@
 
   /* type */
   --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
 
   /* layout */
   --container: 1120px;
