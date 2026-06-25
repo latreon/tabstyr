@@ -5,7 +5,7 @@ export const SITE_URL = 'https://tabstyr.com';
 // listing URL into LINKS below. While a flag is false the UI renders a
 // non-clickable "coming soon" state instead of dead-ending at a store homepage.
 export const STORE_LIVE: Record<'chrome' | 'edge' | 'firefox', boolean> = {
-  chrome: false,
+  chrome: true,
   edge: false,
   firefox: false,
 };
@@ -14,7 +14,7 @@ export const ANY_STORE_LIVE = Object.values(STORE_LIVE).some(Boolean);
 // Fill these in once the extension is live, then flip the matching STORE_LIVE
 // flag above. Search the repo for these names to update in one place.
 export const LINKS = {
-  chrome: 'https://chromewebstore.google.com/', // ← replace with your CWS listing URL
+  chrome: 'https://chromewebstore.google.com/detail/tabstyr/mgckngagefippkemgmmccfaaljmgllpa',
   edge: 'https://microsoftedge.microsoft.com/addons', // ← replace with Edge listing
   firefox: 'https://addons.mozilla.org/firefox/', // ← replace with AMO listing
   // In-app routes (clean URLs, handled by the history router in App.vue).
