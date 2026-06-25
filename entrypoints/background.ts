@@ -15,6 +15,15 @@ const actionApi = browser.action ?? (browser as unknown as { browserAction: type
 
 const RETENTION_DAYS = 90;
 const DAY_MS = 86_400_000;
+// Stale-tab staleness is a days-granularity threshold, so the badge doesn't need a
+// full tabMeta scan + tabs.query every heartbeat minute. Refresh it on real
+// mutations (tab add/remove, settings, startup, daily) and only every Nth heartbeat.
+const BADGE_HEARTBEAT_INTERVAL = 10;
+// Cap stored tab titles. Titles are persisted in tabMeta and included in JSON
+// exports; a page can set an arbitrarily long document.title, so bound it (the UI
+// already truncates for display; this bounds storage + export). Well under the
+// importer's 2048 ceiling.
+const TITLE_MAX = 256;
 
 // storage.session is MV3-era (Chrome 102+, Firefox 115+, Safari 16.4+). Where it's
 // absent (older Safari, etc.) `browser.storage.session` is undefined and a direct
@@ -54,6 +63,12 @@ export default defineBackground(() => {
   // (last-writer-wins). Chaining makes each handler's read-mutate-persist atomic
   // with respect to the others; throughput is unaffected (events are sub-second).
   let queue: Promise<unknown> = Promise.resolve();
+
+  // Heartbeat counter (per worker lifetime) — see BADGE_HEARTBEAT_INTERVAL.
+  let heartbeatTicks = 0;
+  // In-memory mirror of the persisted `storageWarning` flag. null = not yet read.
+  // Avoids a storage.local round-trip on every successful commit.
+  let storageWarned: boolean | null = null;
 
   // Wrap an async event listener so it runs after the previous handler finishes,
   // and so a thrown error is logged, not left as an unhandled rejection that
@@ -153,6 +168,7 @@ export default defineBackground(() => {
       const today = dateKey(Date.now());
       const { storageWarnDate } = await browser.storage.local.get('storageWarnDate');
       await browser.storage.local.set({ storageWarning: true });
+      storageWarned = true;
       if (storageWarnDate === today) return; // already notified today
       await browser.storage.local.set({ storageWarnDate: today });
       if (browser.notifications) {
@@ -171,8 +187,16 @@ export default defineBackground(() => {
 
   async function clearStorageWarning(): Promise<void> {
     try {
-      const { storageWarning } = await browser.storage.local.get('storageWarning');
-      if (storageWarning) await browser.storage.local.set({ storageWarning: false });
+      // Read the persisted flag once per worker lifetime, then track it in memory —
+      // the overwhelmingly common case (flag already false) does zero storage I/O.
+      if (storageWarned === null) {
+        const { storageWarning } = await browser.storage.local.get('storageWarning');
+        storageWarned = !!storageWarning;
+      }
+      if (storageWarned) {
+        await browser.storage.local.set({ storageWarning: false });
+        storageWarned = false;
+      }
     } catch {
       /* ignore */
     }
@@ -208,7 +232,7 @@ export default defineBackground(() => {
       // tabMeta (which is included in JSON exports). pageOf keeps scheme+host+path
       // (+ #/ SPA route) — enough to rematch and display.
       url: pageOf(tab.url ?? ''),
-      title: tab.title ?? '',
+      title: (tab.title ?? '').slice(0, TITLE_MAX),
       lastActiveAt: now,
       createdAt: existing?.createdAt ?? now,
       snoozedUntil: existing?.snoozedUntil,
@@ -460,7 +484,8 @@ export default defineBackground(() => {
       const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
       if (tab) eng.setFocusedAudible(!!tab.audible);
       await persist(eng, eng.checkpoint(now));
-      await updateBadge();
+      // Badge is days-granularity — refresh periodically, not every minute.
+      if (++heartbeatTicks % BADGE_HEARTBEAT_INTERVAL === 0) await updateBadge();
     } else if (alarm.name === 'daily') {
       await runDailyMaintenance(now);
     }

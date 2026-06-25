@@ -313,7 +313,6 @@
       "lede": "Sieh, wohin deine Zeit wirklich geflossen ist.",
       "cta": "Zieh deinen TabStyr-Export hierher",
       "browse": "oder wähle eine Datei",
-      "useMine": "Stattdessen die Daten dieses Browsers verwenden",
       "hint": "Deine Daten werden vollständig in deinem Browser verarbeitet.",
       "passPrompt": "Diese Sicherung ist verschlüsselt. Gib ihre Passphrase ein, um fortzufahren.",
       "passLabel": "Passphrase",
@@ -439,5 +438,8 @@
     },
     "eyebrow": "Dein Jahr im Web",
     "cta": "Erstelle dein Wrapped"
+  },
+  "a11y": {
+    "skipToContent": "Zum Inhalt springen"
   }
 }

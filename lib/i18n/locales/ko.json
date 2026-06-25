@@ -21,7 +21,6 @@
     "title": "개인정보 보호",
     "badge": "0바이트만 기기를 떠납니다",
     "badgeTitle": "서버 없음, 계정 없음, 네트워크 요청 없음. 개인정보 처리방침을 보려면 클릭하세요.",
-    "viewPolicy": "0바이트만 기기를 떠납니다 — 개인정보 처리방침 보기",
     "intro1": "TabStyr는 어떤 데이터도 수집·전송·공유하지 않습니다.",
     "intro2": "모든 것은 기기 안에 남습니다 — 서버, 분석, 계정, 네트워크 요청이 전혀 없습니다.",
     "storesTitle": "저장하는 항목 (브라우저의 IndexedDB에 로컬 저장)",
@@ -125,8 +124,7 @@
     "peak": "최고 · {label}",
     "gridAria": "요일 및 시간대별 탐색 활동",
     "less": "적음",
-    "more": "많음",
-    "cellLabel": "{weekday} {hour} — {time}"
+    "more": "많음"
   },
   "comparison": {
     "weekTitle": "이번 주 vs 지난주",
@@ -150,7 +148,6 @@
     "nothingTracked": "— 기록된 항목 없음.",
     "legendAria": "점 색상 범례",
     "viewSiteAria": "{domain} 상세 보기 — {category}",
-    "categoryTitle": "카테고리: {category}",
     "changeCategory": "카테고리 변경 (현재 {category})"
   },
   "tabTable": {
@@ -267,8 +264,7 @@
     "categorizedBody": "사이트는 아래 카테고리로 분류됩니다 — 대시보드의 색상 점이 이를 사용합니다. 어떤 사이트든 다시 분류하거나 설정에서 직접 규칙을 추가하세요.",
     "legendAria": "카테고리 색상 범례",
     "gotIt": "확인",
-    "close": "닫기",
-    "dialogAria": "환영 및 TabStyr 작동 방식"
+    "close": "닫기"
   },
   "dashboard": {
     "statsAria": "브라우저 사용 통계"

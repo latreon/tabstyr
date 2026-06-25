@@ -21,7 +21,6 @@
     "title": "隐私",
     "badge": "0 字节离开你的设备",
     "badgeTitle": "无服务器、无账户、无网络请求。点击查看隐私政策。",
-    "viewPolicy": "0 字节离开你的设备 — 查看隐私政策",
     "intro1": "TabStyr 不收集、不传输、不共享任何数据。",
     "intro2": "一切都保留在你的设备上——没有服务器、没有分析、没有账户，也没有网络请求。",
     "storesTitle": "它存储的内容（本地保存在浏览器的 IndexedDB 中）",
@@ -125,8 +124,7 @@
     "peak": "高峰 · {label}",
     "gridAria": "按星期和一天中的小时划分的浏览活动",
     "less": "较少",
-    "more": "较多",
-    "cellLabel": "{weekday} {hour} — {time}"
+    "more": "较多"
   },
   "comparison": {
     "weekTitle": "本周对比上周",
@@ -150,7 +148,6 @@
     "nothingTracked": "— 未记录任何内容。",
     "legendAria": "圆点颜色图例",
     "viewSiteAria": "查看 {domain} 详情 — {category}",
-    "categoryTitle": "类别：{category}",
     "changeCategory": "更改类别（当前：{category}）"
   },
   "tabTable": {
@@ -267,8 +264,7 @@
     "categorizedBody": "网站会被归入下列类别 — 仪表盘上各处的彩色圆点正是依据这些类别。你可以重新归类任何网站，或在设置中添加自己的规则。",
     "legendAria": "类别颜色图例",
     "gotIt": "知道了",
-    "close": "关闭",
-    "dialogAria": "欢迎以及 TabStyr 的工作方式"
+    "close": "关闭"
   },
   "dashboard": {
     "statsAria": "浏览器使用统计"

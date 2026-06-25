@@ -438,5 +438,8 @@
     },
     "eyebrow": "Your year on the web",
     "cta": "Create your Wrapped"
+  },
+  "a11y": {
+    "skipToContent": "Skip to content"
   }
 }

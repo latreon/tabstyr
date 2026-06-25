@@ -27,6 +27,20 @@ describe('TrackerEngine focus/blur', () => {
     e.handleFocus(1, 'https://a.com', T0);
     expect(e.handleFocus(2, 'https://b.com', T0 + 500)).toEqual([]);
   });
+
+  test('redundant re-focus of the same tab+page keeps the session, loses no time', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://a.com/x', T0);
+    // windows.onFocusChanged + tabs.onActivated both fire for the same cross-window
+    // tab switch, milliseconds apart — must NOT close + reopen the session.
+    const dup = e.handleFocus(1, 'https://a.com/x', T0 + 5, true);
+    expect(dup).toEqual([]);
+    expect(e.getState().focused?.start).toBe(T0); // original start preserved
+    expect(e.getState().focused?.audible).toBe(true); // media flag refreshed
+    // The full minute is still counted on the next real switch (not T0+5 → ...).
+    const next = e.handleFocus(2, 'https://b.com', T0 + 60_000);
+    expect(next[0].end - next[0].start).toBe(60_000);
+  });
 });
 
 describe('TrackerEngine idle', () => {

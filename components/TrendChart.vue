@@ -5,12 +5,15 @@ import { buildTrend, type TrendMode, type TrendPoint } from '@/lib/trend';
 import { trendTooltip, xTickEvery, yTicks } from '@/lib/chart-scale';
 import type { DailyStat } from '@/lib/types';
 
-const props = defineProps<{ stats: DailyStat[] }>();
+const props = defineProps<{ stats: DailyStat[]; now: number }>();
 const { t } = useI18n();
 const mode = ref<TrendMode>('day');
 const MODES: TrendMode[] = ['day', 'week', 'month'];
 
-const points = computed(() => buildTrend(props.stats, mode.value, Date.now()));
+// `now` is passed in (frozen at dashboard load, like FocusTrend/WorkLog) rather
+// than read via Date.now() inside the computed — a bare Date.now() isn't a reactive
+// dependency, so the chart's "today" would otherwise go stale past midnight.
+const points = computed(() => buildTrend(props.stats, mode.value, props.now));
 const ticks = computed(() => yTicks(Math.max(1, ...points.value.map((p) => p.seconds))));
 const chartMax = computed(() => ticks.value[2].seconds);
 const labelEvery = computed(() => xTickEvery(mode.value));

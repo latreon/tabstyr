@@ -107,6 +107,44 @@ img { display: block; max-width: 100%; }
   color: transparent;
 }
 
+/* Visually hidden but available to assistive tech (and screen-reader live regions). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip-to-content link: off-screen until focused. */
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 1000;
+  transform: translateY(-150%);
+  background: var(--accent-strong);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: transform 160ms ease;
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* Programmatic focus on a skip target (e.g. <main tabindex="-1">) shouldn't draw a
+   box around the whole content region. */
+[tabindex='-1']:focus {
+  outline: none;
+}
+
 .glass {
   background: var(--card);
   backdrop-filter: blur(10px);

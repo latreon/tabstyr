@@ -190,10 +190,13 @@ export async function restoreAll(
     for (const d of stats) await statStore.put(d);
     for (const m of tabMeta) await metaStore.put(m);
   })();
-  // Await BOTH the writes and the transaction: a failing write auto-aborts the
-  // tx, so tx.done also rejects — gathering them here means neither rejection is
-  // left unhandled, and the whole restore rejects (rolling back the clears).
-  await Promise.all([writes, tx.done]);
+  // Await BOTH the writes and the transaction. A failing write auto-aborts the tx,
+  // so tx.done ALSO rejects — Promise.all would surface one and leave the other as
+  // an unhandled rejection (noisy in Firefox/test envs). allSettled handles both,
+  // then we re-throw the write error (the root cause) over the tx AbortError.
+  const [writeResult, txResult] = await Promise.allSettled([writes, tx.done]);
+  if (writeResult.status === 'rejected') throw writeResult.reason;
+  if (txResult.status === 'rejected') throw txResult.reason;
 }
 
 export async function wipeAll(): Promise<void> {

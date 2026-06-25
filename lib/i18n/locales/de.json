@@ -21,7 +21,6 @@
     "title": "Datenschutz",
     "badge": "0 Bytes verlassen dein Gerät",
     "badgeTitle": "Keine Server, keine Konten, keine Netzwerkanfragen. Klicken für die Datenschutzerklärung.",
-    "viewPolicy": "0 Bytes verlassen dein Gerät — Datenschutzerklärung ansehen",
     "intro1": "TabStyr erfasst, überträgt oder teilt keinerlei Daten.",
     "intro2": "Alles bleibt auf deinem Gerät — keine Server, keine Analyse, keine Konten und keine Netzwerkanfragen.",
     "storesTitle": "Was lokal gespeichert wird (in der IndexedDB deines Browsers)",
@@ -125,8 +124,7 @@
     "peak": "Spitze · {label}",
     "gridAria": "Browser-Aktivität nach Wochentag und Tageszeit",
     "less": "Weniger",
-    "more": "Mehr",
-    "cellLabel": "{weekday} {hour} — {time}"
+    "more": "Mehr"
   },
   "comparison": {
     "weekTitle": "Diese Woche vs. letzte Woche",
@@ -150,7 +148,6 @@
     "nothingTracked": "— nichts erfasst.",
     "legendAria": "Legende der Punktfarben",
     "viewSiteAria": "Details zu {domain} ansehen — {category}",
-    "categoryTitle": "Kategorie: {category}",
     "changeCategory": "Kategorie ändern (aktuell {category})"
   },
   "tabTable": {
@@ -267,8 +264,7 @@
     "categorizedBody": "Seiten werden in die untenstehenden Kategorien einsortiert — die farbigen Punkte im gesamten Dashboard verwenden diese. Stufe jede Seite neu ein oder füge eigene Regeln in den Einstellungen hinzu.",
     "legendAria": "Legende der Kategoriefarben",
     "gotIt": "Verstanden",
-    "close": "Schließen",
-    "dialogAria": "Willkommen und wie TabStyr funktioniert"
+    "close": "Schließen"
   },
   "dashboard": {
     "statsAria": "Browser-Nutzungsstatistiken"

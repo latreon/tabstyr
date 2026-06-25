@@ -310,7 +310,6 @@
       "lede": "Descubre adónde fue de verdad tu tiempo.",
       "cta": "Suelta aquí tu exportación de TabStyr",
       "browse": "o elige un archivo",
-      "useMine": "Usar los datos de este navegador",
       "hint": "Tus datos se procesan por completo en tu navegador.",
       "passPrompt": "Esta copia está cifrada. Introduce su contraseña para continuar.",
       "passLabel": "Contraseña",
@@ -439,5 +438,8 @@
     },
     "eyebrow": "Tu año en la web",
     "cta": "Crea tu Resumen"
+  },
+  "a11y": {
+    "skipToContent": "Saltar al contenido"
   }
 }

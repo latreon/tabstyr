@@ -313,7 +313,6 @@
       "lede": "Veja para onde o seu tempo realmente foi.",
       "cta": "Solte aqui a sua exportação do TabStyr",
       "browse": "ou escolha um arquivo",
-      "useMine": "Usar os dados deste navegador",
       "hint": "Seus dados são processados inteiramente no seu navegador.",
       "passPrompt": "Este backup está criptografado. Digite a frase secreta para continuar.",
       "passLabel": "Frase secreta",
@@ -439,5 +438,8 @@
     },
     "eyebrow": "Seu ano na web",
     "cta": "Crie sua Retrospectiva"
+  },
+  "a11y": {
+    "skipToContent": "Pular para o conteúdo"
   }
 }

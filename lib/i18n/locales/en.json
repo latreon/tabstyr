@@ -21,7 +21,6 @@
     "title": "Privacy",
     "badge": "0 bytes leave your device",
     "badgeTitle": "No servers, no accounts, no network requests. Click for the privacy policy.",
-    "viewPolicy": "0 bytes leave your device — view privacy policy",
     "intro1": "TabStyr does not collect, transmit, or share any data.",
     "intro2": "Everything stays on your device — no servers, no analytics, no accounts, and no network requests.",
     "storesTitle": "What it stores (locally, in your browser's IndexedDB)",
@@ -125,8 +124,7 @@
     "peak": "Peak · {label}",
     "gridAria": "Browsing activity by weekday and hour of day",
     "less": "Less",
-    "more": "More",
-    "cellLabel": "{weekday} {hour} — {time}"
+    "more": "More"
   },
   "comparison": {
     "weekTitle": "This week vs last week",
@@ -150,7 +148,6 @@
     "nothingTracked": "— nothing tracked.",
     "legendAria": "Dot colour key",
     "viewSiteAria": "View {domain} details — {category}",
-    "categoryTitle": "Category: {category}",
     "changeCategory": "Change category (now {category})"
   },
   "tabTable": {
@@ -267,8 +264,7 @@
     "categorizedBody": "Sites are sorted into the categories below — the colored dots across the dashboard use these. Reclassify any site, or add your own rules in Settings.",
     "legendAria": "Category colour key",
     "gotIt": "Got it",
-    "close": "Close",
-    "dialogAria": "Welcome and how TabStyr works"
+    "close": "Close"
   },
   "dashboard": {
     "statsAria": "Browser usage statistics"

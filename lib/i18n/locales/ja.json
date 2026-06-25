@@ -21,7 +21,6 @@
     "title": "プライバシー",
     "badge": "デバイスから出るのは0バイト",
     "badgeTitle": "サーバーなし、アカウントなし、ネットワークリクエストなし。クリックでプライバシーポリシーを表示。",
-    "viewPolicy": "デバイスから出るのは0バイト — プライバシーポリシーを表示",
     "intro1": "TabStyr はいかなるデータも収集・送信・共有しません。",
     "intro2": "すべてはお使いのデバイス内に保存されます。サーバー、解析、アカウント、ネットワーク通信は一切ありません。",
     "storesTitle": "保存される内容（ブラウザの IndexedDB にローカル保存）",
@@ -125,8 +124,7 @@
     "peak": "ピーク · {label}",
     "gridAria": "曜日と時間帯別の閲覧アクティビティ",
     "less": "少",
-    "more": "多",
-    "cellLabel": "{weekday} {hour} — {time}"
+    "more": "多"
   },
   "comparison": {
     "weekTitle": "今週と先週の比較",
@@ -150,7 +148,6 @@
     "nothingTracked": "— 何も記録されていません。",
     "legendAria": "ドットの色の凡例",
     "viewSiteAria": "{domain}の詳細を表示 — {category}",
-    "categoryTitle": "カテゴリ：{category}",
     "changeCategory": "カテゴリを変更（現在：{category}）"
   },
   "tabTable": {
@@ -267,8 +264,7 @@
     "categorizedBody": "サイトは以下のカテゴリに分類されます — ダッシュボード全体の色付きのドットはこれを使用しています。任意のサイトを再分類したり、設定で独自のルールを追加できます。",
     "legendAria": "カテゴリの色の凡例",
     "gotIt": "了解",
-    "close": "閉じる",
-    "dialogAria": "ようこそとTabStyrの仕組み"
+    "close": "閉じる"
   },
   "dashboard": {
     "statsAria": "ブラウザ使用統計"

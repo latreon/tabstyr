@@ -310,7 +310,6 @@
       "lede": "Zamanınızın gerçekte nereye gittiğini görün.",
       "cta": "TabStyr dışa aktarımınızı buraya bırakın",
       "browse": "ya da bir dosya seçin",
-      "useMine": "Bunun yerine bu tarayıcının verilerini kullan",
       "hint": "Verileriniz tamamen tarayıcınızda işlenir.",
       "passPrompt": "Bu yedek şifreli. Devam etmek için parolasını girin.",
       "passLabel": "Parola",
@@ -439,5 +438,8 @@
     },
     "eyebrow": "Web’deki yılınız",
     "cta": "Özetini oluştur"
+  },
+  "a11y": {
+    "skipToContent": "İçeriğe geç"
   }
 }

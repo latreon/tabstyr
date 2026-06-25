@@ -21,7 +21,6 @@
     "title": "Confidentialité",
     "badge": "0 octet ne quitte votre appareil",
     "badgeTitle": "Aucun serveur, aucun compte, aucune requête réseau. Cliquez pour la politique de confidentialité.",
-    "viewPolicy": "0 octet ne quitte votre appareil — voir la politique de confidentialité",
     "intro1": "TabStyr ne collecte, ne transmet ni ne partage aucune donnée.",
     "intro2": "Tout reste sur votre appareil — aucun serveur, aucune analyse, aucun compte et aucune requête réseau.",
     "storesTitle": "Ce qu'il stocke (localement, dans l'IndexedDB de votre navigateur)",
@@ -125,8 +124,7 @@
     "peak": "Pic · {label}",
     "gridAria": "Activité de navigation par jour de la semaine et heure de la journée",
     "less": "Moins",
-    "more": "Plus",
-    "cellLabel": "{weekday} {hour} — {time}"
+    "more": "Plus"
   },
   "comparison": {
     "weekTitle": "Cette semaine vs la semaine dernière",
@@ -150,7 +148,6 @@
     "nothingTracked": "— rien de suivi.",
     "legendAria": "Légende des couleurs de points",
     "viewSiteAria": "Voir les détails de {domain} — {category}",
-    "categoryTitle": "Catégorie : {category}",
     "changeCategory": "Changer de catégorie (actuellement {category})"
   },
   "tabTable": {
@@ -267,8 +264,7 @@
     "categorizedBody": "Les sites sont triés dans les catégories ci-dessous — les points colorés du tableau de bord les utilisent. Reclassez n'importe quel site, ou ajoutez vos propres règles dans les Paramètres.",
     "legendAria": "Légende des couleurs de catégorie",
     "gotIt": "Compris",
-    "close": "Fermer",
-    "dialogAria": "Bienvenue et fonctionnement de TabStyr"
+    "close": "Fermer"
   },
   "dashboard": {
     "statsAria": "Statistiques d'utilisation du navigateur"

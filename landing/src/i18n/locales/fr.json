@@ -310,7 +310,6 @@
       "lede": "Découvrez où votre temps est vraiment passé.",
       "cta": "Déposez votre export TabStyr ici",
       "browse": "ou choisissez un fichier",
-      "useMine": "Utiliser plutôt les données de ce navigateur",
       "hint": "Vos données sont traitées entièrement dans votre navigateur.",
       "passPrompt": "Cette sauvegarde est chiffrée. Saisissez sa phrase secrète pour continuer.",
       "passLabel": "Phrase secrète",
@@ -439,5 +438,8 @@
     },
     "eyebrow": "Votre année sur le web",
     "cta": "Créez votre Rétro"
+  },
+  "a11y": {
+    "skipToContent": "Aller au contenu"
   }
 }

@@ -310,7 +310,6 @@
       "lede": "Scopri dove è finito davvero il tuo tempo.",
       "cta": "Trascina qui il tuo export di TabStyr",
       "browse": "oppure scegli un file",
-      "useMine": "Usa invece i dati di questo browser",
       "hint": "I tuoi dati vengono elaborati interamente nel tuo browser.",
       "passPrompt": "Questo backup è crittografato. Inserisci la passphrase per continuare.",
       "passLabel": "Passphrase",
@@ -439,5 +438,8 @@
     },
     "eyebrow": "Il tuo anno sul web",
     "cta": "Crea il tuo Wrapped"
+  },
+  "a11y": {
+    "skipToContent": "Vai al contenuto"
   }
 }

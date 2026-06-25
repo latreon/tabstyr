@@ -99,7 +99,7 @@ onMounted(async () => {
       <TopSitesChart :domains="s.todayByDomain.value" @select="openDetail" />
       <ProductivityTile :summary="s.productivity.value" />
       <!-- full-width rows -->
-      <TrendChart :stats="s.activeStats.value" />
+      <TrendChart :stats="s.activeStats.value" :now="loadedNow" />
       <FocusTrend :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :now="loadedNow" :target="s.productivity.value.focusTarget" />
       <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" />
       <HeatmapTile :data="s.heatmap.value" />

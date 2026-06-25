@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onBeforeUnmount, provide, ref, nextTick } from 'vue';
+import { computed, defineAsyncComponent, onMounted, onBeforeUnmount, provide, ref, nextTick } from 'vue';
 import { useReveal } from '@/composables/useReveal';
 import {
   applyHead,
@@ -8,6 +8,7 @@ import {
   preferredLocale,
   setLocale,
   splitLocale,
+  useI18n,
 } from '@/i18n';
 import SiteNav from '@/components/SiteNav.vue';
 import HeroSection from '@/components/HeroSection.vue';
@@ -18,15 +19,20 @@ import FaqSection from '@/components/FaqSection.vue';
 import FeedbackSection from '@/components/FeedbackSection.vue';
 import CtaSection from '@/components/CtaSection.vue';
 import SiteFooter from '@/components/SiteFooter.vue';
-import PrivacyPage from '@/components/PrivacyPage.vue';
-import IdeaPage from '@/components/IdeaPage.vue';
-import WrappedPage from '@/components/WrappedPage.vue';
 import WrappedSection from '@/components/WrappedSection.vue';
+
+// Route-gated pages — code-split so the main landing bundle stays lean (the Wrapped
+// page pulls in the canvas renderer + parser + @ext libs; the Ideas page pulls
+// hCaptcha wiring). Each loads only when its route is visited.
+const PrivacyPage = defineAsyncComponent(() => import('@/components/PrivacyPage.vue'));
+const IdeaPage = defineAsyncComponent(() => import('@/components/IdeaPage.vue'));
+const WrappedPage = defineAsyncComponent(() => import('@/components/WrappedPage.vue'));
 
 // Clean-URL router (no '#') with a leading locale slug: '/', '/de', '/fr/privacy',
 // '/pt-br/ideas'. English is the un-prefixed root. Works on static hosts via a
 // 404.html mirroring index.html, so any deep link boots the SPA and this reads it.
 // BASE is the deploy base path ('/' on the custom domain).
+const { t } = useI18n();
 const BASE = import.meta.env.BASE_URL;
 const pathFromBase = (): string => {
   let p = window.location.pathname;
@@ -81,8 +87,12 @@ const onClick = (e: MouseEvent) => {
     e.preventDefault();
     const id = href.slice(1);
     const el = id && id !== 'top' ? document.getElementById(id) : null;
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-    else window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+      // Move focus too (e.g. the skip link → <main tabindex="-1">) so keyboard
+      // users continue from the target; a no-op for non-focusable anchors.
+      (el as HTMLElement).focus?.({ preventScroll: true });
+    } else window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
   if (/^(https?:)?\/\//.test(href) || href.startsWith('mailto:')) return;
@@ -128,8 +138,9 @@ onBeforeUnmount(() => {
     <WrappedPage v-else-if="isWrapped" />
 
     <template v-else>
+      <a class="skip-link" href="#main">{{ t('a11y.skipToContent') }}</a>
       <SiteNav />
-      <main>
+      <main id="main" tabindex="-1">
         <HeroSection />
         <FeatureGrid />
         <ShowcaseSection />

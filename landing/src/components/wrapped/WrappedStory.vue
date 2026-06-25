@@ -97,6 +97,23 @@ const lastIndex = computed(() => slides.value.length - 1);
 const current = computed(() => slides.value[index.value]);
 const onShare = computed(() => current.value?.kind === 'share');
 
+// Each slide's visual content is aria-hidden (animated/decorative); this single
+// polite live region carries the slide's text so screen readers hear each one as
+// it changes (the final value, not CountUp's intermediate frames).
+const liveText = computed(() => {
+  const s = current.value;
+  if (!s) return '';
+  if (s.kind === 'share') return t('wrapped.card.shareKicker');
+  if (s.kind === 'list') {
+    return `${s.kicker}. ` + (s.list ?? []).map((it, i) => `${i + 1}. ${it.label}, ${it.value}`).join('. ');
+  }
+  if (s.kind === 'bars') {
+    return `${s.kicker}. ` + (s.bars ?? []).map((b) => `${b.label} ${b.pct}%`).join(', ');
+  }
+  const value = s.value != null ? (s.format ? s.format(s.value) : String(s.value)) : '';
+  return [s.kicker, s.title, value, s.caption].filter(Boolean).join('. ');
+});
+
 const motionMedia =
   typeof window !== 'undefined' && typeof window.matchMedia === 'function'
     ? window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -131,9 +148,15 @@ watch(
 );
 
 function onKey(e: KeyboardEvent): void {
+  const el = document.activeElement as HTMLElement | null;
+  const tag = el?.tagName.toLowerCase();
+  // Never hijack typing/caret movement in a field.
+  if (tag === 'input' || tag === 'textarea' || tag === 'select' || el?.isContentEditable) return;
   if (e.key === 'ArrowLeft') prev();
   else if (e.key === 'ArrowRight') next();
   else if (e.key === ' ' || e.key === 'Spacebar') {
+    // Let Space activate a focused button instead of toggling pause.
+    if (tag === 'button') return;
     e.preventDefault();
     togglePause();
   }
@@ -158,7 +181,8 @@ const rootStyle = computed(() => ({ '--w-a': persona.value.accentA, '--w-b': per
 </script>
 
 <template>
-  <div class="story" :style="rootStyle">
+  <div class="story" :style="rootStyle" role="region" :aria-label="t('wrapped.drop.title')">
+    <p class="sr-only" aria-live="polite" aria-atomic="true">{{ liveText }}</p>
     <div class="bars" role="presentation">
       <div v-for="(s, i) in slides" :key="s.id" class="bar">
         <span
@@ -181,7 +205,7 @@ const rootStyle = computed(() => ({ '--w-a': persona.value.accentA, '--w-b': per
 
     <div class="stage" @click="onShare ? null : onZoneClick($event)">
       <Transition name="slide" mode="out-in">
-        <div :key="current?.id" class="slide">
+        <div :key="current?.id" class="slide" :aria-hidden="onShare ? undefined : 'true'">
           <template v-if="current?.kind === 'share'">
             <WrappedShareCard :data="data" />
           </template>

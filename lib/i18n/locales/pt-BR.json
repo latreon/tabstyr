@@ -21,7 +21,6 @@
     "title": "Privacidade",
     "badge": "0 bytes saem do seu dispositivo",
     "badgeTitle": "Sem servidores, sem contas, sem requisições de rede. Clique para ver a política de privacidade.",
-    "viewPolicy": "0 bytes saem do seu dispositivo — ver política de privacidade",
     "intro1": "O TabStyr não coleta, transmite nem compartilha nenhum dado.",
     "intro2": "Tudo permanece no seu dispositivo — sem servidores, sem análises, sem contas e sem requisições de rede.",
     "storesTitle": "O que ele armazena (localmente, no IndexedDB do seu navegador)",
@@ -125,8 +124,7 @@
     "peak": "Pico · {label}",
     "gridAria": "Atividade de navegação por dia da semana e hora do dia",
     "less": "Menos",
-    "more": "Mais",
-    "cellLabel": "{weekday} {hour} — {time}"
+    "more": "Mais"
   },
   "comparison": {
     "weekTitle": "Esta semana vs semana passada",
@@ -150,7 +148,6 @@
     "nothingTracked": "— nada registrado.",
     "legendAria": "Legenda de cores dos pontos",
     "viewSiteAria": "Ver detalhes de {domain} — {category}",
-    "categoryTitle": "Categoria: {category}",
     "changeCategory": "Mudar categoria (atual {category})"
   },
   "tabTable": {
@@ -267,8 +264,7 @@
     "categorizedBody": "Os sites são organizados nas categorias abaixo — os pontos coloridos no painel usam isso. Reclassifique qualquer site ou adicione suas regras nas Configurações.",
     "legendAria": "Legenda de cores das categorias",
     "gotIt": "Entendi",
-    "close": "Fechar",
-    "dialogAria": "Bem-vindo e como o TabStyr funciona"
+    "close": "Fechar"
   },
   "dashboard": {
     "statsAria": "Estatísticas de uso do navegador"

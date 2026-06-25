@@ -208,13 +208,29 @@ onBeforeUnmount(() => {
 const downloadLabel = computed(() =>
   preparing.value ? t('wrapped.card.preparing') : saved.value ? t('wrapped.card.saved') : t('wrapped.card.download'),
 );
+
+// The canvas is a single image to AT — describe its actual contents, not just the
+// title, so screen-reader users get the data the card conveys.
+const cardAria = computed(() => {
+  const d = props.data;
+  const parts = [
+    t('wrapped.card.heading'),
+    periodLabel.value,
+    t(`wrapped.persona.${d.persona.id}.title`),
+    `${t('wrapped.card.totalCaption')}: ${formatDuration(d.totalSeconds)}`,
+  ];
+  if (d.topSite) parts.push(`${t('wrapped.card.topSite')}: ${d.topSite.label} ${formatDuration(d.topSite.seconds)}`);
+  if (d.topCategory) parts.push(`${t('wrapped.card.topCategory')}: ${t('categories.' + d.topCategory.category)} ${d.topCategory.pct}%`);
+  parts.push(`${t('wrapped.card.focus')}: ${d.focusPct}%`);
+  return parts.join('. ');
+});
 </script>
 
 <template>
   <div class="card-slide">
     <p class="card-kicker">{{ t('wrapped.card.shareKicker') }}</p>
     <div class="card-frame">
-      <canvas ref="canvas" class="card-canvas" :aria-label="t('wrapped.card.heading')" role="img" />
+      <canvas ref="canvas" class="card-canvas" :aria-label="cardAria" role="img" />
     </div>
     <div class="card-actions">
       <button type="button" class="btn btn-primary" :class="{ ok: saved }" :disabled="preparing" @click="download">

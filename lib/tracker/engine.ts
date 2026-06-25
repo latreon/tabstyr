@@ -53,6 +53,16 @@ export class TrackerEngine {
 
   handleFocus(tabId: number, url: string, now: number, audible = false): ClosedSession[] {
     this.idle = false;
+    const page = pageOf(url);
+    // Redundant re-focus of the already-focused tab+page — e.g. a cross-window tab
+    // switch fires BOTH windows.onFocusChanged and tabs.onActivated for the same
+    // tab, milliseconds apart. Closing + reopening here would drop the just-opened
+    // sub-second slice (MIN_SESSION_MS) and lose that time on every such switch.
+    // Keep the open session running; only refresh the media flag.
+    if (this.focused && this.focused.tabId === tabId && this.focused.url === page) {
+      this.focused.audible = audible;
+      return [];
+    }
     const out: ClosedSession[] = [];
     if (this.focused) out.push(...this.closed(this.focused, now));
     const bgAudio = this.audio.get(tabId);
@@ -64,7 +74,7 @@ export class TrackerEngine {
     // are never counted. Store the normalized page URL (no query/fragment) so the
     // sub-page breakdown groups cleanly and no secrets are persisted.
     const domain = domainOf(url);
-    this.focused = isWebDomain(domain) ? { tabId, url: pageOf(url), domain, start: now, audio: false, audible } : null;
+    this.focused = isWebDomain(domain) ? { tabId, url: page, domain, start: now, audio: false, audible } : null;
     return out;
   }
 
@@ -88,10 +98,14 @@ export class TrackerEngine {
     const out: ClosedSession[] = [];
     for (const open of this.audio.values()) out.push(...this.closed(open, now));
     this.audio.clear();
+    // The user IS idle regardless of whether a playing media tab keeps its session
+    // open — record that. (checkpoint() caps by elapsed time, not this flag, so the
+    // video still counts; on resume, handleFocus's same-tab guard clears it without
+    // breaking the session.)
+    this.idle = true;
     if (this.focused?.audible) return out; // still watching — keep the session open
     if (this.focused) out.push(...this.closed(this.focused, now));
     this.focused = null;
-    this.idle = true;
     return out;
   }
 

@@ -21,7 +21,6 @@
     "title": "Gizlilik",
     "badge": "Cihazınızdan 0 bayt ayrılır",
     "badgeTitle": "Sunucu yok, hesap yok, ağ isteği yok. Gizlilik politikası için tıklayın.",
-    "viewPolicy": "Cihazınızdan 0 bayt ayrılır — gizlilik politikasını görüntüle",
     "intro1": "TabStyr hiçbir veriyi toplamaz, iletmez veya paylaşmaz.",
     "intro2": "Her şey cihazınızda kalır — sunucu yok, analiz yok, hesap yok ve ağ isteği yok.",
     "storesTitle": "Neleri saklar (yerel olarak, tarayıcınızın IndexedDB'sinde)",
@@ -125,8 +124,7 @@
     "peak": "Zirve · {label}",
     "gridAria": "Haftanın günü ve günün saatine göre gezinme etkinliği",
     "less": "Az",
-    "more": "Çok",
-    "cellLabel": "{weekday} {hour} — {time}"
+    "more": "Çok"
   },
   "comparison": {
     "weekTitle": "Bu hafta vs geçen hafta",
@@ -150,7 +148,6 @@
     "nothingTracked": "— hiçbir şey kaydedilmedi.",
     "legendAria": "Nokta renk açıklaması",
     "viewSiteAria": "{domain} ayrıntılarını gör — {category}",
-    "categoryTitle": "Kategori: {category}",
     "changeCategory": "Kategoriyi değiştir (şu an {category})"
   },
   "tabTable": {
@@ -267,8 +264,7 @@
     "categorizedBody": "Siteler aşağıdaki kategorilere ayrılır — paneldeki renkli noktalar bunları kullanır. Herhangi bir siteyi yeniden sınıflandırın veya Ayarlar'da kendi kurallarınızı ekleyin.",
     "legendAria": "Kategori renk açıklaması",
     "gotIt": "Anladım",
-    "close": "Kapat",
-    "dialogAria": "Hoş geldiniz ve TabStyr nasıl çalışır"
+    "close": "Kapat"
   },
   "dashboard": {
     "statsAria": "Tarayıcı kullanım istatistikleri"

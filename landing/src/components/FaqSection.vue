@@ -37,12 +37,12 @@ function onLeave(el: Element) {
 
       <ul class="list">
         <li v-for="(f, i) in faqs" :key="i" class="item glass" :class="{ open: open === i }">
-          <button class="q" :aria-expanded="open === i" @click="toggle(i)">
+          <button class="q" :id="`faq-q-${i}`" :aria-expanded="open === i" :aria-controls="`faq-panel-${i}`" @click="toggle(i)">
             <span>{{ f.q }}</span>
             <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6" /></svg>
           </button>
           <Transition name="acc" @enter="onEnter" @after-enter="onAfterEnter" @leave="onLeave">
-            <div v-show="open === i" class="a-wrap">
+            <div v-show="open === i" :id="`faq-panel-${i}`" role="region" :aria-labelledby="`faq-q-${i}`" class="a-wrap">
               <p class="a">{{ f.a }}</p>
             </div>
           </Transition>
