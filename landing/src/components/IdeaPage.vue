@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import RingLogo from './RingLogo.vue';
+import LangSwitch from './LangSwitch.vue';
 import { FORMSPREE_ENDPOINT, HCAPTCHA_SITEKEY } from '@/site';
 import { localizedPath, locale, useI18n } from '@/i18n';
 import SelectBox from './SelectBox.vue';
@@ -125,7 +126,10 @@ async function submit() {
     <header class="bar">
       <div class="container bar-inner">
         <a :href="home" class="brand"><RingLogo :size="24" /> <span>TabStyr</span></a>
-        <a :href="home" class="back">{{ t('ideaPage.back') }}</a>
+        <div class="bar-right">
+          <LangSwitch />
+          <a :href="home" class="back">{{ t('ideaPage.back') }}</a>
+        </div>
       </div>
     </header>
 
@@ -198,6 +202,7 @@ async function submit() {
 }
 .bar { position: relative; z-index: 1; border-bottom: 1px solid var(--border); }
 .bar-inner { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+.bar-right { display: flex; align-items: center; gap: 20px; }
 .brand { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 700; font-size: 18px; }
 .back { font-size: 14px; color: var(--text-2); transition: color 160ms ease; }
 .back:hover { color: var(--text); }

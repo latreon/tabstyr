@@ -2,7 +2,6 @@
 import { onMounted, onBeforeUnmount, ref } from 'vue';
 import RingLogo from './RingLogo.vue';
 import LangSwitch from './LangSwitch.vue';
-import { LINKS, STORE_LIVE } from '@/site';
 import { useI18n } from '@/i18n';
 
 const { t } = useI18n();
@@ -28,12 +27,6 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
         <a href="#feedback">{{ t('nav.feedback') }}</a>
       </nav>
       <LangSwitch />
-      <a v-if="STORE_LIVE.chrome" :href="LINKS.chrome" target="_blank" rel="noopener" class="btn btn-primary cta">
-        {{ t('nav.addToChrome') }}
-      </a>
-      <span v-else class="btn btn-primary cta is-soon" role="button" aria-disabled="true">
-        {{ t('nav.comingSoon') }}
-      </span>
     </div>
   </header>
 </template>
@@ -49,7 +42,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
   border-bottom: 1px solid transparent;
 }
 .nav.scrolled {
-  background: rgba(10, 10, 15, 0.72);
+  background: rgba(10, 10, 15, 0.85);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom-color: var(--border);
@@ -81,10 +74,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
   transition: color 160ms ease;
 }
 .links a:hover { color: var(--text); }
-.cta { height: 40px; padding: 0 16px; font-size: 14px; }
-.cta.is-soon { display: inline-flex; align-items: center; opacity: 0.6; cursor: not-allowed; pointer-events: none; }
 @media (max-width: 760px) {
   .links { display: none; }
-  .cta { margin-left: auto; }
 }
 </style>
