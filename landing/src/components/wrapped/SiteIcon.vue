@@ -1,19 +1,24 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { faviconUrl } from '@/lib/favicon';
+import { faviconSources } from '@/lib/favicon';
 
 const props = withDefaults(
   defineProps<{ domain: string; label: string; color: string; size?: number }>(),
   { size: 30 },
 );
 
-// Falls back to a category-colored letter chip if the real favicon 404s or fails.
-const failed = ref(false);
-watch(() => props.domain, () => (failed.value = false));
+// Try each favicon source in turn; fall back to a category-colored letter chip only
+// once every source has failed (or there is none, e.g. a private host).
+const sources = computed(() => faviconSources(props.domain));
+const sourceIndex = ref(0);
+watch(() => props.domain, () => (sourceIndex.value = 0));
 
-const src = computed(() => faviconUrl(props.domain));
-// Show the letter chip when there's no favicon URL (non-public host) or it failed.
-const showFav = computed(() => !!src.value && !failed.value);
+function onError(): void {
+  sourceIndex.value += 1; // advance to the next source; chip shows when exhausted
+}
+
+const src = computed(() => sources.value[sourceIndex.value] ?? null);
+const showFav = computed(() => !!src.value);
 const initial = computed(() => props.label.replace(/^www\./, '').charAt(0).toUpperCase() || '?');
 const px = computed(() => `${props.size}px`);
 const radius = computed(() => `${Math.round(props.size * 0.3)}px`);
@@ -29,15 +34,15 @@ const fontSize = computed(() => `${Math.round(props.size * 0.46)}px`);
   >
     <img
       v-if="showFav"
+      :key="src!"
       :src="src!"
       :width="size"
       :height="size"
       alt=""
       class="fav"
-      loading="lazy"
       decoding="async"
       referrerpolicy="no-referrer"
-      @error="failed = true"
+      @error="onError"
     />
     <span v-else class="ini" :style="{ fontSize }">{{ initial }}</span>
   </span>

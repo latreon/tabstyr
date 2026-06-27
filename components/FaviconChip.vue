@@ -14,6 +14,13 @@ watch(() => props.domain, () => {
   failed.value = false;
 });
 
+// Some decode failures resolve as a 0×0 image without firing `error`; treat an
+// empty raster as a failure so the letter chip takes over.
+function onLoad(e: Event): void {
+  const img = e.target as HTMLImageElement;
+  if (img.naturalWidth === 0) failed.value = true;
+}
+
 const SPECIAL_ICONS: Record<string, 'chrome' | 'edge'> = {
   chrome: 'chrome',
   'chrome-untrusted': 'chrome',
@@ -41,7 +48,14 @@ const SPECIAL_ICONS: Record<string, 'chrome' | 'edge'> = {
     <circle cx="24" cy="24" r="21" fill="url(#edgeGrad)" />
     <path fill="#fff" d="M13 30c0-7 6-12 14-12 4.5 0 8 2.6 8 6.2 0 2.6-1.9 4.3-4.6 4.3H19c-2.6 0-3.6 2.6-1.7 4.4C14 35.7 13 32.6 13 30Z" opacity="0.96" />
   </svg>
-  <img v-else-if="src && !failed" class="favicon raster" :src="src" alt="" @error="failed = true" />
+  <img
+    v-else-if="src && !failed"
+    class="favicon raster"
+    :src="src"
+    alt=""
+    @error="failed = true"
+    @load="onLoad"
+  />
   <span v-else class="favicon chip" :style="{ background: chip.color }" aria-hidden="true">{{ chip.letter }}</span>
 </template>
 
