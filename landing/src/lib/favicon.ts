@@ -10,6 +10,8 @@
 // canvas (with crossOrigin='anonymous') without tainting it — letting toBlob()
 // export still succeed. The card falls back to a letter chip if the icon fails.
 
+import { reactive } from 'vue';
+
 function normalizeDomain(domain: string): string | null {
   const d = domain.replace(/^www\./, '').toLowerCase();
   // Skip non-public hosts — localhost and bare IPv4 literals (a backup is untrusted
@@ -39,4 +41,56 @@ export function faviconSources(domain: string): string[] {
     `https://icon.horse/icon/${enc}`,
     `https://www.google.com/s2/favicons?domain=${enc}&sz=64`,
   ];
+}
+
+// ── Preload cache ────────────────────────────────────────────────────────────
+// Resolving each domain's working favicon AHEAD of the slide that shows it means
+// the <img> binds an already-cached URL and paints instantly — no letter-chip
+// flash, no visible swap from one source to another. Keyed by the raw domain the
+// caller passes (SiteIcon and the preloader use the same value, so keys match).
+//   undefined → not looked up yet / still resolving
+//   string    → the working favicon URL (image is already in the browser cache)
+//   null      → every source failed (or non-public host) → use the letter chip
+const cache = reactive<Record<string, string | null>>({});
+const inFlight = new Set<string>();
+
+export function resolvedFavicon(domain: string): string | null | undefined {
+  return cache[domain];
+}
+
+/** Idempotently resolve and warm a domain's favicon into the browser image cache. */
+export function preloadFavicon(domain: string): void {
+  if (domain in cache || inFlight.has(domain)) return;
+  const sources = faviconSources(domain);
+  if (!sources.length) {
+    cache[domain] = null;
+    return;
+  }
+  inFlight.add(domain);
+  let i = 0;
+  const tryNext = (): void => {
+    if (i >= sources.length) {
+      cache[domain] = null;
+      inFlight.delete(domain);
+      return;
+    }
+    const url = sources[i++];
+    const img = new Image();
+    img.referrerPolicy = 'no-referrer';
+    img.onload = () => {
+      if (img.naturalWidth > 0) {
+        cache[domain] = url;
+        inFlight.delete(domain);
+      } else {
+        tryNext();
+      }
+    };
+    img.onerror = tryNext;
+    img.src = url;
+  };
+  tryNext();
+}
+
+export function preloadFavicons(domains: readonly string[]): void {
+  for (const d of domains) preloadFavicon(d);
 }

@@ -1,23 +1,24 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { faviconSources } from '@/lib/favicon';
+import { computed, onMounted, watch } from 'vue';
+import { resolvedFavicon, preloadFavicon } from '@/lib/favicon';
 
 const props = withDefaults(
   defineProps<{ domain: string; label: string; color: string; size?: number }>(),
   { size: 30 },
 );
 
-// Try each favicon source in turn; fall back to a category-colored letter chip only
-// once every source has failed (or there is none, e.g. a private host).
-const sources = computed(() => faviconSources(props.domain));
-const sourceIndex = ref(0);
-watch(() => props.domain, () => (sourceIndex.value = 0));
+// The story preloads every top-site favicon up front, so by the time this slide
+// renders the working URL is already resolved and cached — the <img> binds it
+// directly and paints with no chip-to-icon flash. Preload here too as a safety net
+// (idempotent) in case this domain wasn't part of the batch.
+onMounted(() => preloadFavicon(props.domain));
+watch(() => props.domain, () => preloadFavicon(props.domain));
 
-function onError(): void {
-  sourceIndex.value += 1; // advance to the next source; chip shows when exhausted
-}
-
-const src = computed(() => sources.value[sourceIndex.value] ?? null);
+// undefined → still resolving (show chip placeholder); string → cached URL; null → no icon.
+const src = computed(() => {
+  const r = resolvedFavicon(props.domain);
+  return typeof r === 'string' ? r : null;
+});
 const showFav = computed(() => !!src.value);
 const initial = computed(() => props.label.replace(/^www\./, '').charAt(0).toUpperCase() || '?');
 const px = computed(() => `${props.size}px`);
@@ -34,7 +35,6 @@ const fontSize = computed(() => `${Math.round(props.size * 0.46)}px`);
   >
     <img
       v-if="showFav"
-      :key="src!"
       :src="src!"
       :width="size"
       :height="size"
@@ -42,7 +42,6 @@ const fontSize = computed(() => `${Math.round(props.size * 0.46)}px`);
       class="fav"
       decoding="async"
       referrerpolicy="no-referrer"
-      @error="onError"
     />
     <span v-else class="ini" :style="{ fontSize }">{{ initial }}</span>
   </span>

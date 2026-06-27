@@ -7,6 +7,7 @@ import { CATEGORY_META } from '@ext/categories';
 import { PERSONA_META } from '@ext/wrapped-persona';
 import { PERSONA_ICON, CHRONOTYPE_ICON, type IconName } from '@ext/wrapped-icons';
 import type { WrappedData } from '@ext/wrapped';
+import { preloadFavicons } from '@/lib/favicon';
 import WrappedIcon from './WrappedIcon.vue';
 import SiteIcon from './SiteIcon.vue';
 import CountUp from './CountUp.vue';
@@ -51,6 +52,15 @@ const peakLabel = computed(() => {
 });
 
 const persona = computed(() => PERSONA_META[props.data.persona.id]);
+
+// Warm every top-site favicon now, while the early slides play, so each icon is
+// already resolved and cached before its slide appears — no chip flash, no swap.
+function preloadSiteIcons(): void {
+  const d = props.data;
+  const domains = d.topSites.map((s) => s.domain);
+  if (d.topSite) domains.push(d.topSite.domain);
+  preloadFavicons(domains);
+}
 
 const slides = computed<StorySlide[]>(() => {
   const d = props.data;
@@ -144,6 +154,7 @@ watch(
     index.value = 0;
     autoplay.value = !reducedMotion.value;
     paused.value = false;
+    preloadSiteIcons();
   },
 );
 
@@ -164,6 +175,7 @@ function onKey(e: KeyboardEvent): void {
 onMounted(() => {
   window.addEventListener('keydown', onKey);
   motionMedia?.addEventListener('change', onMotionChange);
+  preloadSiteIcons();
 });
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', onKey);
