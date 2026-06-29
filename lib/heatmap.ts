@@ -1,6 +1,3 @@
-/** Weekday labels indexed by JS `Date.getDay()` (0 = Sunday). */
-export const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
-
 /** Display order: Monday first, weekend last. Maps row → getDay() index. */
 export const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0] as const;
 

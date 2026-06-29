@@ -6,7 +6,7 @@ export type ComparePeriod = 'week' | 'month';
 
 export const PERIOD_DAYS: Record<ComparePeriod, number> = { week: 7, month: 30 };
 
-export interface CategoryDelta {
+interface CategoryDelta {
   category: Category;
   current: number;
   previous: number;

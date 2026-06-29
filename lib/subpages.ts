@@ -1,7 +1,7 @@
 import { coalesceSessions } from './sessionize';
 import { pagePath } from './domain';
 
-export interface SubPage {
+interface SubPage {
   path: string; // display pathname, e.g. "/watch" ("/" for the site root)
   seconds: number;
   visits: number;

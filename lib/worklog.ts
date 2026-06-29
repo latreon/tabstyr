@@ -3,7 +3,7 @@ import { isWebDomain } from './domain';
 import { categorize, groupByCategory, type Category, type CategoryRule, type CategorySlice } from './categories';
 import type { DailyStat } from './types';
 
-export interface WorkLogDomain {
+interface WorkLogDomain {
   domain: string;
   seconds: number;
   audioSeconds: number;

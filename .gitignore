@@ -6,6 +6,9 @@ test-results/
 playwright-report/
 e2e/__screenshots__/
 
+# macOS metadata
+.DS_Store
+
 # Local environment config (extension + landing). Never commit real values.
 .env
 .env.*
