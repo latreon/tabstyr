@@ -20,19 +20,24 @@ const H = 800;
 const shots = [
   { src: 'dashboard-light.png', top: 0, name: '1-overview-light' },
   { src: 'dashboard-dark.png', top: 0, name: '2-overview-dark' },
-  { src: 'dashboard-light.png', top: 780, name: '3-trends-light' },
-  { src: 'dashboard-light.png', top: 1560, name: '4-heatmap-light' },
+  { src: 'dashboard-light.png', top: 560, name: '3-trends-light' },
+  { src: 'dashboard-light.png', top: 1380, name: '4-heatmap-light' },
 ];
 
 for (const s of shots) {
   const inPath = resolve(SRC, s.src);
   const meta = await sharp(inPath).metadata();
-  const top = Math.min(s.top, Math.max(0, (meta.height ?? H) - H));
+  // Source may be captured at 1× (1280 wide) or 2× (2560 wide). Slice the window
+  // in source pixels, then downscale to the 1280×800 Chrome requirement.
+  const scale = (meta.width ?? W) / W;
+  const winW = Math.round(W * scale), winH = Math.round(H * scale);
+  const top = Math.min(Math.round(s.top * scale), Math.max(0, (meta.height ?? winH) - winH));
   await sharp(inPath)
-    .extract({ left: 0, top, width: W, height: H })
+    .extract({ left: 0, top, width: winW, height: winH })
+    .resize(W, H, { kernel: 'lanczos3' })
     .removeAlpha() // 24-bit, no alpha — Chrome requirement
     .png()
     .toFile(resolve(OUT, `${s.name}.png`));
-  console.log(`wrote docs/store/screenshots/chrome/${s.name}.png  (from ${s.src} @${top})`);
+  console.log(`wrote docs/store/screenshots/chrome/${s.name}.png  (from ${s.src} @${top}, ${scale}×)`);
 }
 console.log('done');

@@ -10,6 +10,10 @@ const test = base.extend<{ context: BrowserContext; extensionId: string }>({
   context: async ({}, use) => {
     const context = await chromium.launchPersistentContext('', {
       channel: 'chromium',
+      // Capture at 2× device scale so store/review screenshots are retina-crisp.
+      // Assertions are CSS-pixel based, so the higher DPI does not affect them.
+      viewport: { width: 1280, height: 800 },
+      deviceScaleFactor: 2,
       args: [`--disable-extensions-except=${EXT_PATH}`, `--load-extension=${EXT_PATH}`],
     });
     await use(context);
@@ -241,6 +245,49 @@ test('screenshots for visual review', async ({ context, extensionId }) => {
       .toBe(theme);
     await dash.waitForTimeout(200);
     await dash.screenshot({ path: `e2e/__screenshots__/dashboard-${theme}.png`, fullPage: true });
+
+    // ── Modals (captured over the dashboard, viewport-only) ──────────────────
+    const shootModal = async (name: string) => {
+      await dash.evaluate(() => window.scrollTo(0, 0));
+      await dash.waitForTimeout(200);
+      await dash.screenshot({ path: `e2e/__screenshots__/modal-${name}-${theme}.png` });
+    };
+    const closeModal = async () => {
+      await dash.locator('.backdrop').first().click({ position: { x: 6, y: 6 } }).catch(() => {});
+      await dash.waitForSelector('.backdrop', { state: 'hidden' }).catch(() => {});
+      await dash.waitForTimeout(200);
+    };
+    // Domain detail — open from the top of the Top Sites list (github.com).
+    await dash.evaluate(() => window.scrollTo(0, 0));
+    await dash.locator('.top-sites .row').first().click();
+    await dash.waitForSelector('[role="dialog"]', { state: 'visible' });
+    await dash.waitForTimeout(300);
+    await shootModal('domain');
+    await closeModal();
+    // Privacy dialog — opened from the header badge.
+    await dash.locator('.privacy-badge').click();
+    await dash.waitForSelector('.backdrop', { state: 'visible' });
+    await dash.waitForTimeout(300);
+    await shootModal('privacy');
+    await closeModal();
+    // Onboarding — replay from Settings (clears `onboarded`); restore it after so
+    // the next theme's dashboard capture isn't covered by the first-run card.
+    await dash.locator('.intro-link').scrollIntoViewIfNeeded();
+    await dash.locator('.intro-link').click();
+    await dash.waitForSelector('.backdrop', { state: 'visible' });
+    await dash.waitForTimeout(300);
+    await shootModal('onboarding');
+    await closeModal();
+    await dash.evaluate(
+      () =>
+        new Promise<void>((res) =>
+          chrome.storage.local.get('settings', (d: any) => {
+            const s = d.settings || {};
+            s.onboarded = true;
+            chrome.storage.local.set({ settings: s }, () => res());
+          }),
+        ),
+    );
 
     // ── Popup ──────────────────────────────────────────────────────────────
     const pop = await context.newPage();

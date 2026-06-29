@@ -7,6 +7,8 @@ const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const OUT = resolve(ROOT, 'docs/store/promo');
 mkdirSync(OUT, { recursive: true });
 
+const SS = 2; // supersample: render at 2× then downscale → crisp text & edges
+
 // Ring-clock mark (same motif as the app icon), drawn at a given center/scale.
 function mark(cx, cy, r) {
   const arcStart = `${cx} ${cy - r}`;
@@ -80,6 +82,10 @@ for (const a of assets) {
   // removeAlpha → 24-bit, no alpha channel. The design is fully opaque (a bg rect
   // covers the canvas), but sharp emits RGBA by default and the Chrome Web Store
   // rejects any alpha channel on promo tiles. Strip it.
-  await sharp(Buffer.from(svg(a))).removeAlpha().png().toFile(resolve(OUT, `${a.name}.png`));
+  await sharp(Buffer.from(svg(a)), { density: 72 * SS })
+    .resize(a.w, a.h, { kernel: 'lanczos3' })
+    .removeAlpha()
+    .png({ compressionLevel: 9 })
+    .toFile(resolve(OUT, `${a.name}.png`));
   console.log(`wrote docs/store/promo/${a.name}.png`);
 }
