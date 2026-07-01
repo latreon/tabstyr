@@ -1,11 +1,12 @@
-import type { DailyStat, Session, Settings, TabMeta } from './types';
+import type { DailyStat, MonthlyStat, Session, Settings, TabMeta } from './types';
 
 // JSON is the single, canonical export/restore format. It's the complete dataset
-// (daily stats, raw sessions with URLs + timestamps, tab metadata, settings) and
-// the only format the importer accepts.
+// (daily stats, the monthly rollup archive, raw sessions with URLs + timestamps,
+// tab metadata, settings) and the only format the importer accepts.
 
 export interface BackupData {
   dailyStats: DailyStat[];
+  monthlyStats: MonthlyStat[];
   sessions: Session[];
   tabMeta: TabMeta[];
   settings: Settings;
@@ -15,7 +16,9 @@ export interface BackupData {
 // requires a migration on import. parseBackup() refuses files stamped with a
 // HIGHER version than this build understands rather than importing them as
 // partial garbage. The single source of truth for both the writer and reader.
-export const SCHEMA_VERSION = 2;
+// v3 adds monthlyStats (the pruned-day archive); older fields are unchanged, so a
+// v2 backup restores fine (its monthlyStats is simply absent → []).
+export const SCHEMA_VERSION = 3;
 
 /** Full, restorable JSON backup. `now` is passed in so the builder stays pure. */
 export function toJsonBackup(data: BackupData, now: number): string {

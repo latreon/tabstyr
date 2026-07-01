@@ -30,6 +30,21 @@ export interface DailyStat {
   audioSeconds: number;
 }
 
+/**
+ * A per-domain monthly total. Written only when daily rows fall off the 90-day
+ * raw-retention edge (see repo.pruneBefore): the pruned days are aggregated here
+ * so long-range views (yearly Wrapped, multi-month trends) survive pruning without
+ * keeping every raw session. A given (date, domain) lives in EITHER dailyDomainStats
+ * (recent) OR the month bucket here (archived) — never both — so summing the two
+ * sources never double-counts.
+ */
+export interface MonthlyStat {
+  month: string; // local YYYY-MM
+  domain: string;
+  seconds: number;
+  audioSeconds: number;
+}
+
 export interface TabMeta {
   tabId: number; // volatile — reassigned by the browser across restarts
   key: string; // stable identity, survives restart; used to attribute sessions

@@ -176,13 +176,14 @@ async function exportData() {
   exporting.value = true;
   try {
     const stamp = dateKey(Date.now());
-    const [dailyStats, sessions, tabMeta, settings] = await Promise.all([
+    const [dailyStats, monthlyStats, sessions, tabMeta, settings] = await Promise.all([
       repo.getAllDailyStats(),
+      repo.getAllMonthlyStats(),
       repo.getAllSessions(),
       repo.getAllTabMeta(),
       getSettings(),
     ]);
-    const json = toJsonBackup({ dailyStats, sessions, tabMeta, settings }, Date.now());
+    const json = toJsonBackup({ dailyStats, monthlyStats, sessions, tabMeta, settings }, Date.now());
     downloadFile(`tabstyr-backup-${stamp}.json`, json, 'application/json');
     showToast(t('settings.exportedJson'));
   } catch (e) {
@@ -200,13 +201,14 @@ const encPass2 = ref('');
 const encError = ref('');
 
 async function buildBackupJson(): Promise<string> {
-  const [dailyStats, sessions, tabMeta, settings] = await Promise.all([
+  const [dailyStats, monthlyStats, sessions, tabMeta, settings] = await Promise.all([
     repo.getAllDailyStats(),
+    repo.getAllMonthlyStats(),
     repo.getAllSessions(),
     repo.getAllTabMeta(),
     getSettings(),
   ]);
-  return toJsonBackup({ dailyStats, sessions, tabMeta, settings }, Date.now());
+  return toJsonBackup({ dailyStats, monthlyStats, sessions, tabMeta, settings }, Date.now());
 }
 
 async function exportEncrypted() {

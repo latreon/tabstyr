@@ -8,12 +8,12 @@ describe('toJsonBackup', () => {
   test('produces parseable JSON with metadata and all sections', () => {
     const now = Date.UTC(2026, 5, 12, 8, 0, 0);
     const json = toJsonBackup(
-      { dailyStats: [], sessions: [], tabMeta: [], settings: SETTINGS },
+      { dailyStats: [], monthlyStats: [], sessions: [], tabMeta: [], settings: SETTINGS },
       now,
     );
     const parsed = JSON.parse(json);
     expect(parsed.app).toBe('tabstyr');
-    expect(parsed.schemaVersion).toBe(2);
+    expect(parsed.schemaVersion).toBe(3);
     expect(parsed.exportedAt).toBe('2026-06-12T08:00:00.000Z');
     expect(parsed.settings).toEqual(SETTINGS);
     expect(Array.isArray(parsed.sessions)).toBe(true);

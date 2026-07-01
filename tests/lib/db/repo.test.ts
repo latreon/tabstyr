@@ -174,8 +174,67 @@ describe('prune + wipe', () => {
   test('wipeAll clears every store', async () => {
     await repo.addSessions([session({})]);
     await repo.upsertTabMeta(tabMeta({}));
+    await repo.applyMonthlyStats([{ month: '2026-01', domain: 'a.com', seconds: 100, audioSeconds: 0 }]);
     await repo.wipeAll();
     expect(await repo.getSecondsForKeys(['k1'])).toEqual(new Map());
     expect(await repo.getAllTabMeta()).toEqual([]);
+    expect(await repo.getAllMonthlyStats()).toEqual([]);
+  });
+});
+
+describe('monthly rollup archive', () => {
+  test('pruneBefore archives pruned daily rows into monthly totals, summed by month+domain', async () => {
+    await repo.applyDailyStats([
+      { date: '2026-01-05', domain: 'a.com', seconds: 100, audioSeconds: 10 },
+      { date: '2026-01-20', domain: 'a.com', seconds: 50, audioSeconds: 0 },
+      { date: '2026-02-02', domain: 'a.com', seconds: 30, audioSeconds: 0 },
+      { date: '2026-01-06', domain: 'b.com', seconds: 25, audioSeconds: 0 },
+      { date: '2026-06-11', domain: 'a.com', seconds: 999, audioSeconds: 0 }, // recent → survives
+    ]);
+    await repo.pruneBefore('2026-03-13', T0 - 90 * DAY);
+    // Recent day stays raw.
+    expect((await repo.getStatsRange('2020-01-01', '2030-01-01')).map((s) => s.date)).toEqual(['2026-06-11']);
+    // Pruned days rolled up per (month, domain).
+    const monthly = await repo.getAllMonthlyStats();
+    expect(monthly).toContainEqual({ month: '2026-01', domain: 'a.com', seconds: 150, audioSeconds: 10 });
+    expect(monthly).toContainEqual({ month: '2026-02', domain: 'a.com', seconds: 30, audioSeconds: 0 });
+    expect(monthly).toContainEqual({ month: '2026-01', domain: 'b.com', seconds: 25, audioSeconds: 0 });
+    expect(monthly).toHaveLength(3);
+  });
+
+  test('re-running pruneBefore does not double-count into the archive (idempotent)', async () => {
+    await repo.applyDailyStats([{ date: '2026-01-05', domain: 'a.com', seconds: 100, audioSeconds: 0 }]);
+    await repo.pruneBefore('2026-03-13', T0 - 90 * DAY);
+    await repo.pruneBefore('2026-03-13', T0 - 90 * DAY); // second run finds the daily row already gone
+    const monthly = await repo.getAllMonthlyStats();
+    expect(monthly).toEqual([{ month: '2026-01', domain: 'a.com', seconds: 100, audioSeconds: 0 }]);
+  });
+
+  test('successive prunes accumulate into the same month bucket', async () => {
+    await repo.applyDailyStats([{ date: '2026-01-05', domain: 'a.com', seconds: 100, audioSeconds: 0 }]);
+    await repo.pruneBefore('2026-01-10', T0); // archives Jan 5
+    await repo.applyDailyStats([{ date: '2026-01-09', domain: 'a.com', seconds: 40, audioSeconds: 0 }]);
+    await repo.pruneBefore('2026-01-10', T0); // archives Jan 9 into the existing Jan bucket
+    expect(await repo.getAllMonthlyStats()).toEqual([
+      { month: '2026-01', domain: 'a.com', seconds: 140, audioSeconds: 0 },
+    ]);
+  });
+
+  test('getMonthlyRange filters by month key', async () => {
+    await repo.applyMonthlyStats([
+      { month: '2025-12', domain: 'a.com', seconds: 10, audioSeconds: 0 },
+      { month: '2026-01', domain: 'a.com', seconds: 20, audioSeconds: 0 },
+      { month: '2026-02', domain: 'a.com', seconds: 30, audioSeconds: 0 },
+    ]);
+    const got = await repo.getMonthlyRange('2026-01', '2026-02');
+    expect(got.map((m) => m.month).sort()).toEqual(['2026-01', '2026-02']);
+  });
+
+  test('applyMonthlyStats merges into existing rows', async () => {
+    await repo.applyMonthlyStats([{ month: '2026-01', domain: 'a.com', seconds: 20, audioSeconds: 5 }]);
+    await repo.applyMonthlyStats([{ month: '2026-01', domain: 'a.com', seconds: 30, audioSeconds: 0 }]);
+    expect(await repo.getAllMonthlyStats()).toEqual([
+      { month: '2026-01', domain: 'a.com', seconds: 50, audioSeconds: 5 },
+    ]);
   });
 });

@@ -16,6 +16,7 @@ const backupText = () =>
   toJsonBackup(
     {
       dailyStats: [{ date: '2026-06-16', domain: 'github.com', seconds: 120, audioSeconds: 0 }],
+      monthlyStats: [{ month: '2026-03', domain: 'github.com', seconds: 5000, audioSeconds: 0 }],
       sessions: [
         { tabId: 1, tabKey: 'k1', url: 'https://github.com', domain: 'github.com', start: 1000, end: 61000, audio: false },
       ],
@@ -154,10 +155,12 @@ describe('restoreBackup', () => {
     await repo.applyDailyStats([{ date: '2020-01-01', domain: 'old.com', seconds: 999, audioSeconds: 0 }]);
 
     const res = await restoreBackup(parseBackup(backupText()));
-    expect(res).toEqual({ dailyStats: 1, sessions: 1, tabMeta: 1 });
+    expect(res).toEqual({ dailyStats: 1, monthlyStats: 1, sessions: 1, tabMeta: 1 });
 
     const stats = await repo.getAllDailyStats();
     expect(stats).toEqual([{ date: '2026-06-16', domain: 'github.com', seconds: 120, audioSeconds: 0 }]);
+    const monthly = await repo.getAllMonthlyStats();
+    expect(monthly).toEqual([{ month: '2026-03', domain: 'github.com', seconds: 5000, audioSeconds: 0 }]);
     const metas = await repo.getAllTabMeta();
     expect(metas).toHaveLength(1);
     expect(metas[0].key).toBe('k1');
