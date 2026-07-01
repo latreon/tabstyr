@@ -58,7 +58,7 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds + d.aud
 
 <style scoped>
 .top-sites {
-  padding: 16px;
+  padding: var(--sp-4);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -71,7 +71,7 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds + d.aud
   grid-template-columns: 18px 150px 1fr 110px;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
+  font-size: var(--text-sm);
   padding: 5px 6px;
   border-radius: var(--radius-sm);
   cursor: pointer;

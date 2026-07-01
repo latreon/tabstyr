@@ -207,8 +207,8 @@ onUnmounted(() => {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 6vh 16px 16px;
-  background: rgba(8, 8, 16, 0.55);
+  padding: 6vh var(--sp-4) var(--sp-4);
+  background: var(--backdrop);
   backdrop-filter: blur(3px);
   overflow-y: auto;
 }
@@ -239,8 +239,8 @@ onUnmounted(() => {
   background: var(--accent-grad-strong);
   color: var(--on-accent);
   border: none;
-  border-radius: 8px;
-  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  padding: 6px var(--sp-3);
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
@@ -250,11 +250,11 @@ onUnmounted(() => {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text-2);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   width: 30px;
   height: 30px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--text-sm);
 }
 .open:focus-visible,
 .close:focus-visible {
@@ -264,10 +264,10 @@ onUnmounted(() => {
 .cat-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--sp-3);
 }
 .cat-label {
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--text-2);
 }
 .stat-grid {
@@ -279,7 +279,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 10px 12px;
+  padding: 10px var(--sp-3);
   background: var(--card-strong);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -290,19 +290,19 @@ onUnmounted(() => {
   letter-spacing: -0.3px;
 }
 .stat-label {
-  font-size: 11px;
+  font-size: var(--text-xs);
   color: var(--text-3);
 }
 .block {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--sp-2);
 }
 .bars {
   position: relative;
   display: flex;
   align-items: flex-end;
-  gap: 4px;
+  gap: var(--sp-1);
   height: 90px;
 }
 .bar-col {
@@ -320,14 +320,14 @@ onUnmounted(() => {
   bottom: calc(100% + 6px);
   transform: translateX(-50%);
   white-space: nowrap;
-  padding: 4px 8px;
-  font-size: 11px;
+  padding: var(--sp-1) var(--sp-2);
+  font-size: var(--text-xs);
   font-weight: 600;
   color: var(--text);
   background: var(--popover);
   border: 1px solid var(--border);
   border-radius: 7px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+  box-shadow: var(--shadow-modal);
   pointer-events: none;
   z-index: 5;
 }
@@ -359,7 +359,7 @@ onUnmounted(() => {
   gap: 10px;
 }
 .page-path {
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--text-2);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -369,7 +369,7 @@ onUnmounted(() => {
   all: unset;
   box-sizing: border-box;
   display: block;
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--text-2);
   overflow: hidden;
   text-overflow: ellipsis;

@@ -93,8 +93,8 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  background: rgba(8, 8, 16, 0.55);
+  padding: var(--sp-4);
+  background: var(--backdrop);
   backdrop-filter: blur(3px);
   overflow-y: auto;
 }
@@ -109,7 +109,7 @@ onUnmounted(() => {
   background: var(--popover, var(--card-strong));
   border: 1px solid var(--border);
   border-radius: 16px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-modal);
   padding: 26px 28px;
 }
 .modal::before {
@@ -121,34 +121,34 @@ onUnmounted(() => {
 }
 .close {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: var(--sp-4);
+  right: var(--sp-4);
   width: 30px;
   height: 30px;
   border: 1px solid var(--border);
   background: transparent;
   color: var(--text-3);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 12px;
 }
 .close:hover { color: var(--text); border-color: var(--accent); }
 .close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .title {
-  margin: 0 0 4px;
+  margin: 0 0 var(--sp-1);
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.4px;
 }
 .lede {
   margin: 0 0 20px;
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--text-2);
 }
 .points {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--sp-4);
   margin-bottom: 20px;
 }
 .point {
@@ -217,7 +217,7 @@ onUnmounted(() => {
   border: none;
   border-radius: 9px;
   padding: 10px 22px;
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;

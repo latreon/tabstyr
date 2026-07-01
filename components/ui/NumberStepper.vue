@@ -45,7 +45,7 @@ function onInput(e: Event) {
   align-items: center;
   border: 1px solid var(--border);
   background: var(--card-strong);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
 }
 .stepper:focus-within { border-color: var(--accent); }
@@ -68,9 +68,9 @@ function onInput(e: Event) {
   background: transparent;
   color: var(--text);
   text-align: center;
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-family: inherit;
-  padding: 4px 0;
+  padding: var(--sp-1) 0;
   -moz-appearance: textfield;
 }
 .stepper input::-webkit-outer-spin-button,

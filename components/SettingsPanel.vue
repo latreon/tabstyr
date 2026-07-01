@@ -3,7 +3,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { browser } from 'wxt/browser';
 import { getSettings, saveSettings } from '@/lib/settings';
-import { CATEGORIES, CATEGORY_META, CATEGORY_PRODUCTIVITY, PRODUCTIVITY, type Category, type CategoryRule, type Productivity } from '@/lib/categories';
+import { CATEGORIES, type Category, type CategoryRule } from '@/lib/categories';
 import { useTheme } from '@/composables/useTheme';
 import { useLocale } from '@/composables/useLocale';
 import { useFocusTrap } from '@/composables/useFocusTrap';
@@ -46,8 +46,6 @@ const idleSeconds = ref(180);
 const audioEnabled = ref(true);
 const notificationsEnabled = ref(true);
 const focusTarget = ref(50);
-// Per-category daily budgets in minutes (only positive entries are kept).
-const budgets = ref<Partial<Record<Category, number>>>({});
 const themeChoice = ref<'light' | 'dark'>('light');
 // Gate auto-save until the initial values are loaded, so seeding the refs in
 // onMounted doesn't immediately persist defaults over stored settings.
@@ -59,12 +57,6 @@ const rules = ref<CategoryRule[]>([]);
 const newPattern = ref('');
 const newCategory = ref<Category>('Work');
 const ruleError = ref('');
-
-// Per-category productive/distracting/neutral classification (drives Focus %).
-const categoryProductivity = ref<Record<Category, Productivity>>({ ...CATEGORY_PRODUCTIVITY });
-const PRODUCTIVITY_OPTIONS = computed(() =>
-  PRODUCTIVITY.map((p) => ({ value: p, label: t(`productivity.${p}`) })),
-);
 
 const toast = ref<string | null>(null);
 let toastTimer: ReturnType<typeof setTimeout> | undefined;
@@ -87,9 +79,7 @@ onMounted(async () => {
   // If still on the implicit "system" default, show the resolved theme in the picker.
   themeChoice.value = s.theme === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : s.theme;
   rules.value = s.categoryRules;
-  categoryProductivity.value = { ...s.categoryProductivity };
   focusTarget.value = s.focusTarget;
-  budgets.value = { ...s.categoryBudgets };
   loaded.value = true;
 });
 
@@ -120,10 +110,9 @@ async function persistSettings() {
       audioEnabled: audioEnabled.value,
       notificationsEnabled: notificationsEnabled.value,
       focusTarget: focusTarget.value,
-      categoryBudgets: budgets.value,
     });
     await browser.runtime.sendMessage({ type: 'settings-changed' });
-    emit('changed'); // refresh the dashboard so focus target + budget pills update
+    emit('changed'); // refresh the dashboard so the focus goal reflects immediately
     showToast(t('settings.saved'));
   } catch (e) {
     console.error('[settings] save failed', e);
@@ -136,22 +125,6 @@ watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, focusTarget],
   clearTimeout(saveTimer);
   saveTimer = setTimeout(persistSettings, 400);
 });
-// Budgets are an object — deep-watch and debounce onto the same persist path.
-watch(budgets, () => {
-  if (!loaded.value) return;
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(persistSettings, 400);
-}, { deep: true });
-
-// Set/clear a category's daily budget (minutes). Empty or non-positive removes it.
-function onBudgetInput(category: Category, event: Event) {
-  const raw = (event.target as HTMLInputElement).value.trim();
-  const n = raw === '' ? 0 : Math.floor(Number(raw));
-  const next = { ...budgets.value };
-  if (Number.isFinite(n) && n > 0) next[category] = Math.min(n, 1440);
-  else delete next[category];
-  budgets.value = next;
-}
 
 // Re-show the first-run intro on the dashboard. Clearing `onboarded` makes the
 // dashboard's showOnboarding turn true again; emit('changed') reloads it.
@@ -163,22 +136,6 @@ async function replayOnboarding() {
     showToast(t('settings.introShown'));
   } catch (e) {
     console.error('[settings] replay onboarding failed', e);
-    showToast(t('settings.saveFailed'));
-  }
-}
-
-async function setProductivity(category: Category, value: Productivity) {
-  const prev = categoryProductivity.value;
-  categoryProductivity.value = { ...prev, [category]: value };
-  try {
-    const saved = await saveSettings({ categoryProductivity: categoryProductivity.value });
-    categoryProductivity.value = { ...saved.categoryProductivity };
-    await browser.runtime.sendMessage({ type: 'settings-changed' });
-    emit('changed');
-    showToast(t('settings.saved'));
-  } catch (e) {
-    console.error('[settings] productivity save failed', e);
-    categoryProductivity.value = prev; // revert the optimistic change
     showToast(t('settings.saveFailed'));
   }
 }
@@ -546,42 +503,6 @@ async function confirmWipe() {
       <button class="wipe" @click="showWipeModal = true">{{ t('settings.wipe') }}</button>
     </div>
 
-    <div class="rules focus-cats">
-      <span class="field-label">{{ t('settings.focusCategories') }}</span>
-      <p class="rules-hint">{{ t('settings.focusCategoriesHint') }}</p>
-      <ul class="prod-list">
-        <li v-for="c in CATEGORIES" :key="c" class="prod-row">
-          <span class="prod-cat">
-            <span class="cat-dot" :style="{ background: CATEGORY_META[c].color }" aria-hidden="true" />
-            {{ t(`categories.${c}`) }}
-          </span>
-          <span class="prod-controls">
-            <SelectBox
-              :model-value="categoryProductivity[c]"
-              :options="PRODUCTIVITY_OPTIONS"
-              :label="t('settings.productivityForAria', { category: t(`categories.${c}`) })"
-              @update:model-value="setProductivity(c, $event as Productivity)"
-            />
-            <span class="budget-field">
-              <input
-                class="budget-input"
-                type="number"
-                min="0"
-                max="1440"
-                inputmode="numeric"
-                :value="budgets[c] ?? ''"
-                :placeholder="t('settings.budgetOff')"
-                :aria-label="t('settings.budgetForAria', { category: t(`categories.${c}`) })"
-                @input="onBudgetInput(c, $event)"
-              />
-              <span class="budget-unit" aria-hidden="true">{{ t('settings.budgetUnit') }}</span>
-            </span>
-          </span>
-        </li>
-      </ul>
-      <p class="rules-hint">{{ t('settings.dailyBudgetsHint') }}</p>
-    </div>
-
     <div class="rules">
       <span class="field-label">{{ t('settings.customRules') }}</span>
       <p class="rules-hint">{{ t('settings.rulesHint') }}</p>
@@ -706,7 +627,7 @@ async function confirmWipe() {
 <style scoped>
 .settings-tile {
   position: relative;
-  padding: 16px;
+  padding: var(--sp-4);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -718,7 +639,7 @@ async function confirmWipe() {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13px;
+  font-size: var(--text-sm);
   gap: 10px;
   min-height: 32px;
   /* In a narrow bento track the label + control (e.g. the 190px language
@@ -731,20 +652,20 @@ async function confirmWipe() {
 }
 .field-hint {
   margin: -4px 0 2px;
-  font-size: 11px;
+  font-size: var(--text-xs);
   line-height: 1.45;
   color: var(--text-3);
 }
 .actions {
   display: flex;
   justify-content: space-between;
-  margin-top: 4px;
+  margin-top: var(--sp-1);
 }
 button {
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 7px 14px;
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
@@ -776,77 +697,16 @@ button:focus-visible {
 .rules {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
-  padding-top: 12px;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+  padding-top: var(--sp-3);
   border-top: 1px solid var(--divider);
 }
 .rules-hint {
   margin: 0;
-  font-size: 11px;
+  font-size: var(--text-xs);
   line-height: 1.45;
   color: var(--text-3);
-}
-.prod-list {
-  list-style: none;
-  margin: 4px 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.prod-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px 10px;
-  flex-wrap: wrap; /* long localized labels/controls drop to the next line instead of overflowing */
-}
-.prod-cat {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0; /* allow the label to shrink/ellipsize rather than widen the row */
-  flex: 1 1 auto;
-  font-size: 13px;
-  color: var(--text-2);
-}
-.prod-controls {
-  display: inline-flex;
-  align-items: center;
-  flex: 0 0 auto;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.budget-field {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-.budget-input {
-  width: 56px;
-  height: 30px;
-  box-sizing: border-box;
-  padding: 0 8px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--card-strong);
-  color: var(--text);
-  font: inherit;
-  font-size: 12px;
-  text-align: right;
-}
-.budget-input::placeholder { color: var(--text-3); }
-.budget-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
-.budget-unit { font-size: 11px; color: var(--text-3); }
-@media (max-width: 420px) {
-  .prod-row { flex-wrap: wrap; }
-}
-.cat-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex: none;
 }
 .rule-list {
   list-style: none;
@@ -859,7 +719,7 @@ button:focus-visible {
 .rule {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sp-2);
   font-size: 12px;
 }
 .rule-pattern {
@@ -890,7 +750,7 @@ button:focus-visible {
   width: 24px;
   height: 24px;
   padding: 0;
-  font-size: 11px;
+  font-size: var(--text-xs);
   cursor: pointer;
 }
 .rule-del:hover {
@@ -900,7 +760,7 @@ button:focus-visible {
 .rule-add {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--sp-2);
   align-items: center;
 }
 .rule-input {
@@ -909,9 +769,9 @@ button:focus-visible {
   border: 1px solid var(--border);
   background: var(--card-strong);
   color: var(--text);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 6px 10px;
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-family: inherit;
 }
 .rule-input:focus-visible {
@@ -933,42 +793,48 @@ button:focus-visible {
 }
 .rule-error {
   margin: 0;
-  font-size: 11px;
+  font-size: var(--text-xs);
   color: var(--warn);
 }
 .export {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
-  padding-top: 12px;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+  padding-top: var(--sp-3);
   border-top: 1px solid var(--divider);
 }
 .export-btns {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--sp-2);
 }
 .export-btns button {
   /* Transparent, bordered look — matches the "Show intro again" button. */
+  box-sizing: border-box;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--text-2);
   border: 1px solid var(--border);
+  font: inherit;
   font-weight: 600;
-  /* overflow-wrap is the last-resort break for long locales (ru/tr/de). */
-  overflow-wrap: anywhere;
+  cursor: pointer;
+  white-space: nowrap; /* wrap the row, never break a label mid-word */
 }
-/* Export JSON sits full-width on top; Encrypted + Restore share the row below. */
+/* Export JSON sits full-width on top; the actions wrap onto the row below. */
 .export-json {
   width: 100%;
 }
 .export-btns-row {
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
 }
 .export-btns-row button {
-  flex: 1;
-  min-width: 0;
+  flex: 1 1 auto;
+  min-width: 104px;
 }
 .export-btns button:hover:not(:disabled) {
   border-color: var(--accent);
@@ -977,6 +843,10 @@ button:focus-visible {
 .export-btns button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+.export-btns button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 /* Download-encrypted: filled primary so the actual download action stands out. */
 .rule-add-btn.primary {
@@ -1003,9 +873,9 @@ button:focus-visible {
 .enc-form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 4px;
-  padding: 12px;
+  gap: var(--sp-2);
+  margin-top: var(--sp-1);
+  padding: var(--sp-3);
   background: var(--card-strong);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -1023,7 +893,7 @@ button:focus-visible {
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
-  padding: 4px;
+  padding: var(--sp-1);
 }
 .cancel-link:hover { color: var(--text); }
 .cancel-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -1036,33 +906,33 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  background: rgba(8, 8, 16, 0.55);
+  padding: var(--sp-4);
+  background: var(--backdrop);
   backdrop-filter: blur(3px);
 }
 .modal {
   width: min(380px, 100%);
   background: var(--popover);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-modal);
   padding: 20px;
 }
 .modal-title {
-  margin: 0 0 8px;
+  margin: 0 0 var(--sp-2);
   font-size: 16px;
   font-weight: 700;
 }
 .modal-body {
   margin: 0 0 18px;
-  font-size: 13px;
+  font-size: var(--text-sm);
   line-height: 1.5;
   color: var(--text-2);
 }
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
+  gap: var(--sp-2);
 }
 .cancel {
   background: var(--card-strong);
@@ -1071,14 +941,14 @@ button:focus-visible {
 }
 .danger {
   background: var(--negative);
-  color: #fff;
+  color: var(--on-accent);
 }
 .merge {
-  background: var(--accent-grad-strong, var(--accent));
-  color: var(--on-accent, #fff);
+  background: var(--accent-grad-strong);
+  color: var(--on-accent);
   border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  padding: var(--sp-2) 14px;
   font: inherit;
   font-weight: 600;
   cursor: pointer;
@@ -1092,7 +962,7 @@ button:focus-visible {
   cursor: not-allowed;
 }
 .modal-hint {
-  margin: -8px 0 16px;
+  margin: -8px 0 var(--sp-4);
   font-size: 12px;
   line-height: 1.5;
   color: var(--text-3);
@@ -1108,11 +978,11 @@ button:focus-visible {
   background: var(--popover);
   border: 1px solid var(--border);
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 600;
   padding: 10px 18px;
-  border-radius: 999px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-pop);
 }
 .toast-enter-active,
 .toast-leave-active {

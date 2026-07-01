@@ -123,8 +123,8 @@ onUnmounted(() => {
   display: flex;
   align-items: center; /* vertically centred; tall panels still scroll via the list */
   justify-content: center;
-  padding: 16px;
-  background: rgba(8, 8, 16, 0.55);
+  padding: var(--sp-4);
+  background: var(--backdrop);
   backdrop-filter: blur(3px);
   overflow-y: auto;
 }
@@ -139,7 +139,7 @@ onUnmounted(() => {
 .head {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--sp-3);
 }
 .head-text { flex: 1; min-width: 0; }
 .title {
@@ -165,11 +165,11 @@ onUnmounted(() => {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text-2);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   width: 30px;
   height: 30px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--text-sm);
 }
 .close:focus-visible,
 .close-all:focus-visible,
@@ -181,7 +181,7 @@ onUnmounted(() => {
 .close-all {
   align-self: flex-start;
   padding: 7px 14px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--card-strong);
   color: var(--text);
@@ -216,7 +216,7 @@ onUnmounted(() => {
 }
 .list::-webkit-scrollbar-thumb {
   background: var(--border);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
 }
 .list::-webkit-scrollbar-thumb:hover {
   background: var(--text-3);
@@ -225,7 +225,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 8px 8px 10px;
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) 10px;
   border-radius: 10px;
   border: 1px solid var(--border);
   /* --surface sits a step away from the panel (--popover) in both themes, so the
@@ -253,7 +253,7 @@ onUnmounted(() => {
   border-radius: 6px;
 }
 .row-title {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 600;
   color: var(--text);
   overflow: hidden;
@@ -261,7 +261,7 @@ onUnmounted(() => {
   white-space: nowrap;
 }
 .row-domain {
-  font-size: 11px;
+  font-size: var(--text-xs);
   color: var(--text-3);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -270,7 +270,7 @@ onUnmounted(() => {
 .row-time {
   flex: none;
   white-space: nowrap;
-  font-size: 11px;
+  font-size: var(--text-xs);
   color: var(--text-3);
   font-variant-numeric: tabular-nums;
 }
@@ -278,7 +278,7 @@ onUnmounted(() => {
   flex: none;
   width: 28px;
   height: 28px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: transparent;
   color: var(--text-3);
@@ -287,15 +287,15 @@ onUnmounted(() => {
   transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
 }
 .row-close:hover {
-  border-color: var(--warn, #b0552f);
-  color: var(--warn, #b0552f);
+  border-color: var(--warn);
+  color: var(--warn);
   background: var(--warn-bg, transparent);
 }
 .empty {
-  margin: 8px 0;
-  padding: 24px;
+  margin: var(--sp-2) 0;
+  padding: var(--sp-5);
   text-align: center;
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--text-3);
 }
 @media (prefers-reduced-motion: reduce) {

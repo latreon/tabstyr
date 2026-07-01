@@ -204,9 +204,9 @@ onBeforeUnmount(() => {
   border: 1px solid var(--border);
   background: var(--card-strong);
   color: var(--text);
-  border-radius: 8px;
-  padding: 0 12px;
-  font-size: 13px;
+  border-radius: var(--radius-sm);
+  padding: 0 var(--sp-3);
+  font-size: var(--text-sm);
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
@@ -227,20 +227,20 @@ onBeforeUnmount(() => {
   right: 0;
   z-index: 20;
   width: 248px;
-  padding: 12px;
+  padding: var(--sp-3);
   background: var(--popover);
   border: 1px solid var(--border);
   border-radius: 12px;
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.18);
+  box-shadow: var(--shadow-pop);
 }
 .cal-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: var(--sp-2);
 }
 .cal-title {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 700;
 }
 .mnav {
@@ -251,7 +251,7 @@ onBeforeUnmount(() => {
   color: var(--text-2);
   border-radius: 7px;
   cursor: pointer;
-  font-size: 15px;
+  font-size: var(--text-base);
   line-height: 1;
 }
 .mnav:disabled { opacity: 0.35; cursor: not-allowed; }
@@ -263,7 +263,7 @@ onBeforeUnmount(() => {
   gap: 2px;
 }
 .weekdays {
-  margin-bottom: 4px;
+  margin-bottom: var(--sp-1);
 }
 .weekdays span {
   text-align: center;

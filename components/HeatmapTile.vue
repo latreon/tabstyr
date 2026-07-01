@@ -121,6 +121,7 @@ const LEGEND = [0, 25, 50, 75, 100];
             :key="`${day}-${h}`"
             type="button"
             class="hm-cell"
+            :class="{ peak: !!peak && peak.day === day && peak.hour === h }"
             :style="cellStyles[day][h]"
             :aria-label="cellLabel(day, h)"
             :tabindex="isActive(day, h) ? 0 : -1"
@@ -156,7 +157,7 @@ const LEGEND = [0, 25, 50, 75, 100];
 <style scoped>
 .heatmap-tile {
   position: relative;
-  padding: 16px;
+  padding: var(--sp-4);
   grid-column: span 3;
 }
 .hm-tooltip {
@@ -164,24 +165,24 @@ const LEGEND = [0, 25, 50, 75, 100];
   transform: translate(-50%, calc(-100% - 8px));
   background: var(--popover);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 5px 9px;
-  font-size: 11px;
+  font-size: var(--text-xs);
   font-weight: 600;
   white-space: nowrap;
   pointer-events: none;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+  box-shadow: var(--shadow-pop);
   z-index: 3;
 }
 .hm-head {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 16px;
-  gap: 12px;
+  margin-bottom: var(--sp-4);
+  gap: var(--sp-3);
 }
 .hm-head .label {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 700;
   letter-spacing: 0.5px;
   color: var(--text-2);
@@ -191,7 +192,7 @@ const LEGEND = [0, 25, 50, 75, 100];
   white-space: nowrap;
 }
 .peak {
-  font-size: 11px;
+  font-size: var(--text-xs);
   color: var(--text-3);
   white-space: nowrap;
   min-width: 0; /* shrink + truncate instead of overflowing the tile in long locales */
@@ -214,7 +215,7 @@ const LEGEND = [0, 25, 50, 75, 100];
   font-size: 10px;
   color: var(--text-3);
   text-align: right;
-  padding-right: 8px;
+  padding-right: var(--sp-2);
   line-height: 1;
   /* Cyrillic/long weekday abbreviations (Пнд, Чтв) must clip cleanly inside the
      label column instead of bleeding into the first hour cell. */
@@ -240,6 +241,11 @@ const LEGEND = [0, 25, 50, 75, 100];
   outline: 1px solid var(--accent);
   z-index: 1;
 }
+/* The peak hour reads as the chart's focal point — an accent ring + soft glow. */
+.hm-cell.peak {
+  box-shadow: 0 0 0 2px var(--accent), 0 0 10px -1px var(--accent-muted);
+  z-index: 1;
+}
 .hm-cell:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
@@ -263,9 +269,9 @@ const LEGEND = [0, 25, 50, 75, 100];
 .hm-legend {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1);
   justify-content: flex-end;
-  margin-top: 12px;
+  margin-top: var(--sp-3);
   font-size: 10px;
   color: var(--text-3);
 }

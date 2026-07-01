@@ -24,7 +24,7 @@ const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>();
   height: 24px; /* WCAG 2.2 (2.5.8) minimum target height */
   border: 1px solid var(--border);
   background: var(--bar-track);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   padding: 0;
   cursor: pointer;
   transition: background 160ms ease, border-color 160ms ease;

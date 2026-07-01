@@ -87,8 +87,8 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4vh 16px;
-  background: rgba(8, 8, 16, 0.55);
+  padding: 4vh var(--sp-4);
+  background: var(--backdrop);
   backdrop-filter: blur(3px);
   overflow: hidden; /* the panel scrolls internally — never the page behind it */
 }
@@ -99,7 +99,7 @@ onUnmounted(() => {
   padding: 22px 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--sp-4);
   overflow: hidden; /* header + badge stay put; only .content scrolls */
 }
 .head {
@@ -110,7 +110,7 @@ onUnmounted(() => {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sp-2);
   font-size: 18px;
   font-weight: 700;
   letter-spacing: -0.3px;
@@ -120,18 +120,18 @@ onUnmounted(() => {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text-2);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   width: 30px;
   height: 30px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--text-sm);
 }
 .close:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 .content {
-  font-size: 15px;
+  font-size: var(--text-base);
   line-height: 1.65;
   flex: 1 1 auto;
   min-height: 0;
@@ -151,7 +151,7 @@ onUnmounted(() => {
 }
 .content::-webkit-scrollbar-thumb {
   background: color-mix(in oklab, var(--text-3) 45%, transparent);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
 }
 .content::-webkit-scrollbar-thumb:hover {
   background: color-mix(in oklab, var(--text-3) 70%, transparent);
@@ -166,21 +166,21 @@ onUnmounted(() => {
   color: var(--text-2);
 }
 .content li {
-  margin: 4px 0;
+  margin: var(--sp-1) 0;
 }
 .content strong {
   color: var(--text);
 }
 .content h3 {
   font-size: 16px;
-  margin: 22px 0 8px;
+  margin: 22px 0 var(--sp-2);
   letter-spacing: -0.2px;
   color: var(--text);
 }
 .content table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 8px;
+  margin-top: var(--sp-2);
 }
 .content th,
 .content td {
@@ -191,7 +191,7 @@ onUnmounted(() => {
 .content th {
   color: var(--text-3);
   font-weight: 600;
-  font-size: 11px;
+  font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -199,7 +199,7 @@ onUnmounted(() => {
   background: var(--bar-track);
   padding: 1px 6px;
   border-radius: 5px;
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 </style>

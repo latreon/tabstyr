@@ -86,7 +86,9 @@ async function exportPng() {
         color: CATEGORY_META[d.category].color,
       })),
       moreLabel: r.domains.length > REPORT_MAX_ROWS ? t('worklog.moreSites', { count: r.domains.length - REPORT_MAX_ROWS }) : '',
-      footer: 'TabStyr · tabstyr.com',
+      brand: 'TabStyr',
+      tagline: 'tabstyr.com',
+      theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light',
     };
     const canvas = document.createElement('canvas');
     renderReportCard(canvas, content, 2);
@@ -115,11 +117,7 @@ async function exportPng() {
     </div>
 
     <p class="wl-line">
-      <strong>{{ isToday ? t('common.today') : longDateLabel(selected) }}</strong>
-      <template v-if="log.total">
-        {{ t('worklog.summary', { time: formatDuration(log.total), count: log.domains.length }, log.domains.length) }}
-      </template>
-      <template v-else>{{ t('worklog.nothingTracked') }}</template>
+      <strong>{{ isToday ? t('common.today') : longDateLabel(selected) }}</strong>{{ ' ' }}<span v-if="log.total">{{ t('worklog.summary', { time: formatDuration(log.total), count: log.domains.length }, log.domains.length) }}</span><span v-else>{{ t('worklog.nothingTracked') }}</span>
     </p>
 
     <ol v-if="log.total" class="sites">
@@ -144,21 +142,21 @@ async function exportPng() {
 
 <style scoped>
 .worklog-tile {
-  padding: 16px;
+  padding: var(--sp-4);
   grid-column: span 3;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--sp-3);
 }
 .wl-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--sp-3);
   flex-wrap: wrap;
 }
 .label {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 700;
   letter-spacing: 0.5px;
   color: var(--text-2);
@@ -179,7 +177,7 @@ async function exportPng() {
   border: 1px solid var(--border);
   background: var(--card-strong);
   color: var(--text-2);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 18px;
   line-height: 1;
@@ -192,8 +190,8 @@ async function exportPng() {
   border: 1px solid var(--border);
   background: var(--card-strong);
   color: var(--text);
-  border-radius: 8px;
-  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  padding: var(--sp-1) var(--sp-2);
   font-size: 12px;
   font-family: inherit;
   color-scheme: light dark;
@@ -203,13 +201,13 @@ async function exportPng() {
   display: inline-flex;
   align-items: center;
   height: 34px;
-  margin-left: 4px;
+  margin-left: var(--sp-1);
   border: 1px solid var(--border);
   background: var(--card-strong);
   color: var(--text-2);
-  border-radius: 8px;
-  padding: 0 16px;
-  font-size: 13px;
+  border-radius: var(--radius-sm);
+  padding: 0 var(--sp-4);
+  font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
@@ -243,14 +241,14 @@ async function exportPng() {
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2px 16px;
+  gap: 2px var(--sp-4);
 }
 .site-row {
   display: grid;
   grid-template-columns: 1fr auto auto;
   align-items: center;
-  gap: 8px;
-  padding: 2px 8px;
+  gap: var(--sp-2);
+  padding: 2px var(--sp-2);
   border-radius: var(--radius-sm);
 }
 .site-row:hover {
@@ -266,7 +264,7 @@ async function exportPng() {
   min-width: 0;
   padding: 7px 0;
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--text-sm);
 }
 .site:focus-visible {
   outline: 2px solid var(--accent);
@@ -286,8 +284,8 @@ async function exportPng() {
 }
 .legend {
   list-style: none;
-  margin: 4px 0 0;
-  padding: 12px 0 0;
+  margin: var(--sp-1) 0 0;
+  padding: var(--sp-3) 0 0;
   border-top: 1px solid color-mix(in oklab, var(--text-3) 55%, transparent);
   display: flex;
   flex-wrap: wrap;
@@ -297,7 +295,7 @@ async function exportPng() {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: var(--text-xs);
   color: var(--text-3);
 }
 .legend .dot {

@@ -46,10 +46,10 @@ const lines = computed(() =>
 <style scoped>
 .insights-tile {
   grid-column: span 3;
-  padding: 16px 18px;
+  padding: var(--sp-5) var(--sp-5);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--sp-3);
 }
 .head {
   display: flex;

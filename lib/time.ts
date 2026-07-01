@@ -24,6 +24,26 @@ export function formatDuration(seconds: number): string {
   return remH === 0 ? `${d}d` : `${d}d ${remH}h`;
 }
 
+/**
+ * Like formatDuration, but keeps up to three units (d / h / m) so a multi-day
+ * total still shows its hours AND minutes (e.g. "1d 3h 12m"), instead of dropping
+ * minutes at the day scale. Used where precision reads better than compactness —
+ * e.g. the "Open tabs by time" table. Zero units are omitted; "0s" when empty.
+ */
+export function formatDurationLong(seconds: number): string {
+  const total = Math.max(0, Math.round(seconds));
+  if (total < 60) return `${total}s`;
+  const totalMin = Math.floor(total / 60);
+  const d = Math.floor(totalMin / 1440);
+  const h = Math.floor((totalMin % 1440) / 60);
+  const m = totalMin % 60;
+  const parts: string[] = [];
+  if (d) parts.push(`${d}d`);
+  if (h) parts.push(`${h}h`);
+  if (m) parts.push(`${m}m`);
+  return parts.join(' ');
+}
+
 export function dateKey(ts: number): string {
   const d = new Date(ts);
   const mm = String(d.getMonth() + 1).padStart(2, '0');

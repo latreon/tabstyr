@@ -29,14 +29,20 @@ export interface ReportCardContent {
   rows: ReportCardRow[];
   /** Shown under the site list when rows were truncated (empty = nothing hidden). */
   moreLabel: string;
-  footer: string;
+  /** Brand wordmark (e.g. "TabStyr") + tagline, rendered as the footer. */
+  brand: string;
+  tagline: string;
+  /** Match the report to the user's current theme. */
+  theme: 'dark' | 'light';
 }
 
 const FONT = "'InterVar', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif";
 const MARGIN = 72;
-// Rows that fit the portrait page; caller may pass more (we note the remainder).
-export const REPORT_MAX_ROWS = 26;
+// Rows that fit the portrait page with comfortable spacing; caller may pass more
+// (we note the remainder under the list).
+export const REPORT_MAX_ROWS = 18;
 const MAX_ROWS = REPORT_MAX_ROWS;
+const ROW_H = 46;
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
   const radius = Math.min(r, w / 2, h / 2);
@@ -76,14 +82,17 @@ export function renderReportCard(canvas: HTMLCanvasElement, content: ReportCardC
 
 function paint(ctx: CanvasRenderingContext2D, c: ReportCardContent, scale: number): void {
   ctx.scale(scale, scale);
-  const ink = '#16161a';
-  const dim = 'rgba(22,22,26,0.55)';
-  const line = 'rgba(22,22,26,0.10)';
+  const dark = c.theme === 'dark';
+  const bg = dark ? '#1d1d26' : '#ffffff';
+  const ink = dark ? '#f4f4f6' : '#16161a';
+  const dim = dark ? 'rgba(244,244,246,0.68)' : 'rgba(22,22,26,0.55)';
+  const line = dark ? 'rgba(244,244,246,0.18)' : 'rgba(22,22,26,0.10)';
+  const rowTint = dark ? 'rgba(255,255,255,0.06)' : 'rgba(22,22,26,0.025)';
   const W = REPORT_WIDTH;
   const innerW = W - MARGIN * 2;
 
   // Page.
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, REPORT_HEIGHT);
 
   // Header.
@@ -144,16 +153,19 @@ function paint(ctx: CanvasRenderingContext2D, c: ReportCardContent, scale: numbe
   }
 
   // Site list.
-  y += 48;
+  y += 54;
   ctx.fillStyle = dim;
   ctx.font = `700 20px ${FONT}`;
   ctx.fillText(c.sitesLabel.toUpperCase(), MARGIN, y);
-  y += 30;
-  const rowH = 40;
+  y += 34; // breathing room under the "By site" heading
   for (const row of c.rows.slice(0, MAX_ROWS)) {
+    // Soft row tint so the list reads as spaced rows, not a dense block.
+    ctx.fillStyle = rowTint;
+    roundRect(ctx, MARGIN - 14, y - ROW_H + 14, innerW + 28, ROW_H - 8, 12);
+    ctx.fill();
     ctx.fillStyle = row.color;
     ctx.beginPath();
-    ctx.arc(MARGIN + 6, y - 5, 5, 0, Math.PI * 2);
+    ctx.arc(MARGIN + 6, y - 6, 5, 0, Math.PI * 2);
     ctx.fill();
     ctx.textAlign = 'left';
     ctx.fillStyle = ink;
@@ -164,17 +176,32 @@ function paint(ctx: CanvasRenderingContext2D, c: ReportCardContent, scale: numbe
     ctx.font = `700 22px ${FONT}`;
     ctx.fillText(row.value, W - MARGIN, y);
     ctx.textAlign = 'left';
-    y += rowH;
+    y += ROW_H;
   }
   if (c.moreLabel) {
     ctx.fillStyle = dim;
     ctx.font = `500 20px ${FONT}`;
-    ctx.fillText(c.moreLabel, MARGIN + 24, y + 4);
+    ctx.fillText(c.moreLabel, MARGIN, y + 10);
   }
 
-  // Footer.
-  ctx.textAlign = 'center';
+  // Footer: divider + branded wordmark ("TabStyr  tagline").
+  const footY = REPORT_HEIGHT - 64;
+  ctx.strokeStyle = line;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(MARGIN, footY - 30);
+  ctx.lineTo(W - MARGIN, footY - 30);
+  ctx.stroke();
+  ctx.font = `800 26px ${FONT}`;
+  const brandW = ctx.measureText(c.brand).width;
+  ctx.font = `500 20px ${FONT}`;
+  const tagW = ctx.measureText(`  ${c.tagline}`).width;
+  const startX = W / 2 - (brandW + tagW) / 2;
+  ctx.textAlign = 'left';
+  ctx.fillStyle = ink;
+  ctx.font = `800 26px ${FONT}`;
+  ctx.fillText(c.brand, startX, footY);
   ctx.fillStyle = dim;
-  ctx.font = `600 20px ${FONT}`;
-  ctx.fillText(fit(ctx, c.footer, innerW), W / 2, REPORT_HEIGHT - 56);
+  ctx.font = `500 20px ${FONT}`;
+  ctx.fillText(`  ${c.tagline}`, startX + brandW, footY);
 }
