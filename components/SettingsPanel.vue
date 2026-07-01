@@ -3,7 +3,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { browser } from 'wxt/browser';
 import { getSettings, saveSettings } from '@/lib/settings';
-import { CATEGORIES, type Category, type CategoryRule } from '@/lib/categories';
+import { CATEGORIES, CATEGORY_META, CATEGORY_PRODUCTIVITY, PRODUCTIVITY, type Category, type CategoryRule, type Productivity } from '@/lib/categories';
 import { useTheme } from '@/composables/useTheme';
 import { useLocale } from '@/composables/useLocale';
 import { useFocusTrap } from '@/composables/useFocusTrap';
@@ -12,9 +12,11 @@ import * as repo from '@/lib/db/repo';
 import { downloadFile, toJsonBackup } from '@/lib/export';
 import { encryptToEnvelope, isEncryptedEnvelope, decryptFromEnvelope, MIN_PASSPHRASE } from '@/lib/crypto';
 import { parseBackup, restoreBackup, MAX_BACKUP_BYTES, type ParsedBackup } from '@/lib/restore';
+import { mergeBackup, mergeSettingsMaps } from '@/lib/merge';
+import { parseCsvImport } from '@/lib/import-csv';
 import { dateKey } from '@/lib/time';
 import { getDateLocale } from '@/lib/locale';
-import type { ThemeSetting } from '@/lib/types';
+import type { Settings, ThemeSetting } from '@/lib/types';
 import SelectBox from '@/components/ui/SelectBox.vue';
 import ToggleSwitch from '@/components/ui/ToggleSwitch.vue';
 import NumberStepper from '@/components/ui/NumberStepper.vue';
@@ -43,6 +45,9 @@ const staleDays = ref(3);
 const idleSeconds = ref(180);
 const audioEnabled = ref(true);
 const notificationsEnabled = ref(true);
+const focusTarget = ref(50);
+// Per-category daily budgets in minutes (only positive entries are kept).
+const budgets = ref<Partial<Record<Category, number>>>({});
 const themeChoice = ref<'light' | 'dark'>('light');
 // Gate auto-save until the initial values are loaded, so seeding the refs in
 // onMounted doesn't immediately persist defaults over stored settings.
@@ -54,6 +59,12 @@ const rules = ref<CategoryRule[]>([]);
 const newPattern = ref('');
 const newCategory = ref<Category>('Work');
 const ruleError = ref('');
+
+// Per-category productive/distracting/neutral classification (drives Focus %).
+const categoryProductivity = ref<Record<Category, Productivity>>({ ...CATEGORY_PRODUCTIVITY });
+const PRODUCTIVITY_OPTIONS = computed(() =>
+  PRODUCTIVITY.map((p) => ({ value: p, label: t(`productivity.${p}`) })),
+);
 
 const toast = ref<string | null>(null);
 let toastTimer: ReturnType<typeof setTimeout> | undefined;
@@ -76,6 +87,9 @@ onMounted(async () => {
   // If still on the implicit "system" default, show the resolved theme in the picker.
   themeChoice.value = s.theme === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : s.theme;
   rules.value = s.categoryRules;
+  categoryProductivity.value = { ...s.categoryProductivity };
+  focusTarget.value = s.focusTarget;
+  budgets.value = { ...s.categoryBudgets };
   loaded.value = true;
 });
 
@@ -105,8 +119,11 @@ async function persistSettings() {
       idleSeconds: idleSeconds.value,
       audioEnabled: audioEnabled.value,
       notificationsEnabled: notificationsEnabled.value,
+      focusTarget: focusTarget.value,
+      categoryBudgets: budgets.value,
     });
     await browser.runtime.sendMessage({ type: 'settings-changed' });
+    emit('changed'); // refresh the dashboard so focus target + budget pills update
     showToast(t('settings.saved'));
   } catch (e) {
     console.error('[settings] save failed', e);
@@ -114,11 +131,27 @@ async function persistSettings() {
   }
 }
 
-watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled], () => {
+watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, focusTarget], () => {
   if (!loaded.value) return;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(persistSettings, 400);
 });
+// Budgets are an object — deep-watch and debounce onto the same persist path.
+watch(budgets, () => {
+  if (!loaded.value) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(persistSettings, 400);
+}, { deep: true });
+
+// Set/clear a category's daily budget (minutes). Empty or non-positive removes it.
+function onBudgetInput(category: Category, event: Event) {
+  const raw = (event.target as HTMLInputElement).value.trim();
+  const n = raw === '' ? 0 : Math.floor(Number(raw));
+  const next = { ...budgets.value };
+  if (Number.isFinite(n) && n > 0) next[category] = Math.min(n, 1440);
+  else delete next[category];
+  budgets.value = next;
+}
 
 // Re-show the first-run intro on the dashboard. Clearing `onboarded` makes the
 // dashboard's showOnboarding turn true again; emit('changed') reloads it.
@@ -130,6 +163,22 @@ async function replayOnboarding() {
     showToast(t('settings.introShown'));
   } catch (e) {
     console.error('[settings] replay onboarding failed', e);
+    showToast(t('settings.saveFailed'));
+  }
+}
+
+async function setProductivity(category: Category, value: Productivity) {
+  const prev = categoryProductivity.value;
+  categoryProductivity.value = { ...prev, [category]: value };
+  try {
+    const saved = await saveSettings({ categoryProductivity: categoryProductivity.value });
+    categoryProductivity.value = { ...saved.categoryProductivity };
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    emit('changed');
+    showToast(t('settings.saved'));
+  } catch (e) {
+    console.error('[settings] productivity save failed', e);
+    categoryProductivity.value = prev; // revert the optimistic change
     showToast(t('settings.saveFailed'));
   }
 }
@@ -176,13 +225,14 @@ async function exportData() {
   exporting.value = true;
   try {
     const stamp = dateKey(Date.now());
-    const [dailyStats, sessions, tabMeta, settings] = await Promise.all([
+    const [dailyStats, monthlyStats, sessions, tabMeta, settings] = await Promise.all([
       repo.getAllDailyStats(),
+      repo.getAllMonthlyStats(),
       repo.getAllSessions(),
       repo.getAllTabMeta(),
       getSettings(),
     ]);
-    const json = toJsonBackup({ dailyStats, sessions, tabMeta, settings }, Date.now());
+    const json = toJsonBackup({ dailyStats, monthlyStats, sessions, tabMeta, settings }, Date.now());
     downloadFile(`tabstyr-backup-${stamp}.json`, json, 'application/json');
     showToast(t('settings.exportedJson'));
   } catch (e) {
@@ -200,13 +250,14 @@ const encPass2 = ref('');
 const encError = ref('');
 
 async function buildBackupJson(): Promise<string> {
-  const [dailyStats, sessions, tabMeta, settings] = await Promise.all([
+  const [dailyStats, monthlyStats, sessions, tabMeta, settings] = await Promise.all([
     repo.getAllDailyStats(),
+    repo.getAllMonthlyStats(),
     repo.getAllSessions(),
     repo.getAllTabMeta(),
     getSettings(),
   ]);
-  return toJsonBackup({ dailyStats, sessions, tabMeta, settings }, Date.now());
+  return toJsonBackup({ dailyStats, monthlyStats, sessions, tabMeta, settings }, Date.now());
 }
 
 async function exportEncrypted() {
@@ -247,6 +298,38 @@ const restoring = ref(false);
 function pickRestoreFile() {
   restoreError.value = '';
   fileInput.value?.click();
+}
+
+// --- CSV import (seed day-1 data from another tracker; estimated, non-destructive) ---
+const csvInput = ref<HTMLInputElement | null>(null);
+function pickCsvFile() {
+  csvInput.value?.click();
+}
+async function onCsvFile(e: Event) {
+  const input = e.target as HTMLInputElement;
+  const file = input.files?.[0];
+  input.value = ''; // allow re-picking the same file
+  if (!file) return;
+  if (file.size > MAX_BACKUP_BYTES) {
+    showToast(t('settings.restoreTooLarge'));
+    return;
+  }
+  try {
+    const { stats } = parseCsvImport(await file.text());
+    if (!stats.length) {
+      showToast(t('settings.importEmpty'));
+      return;
+    }
+    // MAX-merge: seeds days you have no data for, never inflates measured days,
+    // idempotent on re-import (see repo.applyDailyStatsMax).
+    await repo.applyDailyStatsMax(stats);
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    emit('changed');
+    showToast(t('settings.imported', { count: stats.length }));
+  } catch (e) {
+    console.error('[settings] csv import failed', e);
+    showToast(t('settings.importInvalid'));
+  }
 }
 
 function stageParsed(text: string) {
@@ -318,6 +401,40 @@ onBeforeUnmount(() => {
   clearTimeout(toastTimer);
   clearTimeout(saveTimer);
 });
+
+// Sync/merge: combine the imported backup with existing data instead of replacing.
+// Additive and idempotent (see lib/merge). Local open-tab metadata is kept as-is.
+async function confirmMerge() {
+  if (!pendingRestore.value || restoring.value) return;
+  restoring.value = true;
+  try {
+    // Strip Vue proxies (structured clone can't clone them) — same as restoreBackup.
+    const data: ParsedBackup = JSON.parse(JSON.stringify(pendingRestore.value));
+    const [localSessions, localDaily, localMonthly, localTabMeta] = await Promise.all([
+      repo.getAllSessions(),
+      repo.getAllDailyStats(),
+      repo.getAllMonthlyStats(),
+      repo.getAllTabMeta(),
+    ]);
+    const merged = mergeBackup(
+      { sessions: localSessions, dailyStats: localDaily, monthlyStats: localMonthly },
+      { sessions: data.sessions, dailyStats: data.dailyStats, monthlyStats: data.monthlyStats },
+    );
+    // One atomic transaction (reuses restore's clear+write); local tabMeta preserved.
+    await repo.restoreAll(merged.sessions, merged.dailyStats, localTabMeta, merged.monthlyStats);
+    await saveSettings(mergeSettingsMaps(await getSettings(), data.settings) as Partial<Settings>);
+    pendingRestore.value = null;
+    rules.value = (await getSettings()).categoryRules;
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    emit('changed');
+    showToast(t('settings.merged', { sessions: merged.sessions.length }));
+  } catch (e) {
+    console.error('[settings] merge failed', e);
+    showToast(t('settings.restoreFailed'));
+  } finally {
+    restoring.value = false;
+  }
+}
 
 async function confirmRestore() {
   if (!pendingRestore.value || restoring.value) return;
@@ -419,9 +536,50 @@ async function confirmWipe() {
       <ToggleSwitch v-model="notificationsEnabled" :label="t('settings.notifications')" />
     </div>
     <p class="field-hint">{{ t('settings.notificationsHint') }}</p>
+    <div class="field">
+      <span class="field-label">{{ t('settings.focusTarget') }}</span>
+      <NumberStepper v-model="focusTarget" :min="10" :max="90" :step="5" :label="t('settings.focusTarget')" />
+    </div>
+    <p class="field-hint">{{ t('settings.focusTargetHint') }}</p>
     <div class="actions">
       <button type="button" class="intro-link" @click="replayOnboarding">{{ t('settings.showIntro') }}</button>
       <button class="wipe" @click="showWipeModal = true">{{ t('settings.wipe') }}</button>
+    </div>
+
+    <div class="rules focus-cats">
+      <span class="field-label">{{ t('settings.focusCategories') }}</span>
+      <p class="rules-hint">{{ t('settings.focusCategoriesHint') }}</p>
+      <ul class="prod-list">
+        <li v-for="c in CATEGORIES" :key="c" class="prod-row">
+          <span class="prod-cat">
+            <span class="cat-dot" :style="{ background: CATEGORY_META[c].color }" aria-hidden="true" />
+            {{ t(`categories.${c}`) }}
+          </span>
+          <span class="prod-controls">
+            <SelectBox
+              :model-value="categoryProductivity[c]"
+              :options="PRODUCTIVITY_OPTIONS"
+              :label="t('settings.productivityForAria', { category: t(`categories.${c}`) })"
+              @update:model-value="setProductivity(c, $event as Productivity)"
+            />
+            <span class="budget-field">
+              <input
+                class="budget-input"
+                type="number"
+                min="0"
+                max="1440"
+                inputmode="numeric"
+                :value="budgets[c] ?? ''"
+                :placeholder="t('settings.budgetOff')"
+                :aria-label="t('settings.budgetForAria', { category: t(`categories.${c}`) })"
+                @input="onBudgetInput(c, $event)"
+              />
+              <span class="budget-unit" aria-hidden="true">{{ t('settings.budgetUnit') }}</span>
+            </span>
+          </span>
+        </li>
+      </ul>
+      <p class="rules-hint">{{ t('settings.dailyBudgetsHint') }}</p>
     </div>
 
     <div class="rules">
@@ -465,9 +623,12 @@ async function confirmWipe() {
         <div class="export-btns-row">
           <button :disabled="exporting" :aria-expanded="showEncrypt" @click="showEncrypt = !showEncrypt">{{ t('settings.encrypted') }}</button>
           <button :disabled="exporting" @click="pickRestoreFile">{{ t('settings.restore') }}</button>
+          <button :disabled="exporting" @click="pickCsvFile">{{ t('settings.importCsv') }}</button>
         </div>
       </div>
+      <p class="rules-hint">{{ t('settings.importCsvHint') }}</p>
       <input ref="fileInput" type="file" accept="application/json,.json" class="sr-only" aria-hidden="true" tabindex="-1" @change="onRestoreFile" />
+      <input ref="csvInput" type="file" accept="text/csv,.csv" class="sr-only" aria-hidden="true" tabindex="-1" @change="onCsvFile" />
 
       <form v-if="showEncrypt" class="enc-form" @submit.prevent="exportEncrypted">
         <p class="rules-hint">{{ t('settings.encHint') }}</p>
@@ -502,8 +663,12 @@ async function confirmWipe() {
           sessions: pendingRestore.sessions.length,
           from: pendingRestore.exportedAt ? t('settings.replaceBodyFrom', { date: new Date(pendingRestore.exportedAt).toLocaleDateString(getDateLocale()) }) : '',
         }) }}</p>
+        <p class="modal-hint">{{ t('settings.mergeHint') }}</p>
         <div class="modal-actions">
           <button class="cancel" :disabled="restoring" @click="cancelRestore">{{ t('settings.cancel') }}</button>
+          <button class="merge" :disabled="restoring" @click="confirmMerge">
+            {{ restoring ? t('settings.restoring') : t('settings.mergeData') }}
+          </button>
           <button class="danger" :disabled="restoring" @click="confirmRestore">
             {{ restoring ? t('settings.restoring') : t('settings.replaceData') }}
           </button>
@@ -621,6 +786,67 @@ button:focus-visible {
   font-size: 11px;
   line-height: 1.45;
   color: var(--text-3);
+}
+.prod-list {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.prod-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 10px;
+  flex-wrap: wrap; /* long localized labels/controls drop to the next line instead of overflowing */
+}
+.prod-cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0; /* allow the label to shrink/ellipsize rather than widen the row */
+  flex: 1 1 auto;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.prod-controls {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.budget-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.budget-input {
+  width: 56px;
+  height: 30px;
+  box-sizing: border-box;
+  padding: 0 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--card-strong);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  text-align: right;
+}
+.budget-input::placeholder { color: var(--text-3); }
+.budget-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+.budget-unit { font-size: 11px; color: var(--text-3); }
+@media (max-width: 420px) {
+  .prod-row { flex-wrap: wrap; }
+}
+.cat-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: none;
 }
 .rule-list {
   list-style: none;
@@ -847,10 +1073,29 @@ button:focus-visible {
   background: var(--negative);
   color: #fff;
 }
+.merge {
+  background: var(--accent-grad-strong, var(--accent));
+  color: var(--on-accent, #fff);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.merge:hover:not(:disabled) { filter: brightness(1.08); }
+.merge:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .danger:disabled,
-.cancel:disabled {
+.cancel:disabled,
+.merge:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+.modal-hint {
+  margin: -8px 0 16px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-3);
 }
 
 /* Toast */

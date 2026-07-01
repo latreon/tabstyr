@@ -2,6 +2,9 @@
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { buildWorkLog, workLogText } from '@/lib/worklog';
+import { buildReport, reportCsv } from '@/lib/report';
+import { renderReportCard, canvasToImageBlob, REPORT_MAX_ROWS, type ReportCardContent } from '@/lib/report-card';
+import { downloadBlob, downloadFile } from '@/lib/export';
 import { CATEGORIES, CATEGORY_META, type Category, type CategoryRule } from '@/lib/categories';
 import { addDays, dateKey, formatDuration, longDateLabel } from '@/lib/time';
 import { displayDomain } from '@/lib/domain';
@@ -49,6 +52,52 @@ async function copy() {
     console.error('[worklog] copy failed', e);
   }
 }
+
+const exporting = ref(false);
+
+// A single day's report drives both exports (buildReport supports ranges too — the
+// project/client invoicing feature reuses it over a wider window).
+const report = computed(() => buildReport(props.stats, selected.value, selected.value, props.overrides, props.rules ?? []));
+
+function exportCsv() {
+  downloadFile(`tabstyr-report-${selected.value}.csv`, reportCsv(report.value), 'text/csv');
+}
+
+async function exportPng() {
+  if (exporting.value || !report.value.totalSeconds) return;
+  exporting.value = true;
+  try {
+    const r = report.value;
+    const content: ReportCardContent = {
+      heading: t('worklog.reportHeading'),
+      periodLabel: longDateLabel(r.from),
+      totalLabel: t('worklog.totalActive'),
+      totalValue: formatDuration(r.totalSeconds),
+      categoryLabel: t('worklog.byCategory'),
+      categories: r.categories.map((c) => ({
+        label: t(`categories.${c.category}`),
+        pct: r.totalSeconds ? Math.round((c.seconds / r.totalSeconds) * 100) : 0,
+        color: CATEGORY_META[c.category].color,
+      })),
+      sitesLabel: t('worklog.bySite'),
+      rows: r.domains.map((d) => ({
+        label: displayDomain(d.domain),
+        value: formatDuration(d.seconds),
+        color: CATEGORY_META[d.category].color,
+      })),
+      moreLabel: r.domains.length > REPORT_MAX_ROWS ? t('worklog.moreSites', { count: r.domains.length - REPORT_MAX_ROWS }) : '',
+      footer: 'TabStyr · tabstyr.com',
+    };
+    const canvas = document.createElement('canvas');
+    renderReportCard(canvas, content, 2);
+    const blob = await canvasToImageBlob(canvas, 'image/png');
+    if (blob) downloadBlob(`tabstyr-report-${selected.value}.png`, blob);
+  } catch (e) {
+    console.error('[worklog] png export failed', e);
+  } finally {
+    exporting.value = false;
+  }
+}
 </script>
 
 <template>
@@ -60,6 +109,8 @@ async function copy() {
         <DatePicker v-model="selected" :min="minDate" :max="today" />
         <button class="nav" :disabled="!canNext" :aria-label="t('worklog.nextDay')" @click="step(1)">›</button>
         <button class="copy" :disabled="!log.total" @click="copy">{{ copied ? t('worklog.copied') : t('worklog.copy') }}</button>
+        <button class="copy" :disabled="!log.total" @click="exportCsv">{{ t('worklog.csv') }}</button>
+        <button class="copy" :disabled="!log.total || exporting" @click="exportPng">{{ t('worklog.png') }}</button>
       </div>
     </div>
 
@@ -116,6 +167,7 @@ async function copy() {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-wrap: wrap; /* Copy/CSV/Image + date nav wrap instead of overflowing on narrow widths */
 }
 .nav {
   box-sizing: border-box;

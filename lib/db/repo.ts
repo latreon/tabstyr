@@ -1,5 +1,6 @@
 import { getDB } from './db';
-import type { DailyStat, Session, TabMeta } from '../types';
+import { monthOf } from '../monthly';
+import type { DailyStat, MonthlyStat, Session, TabMeta } from '../types';
 
 export async function addSessions(sessions: Session[]): Promise<void> {
   if (!sessions.length) return;
@@ -46,6 +47,31 @@ export async function commitSessions(sessions: Session[], deltas: DailyStat[]): 
   await tx.done;
 }
 
+/**
+ * Merge daily stats by taking the MAX per (date, domain) rather than summing.
+ * Used by the estimated CSV import: it seeds days you have no measured data for,
+ * never inflates a day you already measured more of, and is idempotent (re-importing
+ * the same file is a no-op).
+ */
+export async function applyDailyStatsMax(deltas: DailyStat[]): Promise<void> {
+  if (!deltas.length) return;
+  const db = await getDB();
+  const tx = db.transaction('dailyDomainStats', 'readwrite');
+  for (const d of deltas) {
+    const existing = await tx.store.get([d.date, d.domain]);
+    await tx.store.put(
+      existing
+        ? {
+            ...existing,
+            seconds: Math.max(existing.seconds, d.seconds),
+            audioSeconds: Math.max(existing.audioSeconds, d.audioSeconds),
+          }
+        : d,
+    );
+  }
+  await tx.done;
+}
+
 export async function getStatsRange(from: string, to: string): Promise<DailyStat[]> {
   const db = await getDB();
   return db.getAll('dailyDomainStats', IDBKeyRange.bound([from, ''], [to, '￿']));
@@ -53,6 +79,36 @@ export async function getStatsRange(from: string, to: string): Promise<DailyStat
 
 export async function getAllDailyStats(): Promise<DailyStat[]> {
   return (await getDB()).getAll('dailyDomainStats');
+}
+
+/** Every archived monthly total (per-domain), oldest-first is not guaranteed. */
+export async function getAllMonthlyStats(): Promise<MonthlyStat[]> {
+  return (await getDB()).getAll('monthlyDomainStats');
+}
+
+/** Archived monthly totals within [from, to] inclusive (month keys 'YYYY-MM'). */
+export async function getMonthlyRange(from: string, to: string): Promise<MonthlyStat[]> {
+  const db = await getDB();
+  return db.getAll('monthlyDomainStats', IDBKeyRange.bound([from, ''], [to, '￿']));
+}
+
+/**
+ * Merge monthly totals into the archive, summing by (month, domain). Used by
+ * restore/sync to fold an imported archive into whatever is already stored.
+ */
+export async function applyMonthlyStats(deltas: MonthlyStat[]): Promise<void> {
+  if (!deltas.length) return;
+  const db = await getDB();
+  const tx = db.transaction('monthlyDomainStats', 'readwrite');
+  for (const d of deltas) {
+    const existing = await tx.store.get([d.month, d.domain]);
+    await tx.store.put(
+      existing
+        ? { ...existing, seconds: existing.seconds + d.seconds, audioSeconds: existing.audioSeconds + d.audioSeconds }
+        : d,
+    );
+  }
+  await tx.done;
 }
 
 export async function getAllSessions(): Promise<Session[]> {
@@ -115,18 +171,46 @@ export async function replaceAllTabMeta(metas: TabMeta[]): Promise<void> {
   await tx.done;
 }
 
+/**
+ * Drop raw data older than the retention cutoff, archiving the pruned daily rows
+ * into the monthly rollup first. Sessions before `cutoffTs` and daily stats before
+ * `cutoffDate` are removed; each removed daily row is folded into monthlyDomainStats
+ * by (month, domain). ALL of it runs in ONE transaction, so the archive-then-delete
+ * is atomic AND idempotent: a re-run finds those daily rows already gone and can't
+ * double-count them into the archive.
+ */
 export async function pruneBefore(cutoffDate: string, cutoffTs: number): Promise<void> {
   const db = await getDB();
-  const tx = db.transaction(['sessions', 'dailyDomainStats'], 'readwrite');
+  const tx = db.transaction(['sessions', 'dailyDomainStats', 'monthlyDomainStats'], 'readwrite');
   let cur = await tx.objectStore('sessions').index('by-start').openCursor(IDBKeyRange.upperBound(cutoffTs, true));
   while (cur) {
     await cur.delete();
     cur = await cur.continue();
   }
-  let dcur = await tx.objectStore('dailyDomainStats').openCursor(IDBKeyRange.upperBound([cutoffDate, ''], true));
+  const dailyStore = tx.objectStore('dailyDomainStats');
+  // Accumulate the doomed daily rows into per-(month,domain) totals as we delete
+  // them, then merge the totals into the archive within this same transaction.
+  const archived = new Map<string, MonthlyStat>();
+  let dcur = await dailyStore.openCursor(IDBKeyRange.upperBound([cutoffDate, ''], true));
   while (dcur) {
+    const d = dcur.value;
+    const month = monthOf(d.date);
+    const key = `${month}|${d.domain}`;
+    const acc = archived.get(key) ?? { month, domain: d.domain, seconds: 0, audioSeconds: 0 };
+    acc.seconds += d.seconds;
+    acc.audioSeconds += d.audioSeconds;
+    archived.set(key, acc);
     await dcur.delete();
     dcur = await dcur.continue();
+  }
+  const monthlyStore = tx.objectStore('monthlyDomainStats');
+  for (const acc of archived.values()) {
+    const existing = await monthlyStore.get([acc.month, acc.domain]);
+    await monthlyStore.put(
+      existing
+        ? { ...existing, seconds: existing.seconds + acc.seconds, audioSeconds: existing.audioSeconds + acc.audioSeconds }
+        : acc,
+    );
   }
   await tx.done;
 }
@@ -176,18 +260,22 @@ export async function restoreAll(
   sessions: Session[],
   stats: DailyStat[],
   tabMeta: TabMeta[],
+  monthlyStats: MonthlyStat[] = [],
 ): Promise<void> {
   const db = await getDB();
-  const tx = db.transaction(['sessions', 'dailyDomainStats', 'tabMeta'], 'readwrite');
+  const tx = db.transaction(['sessions', 'dailyDomainStats', 'monthlyDomainStats', 'tabMeta'], 'readwrite');
   const sessionStore = tx.objectStore('sessions');
   const statStore = tx.objectStore('dailyDomainStats');
+  const monthlyStore = tx.objectStore('monthlyDomainStats');
   const metaStore = tx.objectStore('tabMeta');
   const writes = (async () => {
     await sessionStore.clear();
     await statStore.clear();
+    await monthlyStore.clear();
     await metaStore.clear();
     for (const s of sessions) await sessionStore.add(s);
     for (const d of stats) await statStore.put(d);
+    for (const m of monthlyStats) await monthlyStore.put(m);
     for (const m of tabMeta) await metaStore.put(m);
   })();
   // Await BOTH the writes and the transaction. A failing write auto-aborts the tx,
@@ -201,10 +289,11 @@ export async function restoreAll(
 
 export async function wipeAll(): Promise<void> {
   const db = await getDB();
-  const tx = db.transaction(['sessions', 'dailyDomainStats', 'tabMeta'], 'readwrite');
+  const tx = db.transaction(['sessions', 'dailyDomainStats', 'monthlyDomainStats', 'tabMeta'], 'readwrite');
   await Promise.all([
     tx.objectStore('sessions').clear(),
     tx.objectStore('dailyDomainStats').clear(),
+    tx.objectStore('monthlyDomainStats').clear(),
     tx.objectStore('tabMeta').clear(),
   ]);
   await tx.done;

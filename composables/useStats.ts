@@ -6,9 +6,11 @@ import { findStale } from '@/lib/tracker/stale';
 import { getSettings, saveSettings } from '@/lib/settings';
 import { addDays, dateKey } from '@/lib/time';
 import { buildHourlyHeatmap, type HeatmapData } from '@/lib/heatmap';
-import { groupByCategory, type Category, type CategoryRule } from '@/lib/categories';
+import { groupByCategory, CATEGORY_PRODUCTIVITY, type Category, type CategoryRule, type Productivity } from '@/lib/categories';
 import { activeSeconds } from '@/lib/metrics';
 import { summarizeProductivity } from '@/lib/productivity';
+import { buildComparison } from '@/lib/comparison';
+import { buildInsights, type Insight } from '@/lib/insights';
 import type { DailyStat, Session, Settings, TabMeta } from '@/lib/types';
 
 const RETENTION_MS = 90 * 86_400_000;
@@ -103,6 +105,14 @@ export function useStats() {
 
   const overrides = computed(() => settings.value?.categoryOverrides ?? {});
   const categoryRules = computed<CategoryRule[]>(() => settings.value?.categoryRules ?? []);
+  const categoryProductivity = computed<Record<Category, Productivity>>(
+    () => settings.value?.categoryProductivity ?? CATEGORY_PRODUCTIVITY,
+  );
+  const focusTarget = computed(() => settings.value?.focusTarget ?? 50);
+  const categoryBudgets = computed<Partial<Record<Category, number>>>(
+    () => settings.value?.categoryBudgets ?? {},
+  );
+  const domainTags = computed<Record<string, string>>(() => settings.value?.domainTags ?? {});
   // Show the first-run intro only once settings have loaded and it isn't dismissed.
   const showOnboarding = computed(() => !!settings.value && !settings.value.onboarded);
 
@@ -113,8 +123,22 @@ export function useStats() {
 
   // Focus %, productive/distracting split, and the current focus streak.
   const productivity = computed(() =>
-    summarizeProductivity(activeStats.value, todayKey.value, overrides.value, categoryRules.value),
+    summarizeProductivity(activeStats.value, todayKey.value, overrides.value, categoryRules.value, focusTarget.value, categoryProductivity.value),
   );
+
+  // Short "insight" lines derived from data already computed above (heatmap, a
+  // week-over-week comparison, and the focus summary). The tile shows the top few.
+  const insights = computed<Insight[]>(() => {
+    const p = productivity.value;
+    const judged = p.productiveSeconds + p.distractingSeconds;
+    return buildInsights({
+      heatmap: heatmap.value,
+      week: buildComparison(activeStats.value, todayKey.value, 'week', overrides.value, categoryRules.value),
+      streakDays: p.streakDays,
+      todayFocusPct: judged > 0 ? p.todayFocusPct : null,
+      focusTarget: p.focusTarget,
+    });
+  });
 
   // "Open tabs by time" — one row per DOMAIN that has an open tab, showing that
   // domain's total foreground active time over the window. Reads from the daily
@@ -165,6 +189,20 @@ export function useStats() {
 
   async function setCategoryOverride(domain: string, category: Category): Promise<void> {
     settings.value = await saveSettings({ categoryOverrides: { ...overrides.value, [domain]: category } });
+  }
+
+  async function setCategoryProductivity(category: Category, value: Productivity): Promise<void> {
+    settings.value = await saveSettings({
+      categoryProductivity: { ...categoryProductivity.value, [category]: value },
+    });
+  }
+
+  // Assign (or clear, with an empty/blank tag) a domain's project/client tag.
+  async function setDomainTag(domain: string, tag: string): Promise<void> {
+    const next = { ...domainTags.value };
+    if (tag.trim()) next[domain] = tag.trim();
+    else delete next[domain];
+    settings.value = await saveSettings({ domainTags: next });
   }
 
   async function addCategoryRule(pattern: string, category: Category): Promise<void> {
@@ -310,7 +348,7 @@ export function useStats() {
     stats, activeStats, tabRows, staleTabs, staleTabItems, openTabsList, openTabCount, settings, heatmap, recentSessions,
     loading, loadError, storageWarning, todayKey,
     todaySeconds, todayAudioSeconds, weeklyAvgSeconds, weeklyActiveDays,
-    todayByDomain, todayByCategory, productivity, overrides, categoryRules, showOnboarding,
-    load, closeTab, closeTabs, snoozeTab, setCategoryOverride, addCategoryRule, removeCategoryRule, dismissOnboarding,
+    todayByDomain, todayByCategory, productivity, insights, overrides, categoryRules, categoryProductivity, focusTarget, categoryBudgets, domainTags, showOnboarding,
+    load, closeTab, closeTabs, snoozeTab, setCategoryOverride, setCategoryProductivity, setDomainTag, addCategoryRule, removeCategoryRule, dismissOnboarding,
   };
 }

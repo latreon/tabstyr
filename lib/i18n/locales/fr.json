@@ -116,7 +116,10 @@
   "category": {
     "title": "Aujourd'hui par catégorie",
     "shareAria": "Part du temps par catégorie",
-    "segTitle": "{category} · {time} · {pct}%"
+    "segTitle": "{category} · {time} · {pct}%",
+    "overBudget": "dépassé",
+    "budgetMinutes": "{budget} min",
+    "budgetTitle": "Budget quotidien : {budget} min"
   },
   "focus": {
     "title": "Concentration aujourd'hui",
@@ -171,7 +174,14 @@
     "nothingTracked": "— rien de suivi.",
     "legendAria": "Légende des couleurs de points",
     "viewSiteAria": "Voir les détails de {domain} — {category}",
-    "changeCategory": "Changer de catégorie (actuellement {category})"
+    "changeCategory": "Changer de catégorie (actuellement {category})",
+    "reportHeading": "Rapport d'activité",
+    "totalActive": "Total actif",
+    "byCategory": "Par catégorie",
+    "bySite": "Par site",
+    "moreSites": "+{count} autres sites",
+    "csv": "CSV",
+    "png": "Image"
   },
   "tabTable": {
     "title": "Onglets ouverts par temps",
@@ -274,7 +284,24 @@
     "showIntro": "Revoir l'introduction",
     "introShown": "L'introduction s'affichera sur le tableau de bord",
     "restoreInvalid": "Ce fichier n'est pas une sauvegarde TabStyr valide.",
-    "restoreWrongPass": "Phrase secrète incorrecte ou fichier corrompu."
+    "restoreWrongPass": "Phrase secrète incorrecte ou fichier corrompu.",
+    "focusCategories": "Catégories de concentration",
+    "focusCategoriesHint": "Choisissez comment chaque catégorie compte dans votre % de concentration.",
+    "productivityForAria": "Comment {category} compte pour la concentration",
+    "focusTarget": "Objectif de concentration quotidien",
+    "focusTargetHint": "Votre % de concentration cible. Les jours qui l'atteignent alimentent votre série.",
+    "budgetOff": "désactivé",
+    "budgetUnit": "min",
+    "budgetForAria": "Budget quotidien pour {category}, en minutes",
+    "dailyBudgetsHint": "Limite quotidienne facultative par catégorie (minutes). Un rappel discret par jour en cas de dépassement — rien n'est bloqué.",
+    "mergeData": "Fusionner",
+    "mergeHint": "Fusionner combine cette sauvegarde avec vos données actuelles (sans effacer) — pour synchroniser un autre appareil. Remplacer écrase tout.",
+    "merged": "Fusionné — {sessions} sessions combinées.",
+    "importCsv": "Importer un CSV",
+    "importCsvHint": "Importez des données d'un autre outil : un CSV avec des colonnes date, site et temps (ex. un export RescueTime). Le temps importé est affiché comme une estimation et n'écrase jamais les jours mesurés.",
+    "imported": "{count} entrées importées (estimées).",
+    "importEmpty": "Aucune ligne exploitable dans ce CSV.",
+    "importInvalid": "Impossible de lire ce CSV — colonnes date, site et temps requises."
   },
   "onboarding": {
     "title": "Bienvenue dans TabStyr",
@@ -293,6 +320,43 @@
     "statsAria": "Statistiques d'utilisation du navigateur"
   },
   "notification": {
-    "stale": "{count} onglets inactifs depuis plus de {days} jours"
+    "stale": "{count} onglets inactifs depuis plus de {days} jours",
+    "budget": "Budget quotidien atteint : {category}"
+  },
+  "productivity": {
+    "productive": "Productif",
+    "distracting": "Distrayant",
+    "neutral": "Neutre"
+  },
+  "wrapped": {
+    "title": "Rétrospective de navigation",
+    "subtitle": "Transformez vos statistiques en une story à partager : exportez une sauvegarde et ouvrez-la sur le web.",
+    "cta": "Ouvrir la rétrospective"
+  },
+  "insights": {
+    "title": "Aperçus",
+    "streak": "Série de concentration de {days} jours",
+    "weekUp": "Temps actif en hausse de {pct}% vs la semaine dernière",
+    "weekDown": "Temps actif en baisse de {pct}% vs la semaine dernière",
+    "catUp": "{category} en hausse de {pct}% vs la semaine dernière",
+    "catDown": "{category} en baisse de {pct}% vs la semaine dernière",
+    "peakHour": "Le plus actif vers {hour} le {weekday}",
+    "busiestDay": "{weekday} est votre jour le plus actif",
+    "focusHit": "Concentration {pct}% aujourd'hui — au-dessus de votre objectif de {target}%",
+    "focusUnder": "Concentration {pct}% aujourd'hui — objectif {target}%"
+  },
+  "projects": {
+    "title": "Projets et clients",
+    "hint": "Étiquetez un site avec un projet ou un client, puis exportez le temps par étiquette en facture ou CSV.",
+    "tagPlaceholder": "Ajouter une étiquette…",
+    "tagForAria": "Étiquette projet/client pour {domain}",
+    "untagged": "Sans étiquette",
+    "invoice": "Facture",
+    "invoiceHeading": "Rapport de temps",
+    "billable": "Total facturable",
+    "share": "Répartition",
+    "byClient": "Par client",
+    "empty": "Aucune activité sur cette période.",
+    "days": "{count} jour | {count} jours"
   }
 }

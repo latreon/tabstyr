@@ -116,7 +116,10 @@
   "category": {
     "title": "今日のカテゴリ別",
     "shareAria": "カテゴリ別の時間の割合",
-    "segTitle": "{category} · {time} · {pct}%"
+    "segTitle": "{category} · {time} · {pct}%",
+    "overBudget": "超過",
+    "budgetMinutes": "{budget}分",
+    "budgetTitle": "1日の上限：{budget}分"
   },
   "focus": {
     "title": "今日の集中度",
@@ -171,7 +174,14 @@
     "nothingTracked": "— 何も記録されていません。",
     "legendAria": "ドットの色の凡例",
     "viewSiteAria": "{domain}の詳細を表示 — {category}",
-    "changeCategory": "カテゴリを変更（現在：{category}）"
+    "changeCategory": "カテゴリを変更（現在：{category}）",
+    "reportHeading": "アクティビティレポート",
+    "totalActive": "アクティブ合計",
+    "byCategory": "カテゴリ別",
+    "bySite": "サイト別",
+    "moreSites": "他 {count} サイト",
+    "csv": "CSV",
+    "png": "画像"
   },
   "tabTable": {
     "title": "時間別の開いているタブ",
@@ -274,7 +284,24 @@
     "showIntro": "イントロをもう一度表示",
     "introShown": "ダッシュボードにイントロを表示します",
     "restoreInvalid": "このファイルは有効な TabStyr バックアップではありません。",
-    "restoreWrongPass": "パスフレーズが違うか、ファイルが破損しています。"
+    "restoreWrongPass": "パスフレーズが違うか、ファイルが破損しています。",
+    "focusCategories": "フォーカスのカテゴリ",
+    "focusCategoriesHint": "各カテゴリをフォーカス％にどう反映するか選びます。",
+    "productivityForAria": "{category} のフォーカスへの扱い",
+    "focusTarget": "1日のフォーカス目標",
+    "focusTargetHint": "目標のフォーカス％。達成した日が連続記録になります。",
+    "budgetOff": "オフ",
+    "budgetUnit": "分",
+    "budgetForAria": "{category} の1日の上限（分）",
+    "dailyBudgetsHint": "カテゴリごとの任意の1日の上限（分）。超えると1日1回だけ控えめに通知します。ブロックはしません。",
+    "mergeData": "マージ",
+    "mergeHint": "マージは現在のデータを消さずにこのバックアップを統合します。別のデバイスの同期に使えます。置き換えはすべて上書きします。",
+    "merged": "マージしました — {sessions} 件のセッションを統合。",
+    "importCsv": "CSVをインポート",
+    "importCsvHint": "他のトラッカーのデータを取り込みます。日付・サイト・時間の列を持つCSV（例：RescueTimeのエクスポート）。取り込んだ時間は推定として表示され、計測済みの日を上書きしません。",
+    "imported": "{count} 件をインポートしました（推定）。",
+    "importEmpty": "このCSVに使える行が見つかりませんでした。",
+    "importInvalid": "このCSVを読み取れませんでした — 日付・サイト・時間の列が必要です。"
   },
   "onboarding": {
     "title": "TabStyrへようこそ",
@@ -293,6 +320,43 @@
     "statsAria": "ブラウザ使用統計"
   },
   "notification": {
-    "stale": "{count} 個のタブが {days} 日以上未使用です"
+    "stale": "{count} 個のタブが {days} 日以上未使用です",
+    "budget": "本日の上限に到達: {category}"
+  },
+  "productivity": {
+    "productive": "生産的",
+    "distracting": "気が散る",
+    "neutral": "中立"
+  },
+  "wrapped": {
+    "title": "ブラウジング・ラップアップ",
+    "subtitle": "統計を共有できるストーリーに。バックアップを書き出してウェブで開きます。",
+    "cta": "ラップアップを開く"
+  },
+  "insights": {
+    "title": "インサイト",
+    "streak": "{days}日連続の集中",
+    "weekUp": "アクティブ時間が先週比 {pct}% 増",
+    "weekDown": "アクティブ時間が先週比 {pct}% 減",
+    "catUp": "{category} が先週比 {pct}% 増",
+    "catDown": "{category} が先週比 {pct}% 減",
+    "peakHour": "{weekday}の{hour}頃が最も活発",
+    "busiestDay": "最も活発な曜日は{weekday}",
+    "focusHit": "本日のフォーカス {pct}% — 目標 {target}% を達成",
+    "focusUnder": "本日のフォーカス {pct}% — 目標 {target}%"
+  },
+  "projects": {
+    "title": "プロジェクトとクライアント",
+    "hint": "サイトにプロジェクトやクライアントのタグを付け、タグ別の時間を請求書やCSVとして書き出します。",
+    "tagPlaceholder": "タグを追加…",
+    "tagForAria": "{domain} のプロジェクト/クライアントタグ",
+    "untagged": "タグなし",
+    "invoice": "請求書",
+    "invoiceHeading": "時間レポート",
+    "billable": "請求対象の合計",
+    "share": "割合",
+    "byClient": "クライアント別",
+    "empty": "この期間のアクティビティはありません。",
+    "days": "{count}日 | {count}日"
   }
 }

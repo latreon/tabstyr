@@ -116,7 +116,10 @@
   "category": {
     "title": "Bugün kategoriye göre",
     "shareAria": "Kategoriye göre zaman payı",
-    "segTitle": "{category} · {time} · %{pct}"
+    "segTitle": "{category} · {time} · %{pct}",
+    "overBudget": "aşıldı",
+    "budgetMinutes": "{budget} dk",
+    "budgetTitle": "Günlük bütçe: {budget} dk"
   },
   "focus": {
     "title": "Bugün odak",
@@ -171,7 +174,14 @@
     "nothingTracked": "— hiçbir şey kaydedilmedi.",
     "legendAria": "Nokta renk açıklaması",
     "viewSiteAria": "{domain} ayrıntılarını gör — {category}",
-    "changeCategory": "Kategoriyi değiştir (şu an {category})"
+    "changeCategory": "Kategoriyi değiştir (şu an {category})",
+    "reportHeading": "Etkinlik raporu",
+    "totalActive": "Toplam etkin",
+    "byCategory": "Kategoriye göre",
+    "bySite": "Siteye göre",
+    "moreSites": "+{count} site daha",
+    "csv": "CSV",
+    "png": "Görsel"
   },
   "tabTable": {
     "title": "Zamana göre açık sekmeler",
@@ -274,7 +284,24 @@
     "showIntro": "Tanıtımı tekrar göster",
     "introShown": "Tanıtım panoda gösterilecek",
     "restoreInvalid": "Bu dosya geçerli bir TabStyr yedeği değil.",
-    "restoreWrongPass": "Yanlış parola veya bozuk dosya."
+    "restoreWrongPass": "Yanlış parola veya bozuk dosya.",
+    "focusCategories": "Odak kategorileri",
+    "focusCategoriesHint": "Her kategorinin Odak yüzdenize nasıl sayılacağını seçin.",
+    "productivityForAria": "{category} odağa nasıl sayılır",
+    "focusTarget": "Günlük odak hedefi",
+    "focusTargetHint": "Hedef Odak %'niz. Buna ulaşan günler serinizi oluşturur.",
+    "budgetOff": "kapalı",
+    "budgetUnit": "dk",
+    "budgetForAria": "{category} için günlük bütçe, dakika",
+    "dailyBudgetsHint": "Kategori başına isteğe bağlı günlük limit (dakika). Aştığınızda günde bir nazik hatırlatma — hiçbir şey engellenmez.",
+    "mergeData": "Birleştir",
+    "mergeHint": "Birleştir bu yedeği mevcut verilerinle birleştirir (silmeden) — başka bir cihazı eşitlemek için. Değiştir her şeyin üzerine yazar.",
+    "merged": "Birleştirildi — {sessions} oturum eklendi.",
+    "importCsv": "CSV içe aktar",
+    "importCsvHint": "Başka bir izleyiciden veri alın: tarih, site ve süre sütunları olan bir CSV (ör. RescueTime dışa aktarımı). İçe aktarılan süre tahmini olarak gösterilir ve ölçülen günlerin üzerine asla yazmaz.",
+    "imported": "{count} kayıt içe aktarıldı (tahmini).",
+    "importEmpty": "Bu CSV’de kullanılabilir satır bulunamadı.",
+    "importInvalid": "CSV okunamadı — tarih, site ve süre sütunları gerekir."
   },
   "onboarding": {
     "title": "TabStyr'a hoş geldiniz",
@@ -293,6 +320,43 @@
     "statsAria": "Tarayıcı kullanım istatistikleri"
   },
   "notification": {
-    "stale": "{count} sekme {days}+ gündür kullanılmadı"
+    "stale": "{count} sekme {days}+ gündür kullanılmadı",
+    "budget": "Günlük bütçe doldu: {category}"
+  },
+  "productivity": {
+    "productive": "Üretken",
+    "distracting": "Dikkat dağıtıcı",
+    "neutral": "Nötr"
+  },
+  "wrapped": {
+    "title": "Gezinti Özeti",
+    "subtitle": "İstatistiklerinizi paylaşılabilir bir hikâyeye dönüştürün: bir yedek dışa aktarın ve web'de açın.",
+    "cta": "Özeti aç"
+  },
+  "insights": {
+    "title": "İçgörüler",
+    "streak": "{days} günlük odak serisi",
+    "weekUp": "Etkin süre geçen haftaya göre %{pct} arttı",
+    "weekDown": "Etkin süre geçen haftaya göre %{pct} azaldı",
+    "catUp": "{category} geçen haftaya göre %{pct} arttı",
+    "catDown": "{category} geçen haftaya göre %{pct} azaldı",
+    "peakHour": "{weekday} günü {hour} civarında en aktif",
+    "busiestDay": "{weekday} en yoğun günün",
+    "focusHit": "Bugün odak %{pct} — %{target} hedefinin üzerinde",
+    "focusUnder": "Bugün odak %{pct} — hedef %{target}"
+  },
+  "projects": {
+    "title": "Projeler ve müşteriler",
+    "hint": "Herhangi bir siteyi bir proje veya müşteriyle etiketleyin, ardından etiket başına süreyi fatura veya CSV olarak dışa aktarın.",
+    "tagPlaceholder": "Etiket ekle…",
+    "tagForAria": "{domain} için proje/müşteri etiketi",
+    "untagged": "Etiketsiz",
+    "invoice": "Fatura",
+    "invoiceHeading": "Zaman raporu",
+    "billable": "Faturalanabilir toplam",
+    "share": "Pay",
+    "byClient": "Müşteriye göre",
+    "empty": "Bu aralıkta etkinlik yok.",
+    "days": "{count} gün | {count} gün"
   }
 }

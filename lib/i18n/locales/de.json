@@ -116,7 +116,10 @@
   "category": {
     "title": "Heute nach Kategorie",
     "shareAria": "Zeitanteil nach Kategorie",
-    "segTitle": "{category} · {time} · {pct}%"
+    "segTitle": "{category} · {time} · {pct}%",
+    "overBudget": "über",
+    "budgetMinutes": "{budget} Min",
+    "budgetTitle": "Tagesbudget: {budget} Min"
   },
   "focus": {
     "title": "Fokus heute",
@@ -171,7 +174,14 @@
     "nothingTracked": "— nichts erfasst.",
     "legendAria": "Legende der Punktfarben",
     "viewSiteAria": "Details zu {domain} ansehen — {category}",
-    "changeCategory": "Kategorie ändern (aktuell {category})"
+    "changeCategory": "Kategorie ändern (aktuell {category})",
+    "reportHeading": "Aktivitätsbericht",
+    "totalActive": "Aktiv gesamt",
+    "byCategory": "Nach Kategorie",
+    "bySite": "Nach Website",
+    "moreSites": "+{count} weitere Websites",
+    "csv": "CSV",
+    "png": "Bild"
   },
   "tabTable": {
     "title": "Offene Tabs nach Zeit",
@@ -274,7 +284,24 @@
     "showIntro": "Einführung erneut anzeigen",
     "introShown": "Einführung wird im Dashboard angezeigt",
     "restoreInvalid": "Diese Datei ist kein gültiges TabStyr-Backup.",
-    "restoreWrongPass": "Falsche Passphrase oder beschädigte Datei."
+    "restoreWrongPass": "Falsche Passphrase oder beschädigte Datei.",
+    "focusCategories": "Fokus-Kategorien",
+    "focusCategoriesHint": "Lege fest, wie jede Kategorie in deinen Fokus-Prozentsatz einfließt.",
+    "productivityForAria": "Wie {category} zum Fokus zählt",
+    "focusTarget": "Tägliches Fokusziel",
+    "focusTargetHint": "Dein Ziel-Fokus-%. Tage, die es erreichen, bauen deine Serie auf.",
+    "budgetOff": "aus",
+    "budgetUnit": "Min",
+    "budgetForAria": "Tagesbudget für {category}, in Minuten",
+    "dailyBudgetsHint": "Optionales Tageslimit pro Kategorie (Minuten). Eine dezente Erinnerung pro Tag beim Überschreiten – nichts wird blockiert.",
+    "mergeData": "Zusammenführen",
+    "mergeHint": "Zusammenführen kombiniert dieses Backup mit deinen aktuellen Daten (ohne Löschen) — ideal zum Sync zwischen Geräten. Ersetzen überschreibt alles.",
+    "merged": "Zusammengeführt — {sessions} Sitzungen kombiniert.",
+    "importCsv": "CSV importieren",
+    "importCsvHint": "Daten aus einem anderen Tracker laden: eine CSV mit Datum-, Website- und Zeitspalten (z. B. ein RescueTime-Export). Importierte Zeit wird als Schätzung angezeigt und überschreibt gemessene Tage nie.",
+    "imported": "{count} Einträge importiert (geschätzt).",
+    "importEmpty": "Keine verwertbaren Zeilen in dieser CSV gefunden.",
+    "importInvalid": "CSV konnte nicht gelesen werden – Datum-, Website- und Zeitspalten nötig."
   },
   "onboarding": {
     "title": "Willkommen bei TabStyr",
@@ -293,6 +320,43 @@
     "statsAria": "Browser-Nutzungsstatistiken"
   },
   "notification": {
-    "stale": "{count} Tabs seit über {days} Tagen unberührt"
+    "stale": "{count} Tabs seit über {days} Tagen unberührt",
+    "budget": "Tagesbudget erreicht: {category}"
+  },
+  "productivity": {
+    "productive": "Produktiv",
+    "distracting": "Ablenkend",
+    "neutral": "Neutral"
+  },
+  "wrapped": {
+    "title": "Browsing Wrapped",
+    "subtitle": "Mach aus deinen Statistiken eine teilbare Story – exportiere ein Backup und öffne es im Web.",
+    "cta": "Wrapped öffnen"
+  },
+  "insights": {
+    "title": "Einblicke",
+    "streak": "{days}-Tage-Fokus-Serie",
+    "weekUp": "Aktive Zeit {pct}% höher als letzte Woche",
+    "weekDown": "Aktive Zeit {pct}% niedriger als letzte Woche",
+    "catUp": "{category} {pct}% höher als letzte Woche",
+    "catDown": "{category} {pct}% niedriger als letzte Woche",
+    "peakHour": "Am aktivsten gegen {hour} am {weekday}",
+    "busiestDay": "{weekday} ist dein aktivster Tag",
+    "focusHit": "Fokus heute {pct}% — über deinem Ziel von {target}%",
+    "focusUnder": "Fokus heute {pct}% — Ziel {target}%"
+  },
+  "projects": {
+    "title": "Projekte & Kunden",
+    "hint": "Weise jeder Website ein Projekt oder einen Kunden zu und exportiere die Zeit pro Tag als Rechnung oder CSV.",
+    "tagPlaceholder": "Tag hinzufügen…",
+    "tagForAria": "Projekt-/Kunden-Tag für {domain}",
+    "untagged": "Ohne Tag",
+    "invoice": "Rechnung",
+    "invoiceHeading": "Zeitbericht",
+    "billable": "Abrechenbar gesamt",
+    "share": "Anteil",
+    "byClient": "Nach Kunde",
+    "empty": "Keine Aktivität in diesem Zeitraum.",
+    "days": "{count} Tag | {count} Tage"
   }
 }

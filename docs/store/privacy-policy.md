@@ -18,13 +18,17 @@ your browser's IndexedDB:
 - **Session records** — start/end timestamps, the page's domain, and whether the
   tab was playing audio.
 - **Daily per-domain totals** — aggregated seconds per site per day.
+- **Monthly per-domain totals** — a compact roll-up (site, month, seconds) kept so
+  long-range views survive pruning. It holds no URLs, timestamps, or session detail.
 - **Open-tab metadata** — for tabs you've visited: title, URL, last-active time,
   and a randomly generated local identifier used to attribute time correctly.
 - **Settings** — your preferences (stale threshold, idle timeout, theme,
   background-audio counting, category overrides and custom rules).
 
-This data is kept for a rolling **90-day window** and older data is pruned
-automatically.
+Raw session records and daily totals are kept for a rolling **90-day window** and
+pruned automatically. Before a day is pruned it is folded into the compact monthly
+per-domain roll-up above, which is retained longer to power long-range trends. All
+of it stays on your device.
 
 ## What it does NOT do
 

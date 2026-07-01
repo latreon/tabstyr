@@ -1,5 +1,5 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
-import type { DailyStat, Session, TabMeta } from '../types';
+import type { DailyStat, MonthlyStat, Session, TabMeta } from '../types';
 
 interface TabTimeDB extends DBSchema {
   sessions: {
@@ -8,11 +8,14 @@ interface TabTimeDB extends DBSchema {
     indexes: { 'by-start': number; 'by-tab': number; 'by-key': string };
   };
   dailyDomainStats: { key: [string, string]; value: DailyStat };
+  // Long-range archive: per-domain monthly totals for days pruned out of the raw
+  // 90-day window (see repo.pruneBefore). Keyed by [month, domain].
+  monthlyDomainStats: { key: [string, string]; value: MonthlyStat };
   tabMeta: { key: number; value: TabMeta };
 }
 
 const DB_NAME = 'tab-time';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 let dbPromise: Promise<IDBPDatabase<TabTimeDB>> | null = null;
 
@@ -36,6 +39,12 @@ function openAt(version: number | undefined): Promise<IDBPDatabase<TabTimeDB>> {
         // Stable per-tab attribution key. Pre-v2 sessions have no tabKey until the
         // one-time background migration backfills them (see backfillKeylessSessions).
         tx.objectStore('sessions').createIndex('by-key', 'tabKey');
+      }
+      if (oldVersion < 3) {
+        // Monthly rollup archive. Created empty: existing raw days are archived
+        // lazily as they age past the retention window in pruneBefore — never
+        // pre-filled here (that would duplicate still-live daily rows).
+        db.createObjectStore('monthlyDomainStats', { keyPath: ['month', 'domain'] });
       }
     },
     blocking,

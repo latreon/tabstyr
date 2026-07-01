@@ -30,6 +30,21 @@ export interface DailyStat {
   audioSeconds: number;
 }
 
+/**
+ * A per-domain monthly total. Written only when daily rows fall off the 90-day
+ * raw-retention edge (see repo.pruneBefore): the pruned days are aggregated here
+ * so long-range views (yearly Wrapped, multi-month trends) survive pruning without
+ * keeping every raw session. A given (date, domain) lives in EITHER dailyDomainStats
+ * (recent) OR the month bucket here (archived) — never both — so summing the two
+ * sources never double-counts.
+ */
+export interface MonthlyStat {
+  month: string; // local YYYY-MM
+  domain: string;
+  seconds: number;
+  audioSeconds: number;
+}
+
 export interface TabMeta {
   tabId: number; // volatile — reassigned by the browser across restarts
   key: string; // stable identity, survives restart; used to attribute sessions
@@ -51,6 +66,26 @@ export interface Settings {
   categoryOverrides: Record<string, import('./categories').Category>;
   /** User-defined substring → category rules, checked before the built-in rules. */
   categoryRules: import('./categories').CategoryRule[];
+  /**
+   * How each category counts toward Focus % — productive, distracting, or neutral.
+   * Seeded from CATEGORY_PRODUCTIVITY; the user can remap any category (e.g. a
+   * social-media manager marking Social as productive).
+   */
+  categoryProductivity: Record<import('./categories').Category, import('./categories').Productivity>;
+  /** Daily Focus-% goal (0–100). The streak counts days meeting this target. */
+  focusTarget: number;
+  /**
+   * Optional per-category daily time budgets, in MINUTES. A category present here
+   * with a positive value nudges (once/day) when today's active time crosses it.
+   * Absent/zero = no budget. Analytics-only — never blocks a site.
+   */
+  categoryBudgets: Partial<Record<import('./categories').Category, number>>;
+  /**
+   * Maps a domain → a free-form project/client tag, an axis independent of category.
+   * Powers the Projects view and invoice/report exports (time-per-client). Absent
+   * domains are "untagged".
+   */
+  domainTags: Record<string, string>;
   /** Whether the first-run onboarding intro has been dismissed. */
   onboarded: boolean;
   /** Whether the once-a-day stale-tab reminder notification is shown. */

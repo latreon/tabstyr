@@ -116,7 +116,10 @@
   "category": {
     "title": "今日按类别",
     "shareAria": "各类别的时间占比",
-    "segTitle": "{category} · {time} · {pct}%"
+    "segTitle": "{category} · {time} · {pct}%",
+    "overBudget": "超出",
+    "budgetMinutes": "{budget} 分钟",
+    "budgetTitle": "每日预算：{budget} 分钟"
   },
   "focus": {
     "title": "今日专注",
@@ -171,7 +174,14 @@
     "nothingTracked": "— 未记录任何内容。",
     "legendAria": "圆点颜色图例",
     "viewSiteAria": "查看 {domain} 详情 — {category}",
-    "changeCategory": "更改类别（当前：{category}）"
+    "changeCategory": "更改类别（当前：{category}）",
+    "reportHeading": "活动报告",
+    "totalActive": "活跃总计",
+    "byCategory": "按类别",
+    "bySite": "按站点",
+    "moreSites": "+{count} 个更多站点",
+    "csv": "CSV",
+    "png": "图片"
   },
   "tabTable": {
     "title": "按时间排列的打开标签页",
@@ -274,7 +284,24 @@
     "showIntro": "再次显示介绍",
     "introShown": "介绍将在仪表盘中显示",
     "restoreInvalid": "该文件不是有效的 TabStyr 备份。",
-    "restoreWrongPass": "密码错误或文件已损坏。"
+    "restoreWrongPass": "密码错误或文件已损坏。",
+    "focusCategories": "专注类别",
+    "focusCategoriesHint": "选择每个类别如何计入你的专注度百分比。",
+    "productivityForAria": "{category} 如何计入专注度",
+    "focusTarget": "每日专注目标",
+    "focusTargetHint": "你的目标专注度百分比。达到的日子会累积连续记录。",
+    "budgetOff": "关闭",
+    "budgetUnit": "分钟",
+    "budgetForAria": "{category} 的每日预算（分钟）",
+    "dailyBudgetsHint": "每个类别可选的每日上限（分钟）。超过时每天温和提醒一次——不会屏蔽任何内容。",
+    "mergeData": "合并",
+    "mergeHint": "合并会将此备份与现有数据结合（不清除）——可用于同步其他设备。替换会覆盖全部。",
+    "merged": "已合并 — 结合了 {sessions} 个会话。",
+    "importCsv": "导入 CSV",
+    "importCsvHint": "从其他追踪器导入数据：包含日期、站点和时间列的 CSV（如 RescueTime 导出）。导入的时间显示为估算值，绝不会覆盖已测量的日期。",
+    "imported": "已导入 {count} 条（估算）。",
+    "importEmpty": "该 CSV 中未找到可用行。",
+    "importInvalid": "无法读取该 CSV — 需要日期、站点和时间列。"
   },
   "onboarding": {
     "title": "欢迎使用 TabStyr",
@@ -293,6 +320,43 @@
     "statsAria": "浏览器使用统计"
   },
   "notification": {
-    "stale": "{count} 个标签页已 {days} 天以上未使用"
+    "stale": "{count} 个标签页已 {days} 天以上未使用",
+    "budget": "已达每日预算：{category}"
+  },
+  "productivity": {
+    "productive": "高效",
+    "distracting": "分心",
+    "neutral": "中性"
+  },
+  "wrapped": {
+    "title": "浏览总结",
+    "subtitle": "把你的统计变成可分享的故事：导出备份并在网页中打开。",
+    "cta": "打开总结"
+  },
+  "insights": {
+    "title": "洞察",
+    "streak": "已连续专注 {days} 天",
+    "weekUp": "活跃时间较上周增加 {pct}%",
+    "weekDown": "活跃时间较上周减少 {pct}%",
+    "catUp": "{category} 较上周增加 {pct}%",
+    "catDown": "{category} 较上周减少 {pct}%",
+    "peakHour": "{weekday} {hour} 前后最活跃",
+    "busiestDay": "{weekday} 是你最忙的一天",
+    "focusHit": "今日专注 {pct}% — 高于目标 {target}%",
+    "focusUnder": "今日专注 {pct}% — 目标 {target}%"
+  },
+  "projects": {
+    "title": "项目与客户",
+    "hint": "为任意站点标记项目或客户，然后将每个标签的时间导出为发票或 CSV。",
+    "tagPlaceholder": "添加标签…",
+    "tagForAria": "{domain} 的项目/客户标签",
+    "untagged": "未标记",
+    "invoice": "发票",
+    "invoiceHeading": "时间报告",
+    "billable": "可计费总计",
+    "share": "占比",
+    "byClient": "按客户",
+    "empty": "此时间范围内没有活动。",
+    "days": "{count} 天 | {count} 天"
   }
 }

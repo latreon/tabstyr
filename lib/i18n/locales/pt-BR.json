@@ -116,7 +116,10 @@
   "category": {
     "title": "Hoje por categoria",
     "shareAria": "Proporção de tempo por categoria",
-    "segTitle": "{category} · {time} · {pct}%"
+    "segTitle": "{category} · {time} · {pct}%",
+    "overBudget": "excedido",
+    "budgetMinutes": "{budget} min",
+    "budgetTitle": "Limite diário: {budget} min"
   },
   "focus": {
     "title": "Foco hoje",
@@ -171,7 +174,14 @@
     "nothingTracked": "— nada registrado.",
     "legendAria": "Legenda de cores dos pontos",
     "viewSiteAria": "Ver detalhes de {domain} — {category}",
-    "changeCategory": "Mudar categoria (atual {category})"
+    "changeCategory": "Mudar categoria (atual {category})",
+    "reportHeading": "Relatório de atividade",
+    "totalActive": "Total ativo",
+    "byCategory": "Por categoria",
+    "bySite": "Por site",
+    "moreSites": "+{count} outros sites",
+    "csv": "CSV",
+    "png": "Imagem"
   },
   "tabTable": {
     "title": "Abas abertas por tempo",
@@ -274,7 +284,24 @@
     "showIntro": "Ver introdução novamente",
     "introShown": "A introdução aparecerá no painel",
     "restoreInvalid": "Esse arquivo não é um backup válido do TabStyr.",
-    "restoreWrongPass": "Senha incorreta ou arquivo corrompido."
+    "restoreWrongPass": "Senha incorreta ou arquivo corrompido.",
+    "focusCategories": "Categorias de foco",
+    "focusCategoriesHint": "Escolha como cada categoria conta no seu % de foco.",
+    "productivityForAria": "Como {category} conta para o foco",
+    "focusTarget": "Meta de foco diária",
+    "focusTargetHint": "Seu % de foco alvo. Os dias que a atingem formam sua sequência.",
+    "budgetOff": "desligado",
+    "budgetUnit": "min",
+    "budgetForAria": "Limite diário de {category}, em minutos",
+    "dailyBudgetsHint": "Limite diário opcional por categoria (minutos). Um lembrete gentil por dia ao ultrapassá-lo — nada é bloqueado.",
+    "mergeData": "Mesclar",
+    "mergeHint": "Mesclar combina este backup com seus dados atuais (sem apagar) — use para sincronizar outro dispositivo. Substituir sobrescreve tudo.",
+    "merged": "Mesclado — {sessions} sessões combinadas.",
+    "importCsv": "Importar CSV",
+    "importCsvHint": "Importe dados de outro rastreador: um CSV com colunas de data, site e tempo (ex.: uma exportação do RescueTime). O tempo importado aparece como estimativa e nunca sobrescreve dias medidos.",
+    "imported": "{count} entradas importadas (estimadas).",
+    "importEmpty": "Nenhuma linha utilizável nesse CSV.",
+    "importInvalid": "Não foi possível ler o CSV — precisa de colunas de data, site e tempo."
   },
   "onboarding": {
     "title": "Bem-vindo ao TabStyr",
@@ -293,6 +320,43 @@
     "statsAria": "Estatísticas de uso do navegador"
   },
   "notification": {
-    "stale": "{count} abas sem uso por {days}+ dias"
+    "stale": "{count} abas sem uso por {days}+ dias",
+    "budget": "Limite diário atingido: {category}"
+  },
+  "productivity": {
+    "productive": "Produtivo",
+    "distracting": "Distração",
+    "neutral": "Neutro"
+  },
+  "wrapped": {
+    "title": "Retrospectiva de navegação",
+    "subtitle": "Transforme suas estatísticas em uma história para compartilhar: exporte um backup e abra na web.",
+    "cta": "Abrir retrospectiva"
+  },
+  "insights": {
+    "title": "Insights",
+    "streak": "Sequência de foco de {days} dias",
+    "weekUp": "Tempo ativo subiu {pct}% vs semana passada",
+    "weekDown": "Tempo ativo caiu {pct}% vs semana passada",
+    "catUp": "{category} subiu {pct}% vs semana passada",
+    "catDown": "{category} caiu {pct}% vs semana passada",
+    "peakHour": "Mais ativo por volta das {hour} na {weekday}",
+    "busiestDay": "{weekday} é seu dia mais movimentado",
+    "focusHit": "Foco {pct}% hoje — acima da sua meta de {target}%",
+    "focusUnder": "Foco {pct}% hoje — meta {target}%"
+  },
+  "projects": {
+    "title": "Projetos e clientes",
+    "hint": "Marque qualquer site com um projeto ou cliente e exporte o tempo por tag como fatura ou CSV.",
+    "tagPlaceholder": "Adicionar tag…",
+    "tagForAria": "Tag de projeto/cliente para {domain}",
+    "untagged": "Sem tag",
+    "invoice": "Fatura",
+    "invoiceHeading": "Relatório de tempo",
+    "billable": "Total faturável",
+    "share": "Proporção",
+    "byClient": "Por cliente",
+    "empty": "Sem atividade neste período.",
+    "days": "{count} dia | {count} dias"
   }
 }

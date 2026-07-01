@@ -11,11 +11,14 @@ import StatTile from '@/components/StatTile.vue';
 import TopSitesChart from '@/components/TopSitesChart.vue';
 import CategoryChart from '@/components/CategoryChart.vue';
 import ProductivityTile from '@/components/ProductivityTile.vue';
+import InsightsTile from '@/components/InsightsTile.vue';
 import TrendChart from '@/components/TrendChart.vue';
 import FocusTrend from '@/components/FocusTrend.vue';
 import ComparisonTile from '@/components/ComparisonTile.vue';
 import HeatmapTile from '@/components/HeatmapTile.vue';
 import WorkLog from '@/components/WorkLog.vue';
+import ProjectsTile from '@/components/ProjectsTile.vue';
+import WrappedTile from '@/components/WrappedTile.vue';
 import DomainDetail from '@/components/DomainDetail.vue';
 import TabTable from '@/components/TabTable.vue';
 import SettingsPanel from '@/components/SettingsPanel.vue';
@@ -116,6 +119,11 @@ onMounted(async () => {
     // list instead of just flashing a number the user can't do anything with.
     if (s.staleTabItems.value.length) openTabsModal('stale');
   }
+  if (location.hash === '#focus') {
+    history.replaceState(null, '', location.pathname);
+    // Opened from a budget nudge — scroll the focus tile into view after paint.
+    requestAnimationFrame(() => document.getElementById('focus')?.scrollIntoView({ block: 'center' }));
+  }
 });
 </script>
 
@@ -172,16 +180,21 @@ onMounted(async () => {
         @activate="openTabsModal('stale')"
       />
       <!-- Today by category fills the space below Open tabs / Stale tabs, beside the tall hero -->
-      <CategoryChart :slices="s.todayByCategory.value" />
+      <CategoryChart :slices="s.todayByCategory.value" :budgets="s.categoryBudgets.value" />
       <!-- Top sites today + Focus today -->
       <TopSitesChart :domains="s.todayByDomain.value" @select="openDetail" />
-      <ProductivityTile :summary="s.productivity.value" />
+      <ProductivityTile id="focus" :summary="s.productivity.value" />
       <!-- full-width rows -->
+      <InsightsTile :insights="s.insights.value" />
       <TrendChart :stats="s.activeStats.value" :now="loadedNow" />
-      <FocusTrend :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :now="loadedNow" :target="s.productivity.value.focusTarget" />
+      <FocusTrend :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :productivity="s.categoryProductivity.value" :now="loadedNow" :target="s.productivity.value.focusTarget" />
       <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" />
       <HeatmapTile :data="s.heatmap.value" />
       <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :now="loadedNow" @select="openDetail" @set-category="s.setCategoryOverride" />
+      <!-- Projects / clients — tag domains, see time per tag, export invoice/CSV -->
+      <ProjectsTile :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :domain-tags="s.domainTags.value" :now="loadedNow" @set-tag="s.setDomainTag" />
+      <!-- Browsing Wrapped — opens the shareable web summary (export a backup first) -->
+      <WrappedTile />
       <!-- row: 2 + 1 -->
       <TabTable :rows="s.tabRows.value" />
       <SettingsPanel @changed="() => s.load({ silent: true })" />

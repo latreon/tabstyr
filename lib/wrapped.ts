@@ -18,6 +18,7 @@ import {
   CATEGORY_PRODUCTIVITY,
   type Category,
   type CategoryRule,
+  type Productivity,
 } from './categories';
 import type { DailyStat, Session } from './types';
 
@@ -27,6 +28,8 @@ export interface WrappedInput {
   sessions: Session[];
   overrides?: Record<string, Category>;
   rules?: readonly CategoryRule[];
+  /** Per-category productive/distracting split; defaults to CATEGORY_PRODUCTIVITY. */
+  productivity?: Record<Category, Productivity>;
 }
 
 export interface WrappedSite {
@@ -151,13 +154,14 @@ interface DayAgg {
 function aggregateByDate(
   stats: DailyStat[],
   categoryOf: (domain: string) => Category,
+  prod: Record<Category, Productivity> = CATEGORY_PRODUCTIVITY,
 ): Map<string, DayAgg> {
   const byDate = new Map<string, DayAgg>();
   for (const s of stats) {
     const active = activeSeconds(s);
     if (active <= 0) continue;
     const agg = byDate.get(s.date) ?? { productive: 0, distracting: 0, neutral: 0, total: 0 };
-    agg[CATEGORY_PRODUCTIVITY[categoryOf(s.domain)]] += active;
+    agg[prod[categoryOf(s.domain)]] += active;
     agg.total += active;
     byDate.set(s.date, agg);
   }
@@ -303,7 +307,7 @@ export function buildWrapped(input: WrappedInput): WrappedData | null {
   // aggregateByDate only records dates with active time, so its keys ARE the
   // coverage window — derive the date range from it instead of a separate pass +
   // Set over every stat row.
-  const byDate = aggregateByDate(stats, categoryOf);
+  const byDate = aggregateByDate(stats, categoryOf, input.productivity ?? CATEGORY_PRODUCTIVITY);
   const activeDates = [...byDate.keys()].sort();
   const startDate = activeDates[0];
   const endDate = activeDates[activeDates.length - 1];

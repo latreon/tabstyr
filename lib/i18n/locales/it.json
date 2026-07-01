@@ -116,7 +116,10 @@
   "category": {
     "title": "Oggi per categoria",
     "shareAria": "Quota di tempo per categoria",
-    "segTitle": "{category} · {time} · {pct}%"
+    "segTitle": "{category} · {time} · {pct}%",
+    "overBudget": "superato",
+    "budgetMinutes": "{budget} min",
+    "budgetTitle": "Budget giornaliero: {budget} min"
   },
   "focus": {
     "title": "Concentrazione oggi",
@@ -171,7 +174,14 @@
     "nothingTracked": "— nulla registrato.",
     "legendAria": "Legenda dei colori dei punti",
     "viewSiteAria": "Vedi dettagli di {domain} — {category}",
-    "changeCategory": "Cambia categoria (ora {category})"
+    "changeCategory": "Cambia categoria (ora {category})",
+    "reportHeading": "Report attività",
+    "totalActive": "Totale attivo",
+    "byCategory": "Per categoria",
+    "bySite": "Per sito",
+    "moreSites": "+{count} altri siti",
+    "csv": "CSV",
+    "png": "Immagine"
   },
   "tabTable": {
     "title": "Schede aperte per tempo",
@@ -274,7 +284,24 @@
     "showIntro": "Rivedi l'introduzione",
     "introShown": "L'introduzione apparirà nella dashboard",
     "restoreInvalid": "Questo file non è un backup TabStyr valido.",
-    "restoreWrongPass": "Passphrase errata o file danneggiato."
+    "restoreWrongPass": "Passphrase errata o file danneggiato.",
+    "focusCategories": "Categorie di focus",
+    "focusCategoriesHint": "Scegli come ogni categoria incide sulla tua % di focus.",
+    "productivityForAria": "Come {category} incide sul focus",
+    "focusTarget": "Obiettivo di focus giornaliero",
+    "focusTargetHint": "La tua % di focus obiettivo. I giorni che la raggiungono costruiscono la tua serie.",
+    "budgetOff": "off",
+    "budgetUnit": "min",
+    "budgetForAria": "Budget giornaliero per {category}, in minuti",
+    "dailyBudgetsHint": "Limite giornaliero opzionale per categoria (minuti). Un promemoria gentile al giorno quando lo superi — non viene bloccato nulla.",
+    "mergeData": "Unisci",
+    "mergeHint": "Unisci combina questo backup con i tuoi dati attuali (senza cancellare) — per sincronizzare un altro dispositivo. Sostituisci sovrascrive tutto.",
+    "merged": "Uniti — {sessions} sessioni combinate.",
+    "importCsv": "Importa CSV",
+    "importCsvHint": "Carica dati da un altro tracker: un CSV con colonne data, sito e tempo (es. un export di RescueTime). Il tempo importato è mostrato come stima e non sovrascrive mai i giorni misurati.",
+    "imported": "{count} voci importate (stimate).",
+    "importEmpty": "Nessuna riga utilizzabile in quel CSV.",
+    "importInvalid": "Impossibile leggere il CSV — servono colonne data, sito e tempo."
   },
   "onboarding": {
     "title": "Benvenuto in TabStyr",
@@ -293,6 +320,43 @@
     "statsAria": "Statistiche di utilizzo del browser"
   },
   "notification": {
-    "stale": "{count} schede non toccate da {days}+ giorni"
+    "stale": "{count} schede non toccate da {days}+ giorni",
+    "budget": "Budget giornaliero raggiunto: {category}"
+  },
+  "productivity": {
+    "productive": "Produttivo",
+    "distracting": "Distrazione",
+    "neutral": "Neutro"
+  },
+  "wrapped": {
+    "title": "Resoconto di navigazione",
+    "subtitle": "Trasforma le tue statistiche in una storia da condividere: esporta un backup e aprilo sul web.",
+    "cta": "Apri il resoconto"
+  },
+  "insights": {
+    "title": "Approfondimenti",
+    "streak": "Serie di focus di {days} giorni",
+    "weekUp": "Tempo attivo in aumento del {pct}% rispetto alla scorsa settimana",
+    "weekDown": "Tempo attivo in calo del {pct}% rispetto alla scorsa settimana",
+    "catUp": "{category} in aumento del {pct}% rispetto alla scorsa settimana",
+    "catDown": "{category} in calo del {pct}% rispetto alla scorsa settimana",
+    "peakHour": "Più attivo verso le {hour} di {weekday}",
+    "busiestDay": "{weekday} è il tuo giorno più attivo",
+    "focusHit": "Focus {pct}% oggi — sopra il tuo obiettivo del {target}%",
+    "focusUnder": "Focus {pct}% oggi — obiettivo {target}%"
+  },
+  "projects": {
+    "title": "Progetti e clienti",
+    "hint": "Assegna un progetto o cliente a un sito ed esporta il tempo per etichetta come fattura o CSV.",
+    "tagPlaceholder": "Aggiungi etichetta…",
+    "tagForAria": "Etichetta progetto/cliente per {domain}",
+    "untagged": "Senza etichetta",
+    "invoice": "Fattura",
+    "invoiceHeading": "Report tempo",
+    "billable": "Totale fatturabile",
+    "share": "Quota",
+    "byClient": "Per cliente",
+    "empty": "Nessuna attività in questo intervallo.",
+    "days": "{count} giorno | {count} giorni"
   }
 }

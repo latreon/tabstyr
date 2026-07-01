@@ -116,7 +116,10 @@
   "category": {
     "title": "오늘 카테고리별",
     "shareAria": "카테고리별 시간 비율",
-    "segTitle": "{category} · {time} · {pct}%"
+    "segTitle": "{category} · {time} · {pct}%",
+    "overBudget": "초과",
+    "budgetMinutes": "{budget}분",
+    "budgetTitle": "일일 예산: {budget}분"
   },
   "focus": {
     "title": "오늘의 집중",
@@ -171,7 +174,14 @@
     "nothingTracked": "— 기록된 항목 없음.",
     "legendAria": "점 색상 범례",
     "viewSiteAria": "{domain} 상세 보기 — {category}",
-    "changeCategory": "카테고리 변경 (현재 {category})"
+    "changeCategory": "카테고리 변경 (현재 {category})",
+    "reportHeading": "활동 리포트",
+    "totalActive": "총 활동",
+    "byCategory": "카테고리별",
+    "bySite": "사이트별",
+    "moreSites": "+{count}개 사이트 더",
+    "csv": "CSV",
+    "png": "이미지"
   },
   "tabTable": {
     "title": "시간별 열린 탭",
@@ -274,7 +284,24 @@
     "showIntro": "소개 다시 보기",
     "introShown": "대시보드에 소개가 표시됩니다",
     "restoreInvalid": "유효한 TabStyr 백업 파일이 아닙니다.",
-    "restoreWrongPass": "암호가 틀렸거나 파일이 손상되었습니다."
+    "restoreWrongPass": "암호가 틀렸거나 파일이 손상되었습니다.",
+    "focusCategories": "집중 카테고리",
+    "focusCategoriesHint": "각 카테고리가 집중도 %에 반영되는 방식을 선택하세요.",
+    "productivityForAria": "{category}의 집중도 반영 방식",
+    "focusTarget": "일일 집중 목표",
+    "focusTargetHint": "목표 집중도 %. 이를 달성한 날이 연속 기록을 만듭니다.",
+    "budgetOff": "끔",
+    "budgetUnit": "분",
+    "budgetForAria": "{category}의 일일 예산(분)",
+    "dailyBudgetsHint": "카테고리별 선택적 일일 한도(분). 초과하면 하루 한 번 부드럽게 알립니다 — 아무것도 차단하지 않습니다.",
+    "mergeData": "병합",
+    "mergeHint": "병합은 현재 데이터를 지우지 않고 이 백업을 합칩니다 — 다른 기기 동기화에 사용하세요. 교체는 모두 덮어씁니다.",
+    "merged": "병합됨 — 세션 {sessions}개 결합.",
+    "importCsv": "CSV 가져오기",
+    "importCsvHint": "다른 트래커의 데이터를 가져옵니다: 날짜, 사이트, 시간 열이 있는 CSV(예: RescueTime 내보내기). 가져온 시간은 추정치로 표시되며 측정된 날짜를 덮어쓰지 않습니다.",
+    "imported": "{count}개 항목을 가져왔습니다(추정).",
+    "importEmpty": "해당 CSV에서 사용할 수 있는 행을 찾지 못했습니다.",
+    "importInvalid": "CSV를 읽을 수 없습니다 — 날짜, 사이트, 시간 열이 필요합니다."
   },
   "onboarding": {
     "title": "TabStyr에 오신 것을 환영합니다",
@@ -293,6 +320,43 @@
     "statsAria": "브라우저 사용 통계"
   },
   "notification": {
-    "stale": "{count}개 탭이 {days}일 이상 사용되지 않음"
+    "stale": "{count}개 탭이 {days}일 이상 사용되지 않음",
+    "budget": "오늘 예산 도달: {category}"
+  },
+  "productivity": {
+    "productive": "생산적",
+    "distracting": "산만함",
+    "neutral": "중립"
+  },
+  "wrapped": {
+    "title": "브라우징 랩업",
+    "subtitle": "통계를 공유할 수 있는 스토리로. 백업을 내보내 웹에서 열어 보세요.",
+    "cta": "랩업 열기"
+  },
+  "insights": {
+    "title": "인사이트",
+    "streak": "{days}일 연속 집중",
+    "weekUp": "활동 시간 지난주 대비 {pct}% 증가",
+    "weekDown": "활동 시간 지난주 대비 {pct}% 감소",
+    "catUp": "{category} 지난주 대비 {pct}% 증가",
+    "catDown": "{category} 지난주 대비 {pct}% 감소",
+    "peakHour": "{weekday} {hour}경에 가장 활발",
+    "busiestDay": "가장 바쁜 요일은 {weekday}",
+    "focusHit": "오늘 집중 {pct}% — 목표 {target}% 초과",
+    "focusUnder": "오늘 집중 {pct}% — 목표 {target}%"
+  },
+  "projects": {
+    "title": "프로젝트 및 클라이언트",
+    "hint": "사이트에 프로젝트나 클라이언트 태그를 지정하고 태그별 시간을 청구서 또는 CSV로 내보내세요.",
+    "tagPlaceholder": "태그 추가…",
+    "tagForAria": "{domain}의 프로젝트/클라이언트 태그",
+    "untagged": "태그 없음",
+    "invoice": "청구서",
+    "invoiceHeading": "시간 리포트",
+    "billable": "청구 대상 합계",
+    "share": "비율",
+    "byClient": "클라이언트별",
+    "empty": "이 기간에 활동이 없습니다.",
+    "days": "{count}일 | {count}일"
   }
 }

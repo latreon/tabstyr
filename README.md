@@ -95,7 +95,9 @@ network requests. Your data lives in your browser's database and never leaves it
   PBKDF2-SHA-256), all in-browser via the Web Crypto API.
 - **Restore / import** — load a JSON or encrypted backup on this or another device.
 - **One-click wipe** of all stored data.
-- **90-day rolling window**, pruned automatically.
+- **90-day rolling window** for raw sessions & daily totals, pruned automatically —
+  with a compact per-domain **monthly roll-up** (no URLs) kept longer so long-range
+  trends survive pruning.
 
 ### Look & feel
 - System-aware **dark / light** themes with a manual toggle.
@@ -119,7 +121,9 @@ network requests. Your data lives in your browser's database and never leaves it
 ## Privacy
 
 TabStyr collects **nothing** and sends **nothing**. All activity is stored locally
-in your browser's IndexedDB and pruned to a 90-day window.
+in your browser's IndexedDB. Raw sessions and daily totals are pruned to a 90-day
+window; a compact per-domain monthly roll-up (no URLs, no timestamps) is retained
+longer so long-range trends survive pruning — and it never leaves your device either.
 
 - No servers, no cloud sync, no accounts.
 - No analytics, no ads, no third-party code.

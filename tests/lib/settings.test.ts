@@ -44,6 +44,82 @@ describe('settings', () => {
     expect(Object.keys(stored.categoryOverrides).length).toBeLessThanOrEqual(5000);
   });
 
+  test('categoryProductivity defaults to the built-in mapping', async () => {
+    const s = await getSettings();
+    expect(s.categoryProductivity.Work).toBe('productive');
+    expect(s.categoryProductivity.Social).toBe('distracting');
+    expect(s.categoryProductivity.Finance).toBe('neutral');
+  });
+
+  test('categoryProductivity round-trips a user remap and keeps other categories at default', async () => {
+    await saveSettings({ categoryProductivity: { Social: 'productive' } as Parameters<typeof saveSettings>[0]['categoryProductivity'] });
+    const s = await getSettings();
+    expect(s.categoryProductivity.Social).toBe('productive'); // remapped
+    expect(s.categoryProductivity.Work).toBe('productive'); // untouched default
+    expect(s.categoryProductivity.Media).toBe('distracting'); // untouched default
+  });
+
+  test('invalid categoryProductivity entries fall back to the default (full valid mapping)', async () => {
+    await fakeBrowser.storage.local.set({
+      settings: { categoryProductivity: { Work: 'bogus', Social: 'productive', NotACategory: 'productive' } },
+    });
+    const s = await getSettings();
+    expect(s.categoryProductivity.Work).toBe('productive'); // bad value → default
+    expect(s.categoryProductivity.Social).toBe('productive'); // valid override kept
+    expect((s.categoryProductivity as Record<string, unknown>).NotACategory).toBeUndefined();
+    expect(Object.keys(s.categoryProductivity).sort()).toEqual(
+      ['Dev', 'Finance', 'Media', 'News', 'Other', 'Shopping', 'Social', 'Work'].sort(),
+    );
+  });
+
+  test('focusTarget defaults to 50 and is clamped to 10–90', async () => {
+    expect((await getSettings()).focusTarget).toBe(50);
+    await fakeBrowser.storage.local.set({ settings: { focusTarget: 5 } });
+    invalidateSettings();
+    expect((await getSettings()).focusTarget).toBe(10);
+    await fakeBrowser.storage.local.set({ settings: { focusTarget: 200 } });
+    invalidateSettings();
+    expect((await getSettings()).focusTarget).toBe(90);
+  });
+
+  test('categoryBudgets keeps positive minute values and drops junk / unknown categories', async () => {
+    await fakeBrowser.storage.local.set({
+      settings: {
+        categoryBudgets: { Social: 30, Media: 0, Work: -5, News: 2000, NotACategory: 10, Dev: 'x' },
+      },
+    });
+    const b = (await getSettings()).categoryBudgets;
+    expect(b.Social).toBe(30); // kept
+    expect(b.News).toBe(1440); // clamped to 24h
+    expect('Media' in b).toBe(false); // 0 dropped
+    expect('Work' in b).toBe(false); // negative dropped
+    expect('Dev' in b).toBe(false); // non-number dropped
+    expect((b as Record<string, unknown>).NotACategory).toBeUndefined(); // unknown dropped
+  });
+
+  test('categoryBudgets round-trips a saved budget', async () => {
+    await saveSettings({ categoryBudgets: { Social: 45 } });
+    expect((await getSettings()).categoryBudgets).toEqual({ Social: 45 });
+  });
+
+  test('domainTags trims/caps tag values and drops empty or non-string ones', async () => {
+    await fakeBrowser.storage.local.set({
+      settings: {
+        domainTags: { 'github.com': '  Acme  ', 'a.com': '', 'b.com': 123, 'c.com': 'x'.repeat(200) },
+      },
+    });
+    const dt = (await getSettings()).domainTags;
+    expect(dt['github.com']).toBe('Acme'); // trimmed
+    expect('a.com' in dt).toBe(false); // empty dropped
+    expect('b.com' in dt).toBe(false); // non-string dropped
+    expect(dt['c.com'].length).toBe(60); // length-capped
+  });
+
+  test('domainTags round-trips a saved assignment', async () => {
+    await saveSettings({ domainTags: { 'github.com': 'Acme' } });
+    expect((await getSettings()).domainTags).toEqual({ 'github.com': 'Acme' });
+  });
+
   test('malformed stored values are ignored, defaults win', async () => {
     await fakeBrowser.storage.local.set({ settings: { staleDays: 'seven', audioEnabled: false } });
     expect(await getSettings()).toEqual({ ...DEFAULT_SETTINGS, audioEnabled: false });

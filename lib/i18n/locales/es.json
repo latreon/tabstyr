@@ -116,7 +116,10 @@
   "category": {
     "title": "Hoy por categoría",
     "shareAria": "Proporción de tiempo por categoría",
-    "segTitle": "{category} · {time} · {pct}%"
+    "segTitle": "{category} · {time} · {pct}%",
+    "overBudget": "excedido",
+    "budgetMinutes": "{budget} min",
+    "budgetTitle": "Presupuesto diario: {budget} min"
   },
   "focus": {
     "title": "Concentración hoy",
@@ -171,7 +174,14 @@
     "nothingTracked": "— nada registrado.",
     "legendAria": "Leyenda de colores de los puntos",
     "viewSiteAria": "Ver detalles de {domain} — {category}",
-    "changeCategory": "Cambiar categoría (ahora {category})"
+    "changeCategory": "Cambiar categoría (ahora {category})",
+    "reportHeading": "Informe de actividad",
+    "totalActive": "Total activo",
+    "byCategory": "Por categoría",
+    "bySite": "Por sitio",
+    "moreSites": "+{count} sitios más",
+    "csv": "CSV",
+    "png": "Imagen"
   },
   "tabTable": {
     "title": "Pestañas abiertas por tiempo",
@@ -274,7 +284,24 @@
     "showIntro": "Mostrar la introducción otra vez",
     "introShown": "La introducción se mostrará en el panel",
     "restoreInvalid": "Ese archivo no es una copia de seguridad válida de TabStyr.",
-    "restoreWrongPass": "Contraseña incorrecta o archivo dañado."
+    "restoreWrongPass": "Contraseña incorrecta o archivo dañado.",
+    "focusCategories": "Categorías de enfoque",
+    "focusCategoriesHint": "Elige cómo cuenta cada categoría en tu % de enfoque.",
+    "productivityForAria": "Cómo cuenta {category} para el enfoque",
+    "focusTarget": "Meta de enfoque diaria",
+    "focusTargetHint": "Tu % de enfoque objetivo. Los días que lo alcanzan forman tu racha.",
+    "budgetOff": "desactivado",
+    "budgetUnit": "min",
+    "budgetForAria": "Presupuesto diario de {category}, en minutos",
+    "dailyBudgetsHint": "Límite diario opcional por categoría (minutos). Un recordatorio amable al día cuando lo superes — no se bloquea nada.",
+    "mergeData": "Combinar",
+    "mergeHint": "Combinar une esta copia con tus datos actuales (sin borrar) — úsalo para sincronizar otro dispositivo. Reemplazar sobrescribe todo.",
+    "merged": "Combinado — {sessions} sesiones unidas.",
+    "importCsv": "Importar CSV",
+    "importCsvHint": "Carga datos de otro medidor: un CSV con columnas de fecha, sitio y tiempo (p. ej. una exportación de RescueTime). El tiempo importado se muestra como estimación y nunca sobrescribe días medidos.",
+    "imported": "{count} entradas importadas (estimadas).",
+    "importEmpty": "No se encontraron filas utilizables en ese CSV.",
+    "importInvalid": "No se pudo leer ese CSV: necesita columnas de fecha, sitio y tiempo."
   },
   "onboarding": {
     "title": "Te damos la bienvenida a TabStyr",
@@ -293,6 +320,43 @@
     "statsAria": "Estadísticas de uso del navegador"
   },
   "notification": {
-    "stale": "{count} pestañas sin tocar durante más de {days} días"
+    "stale": "{count} pestañas sin tocar durante más de {days} días",
+    "budget": "Presupuesto diario alcanzado: {category}"
+  },
+  "productivity": {
+    "productive": "Productivo",
+    "distracting": "Distracción",
+    "neutral": "Neutral"
+  },
+  "wrapped": {
+    "title": "Resumen de navegación",
+    "subtitle": "Convierte tus estadísticas en una historia para compartir: exporta una copia y ábrela en la web.",
+    "cta": "Abrir resumen"
+  },
+  "insights": {
+    "title": "Perspectivas",
+    "streak": "Racha de enfoque de {days} días",
+    "weekUp": "Tiempo activo subió {pct}% vs la semana pasada",
+    "weekDown": "Tiempo activo bajó {pct}% vs la semana pasada",
+    "catUp": "{category} subió {pct}% vs la semana pasada",
+    "catDown": "{category} bajó {pct}% vs la semana pasada",
+    "peakHour": "Más activo hacia las {hour} el {weekday}",
+    "busiestDay": "{weekday} es tu día más activo",
+    "focusHit": "Enfoque {pct}% hoy — por encima de tu meta del {target}%",
+    "focusUnder": "Enfoque {pct}% hoy — meta {target}%"
+  },
+  "projects": {
+    "title": "Proyectos y clientes",
+    "hint": "Etiqueta cualquier sitio con un proyecto o cliente y exporta el tiempo por etiqueta como factura o CSV.",
+    "tagPlaceholder": "Añadir etiqueta…",
+    "tagForAria": "Etiqueta de proyecto/cliente para {domain}",
+    "untagged": "Sin etiqueta",
+    "invoice": "Factura",
+    "invoiceHeading": "Informe de tiempo",
+    "billable": "Total facturable",
+    "share": "Proporción",
+    "byClient": "Por cliente",
+    "empty": "Sin actividad en este rango.",
+    "days": "{count} día | {count} días"
   }
 }

@@ -188,8 +188,19 @@ export function makeCategorizer(
   };
 }
 
-export type Productivity = 'productive' | 'distracting' | 'neutral';
+export const PRODUCTIVITY = ['productive', 'distracting', 'neutral'] as const;
+export type Productivity = (typeof PRODUCTIVITY)[number];
 
+export function isProductivity(v: unknown): v is Productivity {
+  return typeof v === 'string' && (PRODUCTIVITY as readonly string[]).includes(v);
+}
+
+/**
+ * Default productive/distracting split. This is only the DEFAULT — the user can
+ * remap any category via settings.categoryProductivity, which is what the focus
+ * math actually reads (this constant seeds that setting and is the fallback when a
+ * caller passes no mapping).
+ */
 export const CATEGORY_PRODUCTIVITY: Record<Category, Productivity> = {
   Work: 'productive',
   Dev: 'productive',

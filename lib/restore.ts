@@ -2,10 +2,11 @@ import * as repo from './db/repo';
 import { SCHEMA_VERSION } from './export';
 import { saveSettings } from './settings';
 import { isWebDomain, pageOf } from './domain';
-import type { DailyStat, Session, Settings, TabMeta } from './types';
+import type { DailyStat, MonthlyStat, Session, Settings, TabMeta } from './types';
 
 export interface ParsedBackup {
   dailyStats: DailyStat[];
+  monthlyStats: MonthlyStat[];
   sessions: Session[];
   tabMeta: TabMeta[];
   settings?: Record<string, unknown>;
@@ -16,6 +17,9 @@ export interface ParsedBackup {
 // these; the limits stop a crafted file from exhausting memory / IndexedDB and
 // dying mid-restore (which wipes existing data first).
 const MAX_STATS = 200_000;
+// The archive holds one row per (month, domain). Even years of heavy history stay
+// well under this; the cap only bounds a crafted file.
+const MAX_MONTHLY = 200_000;
 const MAX_SESSIONS = 1_000_000;
 const MAX_TABMETA = 20_000;
 const MAX_SETTINGS_KEYS = 1_000;
@@ -30,9 +34,11 @@ export const MAX_BACKUP_BYTES = 64 * 1024 * 1024;
 // durations, end<start, audio>total, far-future timestamps) would silently
 // corrupt dashboard math, so drop any record that violates them.
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const MONTH_RE = /^\d{4}-\d{2}$/;
 const MAX_TS = 4_102_444_800_000; // ~year 2100 (ms) — anything beyond is bogus
 const MAX_DURATION_MS = 24 * 60 * 60_000; // a single session can't exceed a day
 const MAX_DAY_SECONDS = 90_000; // per-domain per-day ceiling (>24h headroom)
+const MAX_MONTH_SECONDS = 31 * MAX_DAY_SECONDS; // per-domain per-month ceiling
 const MAX_URL_LEN = 4_096;
 const MAX_TITLE_LEN = 2_048;
 const MAX_KEY_LEN = 256;
@@ -49,6 +55,16 @@ function isStat(v: unknown): v is DailyStat {
     isBoundedStr(o.date, 10) && DATE_RE.test(o.date) &&
     isBoundedStr(o.domain, MAX_KEY_LEN) && isWebDomain(o.domain) &&
     isNum(o.seconds) && o.seconds >= 0 && o.seconds <= MAX_DAY_SECONDS &&
+    isNum(o.audioSeconds) && o.audioSeconds >= 0 && o.audioSeconds <= o.seconds
+  );
+}
+function isMonthlyStat(v: unknown): v is MonthlyStat {
+  const o = v as MonthlyStat;
+  return (
+    !!o &&
+    isBoundedStr(o.month, 7) && MONTH_RE.test(o.month) &&
+    isBoundedStr(o.domain, MAX_KEY_LEN) && isWebDomain(o.domain) &&
+    isNum(o.seconds) && o.seconds >= 0 && o.seconds <= MAX_MONTH_SECONDS &&
     isNum(o.audioSeconds) && o.audioSeconds >= 0 && o.audioSeconds <= o.seconds
   );
 }
@@ -117,6 +133,8 @@ export function parseBackup(text: string): ParsedBackup {
   }
   return {
     dailyStats: Array.isArray(o.dailyStats) ? o.dailyStats.filter(isStat).slice(0, MAX_STATS) : [],
+    // Absent in v2 (and earlier) backups — defaults to [] so they restore cleanly.
+    monthlyStats: Array.isArray(o.monthlyStats) ? o.monthlyStats.filter(isMonthlyStat).slice(0, MAX_MONTHLY) : [],
     // Re-normalize urls on import: a backup from an older build may carry raw
     // query/fragment values — strip them so restored data also holds no tokens.
     sessions: Array.isArray(o.sessions)
@@ -135,6 +153,7 @@ export function parseBackup(text: string): ParsedBackup {
 
 export interface RestoreResult {
   dailyStats: number;
+  monthlyStats: number;
   sessions: number;
   tabMeta: number;
 }
@@ -152,11 +171,12 @@ export async function restoreBackup(parsed: ParsedBackup): Promise<RestoreResult
   // Clear + write all three stores in a SINGLE transaction: a failure aborts the
   // whole restore and rolls back the clears, so existing history is never lost to
   // a half-completed import (see repo.restoreAll).
-  await repo.restoreAll(data.sessions, data.dailyStats, data.tabMeta);
+  await repo.restoreAll(data.sessions, data.dailyStats, data.tabMeta, data.monthlyStats);
   // getSettings() re-sanitizes on the next read, so unsafe fields can't survive.
   if (data.settings) await saveSettings(data.settings as Partial<Settings>);
   return {
     dailyStats: data.dailyStats.length,
+    monthlyStats: data.monthlyStats.length,
     sessions: data.sessions.length,
     tabMeta: data.tabMeta.length,
   };
