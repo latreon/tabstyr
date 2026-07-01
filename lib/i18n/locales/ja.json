@@ -293,7 +293,10 @@
     "budgetOff": "オフ",
     "budgetUnit": "分",
     "budgetForAria": "{category} の1日の上限（分）",
-    "dailyBudgetsHint": "カテゴリごとの任意の1日の上限（分）。超えると1日1回だけ控えめに通知します。ブロックはしません。"
+    "dailyBudgetsHint": "カテゴリごとの任意の1日の上限（分）。超えると1日1回だけ控えめに通知します。ブロックはしません。",
+    "mergeData": "マージ",
+    "mergeHint": "マージは現在のデータを消さずにこのバックアップを統合します。別のデバイスの同期に使えます。置き換えはすべて上書きします。",
+    "merged": "マージしました — {sessions} 件のセッションを統合。"
   },
   "onboarding": {
     "title": "TabStyrへようこそ",

@@ -293,7 +293,10 @@
     "budgetOff": "aus",
     "budgetUnit": "Min",
     "budgetForAria": "Tagesbudget für {category}, in Minuten",
-    "dailyBudgetsHint": "Optionales Tageslimit pro Kategorie (Minuten). Eine dezente Erinnerung pro Tag beim Überschreiten – nichts wird blockiert."
+    "dailyBudgetsHint": "Optionales Tageslimit pro Kategorie (Minuten). Eine dezente Erinnerung pro Tag beim Überschreiten – nichts wird blockiert.",
+    "mergeData": "Zusammenführen",
+    "mergeHint": "Zusammenführen kombiniert dieses Backup mit deinen aktuellen Daten (ohne Löschen) — ideal zum Sync zwischen Geräten. Ersetzen überschreibt alles.",
+    "merged": "Zusammengeführt — {sessions} Sitzungen kombiniert."
   },
   "onboarding": {
     "title": "Willkommen bei TabStyr",

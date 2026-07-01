@@ -293,7 +293,10 @@
     "budgetOff": "끔",
     "budgetUnit": "분",
     "budgetForAria": "{category}의 일일 예산(분)",
-    "dailyBudgetsHint": "카테고리별 선택적 일일 한도(분). 초과하면 하루 한 번 부드럽게 알립니다 — 아무것도 차단하지 않습니다."
+    "dailyBudgetsHint": "카테고리별 선택적 일일 한도(분). 초과하면 하루 한 번 부드럽게 알립니다 — 아무것도 차단하지 않습니다.",
+    "mergeData": "병합",
+    "mergeHint": "병합은 현재 데이터를 지우지 않고 이 백업을 합칩니다 — 다른 기기 동기화에 사용하세요. 교체는 모두 덮어씁니다.",
+    "merged": "병합됨 — 세션 {sessions}개 결합."
   },
   "onboarding": {
     "title": "TabStyr에 오신 것을 환영합니다",

@@ -293,7 +293,10 @@
     "budgetOff": "desligado",
     "budgetUnit": "min",
     "budgetForAria": "Limite diário de {category}, em minutos",
-    "dailyBudgetsHint": "Limite diário opcional por categoria (minutos). Um lembrete gentil por dia ao ultrapassá-lo — nada é bloqueado."
+    "dailyBudgetsHint": "Limite diário opcional por categoria (minutos). Um lembrete gentil por dia ao ultrapassá-lo — nada é bloqueado.",
+    "mergeData": "Mesclar",
+    "mergeHint": "Mesclar combina este backup com seus dados atuais (sem apagar) — use para sincronizar outro dispositivo. Substituir sobrescreve tudo.",
+    "merged": "Mesclado — {sessions} sessões combinadas."
   },
   "onboarding": {
     "title": "Bem-vindo ao TabStyr",

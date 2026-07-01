@@ -293,7 +293,10 @@
     "budgetOff": "kapalı",
     "budgetUnit": "dk",
     "budgetForAria": "{category} için günlük bütçe, dakika",
-    "dailyBudgetsHint": "Kategori başına isteğe bağlı günlük limit (dakika). Aştığınızda günde bir nazik hatırlatma — hiçbir şey engellenmez."
+    "dailyBudgetsHint": "Kategori başına isteğe bağlı günlük limit (dakika). Aştığınızda günde bir nazik hatırlatma — hiçbir şey engellenmez.",
+    "mergeData": "Birleştir",
+    "mergeHint": "Birleştir bu yedeği mevcut verilerinle birleştirir (silmeden) — başka bir cihazı eşitlemek için. Değiştir her şeyin üzerine yazar.",
+    "merged": "Birleştirildi — {sessions} oturum eklendi."
   },
   "onboarding": {
     "title": "TabStyr'a hoş geldiniz",

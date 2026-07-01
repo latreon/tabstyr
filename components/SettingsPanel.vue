@@ -12,9 +12,10 @@ import * as repo from '@/lib/db/repo';
 import { downloadFile, toJsonBackup } from '@/lib/export';
 import { encryptToEnvelope, isEncryptedEnvelope, decryptFromEnvelope, MIN_PASSPHRASE } from '@/lib/crypto';
 import { parseBackup, restoreBackup, MAX_BACKUP_BYTES, type ParsedBackup } from '@/lib/restore';
+import { mergeBackup, mergeSettingsMaps } from '@/lib/merge';
 import { dateKey } from '@/lib/time';
 import { getDateLocale } from '@/lib/locale';
-import type { ThemeSetting } from '@/lib/types';
+import type { Settings, ThemeSetting } from '@/lib/types';
 import SelectBox from '@/components/ui/SelectBox.vue';
 import ToggleSwitch from '@/components/ui/ToggleSwitch.vue';
 import NumberStepper from '@/components/ui/NumberStepper.vue';
@@ -368,6 +369,40 @@ onBeforeUnmount(() => {
   clearTimeout(saveTimer);
 });
 
+// Sync/merge: combine the imported backup with existing data instead of replacing.
+// Additive and idempotent (see lib/merge). Local open-tab metadata is kept as-is.
+async function confirmMerge() {
+  if (!pendingRestore.value || restoring.value) return;
+  restoring.value = true;
+  try {
+    // Strip Vue proxies (structured clone can't clone them) — same as restoreBackup.
+    const data: ParsedBackup = JSON.parse(JSON.stringify(pendingRestore.value));
+    const [localSessions, localDaily, localMonthly, localTabMeta] = await Promise.all([
+      repo.getAllSessions(),
+      repo.getAllDailyStats(),
+      repo.getAllMonthlyStats(),
+      repo.getAllTabMeta(),
+    ]);
+    const merged = mergeBackup(
+      { sessions: localSessions, dailyStats: localDaily, monthlyStats: localMonthly },
+      { sessions: data.sessions, dailyStats: data.dailyStats, monthlyStats: data.monthlyStats },
+    );
+    // One atomic transaction (reuses restore's clear+write); local tabMeta preserved.
+    await repo.restoreAll(merged.sessions, merged.dailyStats, localTabMeta, merged.monthlyStats);
+    await saveSettings(mergeSettingsMaps(await getSettings(), data.settings) as Partial<Settings>);
+    pendingRestore.value = null;
+    rules.value = (await getSettings()).categoryRules;
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    emit('changed');
+    showToast(t('settings.merged', { sessions: merged.sessions.length }));
+  } catch (e) {
+    console.error('[settings] merge failed', e);
+    showToast(t('settings.restoreFailed'));
+  } finally {
+    restoring.value = false;
+  }
+}
+
 async function confirmRestore() {
   if (!pendingRestore.value || restoring.value) return;
   restoring.value = true;
@@ -592,8 +627,12 @@ async function confirmWipe() {
           sessions: pendingRestore.sessions.length,
           from: pendingRestore.exportedAt ? t('settings.replaceBodyFrom', { date: new Date(pendingRestore.exportedAt).toLocaleDateString(getDateLocale()) }) : '',
         }) }}</p>
+        <p class="modal-hint">{{ t('settings.mergeHint') }}</p>
         <div class="modal-actions">
           <button class="cancel" :disabled="restoring" @click="cancelRestore">{{ t('settings.cancel') }}</button>
+          <button class="merge" :disabled="restoring" @click="confirmMerge">
+            {{ restoring ? t('settings.restoring') : t('settings.mergeData') }}
+          </button>
           <button class="danger" :disabled="restoring" @click="confirmRestore">
             {{ restoring ? t('settings.restoring') : t('settings.replaceData') }}
           </button>
@@ -993,10 +1032,29 @@ button:focus-visible {
   background: var(--negative);
   color: #fff;
 }
+.merge {
+  background: var(--accent-grad-strong, var(--accent));
+  color: var(--on-accent, #fff);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.merge:hover:not(:disabled) { filter: brightness(1.08); }
+.merge:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .danger:disabled,
-.cancel:disabled {
+.cancel:disabled,
+.merge:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+.modal-hint {
+  margin: -8px 0 16px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-3);
 }
 
 /* Toast */

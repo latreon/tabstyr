@@ -293,7 +293,10 @@
     "budgetOff": "désactivé",
     "budgetUnit": "min",
     "budgetForAria": "Budget quotidien pour {category}, en minutes",
-    "dailyBudgetsHint": "Limite quotidienne facultative par catégorie (minutes). Un rappel discret par jour en cas de dépassement — rien n'est bloqué."
+    "dailyBudgetsHint": "Limite quotidienne facultative par catégorie (minutes). Un rappel discret par jour en cas de dépassement — rien n'est bloqué.",
+    "mergeData": "Fusionner",
+    "mergeHint": "Fusionner combine cette sauvegarde avec vos données actuelles (sans effacer) — pour synchroniser un autre appareil. Remplacer écrase tout.",
+    "merged": "Fusionné — {sessions} sessions combinées."
   },
   "onboarding": {
     "title": "Bienvenue dans TabStyr",
