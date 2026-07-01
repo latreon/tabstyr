@@ -73,6 +73,18 @@ describe('sessions + stats', () => {
     ]);
   });
 
+  test('applyDailyStatsMax takes the max per row and is idempotent', async () => {
+    await repo.applyDailyStats([{ date: '2026-06-11', domain: 'a.com', seconds: 100, audioSeconds: 20 }]);
+    // Lower import → existing kept; higher field → raised.
+    await repo.applyDailyStatsMax([{ date: '2026-06-11', domain: 'a.com', seconds: 60, audioSeconds: 40 }]);
+    await repo.applyDailyStatsMax([{ date: '2026-06-11', domain: 'b.com', seconds: 30, audioSeconds: 0 }]);
+    // Re-applying the same import changes nothing.
+    await repo.applyDailyStatsMax([{ date: '2026-06-11', domain: 'a.com', seconds: 60, audioSeconds: 40 }]);
+    const stats = await repo.getStatsRange('2026-06-11', '2026-06-11');
+    expect(stats).toContainEqual({ date: '2026-06-11', domain: 'a.com', seconds: 100, audioSeconds: 40 });
+    expect(stats).toContainEqual({ date: '2026-06-11', domain: 'b.com', seconds: 30, audioSeconds: 0 });
+  });
+
   test('applyDailyStats accumulates into existing rows', async () => {
     await repo.applyDailyStats([{ date: '2026-06-11', domain: 'a.com', seconds: 60, audioSeconds: 0 }]);
     await repo.applyDailyStats([{ date: '2026-06-11', domain: 'a.com', seconds: 30, audioSeconds: 30 }]);

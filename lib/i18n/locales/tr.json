@@ -296,7 +296,12 @@
     "dailyBudgetsHint": "Kategori başına isteğe bağlı günlük limit (dakika). Aştığınızda günde bir nazik hatırlatma — hiçbir şey engellenmez.",
     "mergeData": "Birleştir",
     "mergeHint": "Birleştir bu yedeği mevcut verilerinle birleştirir (silmeden) — başka bir cihazı eşitlemek için. Değiştir her şeyin üzerine yazar.",
-    "merged": "Birleştirildi — {sessions} oturum eklendi."
+    "merged": "Birleştirildi — {sessions} oturum eklendi.",
+    "importCsv": "CSV içe aktar",
+    "importCsvHint": "Başka bir izleyiciden veri alın: tarih, site ve süre sütunları olan bir CSV (ör. RescueTime dışa aktarımı). İçe aktarılan süre tahmini olarak gösterilir ve ölçülen günlerin üzerine asla yazmaz.",
+    "imported": "{count} kayıt içe aktarıldı (tahmini).",
+    "importEmpty": "Bu CSV’de kullanılabilir satır bulunamadı.",
+    "importInvalid": "CSV okunamadı — tarih, site ve süre sütunları gerekir."
   },
   "onboarding": {
     "title": "TabStyr'a hoş geldiniz",

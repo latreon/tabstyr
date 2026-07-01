@@ -296,7 +296,12 @@
     "dailyBudgetsHint": "카테고리별 선택적 일일 한도(분). 초과하면 하루 한 번 부드럽게 알립니다 — 아무것도 차단하지 않습니다.",
     "mergeData": "병합",
     "mergeHint": "병합은 현재 데이터를 지우지 않고 이 백업을 합칩니다 — 다른 기기 동기화에 사용하세요. 교체는 모두 덮어씁니다.",
-    "merged": "병합됨 — 세션 {sessions}개 결합."
+    "merged": "병합됨 — 세션 {sessions}개 결합.",
+    "importCsv": "CSV 가져오기",
+    "importCsvHint": "다른 트래커의 데이터를 가져옵니다: 날짜, 사이트, 시간 열이 있는 CSV(예: RescueTime 내보내기). 가져온 시간은 추정치로 표시되며 측정된 날짜를 덮어쓰지 않습니다.",
+    "imported": "{count}개 항목을 가져왔습니다(추정).",
+    "importEmpty": "해당 CSV에서 사용할 수 있는 행을 찾지 못했습니다.",
+    "importInvalid": "CSV를 읽을 수 없습니다 — 날짜, 사이트, 시간 열이 필요합니다."
   },
   "onboarding": {
     "title": "TabStyr에 오신 것을 환영합니다",

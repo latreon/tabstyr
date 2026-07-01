@@ -296,7 +296,12 @@
     "dailyBudgetsHint": "Limite diário opcional por categoria (minutos). Um lembrete gentil por dia ao ultrapassá-lo — nada é bloqueado.",
     "mergeData": "Mesclar",
     "mergeHint": "Mesclar combina este backup com seus dados atuais (sem apagar) — use para sincronizar outro dispositivo. Substituir sobrescreve tudo.",
-    "merged": "Mesclado — {sessions} sessões combinadas."
+    "merged": "Mesclado — {sessions} sessões combinadas.",
+    "importCsv": "Importar CSV",
+    "importCsvHint": "Importe dados de outro rastreador: um CSV com colunas de data, site e tempo (ex.: uma exportação do RescueTime). O tempo importado aparece como estimativa e nunca sobrescreve dias medidos.",
+    "imported": "{count} entradas importadas (estimadas).",
+    "importEmpty": "Nenhuma linha utilizável nesse CSV.",
+    "importInvalid": "Não foi possível ler o CSV — precisa de colunas de data, site e tempo."
   },
   "onboarding": {
     "title": "Bem-vindo ao TabStyr",

@@ -296,7 +296,12 @@
     "dailyBudgetsHint": "Limite giornaliero opzionale per categoria (minuti). Un promemoria gentile al giorno quando lo superi — non viene bloccato nulla.",
     "mergeData": "Unisci",
     "mergeHint": "Unisci combina questo backup con i tuoi dati attuali (senza cancellare) — per sincronizzare un altro dispositivo. Sostituisci sovrascrive tutto.",
-    "merged": "Uniti — {sessions} sessioni combinate."
+    "merged": "Uniti — {sessions} sessioni combinate.",
+    "importCsv": "Importa CSV",
+    "importCsvHint": "Carica dati da un altro tracker: un CSV con colonne data, sito e tempo (es. un export di RescueTime). Il tempo importato è mostrato come stima e non sovrascrive mai i giorni misurati.",
+    "imported": "{count} voci importate (stimate).",
+    "importEmpty": "Nessuna riga utilizzabile in quel CSV.",
+    "importInvalid": "Impossibile leggere il CSV — servono colonne data, sito e tempo."
   },
   "onboarding": {
     "title": "Benvenuto in TabStyr",

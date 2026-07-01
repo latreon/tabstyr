@@ -47,6 +47,31 @@ export async function commitSessions(sessions: Session[], deltas: DailyStat[]): 
   await tx.done;
 }
 
+/**
+ * Merge daily stats by taking the MAX per (date, domain) rather than summing.
+ * Used by the estimated CSV import: it seeds days you have no measured data for,
+ * never inflates a day you already measured more of, and is idempotent (re-importing
+ * the same file is a no-op).
+ */
+export async function applyDailyStatsMax(deltas: DailyStat[]): Promise<void> {
+  if (!deltas.length) return;
+  const db = await getDB();
+  const tx = db.transaction('dailyDomainStats', 'readwrite');
+  for (const d of deltas) {
+    const existing = await tx.store.get([d.date, d.domain]);
+    await tx.store.put(
+      existing
+        ? {
+            ...existing,
+            seconds: Math.max(existing.seconds, d.seconds),
+            audioSeconds: Math.max(existing.audioSeconds, d.audioSeconds),
+          }
+        : d,
+    );
+  }
+  await tx.done;
+}
+
 export async function getStatsRange(from: string, to: string): Promise<DailyStat[]> {
   const db = await getDB();
   return db.getAll('dailyDomainStats', IDBKeyRange.bound([from, ''], [to, '￿']));

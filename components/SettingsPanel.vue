@@ -13,6 +13,7 @@ import { downloadFile, toJsonBackup } from '@/lib/export';
 import { encryptToEnvelope, isEncryptedEnvelope, decryptFromEnvelope, MIN_PASSPHRASE } from '@/lib/crypto';
 import { parseBackup, restoreBackup, MAX_BACKUP_BYTES, type ParsedBackup } from '@/lib/restore';
 import { mergeBackup, mergeSettingsMaps } from '@/lib/merge';
+import { parseCsvImport } from '@/lib/import-csv';
 import { dateKey } from '@/lib/time';
 import { getDateLocale } from '@/lib/locale';
 import type { Settings, ThemeSetting } from '@/lib/types';
@@ -297,6 +298,38 @@ const restoring = ref(false);
 function pickRestoreFile() {
   restoreError.value = '';
   fileInput.value?.click();
+}
+
+// --- CSV import (seed day-1 data from another tracker; estimated, non-destructive) ---
+const csvInput = ref<HTMLInputElement | null>(null);
+function pickCsvFile() {
+  csvInput.value?.click();
+}
+async function onCsvFile(e: Event) {
+  const input = e.target as HTMLInputElement;
+  const file = input.files?.[0];
+  input.value = ''; // allow re-picking the same file
+  if (!file) return;
+  if (file.size > MAX_BACKUP_BYTES) {
+    showToast(t('settings.restoreTooLarge'));
+    return;
+  }
+  try {
+    const { stats } = parseCsvImport(await file.text());
+    if (!stats.length) {
+      showToast(t('settings.importEmpty'));
+      return;
+    }
+    // MAX-merge: seeds days you have no data for, never inflates measured days,
+    // idempotent on re-import (see repo.applyDailyStatsMax).
+    await repo.applyDailyStatsMax(stats);
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    emit('changed');
+    showToast(t('settings.imported', { count: stats.length }));
+  } catch (e) {
+    console.error('[settings] csv import failed', e);
+    showToast(t('settings.importInvalid'));
+  }
 }
 
 function stageParsed(text: string) {
@@ -590,9 +623,12 @@ async function confirmWipe() {
         <div class="export-btns-row">
           <button :disabled="exporting" :aria-expanded="showEncrypt" @click="showEncrypt = !showEncrypt">{{ t('settings.encrypted') }}</button>
           <button :disabled="exporting" @click="pickRestoreFile">{{ t('settings.restore') }}</button>
+          <button :disabled="exporting" @click="pickCsvFile">{{ t('settings.importCsv') }}</button>
         </div>
       </div>
+      <p class="rules-hint">{{ t('settings.importCsvHint') }}</p>
       <input ref="fileInput" type="file" accept="application/json,.json" class="sr-only" aria-hidden="true" tabindex="-1" @change="onRestoreFile" />
+      <input ref="csvInput" type="file" accept="text/csv,.csv" class="sr-only" aria-hidden="true" tabindex="-1" @change="onCsvFile" />
 
       <form v-if="showEncrypt" class="enc-form" @submit.prevent="exportEncrypted">
         <p class="rules-hint">{{ t('settings.encHint') }}</p>
