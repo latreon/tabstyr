@@ -96,7 +96,7 @@
     --surface: #17171f;
     --surface-glow: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(122, 90, 248, 0.2), transparent);
     --card: rgba(255, 255, 255, 0.065);
-    --card-strong: rgba(255, 255, 255, 0.12);
+    --card-strong: rgba(255, 255, 255, 0.04);
     --border: rgba(255, 255, 255, 0.15);
     --text: #f1f1f7;
     --text-2: #d2d2df;
@@ -131,7 +131,7 @@
   --surface: #17171f;
   --surface-glow: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(122, 90, 248, 0.2), transparent);
   --card: rgba(255, 255, 255, 0.065);
-  --card-strong: rgba(255, 255, 255, 0.12);
+  --card-strong: rgba(255, 255, 255, 0.04);
   --border: rgba(255, 255, 255, 0.15);
   --text: #f1f1f7;
   --text-2: #d2d2df;
