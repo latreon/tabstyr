@@ -157,51 +157,33 @@ function paint(ctx: CanvasRenderingContext2D, c: ReportCardContent, scale: numbe
   ctx.fillStyle = dim;
   ctx.font = `700 20px ${FONT}`;
   ctx.fillText(c.sitesLabel.toUpperCase(), MARGIN, y);
-  y += 34; // breathing room under the "By site" heading
+  // Extra breathing room under the "By site" heading before the first row band.
+  let top = y + 26;
   for (const row of c.rows.slice(0, MAX_ROWS)) {
+    const cy = top + ROW_H / 2; // vertical centre of the row band
+    const baseline = cy + 8; // 22px text baseline that sits visually centered in the band
     // Soft row tint so the list reads as spaced rows, not a dense block.
     ctx.fillStyle = rowTint;
-    roundRect(ctx, MARGIN - 14, y - ROW_H + 14, innerW + 28, ROW_H - 8, 12);
+    roundRect(ctx, MARGIN - 14, top + 4, innerW + 28, ROW_H - 8, 12);
     ctx.fill();
     ctx.fillStyle = row.color;
     ctx.beginPath();
-    ctx.arc(MARGIN + 6, y - 6, 5, 0, Math.PI * 2);
+    ctx.arc(MARGIN + 6, cy, 5, 0, Math.PI * 2);
     ctx.fill();
     ctx.textAlign = 'left';
     ctx.fillStyle = ink;
     ctx.font = `500 22px ${FONT}`;
-    ctx.fillText(fit(ctx, row.label, innerW - 200), MARGIN + 24, y);
+    ctx.fillText(fit(ctx, row.label, innerW - 200), MARGIN + 24, baseline);
     ctx.textAlign = 'right';
     ctx.fillStyle = dim;
     ctx.font = `700 22px ${FONT}`;
-    ctx.fillText(row.value, W - MARGIN, y);
+    ctx.fillText(row.value, W - MARGIN, baseline);
     ctx.textAlign = 'left';
-    y += ROW_H;
+    top += ROW_H;
   }
   if (c.moreLabel) {
     ctx.fillStyle = dim;
     ctx.font = `500 20px ${FONT}`;
-    ctx.fillText(c.moreLabel, MARGIN, y + 10);
+    ctx.fillText(c.moreLabel, MARGIN, top + 24);
   }
-
-  // Footer: divider + branded wordmark ("TabStyr  tagline").
-  const footY = REPORT_HEIGHT - 64;
-  ctx.strokeStyle = line;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(MARGIN, footY - 30);
-  ctx.lineTo(W - MARGIN, footY - 30);
-  ctx.stroke();
-  ctx.font = `800 26px ${FONT}`;
-  const brandW = ctx.measureText(c.brand).width;
-  ctx.font = `500 20px ${FONT}`;
-  const tagW = ctx.measureText(`  ${c.tagline}`).width;
-  const startX = W / 2 - (brandW + tagW) / 2;
-  ctx.textAlign = 'left';
-  ctx.fillStyle = ink;
-  ctx.font = `800 26px ${FONT}`;
-  ctx.fillText(c.brand, startX, footY);
-  ctx.fillStyle = dim;
-  ctx.font = `500 20px ${FONT}`;
-  ctx.fillText(`  ${c.tagline}`, startX + brandW, footY);
 }
