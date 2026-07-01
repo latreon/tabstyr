@@ -243,6 +243,9 @@ test('screenshots for visual review', async ({ context, extensionId }) => {
     await expect
       .poll(() => dash.evaluate(() => document.documentElement.dataset.theme))
       .toBe(theme);
+    // Let any transient toast (e.g. a settings write) clear so it doesn't land in
+    // the store capture; then a short settle before the full-page shot.
+    await dash.locator('.toast').waitFor({ state: 'detached', timeout: 3_000 }).catch(() => {});
     await dash.waitForTimeout(200);
     await dash.screenshot({ path: `e2e/__screenshots__/dashboard-${theme}.png`, fullPage: true });
 
