@@ -302,5 +302,10 @@
     "productive": "Productivo",
     "distracting": "Distracción",
     "neutral": "Neutral"
+  },
+  "wrapped": {
+    "title": "Resumen de navegación",
+    "subtitle": "Convierte tus estadísticas en una historia para compartir: exporta una copia y ábrela en la web.",
+    "cta": "Abrir resumen"
   }
 }

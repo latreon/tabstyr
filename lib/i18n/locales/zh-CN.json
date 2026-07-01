@@ -302,5 +302,10 @@
     "productive": "高效",
     "distracting": "分心",
     "neutral": "中性"
+  },
+  "wrapped": {
+    "title": "浏览总结",
+    "subtitle": "把你的统计变成可分享的故事：导出备份并在网页中打开。",
+    "cta": "打开总结"
   }
 }

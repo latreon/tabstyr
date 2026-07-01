@@ -302,5 +302,10 @@
     "productive": "Üretken",
     "distracting": "Dikkat dağıtıcı",
     "neutral": "Nötr"
+  },
+  "wrapped": {
+    "title": "Gezinti Özeti",
+    "subtitle": "İstatistiklerinizi paylaşılabilir bir hikâyeye dönüştürün: bir yedek dışa aktarın ve web'de açın.",
+    "cta": "Özeti aç"
   }
 }

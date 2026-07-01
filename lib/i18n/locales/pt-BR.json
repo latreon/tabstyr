@@ -302,5 +302,10 @@
     "productive": "Produtivo",
     "distracting": "Distração",
     "neutral": "Neutro"
+  },
+  "wrapped": {
+    "title": "Retrospectiva de navegação",
+    "subtitle": "Transforme suas estatísticas em uma história para compartilhar: exporte um backup e abra na web.",
+    "cta": "Abrir retrospectiva"
   }
 }

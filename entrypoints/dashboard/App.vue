@@ -16,6 +16,7 @@ import FocusTrend from '@/components/FocusTrend.vue';
 import ComparisonTile from '@/components/ComparisonTile.vue';
 import HeatmapTile from '@/components/HeatmapTile.vue';
 import WorkLog from '@/components/WorkLog.vue';
+import WrappedTile from '@/components/WrappedTile.vue';
 import DomainDetail from '@/components/DomainDetail.vue';
 import TabTable from '@/components/TabTable.vue';
 import SettingsPanel from '@/components/SettingsPanel.vue';
@@ -182,6 +183,8 @@ onMounted(async () => {
       <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" />
       <HeatmapTile :data="s.heatmap.value" />
       <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :now="loadedNow" @select="openDetail" @set-category="s.setCategoryOverride" />
+      <!-- Browsing Wrapped — opens the shareable web summary (export a backup first) -->
+      <WrappedTile />
       <!-- row: 2 + 1 -->
       <TabTable :rows="s.tabRows.value" />
       <SettingsPanel @changed="() => s.load({ silent: true })" />

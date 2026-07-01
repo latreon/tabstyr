@@ -302,5 +302,10 @@
     "productive": "Productive",
     "distracting": "Distracting",
     "neutral": "Neutral"
+  },
+  "wrapped": {
+    "title": "Browsing Wrapped",
+    "subtitle": "Turn your stats into a shareable story — export a backup and open it on the web.",
+    "cta": "Open Wrapped"
   }
 }

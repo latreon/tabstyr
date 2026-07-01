@@ -302,5 +302,10 @@
     "productive": "Produttivo",
     "distracting": "Distrazione",
     "neutral": "Neutro"
+  },
+  "wrapped": {
+    "title": "Resoconto di navigazione",
+    "subtitle": "Trasforma le tue statistiche in una storia da condividere: esporta un backup e aprilo sul web.",
+    "cta": "Apri il resoconto"
   }
 }

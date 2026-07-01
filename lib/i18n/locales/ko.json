@@ -302,5 +302,10 @@
     "productive": "생산적",
     "distracting": "산만함",
     "neutral": "중립"
+  },
+  "wrapped": {
+    "title": "브라우징 랩업",
+    "subtitle": "통계를 공유할 수 있는 스토리로. 백업을 내보내 웹에서 열어 보세요.",
+    "cta": "랩업 열기"
   }
 }
