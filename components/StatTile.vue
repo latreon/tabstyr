@@ -21,16 +21,21 @@ defineEmits<{ activate: [] }>();
   >
     <h2 class="label">{{ label }}</h2>
     <span class="stat-value">{{ value }}</span>
-    <span v-if="clickable && actionHint" class="hint">{{ actionHint }}<span class="arrow" aria-hidden="true">→</span></span>
+    <!-- Always render the hint line so a zero/non-actionable tile (e.g. 0 stale
+         tabs) keeps the same height as its actionable sibling. -->
+    <span class="hint" :class="{ placeholder: !(clickable && actionHint) }">
+      <template v-if="clickable && actionHint">{{ actionHint }}<span class="arrow" aria-hidden="true">→</span></template>
+      <template v-else>&nbsp;</template>
+    </span>
   </component>
 </template>
 
 <style scoped>
 .stat-tile {
-  padding: 16px;
+  padding: var(--sp-4);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--sp-1);
   align-self: start; /* stay compact — don't stretch to the hero's height */
 }
 /* Reset button defaults so a clickable tile matches the static one exactly. */
@@ -61,16 +66,18 @@ button.stat-tile:focus-visible {
 }
 button.stat-tile.warn:hover { border-color: var(--warn); }
 .stat-value {
-  font-size: 28px;
+  font-size: var(--text-xl);
   font-weight: 800;
   letter-spacing: -0.5px;
 }
 .hint {
   margin-top: 2px;
-  font-size: 11px;
+  font-size: var(--text-xs);
   font-weight: 600;
   color: var(--text-3);
 }
+/* Reserves the hint line's height without showing anything (keeps tile heights equal). */
+.hint.placeholder { visibility: hidden; }
 button.stat-tile:hover .hint { color: var(--text); }
 .stat-tile.warn .hint,
 button.stat-tile.warn:hover .hint { color: var(--warn); }

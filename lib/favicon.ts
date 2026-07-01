@@ -1,8 +1,12 @@
 import { browser } from 'wxt/browser';
 
+// Letter-chip backgrounds (shown when a real favicon is unavailable). Each is dark
+// enough that the white letter clears WCAG AA (>=4.5:1), so the fallback stays
+// legible on any tile in either theme — the chip carries its own background, so the
+// contrast is theme-independent.
 export const CHIP_COLORS: readonly string[] = [
-  '#7c5cf0', '#5b8def', '#3fb27f', '#d97757',
-  '#c95c8e', '#5bb5c9', '#b08d3f', '#8a68d6',
+  '#6d5cf0', '#3b6fd4', '#1f7a49', '#c0553a',
+  '#b83d78', '#2b7f95', '#8a6a2e', '#7a52c8',
 ];
 
 /**

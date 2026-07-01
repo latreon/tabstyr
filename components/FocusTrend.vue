@@ -75,7 +75,7 @@ const hideTip = () => (tooltip.value = null);
         <div class="plot">
           <div class="bars">
             <div
-              v-for="p in points"
+              v-for="(p, i) in points"
               :key="p.key"
               class="bar-col"
               role="img"
@@ -89,8 +89,8 @@ const hideTip = () => (tooltip.value = null);
               <div
                 v-if="p.judged > 0"
                 class="bar-fill"
-                :class="{ good: p.focusPct >= target, partial: p.partial }"
-                :style="{ height: `${Math.max(p.focusPct, 2)}%` }"
+                :class="{ good: p.focusPct >= target, partial: p.partial, current: i === points.length - 1 }"
+                :style="{ height: `${Math.max(p.focusPct, 2)}%`, animationDelay: `${i * 16}ms` }"
               />
               <div v-else class="bar-empty" />
             </div>
@@ -214,9 +214,18 @@ const hideTip = () => (tooltip.value = null);
   min-height: 2px;
   opacity: 0.85;
   transition: height 300ms ease;
+  transform-origin: bottom;
+  animation: bar-rise 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 .bar-fill.good {
   background: var(--positive);
+}
+.bar-fill.current {
+  opacity: 1;
+  box-shadow: 0 0 12px -2px var(--accent-muted);
+}
+@keyframes bar-rise {
+  from { transform: scaleY(0); }
 }
 .bar-fill.partial {
   opacity: 0.5;
@@ -265,6 +274,6 @@ const hideTip = () => (tooltip.value = null);
   white-space: nowrap;
 }
 @media (prefers-reduced-motion: reduce) {
-  .bar-fill { transition: none; }
+  .bar-fill { transition: none; animation: none; }
 }
 </style>

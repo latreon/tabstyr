@@ -87,7 +87,7 @@ const stackSummary = computed(() =>
 
 <style scoped>
 .cat-tile {
-  padding: 16px;
+  padding: var(--sp-4);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -99,7 +99,7 @@ const stackSummary = computed(() =>
   justify-content: space-between;
 }
 .label {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 700;
   letter-spacing: 0.5px;
   color: var(--text-2);
@@ -112,7 +112,7 @@ const stackSummary = computed(() =>
 }
 .empty {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--text-3);
 }
 .stack {
@@ -151,7 +151,7 @@ const stackSummary = computed(() =>
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 18px;
+  gap: var(--sp-2) 18px;
 }
 .chips li {
   display: inline-flex;
@@ -177,7 +177,7 @@ const stackSummary = computed(() =>
   font-size: 10px;
   font-weight: 700;
   padding: 1px 6px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   color: var(--text-3);
   background: var(--bar-track);
   white-space: nowrap;

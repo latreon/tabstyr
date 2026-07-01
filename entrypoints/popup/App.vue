@@ -157,7 +157,7 @@ function openCoffee() {
   padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--sp-3);
   overflow: hidden;
 }
 .load-error {
@@ -189,7 +189,7 @@ function openCoffee() {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sp-2);
 }
 .brand {
   display: inline-flex;
@@ -201,7 +201,7 @@ function openCoffee() {
 }
 .counts {
   margin-left: auto;
-  font-size: 11px;
+  font-size: var(--text-xs);
   color: var(--text-3);
 }
 .stale-count {
@@ -212,14 +212,14 @@ function openCoffee() {
   position: relative;
 }
 .total {
-  font-size: 36px;
+  font-size: var(--text-2xl);
   font-weight: 800;
   letter-spacing: -1px;
 }
 .delta {
   font-size: 12px;
   font-weight: 700;
-  margin-left: 8px;
+  margin-left: var(--sp-2);
 }
 .delta.up { color: var(--positive); }
 .delta.down { color: var(--negative); }
@@ -231,7 +231,7 @@ function openCoffee() {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--sp-1);
 }
 .site-row {
   all: unset;
@@ -240,7 +240,7 @@ function openCoffee() {
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 7px 8px;
+  padding: 7px var(--sp-2);
   border-radius: var(--radius-sm);
   cursor: pointer;
 }
@@ -250,8 +250,8 @@ function openCoffee() {
 .site-line {
   display: flex;
   justify-content: space-between;
-  font-size: 13px;
-  gap: 8px;
+  font-size: var(--text-sm);
+  gap: var(--sp-2);
 }
 .domain {
   overflow: hidden;
@@ -265,7 +265,7 @@ function openCoffee() {
   height: 4px;
   border-radius: 2px;
   background: var(--bar-track);
-  margin-top: 4px;
+  margin-top: var(--sp-1);
   overflow: hidden;
 }
 .fill {
@@ -277,7 +277,7 @@ function openCoffee() {
 .actions {
   position: relative;
   display: flex;
-  gap: 8px;
+  gap: var(--sp-2);
 }
 .cta {
   flex: 1;
@@ -286,7 +286,7 @@ function openCoffee() {
   border: none;
   border-radius: var(--radius-sm);
   padding: 10px;
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
@@ -305,7 +305,7 @@ function openCoffee() {
   border: 1px solid var(--warn-border);
   border-radius: var(--radius-sm);
   padding: 10px 14px;
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
@@ -319,12 +319,12 @@ function openCoffee() {
   gap: 7px;
   width: 100%;
   margin-top: 2px;
-  padding: 8px 10px;
+  padding: var(--sp-2) 10px;
   background: transparent;
   border: 1px solid color-mix(in oklab, var(--accent) 40%, var(--border));
   border-radius: var(--radius-sm);
   color: var(--text-3);
-  font-size: 11px;
+  font-size: var(--text-xs);
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
@@ -332,7 +332,7 @@ function openCoffee() {
 .coffee:hover { border-color: var(--accent); color: var(--text); }
 .coffee:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .empty, .error { position: relative; margin: 0; }
-.skeleton { position: relative; display: flex; flex-direction: column; gap: 8px; }
+.skeleton { position: relative; display: flex; flex-direction: column; gap: var(--sp-2); }
 .sk {
   border-radius: var(--radius-sm);
   background: var(--bar-track);

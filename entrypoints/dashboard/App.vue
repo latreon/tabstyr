@@ -12,6 +12,7 @@ import TopSitesChart from '@/components/TopSitesChart.vue';
 import CategoryChart from '@/components/CategoryChart.vue';
 import ProductivityTile from '@/components/ProductivityTile.vue';
 import InsightsTile from '@/components/InsightsTile.vue';
+import FocusCategoriesTile from '@/components/FocusCategoriesTile.vue';
 import TrendChart from '@/components/TrendChart.vue';
 import FocusTrend from '@/components/FocusTrend.vue';
 import ComparisonTile from '@/components/ComparisonTile.vue';
@@ -147,7 +148,16 @@ onMounted(async () => {
         <ThemeToggle />
       </div>
     </header>
-    <p v-if="s.loading.value" class="label" role="status" aria-live="polite" aria-busy="true">{{ t('common.loading') }}</p>
+    <div v-if="s.loading.value" class="bento skel" role="status" aria-live="polite" aria-busy="true" :aria-label="t('common.loading')">
+      <div class="sk sk-hero" aria-hidden="true" />
+      <div class="sk sk-stat" aria-hidden="true" />
+      <div class="sk sk-stat" aria-hidden="true" />
+      <div class="sk sk-wide" aria-hidden="true" />
+      <div class="sk sk-two" aria-hidden="true" />
+      <div class="sk sk-one" aria-hidden="true" />
+      <div class="sk sk-row" aria-hidden="true" />
+      <div class="sk sk-row" aria-hidden="true" />
+    </div>
     <div v-else-if="s.loadError.value" class="load-error" role="alert">
       <p class="label">{{ t('common.loadError') }}</p>
       <button type="button" class="retry-btn" @click="s.load()">{{ t('common.retry') }}</button>
@@ -192,10 +202,11 @@ onMounted(async () => {
       <HeatmapTile :data="s.heatmap.value" />
       <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :now="loadedNow" @select="openDetail" @set-category="s.setCategoryOverride" />
       <!-- Projects / clients — tag domains, see time per tag, export invoice/CSV -->
-      <ProjectsTile :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :domain-tags="s.domainTags.value" :now="loadedNow" @set-tag="s.setDomainTag" />
+      <ProjectsTile :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :domain-tags="s.domainTags.value" :now="loadedNow" />
       <!-- Browsing Wrapped — opens the shareable web summary (export a backup first) -->
       <WrappedTile />
-      <!-- row: 2 + 1 -->
+      <FocusCategoriesTile :productivity="s.categoryProductivity.value" @set="s.setCategoryProductivity" />
+      <!-- row: 2 + 1 — Open tabs by time beside Settings -->
       <TabTable :rows="s.tabRows.value" />
       <SettingsPanel @changed="() => s.load({ silent: true })" />
       </section>
@@ -270,15 +281,15 @@ onMounted(async () => {
 .privacy-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   box-sizing: border-box;
-  height: 28px;
-  padding: 0 12px;
+  height: 34px;
+  padding: 0 14px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--card-strong);
   color: var(--text-2);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   font-family: inherit;
   text-decoration: none;
@@ -310,15 +321,15 @@ onMounted(async () => {
   margin-bottom: 16px;
   padding: 12px 16px;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--warn, #b0552f);
-  background: color-mix(in srgb, var(--warn, #b0552f) 12%, transparent);
+  border: 1px solid var(--warn);
+  background: var(--warn-bg);
   color: var(--text);
   font-size: 13px;
   font-weight: 600;
 }
 .privacy-badge .shield {
-  width: 13px;
-  height: 13px;
+  width: 15px;
+  height: 15px;
   flex: none;
   fill: none;
   stroke: var(--positive);
@@ -334,13 +345,13 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--card-strong);
   color: var(--text-2);
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1;
   text-decoration: none;
   transition: border-color 120ms ease, color 120ms ease;
@@ -354,6 +365,30 @@ onMounted(async () => {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space);
   align-items: stretch;
+}
+/* Loading skeleton — placeholder tiles that mirror the real bento while data loads. */
+.skel .sk {
+  border-radius: var(--radius);
+  background: linear-gradient(100deg, var(--card-strong) 30%, var(--bar-track) 50%, var(--card-strong) 70%);
+  background-size: 220% 100%;
+  border: 1px solid var(--border);
+  animation: sk-shimmer 1.3s ease-in-out infinite;
+}
+.sk-hero { grid-row: span 2; min-height: 220px; }
+.sk-stat { min-height: 100px; }
+.sk-wide { grid-column: span 2; min-height: 120px; }
+.sk-two { grid-column: span 2; min-height: 150px; }
+.sk-one { min-height: 150px; }
+.sk-row { grid-column: span 3; min-height: 120px; }
+@keyframes sk-shimmer {
+  0% { background-position: 180% 0; }
+  100% { background-position: -80% 0; }
+}
+@media (max-width: 760px) {
+  .skel > .sk { grid-column: 1 / -1 !important; grid-row: auto !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skel .sk { animation: none; }
 }
 @media (max-width: 760px) {
   .bento {
@@ -385,7 +420,7 @@ onMounted(async () => {
   border-radius: 12px;
   background: var(--popover);
   border: 1px solid var(--border);
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.32);
+  box-shadow: var(--shadow-pop);
   color: var(--text);
   font-size: 13px;
   font-weight: 600;

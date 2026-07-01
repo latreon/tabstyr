@@ -50,14 +50,14 @@ const label = computed(() => t('settings.switchTheme', { mode: modeLabel.value }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
   cursor: pointer;
   transition: border-color 120ms ease, color 120ms ease;
 }
 .ti {
-  width: 15px;
-  height: 15px;
+  width: 17px;
+  height: 17px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.8;

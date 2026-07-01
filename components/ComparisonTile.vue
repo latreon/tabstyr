@@ -95,7 +95,7 @@ const dir = (pct: number | null) => (pct === null ? '' : pct > 0 ? 'up' : pct < 
 
 <style scoped>
 .compare {
-  padding: 16px;
+  padding: var(--sp-4);
   grid-column: span 3;
   display: flex;
   flex-direction: column;
@@ -105,7 +105,7 @@ const dir = (pct: number | null) => (pct === null ? '' : pct > 0 ? 'up' : pct < 
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--sp-3);
 }
 .head-text {
   display: flex;
@@ -113,7 +113,7 @@ const dir = (pct: number | null) => (pct === null ? '' : pct > 0 ? 'up' : pct < 
   gap: 2px;
 }
 .label {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 700;
   letter-spacing: 0.5px;
   color: var(--text-2);
@@ -124,7 +124,7 @@ const dir = (pct: number | null) => (pct === null ? '' : pct > 0 ? 'up' : pct < 
 }
 .toggle {
   display: flex;
-  gap: 4px;
+  gap: var(--sp-1);
   flex: none;
 }
 .toggle button {
@@ -149,13 +149,13 @@ const dir = (pct: number | null) => (pct === null ? '' : pct > 0 ? 'up' : pct < 
 }
 .empty {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--text-3);
 }
 .headline {
   display: flex;
   align-items: baseline;
-  gap: 12px;
+  gap: var(--sp-3);
   flex-wrap: wrap;
 }
 .total {
@@ -164,7 +164,7 @@ const dir = (pct: number | null) => (pct === null ? '' : pct > 0 ? 'up' : pct < 
   letter-spacing: -1px;
 }
 .delta {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 700;
   display: inline-flex;
   align-items: center;
@@ -183,15 +183,15 @@ const dir = (pct: number | null) => (pct === null ? '' : pct > 0 ? 'up' : pct < 
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--sp-2);
 }
 .row {
   display: grid;
   grid-template-columns: 10px 84px 1fr 64px auto;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
-  padding: 4px 8px;
+  font-size: var(--text-sm);
+  padding: var(--sp-1) var(--sp-2);
   margin: 0 -8px;
   border-radius: var(--radius-sm);
   cursor: pointer;

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { formatDuration } from '@/lib/time';
+import { formatDurationLong } from '@/lib/time';
 import { focusTab } from '@/lib/navigate';
 import { displayDomain } from '@/lib/domain';
 import FaviconChip from '@/components/FaviconChip.vue';
@@ -98,7 +98,7 @@ function ago(ts: number): string {
             <span class="title-text">{{ displayDomain(r.domain) }}</span>
             <span v-if="r.tabCount > 1" class="tab-count">{{ t('tabTable.tabCount', { count: r.tabCount }) }}</span>
           </td>
-          <td>{{ formatDuration(r.seconds) }}</td>
+          <td>{{ formatDurationLong(r.seconds) }}</td>
           <td>{{ ago(r.lastActiveAt) }}</td>
         </tr>
       </tbody>
@@ -109,7 +109,7 @@ function ago(ts: number): string {
 
 <style scoped>
 .table-tile {
-  padding: 16px;
+  padding: var(--sp-4);
   grid-column: span 2;
 }
 .tt-head {
@@ -118,7 +118,7 @@ function ago(ts: number): string {
   gap: 2px;
 }
 .tt-head .label {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 700;
   letter-spacing: 0.5px;
   color: var(--text-2);
@@ -130,24 +130,24 @@ function ago(ts: number): string {
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
-  margin-top: 8px;
+  font-size: var(--text-sm);
+  margin-top: var(--sp-2);
 }
 th {
   text-align: left;
-  padding: 6px 8px;
+  padding: 6px var(--sp-2);
   border-bottom: 1px solid var(--border);
 }
 th button {
   all: unset;
   cursor: pointer;
-  font-size: 11px;
+  font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-3);
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--sp-1);
 }
 th button:hover {
   color: var(--text-2);
@@ -167,7 +167,7 @@ th button:hover {
   opacity: 1;
 }
 th.plain {
-  font-size: 11px;
+  font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-3);
@@ -181,7 +181,7 @@ th button:focus-visible {
   outline-offset: 2px;
 }
 td {
-  padding: 8px;
+  padding: var(--sp-2);
   border-bottom: 1px solid var(--divider);
   white-space: nowrap;
 }
@@ -203,15 +203,15 @@ td.title {
 }
 td.title .favicon {
   vertical-align: -4px;
-  margin-right: 8px;
+  margin-right: var(--sp-2);
 }
 .title-text {
   color: var(--text);
 }
 .tab-count {
   color: var(--text-3);
-  font-size: 11px;
+  font-size: var(--text-xs);
   font-variant-numeric: tabular-nums;
-  margin-left: 8px;
+  margin-left: var(--sp-2);
 }
 </style>

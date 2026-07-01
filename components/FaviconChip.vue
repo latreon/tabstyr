@@ -65,11 +65,19 @@ const SPECIAL_ICONS: Record<string, 'chrome' | 'edge'> = {
   height: 18px;
   border-radius: 5px;
   flex: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.14);
 }
-/* Real site favicons are often monochrome (e.g. GitHub's white mark) and vanish
-   on a same-colour background. A neutral halo outlines the icon in either theme. */
+/* Real favicons are all over the map — full-colour, transparent, or a monochrome
+   mark that would vanish on a same-colour surface (GitHub's dark mark on dark, a
+   white mark on light). Seat every one on a crisp white rounded tile (like an app
+   icon): guarantees contrast in BOTH themes, and the faint edge keeps the tile
+   distinct from a white card in light mode. object-fit + padding centre the glyph. */
 .raster {
-  filter: drop-shadow(0 0 0.6px rgba(110, 110, 125, 0.9)) drop-shadow(0 0 0.6px rgba(110, 110, 125, 0.6));
+  box-sizing: border-box;
+  padding: 2px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 .chip {
   display: inline-flex;

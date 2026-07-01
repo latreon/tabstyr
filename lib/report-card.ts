@@ -29,14 +29,20 @@ export interface ReportCardContent {
   rows: ReportCardRow[];
   /** Shown under the site list when rows were truncated (empty = nothing hidden). */
   moreLabel: string;
-  footer: string;
+  /** Brand wordmark (e.g. "TabStyr") + tagline, rendered as the footer. */
+  brand: string;
+  tagline: string;
+  /** Match the report to the user's current theme. */
+  theme: 'dark' | 'light';
 }
 
 const FONT = "'InterVar', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif";
 const MARGIN = 72;
-// Rows that fit the portrait page; caller may pass more (we note the remainder).
-export const REPORT_MAX_ROWS = 26;
+// Rows that fit the portrait page with comfortable spacing; caller may pass more
+// (we note the remainder under the list).
+export const REPORT_MAX_ROWS = 18;
 const MAX_ROWS = REPORT_MAX_ROWS;
+const ROW_H = 46;
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
   const radius = Math.min(r, w / 2, h / 2);
@@ -76,14 +82,19 @@ export function renderReportCard(canvas: HTMLCanvasElement, content: ReportCardC
 
 function paint(ctx: CanvasRenderingContext2D, c: ReportCardContent, scale: number): void {
   ctx.scale(scale, scale);
-  const ink = '#16161a';
-  const dim = 'rgba(22,22,26,0.55)';
-  const line = 'rgba(22,22,26,0.10)';
+  const dark = c.theme === 'dark';
+  const bg = dark ? '#1d1d26' : '#ffffff';
+  const ink = dark ? '#f4f4f6' : '#16161a';
+  const dim = dark ? 'rgba(244,244,246,0.72)' : 'rgba(22,22,26,0.62)';
+  const line = dark ? 'rgba(244,244,246,0.18)' : 'rgba(22,22,26,0.12)';
+  // Rows read as clear, distinct bands: a firmer fill + a hairline edge.
+  const rowTint = dark ? 'rgba(255,255,255,0.08)' : 'rgba(22,22,26,0.055)';
+  const rowEdge = dark ? 'rgba(255,255,255,0.12)' : 'rgba(22,22,26,0.09)';
   const W = REPORT_WIDTH;
   const innerW = W - MARGIN * 2;
 
   // Page.
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = bg;
   ctx.fillRect(0, 0, W, REPORT_HEIGHT);
 
   // Header.
@@ -144,37 +155,41 @@ function paint(ctx: CanvasRenderingContext2D, c: ReportCardContent, scale: numbe
   }
 
   // Site list.
-  y += 48;
+  y += 54;
   ctx.fillStyle = dim;
   ctx.font = `700 20px ${FONT}`;
   ctx.fillText(c.sitesLabel.toUpperCase(), MARGIN, y);
-  y += 30;
-  const rowH = 40;
+  // Extra breathing room under the "By site" heading before the first row band.
+  let top = y + 26;
   for (const row of c.rows.slice(0, MAX_ROWS)) {
+    const cy = top + ROW_H / 2; // vertical centre of the row band
+    const baseline = cy + 8; // 22px text baseline that sits visually centered in the band
+    // Distinct row band: firmer tint + hairline edge so rows are clearly visible.
+    roundRect(ctx, MARGIN - 14, top + 4, innerW + 28, ROW_H - 8, 12);
+    ctx.fillStyle = rowTint;
+    ctx.fill();
+    ctx.strokeStyle = rowEdge;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    // Category dot with a soft ring so it reads on any tint.
     ctx.fillStyle = row.color;
     ctx.beginPath();
-    ctx.arc(MARGIN + 6, y - 5, 5, 0, Math.PI * 2);
+    ctx.arc(MARGIN + 8, cy, 6, 0, Math.PI * 2);
     ctx.fill();
     ctx.textAlign = 'left';
     ctx.fillStyle = ink;
-    ctx.font = `500 22px ${FONT}`;
-    ctx.fillText(fit(ctx, row.label, innerW - 200), MARGIN + 24, y);
+    ctx.font = `600 22px ${FONT}`;
+    ctx.fillText(fit(ctx, row.label, innerW - 200), MARGIN + 28, baseline);
     ctx.textAlign = 'right';
-    ctx.fillStyle = dim;
-    ctx.font = `700 22px ${FONT}`;
-    ctx.fillText(row.value, W - MARGIN, y);
+    ctx.fillStyle = ink; // full-contrast time value
+    ctx.font = `800 22px ${FONT}`;
+    ctx.fillText(row.value, W - MARGIN, baseline);
     ctx.textAlign = 'left';
-    y += rowH;
+    top += ROW_H;
   }
   if (c.moreLabel) {
     ctx.fillStyle = dim;
     ctx.font = `500 20px ${FONT}`;
-    ctx.fillText(c.moreLabel, MARGIN + 24, y + 4);
+    ctx.fillText(c.moreLabel, MARGIN, top + 24);
   }
-
-  // Footer.
-  ctx.textAlign = 'center';
-  ctx.fillStyle = dim;
-  ctx.font = `600 20px ${FONT}`;
-  ctx.fillText(fit(ctx, c.footer, innerW), W / 2, REPORT_HEIGHT - 56);
 }

@@ -15,9 +15,39 @@
    * #6d28d9 ~= 7.1:1, #1d4ed8 ~= 6.7:1. The pastel --accent-gradient above stays
    * for decorative fills (bars, glows, gradient text) that carry no text. */
   --accent-grad-strong: linear-gradient(90deg, #6d28d9, #1d4ed8);
+  /* Soft translucent accent for glows/hover shadows. Overridden per theme below. */
+  --accent-muted: rgba(139, 139, 250, 0.35);
+  /* Overlay scrim behind modals + elevation shadows. Per-theme values below. */
+  --backdrop: rgba(8, 8, 16, 0.55);
+  --shadow-pop: 0 8px 28px rgba(0, 0, 0, 0.28);
+  --shadow-modal: 0 20px 56px rgba(0, 0, 0, 0.4);
+  /* ── Shape scale ── surfaces / controls / pills. One value per role. */
   --radius: 14px;
-  --radius-sm: 10px;
-  --space: 16px;
+  --radius-sm: 8px; /* controls — matches the dominant control radius across components */
+  --radius-pill: 999px;
+
+  /* ── Spacing scale ── every gap/pad should map to one of these. */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --space: 16px; /* legacy alias for the bento gutter (== --sp-4) */
+
+  /* ── Type scale ── value sizes pull from here, not per-component numbers. */
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-lg: 20px;
+  --text-xl: 28px;
+  --text-2xl: 36px;
+  --text-hero: clamp(2.5rem, 1.9rem + 2.2vw, 3.25rem);
+
+  /* Tile elevation — a real drop shadow in light, a top highlight in dark (where
+     black shadows are invisible). Set per theme; consumed by .tile. */
+  --tile-shadow: 0 1px 2px rgba(25, 25, 34, 0.04), 0 12px 32px -14px rgba(25, 25, 34, 0.16);
+
   --font-ui: 'InterVar', system-ui, -apple-system, sans-serif;
 }
 
@@ -45,6 +75,10 @@
   --row-hover: #eef0f7;
   --bar-track: #e7e9f1;
   --popover: #ffffff;
+  --accent-muted: rgba(109, 92, 240, 0.26);
+  --backdrop: rgba(8, 8, 16, 0.4);
+  --shadow-pop: 0 8px 28px rgba(17, 18, 38, 0.16);
+  --shadow-modal: 0 20px 56px rgba(17, 18, 38, 0.26);
   --on-accent: #ffffff;
 }
 
@@ -52,48 +86,67 @@
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --surface: #0a0a0f;
-    --surface-glow: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(122, 90, 248, 0.22), transparent);
-    --card: rgba(255, 255, 255, 0.04);
-    --card-strong: rgba(255, 255, 255, 0.07);
-    --border: rgba(255, 255, 255, 0.09);
+    --accent-a: #a78bfa;
+    --accent-b: #60a5fa;
+    --accent: #8b8bfa;
+    --accent-muted: rgba(139, 139, 250, 0.4);
+    --backdrop: rgba(0, 0, 0, 0.6);
+    --shadow-pop: 0 10px 30px rgba(0, 0, 0, 0.5);
+    --shadow-modal: 0 24px 60px rgba(0, 0, 0, 0.62);
+    --surface: #17171f;
+    --surface-glow: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(122, 90, 248, 0.2), transparent);
+    --card: rgba(255, 255, 255, 0.065);
+    --card-strong: rgba(255, 255, 255, 0.04);
+    --border: rgba(255, 255, 255, 0.15);
     --text: #f1f1f7;
-    --text-2: #c0c0d0;
-    --text-3: #9a9aad;
-    --divider: rgba(255, 255, 255, 0.07);
+    --text-2: #d2d2df;
+    --text-3: #adadbf;
+    --divider: rgba(255, 255, 255, 0.12);
     --warn: #fb923c;
     --warn-bg: rgba(251, 146, 60, 0.1);
     --warn-border: rgba(251, 146, 60, 0.28);
     --positive: #4ade80;
     --negative: #f87171;
     --shadow: none;
-    --row-hover: rgba(255, 255, 255, 0.05);
-    --bar-track: rgba(255, 255, 255, 0.07);
-    --popover: #16161d;
+  --tile-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    --row-hover: rgba(255, 255, 255, 0.1);
+    --bar-track: rgba(255, 255, 255, 0.13);
+    --popover: #23232d;
     --on-accent: #ffffff;
   }
 }
 
 [data-theme='dark'] {
   color-scheme: dark;
-  --surface: #0a0a0f;
-  --surface-glow: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(122, 90, 248, 0.22), transparent);
-  --card: rgba(255, 255, 255, 0.04);
-  --card-strong: rgba(255, 255, 255, 0.07);
-  --border: rgba(255, 255, 255, 0.09);
+  /* Dark surfaces take the BRIGHT accents (the base :root's dark-optimized pastels)
+     rather than the darkened accents light mode uses for contrast on white. */
+  --accent-a: #a78bfa;
+  --accent-b: #60a5fa;
+  --accent: #8b8bfa;
+  --accent-muted: rgba(139, 139, 250, 0.4);
+  --backdrop: rgba(0, 0, 0, 0.6);
+  --shadow-pop: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --shadow-modal: 0 24px 60px rgba(0, 0, 0, 0.62);
+  /* Lifted off near-black so the UI reads as "dark", not "black". */
+  --surface: #17171f;
+  --surface-glow: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(122, 90, 248, 0.2), transparent);
+  --card: rgba(255, 255, 255, 0.065);
+  --card-strong: rgba(255, 255, 255, 0.04);
+  --border: rgba(255, 255, 255, 0.15);
   --text: #f1f1f7;
-  --text-2: #c0c0d0;
-  --text-3: #9a9aad;
-  --divider: rgba(255, 255, 255, 0.07);
+  --text-2: #d2d2df;
+  --text-3: #adadbf;
+  --divider: rgba(255, 255, 255, 0.12);
   --warn: #fb923c;
   --warn-bg: rgba(251, 146, 60, 0.1);
   --warn-border: rgba(251, 146, 60, 0.28);
   --positive: #4ade80;
   --negative: #f87171;
   --shadow: none;
-  --row-hover: rgba(255, 255, 255, 0.05);
-  --bar-track: rgba(255, 255, 255, 0.07);
-  --popover: #16161d;
+  --tile-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --row-hover: rgba(255, 255, 255, 0.1);
+  --bar-track: rgba(255, 255, 255, 0.13);
+  --popover: #23232d;
   --on-accent: #ffffff;
 }
 
@@ -120,6 +173,10 @@
   --row-hover: #eef0f7;
   --bar-track: #e7e9f1;
   --popover: #ffffff;
+  --accent-muted: rgba(109, 92, 240, 0.26);
+  --backdrop: rgba(8, 8, 16, 0.4);
+  --shadow-pop: 0 8px 28px rgba(17, 18, 38, 0.16);
+  --shadow-modal: 0 20px 56px rgba(17, 18, 38, 0.26);
   --on-accent: #ffffff;
 }
 
@@ -195,7 +252,7 @@ h2.label {
   background: var(--card-strong);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  box-shadow: var(--tile-shadow);
 }
 
 /* Instant, styled hover/focus tooltip. Add data-tip="text" to any element.

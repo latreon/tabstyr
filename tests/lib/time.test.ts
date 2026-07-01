@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { addDays, dateKey, dayLabel, formatDuration, monthLabel } from '@/lib/time';
+import { addDays, dateKey, dayLabel, formatDuration, formatDurationLong, monthLabel } from '@/lib/time';
 
 describe('formatDuration', () => {
   test('formats sub-minute as exact seconds', () => {
@@ -22,6 +22,21 @@ describe('formatDuration', () => {
       const expected = m === 0 ? `${sec}s` : sec === 0 ? `${m}m` : `${m}m ${sec}s`;
       expect(formatDuration(s)).toBe(expected);
     }
+  });
+});
+
+describe('formatDurationLong', () => {
+  test('keeps days, hours AND minutes at the day scale', () => {
+    expect(formatDurationLong(24 * 3600 + 3 * 3600 + 12 * 60)).toBe('1d 3h 12m');
+  });
+  test('omits zero units but keeps the rest', () => {
+    expect(formatDurationLong(24 * 3600)).toBe('1d'); // exact day
+    expect(formatDurationLong(24 * 3600 + 12 * 60)).toBe('1d 12m'); // no whole hours
+    expect(formatDurationLong(3 * 3600 + 5 * 60)).toBe('3h 5m'); // under a day
+  });
+  test('sub-minute shows seconds', () => {
+    expect(formatDurationLong(45)).toBe('45s');
+    expect(formatDurationLong(0)).toBe('0s');
   });
 });
 

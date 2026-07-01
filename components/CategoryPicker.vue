@@ -132,7 +132,7 @@ onBeforeUnmount(() => {
   background: var(--popover);
   border: 1px solid var(--border);
   border-radius: 12px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22), 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-pop);
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -150,10 +150,10 @@ onBeforeUnmount(() => {
   padding: 7px 9px;
   border: none;
   background: transparent;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-family: inherit;
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--text-2);
   text-align: left;
 }

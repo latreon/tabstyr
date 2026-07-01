@@ -63,7 +63,7 @@ function hideTip() {
         <div v-for="t in ticks" :key="t.seconds" class="gridline" :style="{ bottom: `${(t.seconds / chartMax) * 100}%` }" aria-hidden="true" />
         <div class="bars" role="group" :aria-label="t('trend.title')">
           <div
-            v-for="p in points"
+            v-for="(p, i) in points"
             :key="p.key"
             class="bar-col"
             role="img"
@@ -74,7 +74,11 @@ function hideTip() {
             @focus="showTip($event, p)"
             @blur="hideTip"
           >
-            <div class="bar-fill" :class="{ partial: p.partial }" :style="{ height: `${(p.seconds / chartMax) * 100}%` }" />
+            <div
+              class="bar-fill"
+              :class="{ partial: p.partial, current: i === points.length - 1 }"
+              :style="{ height: `${(p.seconds / chartMax) * 100}%`, animationDelay: `${i * 16}ms` }"
+            />
           </div>
         </div>
         <div v-if="tooltip" class="tooltip" :style="{ left: `${tooltip.x}px`, bottom: `${tooltip.bottom}px` }" aria-hidden="true">
@@ -195,6 +199,19 @@ function hideTip() {
   border-radius: 3px 3px 0 0;
   min-height: 2px;
   opacity: 0.9;
+  transform-origin: bottom;
+  animation: bar-rise 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+/* The most-recent period ("now") reads as live: full opacity + a soft accent glow. */
+.bar-fill.current {
+  opacity: 1;
+  box-shadow: 0 0 12px -2px var(--accent-muted);
+}
+@keyframes bar-rise {
+  from { transform: scaleY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bar-fill { animation: none; }
 }
 /* Partial (in-progress / clipped) period: hatched + dimmed so it isn't read as a full month. */
 .bar-fill.partial {

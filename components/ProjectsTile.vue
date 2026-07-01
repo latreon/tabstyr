@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { buildReport } from '@/lib/report';
-import { buildTagReport, tagNames, tagReportCsv } from '@/lib/tags';
+import { buildTagReport, tagReportCsv } from '@/lib/tags';
 import { renderReportCard, canvasToImageBlob, REPORT_MAX_ROWS, type ReportCardContent } from '@/lib/report-card';
 import { downloadBlob, downloadFile } from '@/lib/export';
 import type { Category, CategoryRule } from '@/lib/categories';
@@ -19,7 +19,6 @@ const props = defineProps<{
   domainTags: Record<string, string>;
   now: number;
 }>();
-const emit = defineEmits<{ setTag: [domain: string, tag: string] }>();
 const { t } = useI18n();
 
 const today = dateKey(props.now);
@@ -31,7 +30,6 @@ const report = computed(() =>
   from.value <= to.value ? buildReport(props.stats, from.value, to.value, props.overrides, props.rules ?? []) : null,
 );
 const tagReport = computed(() => (report.value ? buildTagReport(report.value.domains, props.domainTags) : null));
-const existingTags = computed(() => tagNames(props.domainTags));
 
 // Deterministic accent per tag (stable across renders) from a small palette.
 const TAG_COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#06b6d4', '#8b5cf6', '#0d9488', '#ef4444'];
@@ -39,10 +37,6 @@ function tagColor(tag: string): string {
   let h = 0;
   for (let i = 0; i < tag.length; i++) h = (h * 31 + tag.charCodeAt(i)) >>> 0;
   return TAG_COLORS[h % TAG_COLORS.length];
-}
-
-function onTagInput(domain: string, e: Event) {
-  emit('setTag', domain, (e.target as HTMLInputElement).value);
 }
 
 const rangeLabel = computed(() =>
@@ -75,7 +69,9 @@ async function exportInvoice() {
       sitesLabel: t('projects.byClient'),
       rows: tr.groups.map((g) => ({ label: g.tag, value: formatDuration(g.seconds), color: tagColor(g.tag) })),
       moreLabel: tr.groups.length > REPORT_MAX_ROWS ? t('worklog.moreSites', { count: tr.groups.length - REPORT_MAX_ROWS }) : '',
-      footer: 'TabStyr · tabstyr.com',
+      brand: 'TabStyr',
+      tagline: 'tabstyr.com',
+      theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light',
     };
     const canvas = document.createElement('canvas');
     renderReportCard(canvas, content, 2);
@@ -118,25 +114,12 @@ async function exportInvoice() {
         </li>
       </ul>
 
-      <!-- Assign tags to the domains active in this range -->
-      <datalist id="tt-tag-options">
-        <option v-for="name in existingTags" :key="name" :value="name" />
-      </datalist>
       <ul class="domains">
         <li v-for="d in report.domains" :key="d.domain" class="domain-row">
           <FaviconChip :domain="d.domain" />
           <span class="d-name">{{ displayDomain(d.domain) }}</span>
+          <span v-if="domainTags[d.domain]" class="d-tag">{{ domainTags[d.domain] }}</span>
           <span class="d-time">{{ formatDuration(d.seconds) }}</span>
-          <input
-            class="tag-input"
-            type="text"
-            list="tt-tag-options"
-            maxlength="60"
-            :value="domainTags[d.domain] ?? ''"
-            :placeholder="t('projects.tagPlaceholder')"
-            :aria-label="t('projects.tagForAria', { domain: displayDomain(d.domain) })"
-            @change="onTagInput(d.domain, $event)"
-          />
         </li>
       </ul>
     </template>
@@ -146,20 +129,20 @@ async function exportInvoice() {
 
 <style scoped>
 .projects-tile {
-  padding: 16px;
+  padding: var(--sp-4);
   grid-column: span 3;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--sp-3);
 }
 .head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--sp-3);
   flex-wrap: wrap;
 }
-.label { font-size: 13px; font-weight: 700; letter-spacing: 0.5px; color: var(--text-2); }
+.label { font-size: var(--text-sm); font-weight: 700; letter-spacing: 0.5px; color: var(--text-2); }
 .controls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .dash { color: var(--text-3); }
 .act {
@@ -169,16 +152,16 @@ async function exportInvoice() {
   border: 1px solid var(--border);
   background: var(--card-strong);
   color: var(--text-2);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 600;
   cursor: pointer;
 }
 .act:hover:not(:disabled) { border-color: var(--accent); color: var(--text); }
 .act:disabled { opacity: 0.4; cursor: not-allowed; }
 .act:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.hint { margin: 0; font-size: 11px; color: var(--text-3); }
+.hint { margin: 0; font-size: var(--text-xs); color: var(--text-3); }
 .tag-summary {
   list-style: none;
   margin: 0;
@@ -191,8 +174,8 @@ async function exportInvoice() {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 5px 12px;
-  border-radius: 999px;
+  padding: 5px var(--sp-3);
+  border-radius: var(--radius-pill);
   background: var(--card-strong);
   border: 1px solid var(--border);
   font-size: 12px;
@@ -207,36 +190,28 @@ async function exportInvoice() {
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 2px 16px;
+  gap: var(--sp-2) 20px;
 }
 .domain-row {
   display: grid;
-  grid-template-columns: 18px 1fr auto 140px;
+  grid-template-columns: 18px 1fr auto auto;
   align-items: center;
   gap: 10px;
-  padding: 4px 8px;
+  padding: var(--sp-1) var(--sp-2);
   border-radius: var(--radius-sm);
 }
 .domain-row:hover { background: var(--row-hover); }
-.d-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); font-size: 13px; }
-.d-time { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-2); font-size: 13px; }
-.tag-input {
-  box-sizing: border-box;
-  width: 140px;
-  height: 30px;
-  padding: 0 8px;
+.d-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); font-size: var(--text-sm); }
+.d-tag {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-3);
+  padding: 1px var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--card-strong);
   border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--text);
-  border-radius: var(--radius-sm);
-  font: inherit;
-  font-size: 12px;
+  white-space: nowrap;
 }
-.tag-input::placeholder { color: var(--text-3); }
-.tag-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
-.empty { margin: 0; font-size: 13px; color: var(--text-3); }
-@media (max-width: 560px) {
-  .domain-row { grid-template-columns: 18px 1fr auto; }
-  .tag-input { grid-column: 2 / -1; width: 100%; }
-}
+.d-time { font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-2); font-size: var(--text-sm); }
+.empty { margin: 0; font-size: var(--text-sm); color: var(--text-3); }
 </style>

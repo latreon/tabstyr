@@ -32,9 +32,6 @@ const lines = computed(() =>
 <template>
   <div v-if="lines.length" class="tile insights-tile">
     <div class="head">
-      <span class="glyph" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><path d="M9 18h6" /><path d="M10 22h4" /><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1h6c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z" /></svg>
-      </span>
       <h2 class="label">{{ t('insights.title') }}</h2>
     </div>
     <ul class="lines">
@@ -46,10 +43,10 @@ const lines = computed(() =>
 <style scoped>
 .insights-tile {
   grid-column: span 3;
-  padding: 16px 18px;
+  padding: var(--sp-5) var(--sp-5);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--sp-3);
 }
 .head {
   display: flex;
@@ -61,24 +58,6 @@ const lines = computed(() =>
   font-weight: 700;
   letter-spacing: 0.5px;
   color: var(--text-2);
-}
-.glyph {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  background: color-mix(in oklab, var(--accent) 16%, transparent);
-}
-.glyph svg {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 .lines {
   list-style: none;

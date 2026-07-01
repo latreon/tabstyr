@@ -44,13 +44,13 @@ const prodWidth = computed(() => `${props.summary.todayFocusPct}%`);
 
 <style scoped>
 .prod-tile {
-  padding: 16px;
+  padding: var(--sp-4);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--sp-3);
 }
 .label {
-  font-size: 13px;
+  font-size: var(--text-sm);
   font-weight: 700;
   letter-spacing: 0.5px;
   color: var(--text-2);
@@ -59,10 +59,10 @@ const prodWidth = computed(() => `${props.summary.todayFocusPct}%`);
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 8px;
+  gap: var(--sp-2);
 }
 .pct {
-  font-size: 40px;
+  font-size: var(--text-2xl);
   font-weight: 800;
   letter-spacing: -1.5px;
   color: var(--text);
@@ -86,7 +86,7 @@ const prodWidth = computed(() => `${props.summary.todayFocusPct}%`);
 .split {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--sp-2);
 }
 .split-bar {
   height: 8px;
@@ -127,7 +127,7 @@ const prodWidth = computed(() => `${props.summary.todayFocusPct}%`);
 }
 .prod-empty {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--text-sm);
   line-height: 1.45;
   color: var(--text-3);
 }
