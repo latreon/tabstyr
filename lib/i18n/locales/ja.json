@@ -331,7 +331,62 @@
   "wrapped": {
     "title": "ブラウジング・ラップアップ",
     "subtitle": "統計を共有できるストーリーに。バックアップを書き出してウェブで開きます。",
-    "cta": "ラップアップを開く"
+    "cta": "ラップアップを開く",
+    "persona": {
+      "builder": {
+        "title": "ビルダー"
+      },
+      "operator": {
+        "title": "オペレーター"
+      },
+      "socialite": {
+        "title": "ソーシャライザー"
+      },
+      "binger": {
+        "title": "ビンジャー"
+      },
+      "analyst": {
+        "title": "アナリスト"
+      },
+      "tycoon": {
+        "title": "タイクーン"
+      },
+      "collector": {
+        "title": "コレクター"
+      },
+      "wanderer": {
+        "title": "ワンダラー"
+      },
+      "explorer": {
+        "title": "エクスプローラー"
+      }
+    },
+    "card": {
+      "heading": "ブラウジング・ラップアップ",
+      "totalCaption": "アクティブ合計時間",
+      "topSite": "トップサイト",
+      "topCategory": "トップカテゴリ",
+      "focus": "フォーカス",
+      "peak": "最も活発",
+      "days": "記録日数",
+      "footer": "TabStyr · デバイスから0バイトも出ません"
+    },
+    "chrono": {
+      "earlyBird": "早起き",
+      "daytimer": "昼型",
+      "nightOwl": "夜型",
+      "allHours": "終日"
+    },
+    "modal": {
+      "download": "シェアカードを保存",
+      "downloading": "準備中…",
+      "empty": "少し閲覧すると、ここにラップアップが表示されます。",
+      "streakStat": "最長フォーカス連続記録",
+      "busiestStat": "最も忙しい日",
+      "longestStat": "最長の単一訪問",
+      "sitesStat": "訪問サイト数"
+    },
+    "daysCovered": "{count}日 | {count}日"
   },
   "insights": {
     "title": "インサイト",

@@ -331,7 +331,62 @@
   "wrapped": {
     "title": "Gezinti Özeti",
     "subtitle": "İstatistiklerinizi paylaşılabilir bir hikâyeye dönüştürün: bir yedek dışa aktarın ve web'de açın.",
-    "cta": "Özeti aç"
+    "cta": "Özeti aç",
+    "persona": {
+      "builder": {
+        "title": "İnşacı"
+      },
+      "operator": {
+        "title": "Operatör"
+      },
+      "socialite": {
+        "title": "Sosyal"
+      },
+      "binger": {
+        "title": "Maratoncu"
+      },
+      "analyst": {
+        "title": "Analist"
+      },
+      "tycoon": {
+        "title": "Patron"
+      },
+      "collector": {
+        "title": "Koleksiyoncu"
+      },
+      "wanderer": {
+        "title": "Gezgin"
+      },
+      "explorer": {
+        "title": "Kaşif"
+      }
+    },
+    "card": {
+      "heading": "Gezinti Özeti",
+      "totalCaption": "toplam etkin süre",
+      "topSite": "En çok site",
+      "topCategory": "En çok kategori",
+      "focus": "Odak",
+      "peak": "En aktif",
+      "days": "Takip edilen gün",
+      "footer": "TabStyr · cihazından 0 bayt ayrılır"
+    },
+    "chrono": {
+      "earlyBird": "Erkenci",
+      "daytimer": "Gündüzcü",
+      "nightOwl": "Gece kuşu",
+      "allHours": "Her saat"
+    },
+    "modal": {
+      "download": "Kartı indir",
+      "downloading": "Hazırlanıyor…",
+      "empty": "Biraz gezin, özetin burada görünecek.",
+      "streakStat": "En uzun odak serisi",
+      "busiestStat": "En yoğun gün",
+      "longestStat": "En uzun ziyaret",
+      "sitesStat": "Ziyaret edilen siteler"
+    },
+    "daysCovered": "{count} gün | {count} gün"
   },
   "insights": {
     "title": "İçgörüler",

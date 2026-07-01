@@ -331,7 +331,62 @@
   "wrapped": {
     "title": "브라우징 랩업",
     "subtitle": "통계를 공유할 수 있는 스토리로. 백업을 내보내 웹에서 열어 보세요.",
-    "cta": "랩업 열기"
+    "cta": "랩업 열기",
+    "persona": {
+      "builder": {
+        "title": "빌더"
+      },
+      "operator": {
+        "title": "오퍼레이터"
+      },
+      "socialite": {
+        "title": "소셜라이저"
+      },
+      "binger": {
+        "title": "정주행러"
+      },
+      "analyst": {
+        "title": "분석가"
+      },
+      "tycoon": {
+        "title": "거물"
+      },
+      "collector": {
+        "title": "수집가"
+      },
+      "wanderer": {
+        "title": "방랑자"
+      },
+      "explorer": {
+        "title": "탐험가"
+      }
+    },
+    "card": {
+      "heading": "브라우징 랩업",
+      "totalCaption": "총 활동 시간",
+      "topSite": "최다 사이트",
+      "topCategory": "최다 카테고리",
+      "focus": "집중",
+      "peak": "가장 활발",
+      "days": "기록된 일수",
+      "footer": "TabStyr · 기기에서 0바이트도 나가지 않습니다"
+    },
+    "chrono": {
+      "earlyBird": "아침형",
+      "daytimer": "주간형",
+      "nightOwl": "올빼미형",
+      "allHours": "하루 종일"
+    },
+    "modal": {
+      "download": "공유 카드 저장",
+      "downloading": "준비 중…",
+      "empty": "잠시 둘러보면 랩업이 여기에 나타납니다.",
+      "streakStat": "최장 집중 연속",
+      "busiestStat": "가장 바쁜 날",
+      "longestStat": "최장 단일 방문",
+      "sitesStat": "방문한 사이트"
+    },
+    "daysCovered": "{count}일 | {count}일"
   },
   "insights": {
     "title": "인사이트",

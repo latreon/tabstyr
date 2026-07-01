@@ -20,6 +20,7 @@ import HeatmapTile from '@/components/HeatmapTile.vue';
 import WorkLog from '@/components/WorkLog.vue';
 import ProjectsTile from '@/components/ProjectsTile.vue';
 import WrappedTile from '@/components/WrappedTile.vue';
+import WrappedModal from '@/components/WrappedModal.vue';
 import DomainDetail from '@/components/DomainDetail.vue';
 import TabTable from '@/components/TabTable.vue';
 import SettingsPanel from '@/components/SettingsPanel.vue';
@@ -35,6 +36,7 @@ const s = useStats();
 const loadedNow = Date.now();
 const selected = ref<{ domain: string; now: number } | null>(null);
 const showPrivacy = ref(false);
+const showWrapped = ref(false);
 function openDetail(domain: string) {
   selected.value = { domain, now: Date.now() };
 }
@@ -203,8 +205,8 @@ onMounted(async () => {
       <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :now="loadedNow" @select="openDetail" @set-category="s.setCategoryOverride" />
       <!-- Projects / clients — tag domains, see time per tag, export invoice/CSV -->
       <ProjectsTile :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :domain-tags="s.domainTags.value" :now="loadedNow" />
-      <!-- Browsing Wrapped — opens the shareable web summary (export a backup first) -->
-      <WrappedTile />
+      <!-- Browsing Wrapped — opens the in-app shareable summary, computed from local data -->
+      <WrappedTile @open="showWrapped = true" />
       <FocusCategoriesTile :productivity="s.categoryProductivity.value" @set="s.setCategoryProductivity" />
       <!-- row: 2 + 1 — Open tabs by time beside Settings -->
       <TabTable :rows="s.tabRows.value" />
@@ -226,6 +228,16 @@ onMounted(async () => {
   />
 
   <PrivacyDialog v-if="showPrivacy" @close="showPrivacy = false" />
+
+  <WrappedModal
+    v-if="showWrapped"
+    :daily-stats="s.stats.value"
+    :sessions="s.recentSessions.value"
+    :overrides="s.overrides.value"
+    :rules="s.categoryRules.value"
+    :productivity="s.categoryProductivity.value"
+    @close="showWrapped = false"
+  />
 
   <TabsModal
     v-if="tabsMode"

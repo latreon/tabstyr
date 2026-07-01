@@ -331,7 +331,62 @@
   "wrapped": {
     "title": "Rétrospective de navigation",
     "subtitle": "Transformez vos statistiques en une story à partager : exportez une sauvegarde et ouvrez-la sur le web.",
-    "cta": "Ouvrir la rétrospective"
+    "cta": "Ouvrir la rétrospective",
+    "persona": {
+      "builder": {
+        "title": "Le Bâtisseur"
+      },
+      "operator": {
+        "title": "L'Organisateur"
+      },
+      "socialite": {
+        "title": "Le Sociable"
+      },
+      "binger": {
+        "title": "Le Binge-watcher"
+      },
+      "analyst": {
+        "title": "L'Analyste"
+      },
+      "tycoon": {
+        "title": "Le Magnat"
+      },
+      "collector": {
+        "title": "Le Collectionneur"
+      },
+      "wanderer": {
+        "title": "Le Vagabond"
+      },
+      "explorer": {
+        "title": "L'Explorateur"
+      }
+    },
+    "card": {
+      "heading": "Rétrospective de navigation",
+      "totalCaption": "temps actif total",
+      "topSite": "Site principal",
+      "topCategory": "Catégorie principale",
+      "focus": "Concentration",
+      "peak": "Le plus actif",
+      "days": "Jours suivis",
+      "footer": "TabStyr · 0 octet ne quitte votre appareil"
+    },
+    "chrono": {
+      "earlyBird": "Lève-tôt",
+      "daytimer": "Diurne",
+      "nightOwl": "Noctambule",
+      "allHours": "À toute heure"
+    },
+    "modal": {
+      "download": "Télécharger la carte",
+      "downloading": "Préparation…",
+      "empty": "Naviguez un peu et votre rétrospective apparaîtra ici.",
+      "streakStat": "Plus longue série de concentration",
+      "busiestStat": "Jour le plus actif",
+      "longestStat": "Plus longue visite",
+      "sitesStat": "Sites visités"
+    },
+    "daysCovered": "{count} jour | {count} jours"
   },
   "insights": {
     "title": "Aperçus",

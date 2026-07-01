@@ -1,21 +1,15 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { browser } from 'wxt/browser';
-import { WRAPPED_URL } from '@/lib/links';
 import { ICONS } from '@/lib/wrapped-icons';
 
+const emit = defineEmits<{ open: [] }>();
 const { t } = useI18n();
 // Reuse the shared sparkles glyph so the on-brand icon matches the web Wrapped.
 const sparklePaths = ICONS.sparkles.paths;
-
-function open() {
-  // User-initiated navigation only — the extension makes no network request.
-  void browser.tabs.create({ url: WRAPPED_URL });
-}
 </script>
 
 <template>
-  <button type="button" class="tile wrapped-tile" @click="open">
+  <button type="button" class="tile wrapped-tile" @click="emit('open')">
     <span class="glyph" aria-hidden="true">
       <svg viewBox="0 0 24 24"><path v-for="(d, i) in sparklePaths" :key="i" :d="d" /></svg>
     </span>

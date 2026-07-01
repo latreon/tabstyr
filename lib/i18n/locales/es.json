@@ -331,7 +331,62 @@
   "wrapped": {
     "title": "Resumen de navegación",
     "subtitle": "Convierte tus estadísticas en una historia para compartir: exporta una copia y ábrela en la web.",
-    "cta": "Abrir resumen"
+    "cta": "Abrir resumen",
+    "persona": {
+      "builder": {
+        "title": "El Constructor"
+      },
+      "operator": {
+        "title": "El Operador"
+      },
+      "socialite": {
+        "title": "El Sociable"
+      },
+      "binger": {
+        "title": "El Maratonista"
+      },
+      "analyst": {
+        "title": "El Analista"
+      },
+      "tycoon": {
+        "title": "El Magnate"
+      },
+      "collector": {
+        "title": "El Coleccionista"
+      },
+      "wanderer": {
+        "title": "El Errante"
+      },
+      "explorer": {
+        "title": "El Explorador"
+      }
+    },
+    "card": {
+      "heading": "Resumen de navegación",
+      "totalCaption": "tiempo activo total",
+      "topSite": "Sitio principal",
+      "topCategory": "Categoría principal",
+      "focus": "Enfoque",
+      "peak": "Más activo",
+      "days": "Días registrados",
+      "footer": "TabStyr · 0 bytes salen de tu dispositivo"
+    },
+    "chrono": {
+      "earlyBird": "Madrugador",
+      "daytimer": "Diurno",
+      "nightOwl": "Noctámbulo",
+      "allHours": "A toda hora"
+    },
+    "modal": {
+      "download": "Descargar tarjeta",
+      "downloading": "Preparando…",
+      "empty": "Navega un poco y tu resumen aparecerá aquí.",
+      "streakStat": "Racha de enfoque más larga",
+      "busiestStat": "Día más activo",
+      "longestStat": "Visita más larga",
+      "sitesStat": "Sitios visitados"
+    },
+    "daysCovered": "{count} día | {count} días"
   },
   "insights": {
     "title": "Perspectivas",

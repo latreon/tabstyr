@@ -331,7 +331,62 @@
   "wrapped": {
     "title": "Retrospectiva de navegação",
     "subtitle": "Transforme suas estatísticas em uma história para compartilhar: exporte um backup e abra na web.",
-    "cta": "Abrir retrospectiva"
+    "cta": "Abrir retrospectiva",
+    "persona": {
+      "builder": {
+        "title": "O Construtor"
+      },
+      "operator": {
+        "title": "O Operador"
+      },
+      "socialite": {
+        "title": "O Sociável"
+      },
+      "binger": {
+        "title": "O Maratonista"
+      },
+      "analyst": {
+        "title": "O Analista"
+      },
+      "tycoon": {
+        "title": "O Magnata"
+      },
+      "collector": {
+        "title": "O Colecionador"
+      },
+      "wanderer": {
+        "title": "O Andarilho"
+      },
+      "explorer": {
+        "title": "O Explorador"
+      }
+    },
+    "card": {
+      "heading": "Retrospectiva de navegação",
+      "totalCaption": "tempo ativo total",
+      "topSite": "Site principal",
+      "topCategory": "Categoria principal",
+      "focus": "Foco",
+      "peak": "Mais ativo",
+      "days": "Dias registrados",
+      "footer": "TabStyr · 0 bytes saem do seu dispositivo"
+    },
+    "chrono": {
+      "earlyBird": "Madrugador",
+      "daytimer": "Diurno",
+      "nightOwl": "Notívago",
+      "allHours": "O tempo todo"
+    },
+    "modal": {
+      "download": "Baixar cartão",
+      "downloading": "Preparando…",
+      "empty": "Navegue um pouco e sua retrospectiva aparecerá aqui.",
+      "streakStat": "Maior sequência de foco",
+      "busiestStat": "Dia mais movimentado",
+      "longestStat": "Visita mais longa",
+      "sitesStat": "Sites visitados"
+    },
+    "daysCovered": "{count} dia | {count} dias"
   },
   "insights": {
     "title": "Insights",
