@@ -192,17 +192,17 @@ onMounted(async () => {
         @activate="openTabsModal('stale')"
       />
       <!-- Today by category fills the space below Open tabs / Stale tabs, beside the tall hero -->
-      <CategoryChart :slices="s.todayByCategory.value" :budgets="s.categoryBudgets.value" />
+      <CategoryChart :slices="s.todayByCategory.value" :budgets="s.categoryBudgets.value" :custom="s.customCategories.value" />
       <!-- Top sites today + Focus today -->
       <TopSitesChart :domains="s.todayByDomain.value" @select="openDetail" />
       <ProductivityTile id="focus" :summary="s.productivity.value" />
       <!-- full-width rows -->
       <InsightsTile :insights="s.insights.value" />
       <TrendChart :stats="s.activeStats.value" :now="loadedNow" />
-      <FocusTrend :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :productivity="s.categoryProductivity.value" :now="loadedNow" :target="s.productivity.value.focusTarget" />
-      <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" />
+      <FocusTrend :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :productivity="s.categoryProductivity.value" :custom="s.customCategories.value" :now="loadedNow" :target="s.productivity.value.focusTarget" />
+      <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :custom="s.customCategories.value" />
       <HeatmapTile :data="s.heatmap.value" />
-      <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :now="loadedNow" @select="openDetail" @set-category="s.setCategoryOverride" />
+      <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :custom="s.customCategories.value" :now="loadedNow" @select="openDetail" @set-category="s.setCategoryOverride" />
       <!-- Projects / clients — tag domains, see time per tag, export invoice/CSV -->
       <ProjectsTile :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :domain-tags="s.domainTags.value" :now="loadedNow" />
       <!-- Browsing Wrapped — opens the in-app shareable summary, computed from local data -->
@@ -223,6 +223,7 @@ onMounted(async () => {
     :now="selected.now"
     :overrides="s.overrides.value"
     :rules="s.categoryRules.value"
+    :custom="s.customCategories.value"
     @close="selected = null"
     @set-category="s.setCategoryOverride"
   />
@@ -236,6 +237,7 @@ onMounted(async () => {
     :overrides="s.overrides.value"
     :rules="s.categoryRules.value"
     :productivity="s.categoryProductivity.value"
+    :custom="s.customCategories.value"
     @close="showWrapped = false"
   />
 

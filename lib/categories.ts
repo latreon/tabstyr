@@ -3,8 +3,21 @@ import { isLocalDevHost } from './domain';
 export const CATEGORIES = ['Work', 'Dev', 'Finance', 'Social', 'Media', 'News', 'Shopping', 'Other'] as const;
 export type Category = (typeof CATEGORIES)[number];
 
+// A stored category VALUE: either a built-in Category name or a user-defined custom
+// category name. Data (overrides, rules, slices, categorize results) uses this
+// widened type; built-in-only maps (CATEGORY_META, CATEGORY_PRODUCTIVITY) stay keyed
+// by Category. Resolve display/behaviour via the helpers below.
+export type CategoryId = string;
+
 export function isCategory(v: unknown): v is Category {
   return typeof v === 'string' && (CATEGORIES as readonly string[]).includes(v);
+}
+
+/** A user-added category on top of the built-ins. Its `name` is its stored value. */
+export interface CustomCategory {
+  name: string;
+  color: string;
+  productivity: Productivity;
 }
 
 export const CATEGORY_META: Record<Category, { color: string }> = {
@@ -18,11 +31,45 @@ export const CATEGORY_META: Record<Category, { color: string }> = {
   Other: { color: '#94a3b8' }, // slate
 };
 
+const CUSTOM_FALLBACK_COLOR = '#94a3b8';
+
+/**
+ * Display label for any category value. Built-ins resolve through i18n; custom
+ * categories are shown by their (user-authored) name verbatim.
+ */
+export function categoryLabel(id: CategoryId, t: (key: string) => string): string {
+  return isCategory(id) ? t(`categories.${id}`) : id;
+}
+
+/** Resolve any category value's swatch color — built-in map or a custom def. */
+export function categoryColor(id: CategoryId, custom: readonly CustomCategory[] = []): string {
+  if (isCategory(id)) return CATEGORY_META[id].color;
+  return custom.find((c) => c.name === id)?.color ?? CUSTOM_FALLBACK_COLOR;
+}
+
+/** All selectable category values: the built-ins plus any custom names. */
+export function allCategoryIds(custom: readonly CustomCategory[] = []): CategoryId[] {
+  return [...CATEGORIES, ...custom.map((c) => c.name)];
+}
+
+/**
+ * Resolve a category value's productive/distracting/neutral classification.
+ * Built-ins read the (user-editable) mapping; custom categories carry their own.
+ */
+export function categoryProductivityOf(
+  id: CategoryId,
+  mapping: Record<Category, Productivity>,
+  custom: readonly CustomCategory[] = [],
+): Productivity {
+  if (isCategory(id)) return mapping[id];
+  return custom.find((c) => c.name === id)?.productivity ?? 'neutral';
+}
+
 /** A user-defined rule: any domain containing `pattern` (case-insensitive
  * substring) maps to `category`. Checked before the built-in rules. */
 export interface CategoryRule {
   pattern: string;
-  category: Category;
+  category: CategoryId;
 }
 
 // Built-in substring rules, first match wins. Order matters: Dev/Work before
@@ -118,7 +165,7 @@ const RULES: ReadonlyArray<readonly [Category, readonly string[]]> = [
 ];
 
 /** Apply user rules (substring, case-insensitive, first match). */
-function matchUserRule(domain: string, rules: readonly CategoryRule[]): Category | undefined {
+function matchUserRule(domain: string, rules: readonly CategoryRule[]): CategoryId | undefined {
   for (const r of rules) {
     const p = r.pattern.trim().toLowerCase();
     if (p && domain.includes(p)) return r.category;
@@ -135,9 +182,9 @@ function matchUserRule(domain: string, rules: readonly CategoryRule[]): Category
  */
 export function categorize(
   domain: string,
-  overrides: Record<string, Category> = {},
+  overrides: Record<string, CategoryId> = {},
   rules: readonly CategoryRule[] = [],
-): Category {
+): CategoryId {
   const override = overrides[domain];
   if (override) return override;
   const d = domain.toLowerCase();
@@ -175,11 +222,11 @@ function domainMatches(domain: string, needle: string): boolean {
  * to one categorize() call per distinct domain. Build one per aggregation pass.
  */
 export function makeCategorizer(
-  overrides: Record<string, Category> = {},
+  overrides: Record<string, CategoryId> = {},
   rules: readonly CategoryRule[] = [],
-): (domain: string) => Category {
-  const cache = new Map<string, Category>();
-  return (domain: string): Category => {
+): (domain: string) => CategoryId {
+  const cache = new Map<string, CategoryId>();
+  return (domain: string): CategoryId => {
     const hit = cache.get(domain);
     if (hit !== undefined) return hit;
     const c = categorize(domain, overrides, rules);
@@ -213,7 +260,7 @@ export const CATEGORY_PRODUCTIVITY: Record<Category, Productivity> = {
 };
 
 export interface CategorySlice {
-  category: Category;
+  category: CategoryId;
   seconds: number;
   audioSeconds: number;
 }
@@ -221,10 +268,10 @@ export interface CategorySlice {
 /** Aggregate per-domain time into per-category slices, sorted by time desc. */
 export function groupByCategory(
   domains: Array<{ domain: string; seconds: number; audioSeconds: number }>,
-  overrides: Record<string, Category> = {},
+  overrides: Record<string, CategoryId> = {},
   rules: readonly CategoryRule[] = [],
 ): CategorySlice[] {
-  const map = new Map<Category, CategorySlice>();
+  const map = new Map<CategoryId, CategorySlice>();
   for (const d of domains) {
     const category = categorize(d.domain, overrides, rules);
     const cur = map.get(category) ?? { category, seconds: 0, audioSeconds: 0 };

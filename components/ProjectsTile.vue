@@ -5,7 +5,7 @@ import { buildReport } from '@/lib/report';
 import { buildTagReport, tagReportCsv } from '@/lib/tags';
 import { renderReportCard, canvasToImageBlob, REPORT_MAX_ROWS, type ReportCardContent } from '@/lib/report-card';
 import { downloadBlob, downloadFile } from '@/lib/export';
-import type { Category, CategoryRule } from '@/lib/categories';
+import type { CategoryId, CategoryRule } from '@/lib/categories';
 import { addDays, dateKey, formatDuration, longDateLabel } from '@/lib/time';
 import { displayDomain } from '@/lib/domain';
 import type { DailyStat } from '@/lib/types';
@@ -14,7 +14,7 @@ import DatePicker from '@/components/ui/DatePicker.vue';
 
 const props = defineProps<{
   stats: DailyStat[];
-  overrides: Record<string, Category>;
+  overrides: Record<string, CategoryId>;
   rules?: CategoryRule[];
   domainTags: Record<string, string>;
   now: number;

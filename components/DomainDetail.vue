@@ -8,7 +8,7 @@ import { topSubPages } from '@/lib/subpages';
 import { formatDuration } from '@/lib/time';
 import { openDomain, openPage } from '@/lib/navigate';
 import { isWebDomain, displayDomain } from '@/lib/domain';
-import { CATEGORIES, categorize, type Category, type CategoryRule } from '@/lib/categories';
+import { allCategoryIds, categorize, categoryLabel, type CategoryId, type CategoryRule, type CustomCategory } from '@/lib/categories';
 import type { DailyStat, Session } from '@/lib/types';
 import FaviconChip from '@/components/FaviconChip.vue';
 // import HeatmapTile from '@/components/HeatmapTile.vue'; // Activity heatmap hidden in the site modal (commented out, not removed)
@@ -20,13 +20,14 @@ const props = defineProps<{
   stats: DailyStat[];
   sessions: Session[];
   now: number;
-  overrides: Record<string, Category>;
+  overrides: Record<string, CategoryId>;
   rules?: CategoryRule[];
+  custom?: CustomCategory[];
 }>();
-const emit = defineEmits<{ close: []; setCategory: [domain: string, category: Category] }>();
+const emit = defineEmits<{ close: []; setCategory: [domain: string, category: CategoryId] }>();
 
 const { t } = useI18n();
-const CATEGORY_OPTIONS = computed(() => CATEGORIES.map((c) => ({ value: c, label: t(`categories.${c}`) })));
+const CATEGORY_OPTIONS = computed(() => allCategoryIds(props.custom).map((c) => ({ value: c, label: categoryLabel(c, t) })));
 const currentCategory = computed(() => categorize(props.domain, props.overrides, props.rules ?? []));
 
 const closeBtn = ref<HTMLButtonElement | null>(null);
@@ -131,7 +132,7 @@ onUnmounted(() => {
           :model-value="currentCategory"
           :options="CATEGORY_OPTIONS"
           :label="t('domainDetail.category')"
-          @update:model-value="emit('setCategory', domain, $event as Category)"
+          @update:model-value="emit('setCategory', domain, $event as CategoryId)"
         />
       </div>
 

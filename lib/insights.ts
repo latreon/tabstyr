@@ -1,6 +1,6 @@
 import { peakHour, type HeatmapData } from './heatmap';
 import type { Comparison } from './comparison';
-import type { Category } from './categories';
+import type { CategoryId } from './categories';
 
 // Derives short "insight" lines from data the dashboard already computes (heatmap,
 // week comparison, focus summary). Pure: returns structured {key, params} so the UI
@@ -48,8 +48,8 @@ function busiestWeekday(data: HeatmapData): number | null {
 }
 
 /** The category with the largest week-over-week % move that has a real baseline. */
-function biggestCategoryShift(week: Comparison): { category: Category; pct: number } | null {
-  let best: { category: Category; pct: number } | null = null;
+function biggestCategoryShift(week: Comparison): { category: CategoryId; pct: number } | null {
+  let best: { category: CategoryId; pct: number } | null = null;
   for (const c of week.categories) {
     if (c.deltaPct === null) continue; // no previous baseline → not a "change"
     if (Math.abs(c.deltaPct) < CATEGORY_SHIFT_MIN_PCT) continue;

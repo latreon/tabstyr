@@ -118,4 +118,21 @@ describe('mergeSettingsMaps', () => {
     expect(merged.categoryOverrides).toEqual({ 'a.com': 'Work' });
     expect(merged.domainTags).toEqual({ 'a.com': 'Acme' });
   });
+
+  test('unions custom categories, local winning on a name clash', () => {
+    const withCats: Settings = {
+      ...local,
+      customCategories: [{ name: 'Learning', color: '#111111', productivity: 'productive' }],
+    };
+    const merged = mergeSettingsMaps(withCats, {
+      customCategories: [
+        { name: 'learning', color: '#999999', productivity: 'neutral' }, // clash → local kept
+        { name: 'Gaming', color: '#222222', productivity: 'distracting' }, // extra adopted
+      ],
+    });
+    expect(merged.customCategories).toEqual([
+      { name: 'Learning', color: '#111111', productivity: 'productive' },
+      { name: 'Gaming', color: '#222222', productivity: 'distracting' },
+    ]);
+  });
 });

@@ -1,6 +1,6 @@
 import { activeSeconds } from './metrics';
 import { isWebDomain } from './domain';
-import { categorize, type Category, type CategoryRule, type CategorySlice } from './categories';
+import { categorize, type CategoryId, type CategoryRule, type CategorySlice } from './categories';
 import type { DailyStat } from './types';
 
 // Builds a per-site activity report over a date range, plus CSV serialization.
@@ -12,7 +12,7 @@ import type { DailyStat } from './types';
 export interface ReportDomain {
   domain: string;
   seconds: number; // active foreground seconds over the range
-  category: Category;
+  category: CategoryId;
 }
 
 export interface ReportData {
@@ -42,7 +42,7 @@ export function buildReport(
   stats: DailyStat[],
   from: string,
   to: string,
-  overrides: Record<string, Category> = {},
+  overrides: Record<string, CategoryId> = {},
   rules: readonly CategoryRule[] = [],
 ): ReportData {
   const byDomain = new Map<string, number>();
@@ -57,7 +57,7 @@ export function buildReport(
     .map(([domain, seconds]) => ({ domain, seconds, category: categorize(domain, overrides, rules) }))
     .sort((a, b) => b.seconds - a.seconds);
 
-  const catMap = new Map<Category, number>();
+  const catMap = new Map<CategoryId, number>();
   let totalSeconds = 0;
   for (const d of domains) {
     catMap.set(d.category, (catMap.get(d.category) ?? 0) + d.seconds);

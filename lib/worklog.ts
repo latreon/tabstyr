@@ -1,13 +1,13 @@
 import { formatDuration, longDateLabel } from './time';
 import { isWebDomain } from './domain';
-import { categorize, groupByCategory, type Category, type CategoryRule, type CategorySlice } from './categories';
+import { categorize, groupByCategory, type CategoryId, type CategoryRule, type CategorySlice } from './categories';
 import type { DailyStat } from './types';
 
 interface WorkLogDomain {
   domain: string;
   seconds: number;
   audioSeconds: number;
-  category: Category;
+  category: CategoryId;
 }
 
 export interface WorkLog {
@@ -24,7 +24,7 @@ export interface WorkLog {
 export function buildWorkLog(
   stats: DailyStat[],
   date: string,
-  overrides: Record<string, Category> = {},
+  overrides: Record<string, CategoryId> = {},
   rules: readonly CategoryRule[] = [],
 ): WorkLog {
   const day = stats.filter((s) => s.date === date && isWebDomain(s.domain));

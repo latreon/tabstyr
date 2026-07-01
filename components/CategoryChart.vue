@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { CATEGORY_META, type Category, type CategorySlice } from '@/lib/categories';
+import { categoryColor, categoryLabel, isCategory, type Category, type CategoryId, type CategorySlice, type CustomCategory } from '@/lib/categories';
 import { budgetProgress } from '@/lib/budgets';
 import { formatDuration } from '@/lib/time';
 
-const props = defineProps<{ slices: CategorySlice[]; budgets?: Partial<Record<Category, number>> }>();
+const props = defineProps<{
+  slices: CategorySlice[];
+  budgets?: Partial<Record<Category, number>>;
+  custom?: CustomCategory[];
+}>();
 const { t } = useI18n();
 
 // Category the pointer is over — used to highlight its segment + chip together.
@@ -13,15 +17,19 @@ const hovered = ref<string | null>(null);
 
 const total = computed(() => props.slices.reduce((sum, s) => sum + s.seconds, 0));
 
+// Budgets are built-in only; a custom category never carries one.
+const budgetFor = (c: CategoryId) => (isCategory(c) ? props.budgets?.[c] : undefined);
+
 const items = computed(() =>
   props.slices
     .filter((s) => s.seconds > 0)
     .map((s) => {
-      const budget = props.budgets?.[s.category];
+      const budget = budgetFor(s.category);
       const progress = budgetProgress(s, budget);
       return {
         category: s.category,
-        color: CATEGORY_META[s.category].color,
+        label: categoryLabel(s.category, t),
+        color: categoryColor(s.category, props.custom),
         seconds: s.seconds,
         pct: total.value ? Math.round((s.seconds / total.value) * 100) : 0,
         budget, // minutes, or undefined
@@ -34,7 +42,7 @@ const items = computed(() =>
 // category's share so the role="img" conveys the data, not just "chart".
 const stackSummary = computed(() =>
   `${t('category.shareAria')}: ${items.value
-    .map((i) => `${t(`categories.${i.category}`)} ${i.pct}%`)
+    .map((i) => `${i.label} ${i.pct}%`)
     .join(', ')}`,
 );
 </script>
@@ -56,7 +64,7 @@ const stackSummary = computed(() =>
           class="seg"
           :class="{ active: hovered === i.category }"
           :style="{ width: `${i.pct}%`, background: i.color }"
-          :title="t('category.segTitle', { category: t(`categories.${i.category}`), time: formatDuration(i.seconds), pct: i.pct })"
+          :title="t('category.segTitle', { category: i.label, time: formatDuration(i.seconds), pct: i.pct })"
           @mouseenter="hovered = i.category"
           @mouseleave="hovered = null"
         />
@@ -71,7 +79,7 @@ const stackSummary = computed(() =>
           @mouseleave="hovered = null"
         >
           <span class="dot" :style="{ background: i.color }" aria-hidden="true" />
-          <span class="chip-name">{{ t(`categories.${i.category}`) }}</span>
+          <span class="chip-name">{{ i.label }}</span>
           <span class="chip-time">{{ formatDuration(i.seconds) }}</span>
           <span
             v-if="i.budget"

@@ -5,7 +5,7 @@ import { buildWorkLog, workLogText } from '@/lib/worklog';
 import { buildReport, reportCsv } from '@/lib/report';
 import { renderReportCard, canvasToImageBlob, REPORT_MAX_ROWS, type ReportCardContent } from '@/lib/report-card';
 import { downloadBlob, downloadFile } from '@/lib/export';
-import { CATEGORIES, CATEGORY_META, type Category, type CategoryRule } from '@/lib/categories';
+import { allCategoryIds, categoryColor, categoryLabel, type CategoryId, type CategoryRule, type CustomCategory } from '@/lib/categories';
 import { addDays, dateKey, formatDuration, longDateLabel } from '@/lib/time';
 import { displayDomain } from '@/lib/domain';
 import type { DailyStat } from '@/lib/types';
@@ -15,11 +15,12 @@ import CategoryPicker from '@/components/CategoryPicker.vue';
 
 const props = defineProps<{
   stats: DailyStat[];
-  overrides: Record<string, Category>;
+  overrides: Record<string, CategoryId>;
   rules?: CategoryRule[];
+  custom?: CustomCategory[];
   now: number;
 }>();
-const emit = defineEmits<{ select: [domain: string]; setCategory: [domain: string, category: Category] }>();
+const emit = defineEmits<{ select: [domain: string]; setCategory: [domain: string, category: CategoryId] }>();
 const { t } = useI18n();
 
 const today = dateKey(props.now);
@@ -41,7 +42,9 @@ function step(days: number) {
 
 // Category colours that appear as dots next to each site — shown as a legend so
 // the meaning is clear at a glance.
-const legend = CATEGORIES.map((c) => ({ category: c, color: CATEGORY_META[c].color }));
+const legend = computed(() =>
+  allCategoryIds(props.custom).map((c) => ({ category: c, color: categoryColor(c, props.custom), label: categoryLabel(c, t) })),
+);
 
 async function copy() {
   try {
@@ -75,15 +78,15 @@ async function exportPng() {
       totalValue: formatDuration(r.totalSeconds),
       categoryLabel: t('worklog.byCategory'),
       categories: r.categories.map((c) => ({
-        label: t(`categories.${c.category}`),
+        label: categoryLabel(c.category, t),
         pct: r.totalSeconds ? Math.round((c.seconds / r.totalSeconds) * 100) : 0,
-        color: CATEGORY_META[c.category].color,
+        color: categoryColor(c.category, props.custom),
       })),
       sitesLabel: t('worklog.bySite'),
       rows: r.domains.map((d) => ({
         label: displayDomain(d.domain),
         value: formatDuration(d.seconds),
-        color: CATEGORY_META[d.category].color,
+        color: categoryColor(d.category, props.custom),
       })),
       moreLabel: r.domains.length > REPORT_MAX_ROWS ? t('worklog.moreSites', { count: r.domains.length - REPORT_MAX_ROWS }) : '',
       brand: 'TabStyr',
@@ -122,11 +125,11 @@ async function exportPng() {
 
     <ol v-if="log.total" class="sites">
       <li v-for="d in log.domains" :key="d.domain" class="site-row">
-        <button class="site" :aria-label="t('worklog.viewSiteAria', { domain: displayDomain(d.domain), category: t(`categories.${d.category}`) })" @click="emit('select', d.domain)">
+        <button class="site" :aria-label="t('worklog.viewSiteAria', { domain: displayDomain(d.domain), category: categoryLabel(d.category, t) })" @click="emit('select', d.domain)">
           <FaviconChip :domain="d.domain" />
           <span class="site-name">{{ displayDomain(d.domain) }}</span>
         </button>
-        <CategoryPicker :current="d.category" @select="(c) => emit('setCategory', d.domain, c)" />
+        <CategoryPicker :current="d.category" :custom="custom" @select="(c) => emit('setCategory', d.domain, c)" />
         <span class="site-time">{{ formatDuration(d.seconds) }}</span>
       </li>
     </ol>
@@ -134,7 +137,7 @@ async function exportPng() {
     <ul v-if="log.total" class="legend" :aria-label="t('worklog.legendAria')">
       <li v-for="l in legend" :key="l.category">
         <span class="dot" :style="{ background: l.color }" aria-hidden="true" />
-        {{ t(`categories.${l.category}`) }}
+        {{ l.label }}
       </li>
     </ul>
   </div>

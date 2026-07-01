@@ -1,4 +1,4 @@
-import { CATEGORIES, type Category, type CategorySlice } from './categories';
+import { CATEGORIES, type Category, type CategoryId, type CategorySlice } from './categories';
 
 // Per-category daily time budgets — pure helpers shared by the dashboard (progress
 // + "over" markers) and the background nudge. Analytics only: nothing here blocks a
@@ -29,7 +29,7 @@ export function exceededBudgets(
   slices: CategorySlice[],
   budgets: Partial<Record<Category, number>>,
 ): Category[] {
-  const byCat = new Map<Category, CategorySlice>(slices.map((s) => [s.category, s]));
+  const byCat = new Map<CategoryId, CategorySlice>(slices.map((s) => [s.category, s]));
   const out: Category[] = [];
   for (const c of CATEGORIES) {
     const budget = budgets[c];

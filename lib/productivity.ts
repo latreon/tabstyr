@@ -1,5 +1,14 @@
 import { addDays, dateKey, dayLabel, monthLabel } from './time';
-import { makeCategorizer, CATEGORY_PRODUCTIVITY, type Category, type CategoryRule, type Productivity } from './categories';
+import {
+  makeCategorizer,
+  categoryProductivityOf,
+  CATEGORY_PRODUCTIVITY,
+  type Category,
+  type CategoryId,
+  type CategoryRule,
+  type CustomCategory,
+  type Productivity,
+} from './categories';
 import type { TrendMode } from './trend';
 import type { DailyStat } from './types';
 
@@ -15,16 +24,17 @@ export interface DayFocus {
 
 export function dailyFocus(
   stats: DailyStat[],
-  overrides: Record<string, Category> = {},
+  overrides: Record<string, CategoryId> = {},
   rules: readonly CategoryRule[] = [],
   prod: Record<Category, Productivity> = CATEGORY_PRODUCTIVITY,
+  custom: readonly CustomCategory[] = [],
 ): Map<string, DayFocus> {
   const byDate = new Map<string, DayFocus>();
   const categoryOf = makeCategorizer(overrides, rules);
   for (const s of stats) {
     const f =
       byDate.get(s.date) ?? { date: s.date, productive: 0, distracting: 0, neutral: 0, total: 0, focusPct: 0 };
-    f[prod[categoryOf(s.domain)]] += s.seconds;
+    f[categoryProductivityOf(categoryOf(s.domain), prod, custom)] += s.seconds;
     f.total += s.seconds;
     byDate.set(s.date, f);
   }
@@ -108,11 +118,12 @@ export function buildFocusTrend(
   stats: DailyStat[],
   mode: TrendMode,
   now: number,
-  overrides: Record<string, Category> = {},
+  overrides: Record<string, CategoryId> = {},
   rules: readonly CategoryRule[] = [],
   prod: Record<Category, Productivity> = CATEGORY_PRODUCTIVITY,
+  custom: readonly CustomCategory[] = [],
 ): FocusPoint[] {
-  const byDate = dailyFocus(stats, overrides, rules, prod);
+  const byDate = dailyFocus(stats, overrides, rules, prod, custom);
   const today = dateKey(now);
 
   if (mode === 'day') {
@@ -161,12 +172,13 @@ export function buildFocusTrend(
 export function summarizeProductivity(
   stats: DailyStat[],
   todayKey: string,
-  overrides: Record<string, Category> = {},
+  overrides: Record<string, CategoryId> = {},
   rules: readonly CategoryRule[] = [],
   focusTarget = 50,
   prod: Record<Category, Productivity> = CATEGORY_PRODUCTIVITY,
+  custom: readonly CustomCategory[] = [],
 ): ProductivitySummary {
-  const byDate = dailyFocus(stats, overrides, rules, prod);
+  const byDate = dailyFocus(stats, overrides, rules, prod, custom);
   const today = byDate.get(todayKey);
   return {
     todayFocusPct: today?.focusPct ?? 0,

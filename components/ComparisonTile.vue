@@ -2,15 +2,16 @@
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { buildComparison, type ComparePeriod } from '@/lib/comparison';
-import { CATEGORY_META, type Category, type CategoryRule } from '@/lib/categories';
+import { categoryColor, categoryLabel, type CategoryId, type CategoryRule, type CustomCategory } from '@/lib/categories';
 import { formatDuration } from '@/lib/time';
 import type { DailyStat } from '@/lib/types';
 
 const props = defineProps<{
   stats: DailyStat[];
   todayKey: string;
-  overrides: Record<string, Category>;
+  overrides: Record<string, CategoryId>;
   rules?: CategoryRule[];
+  custom?: CustomCategory[];
 }>();
 
 const { t } = useI18n();
@@ -78,10 +79,10 @@ const dir = (pct: number | null) => (pct === null ? '' : pct > 0 ? 'up' : pct < 
           @mouseenter="hovered = c.category"
           @mouseleave="hovered = null"
         >
-          <span class="dot" :style="{ background: CATEGORY_META[c.category].color }" aria-hidden="true" />
-          <span class="name">{{ t(`categories.${c.category}`) }}</span>
-          <span class="bars" :aria-label="`${t(`categories.${c.category}`)}: ${formatDuration(c.current)} / ${formatDuration(c.previous)}`">
-            <span class="bar now" :style="{ width: `${(c.current / maxCat) * 100}%`, background: CATEGORY_META[c.category].color }" />
+          <span class="dot" :style="{ background: categoryColor(c.category, custom) }" aria-hidden="true" />
+          <span class="name">{{ categoryLabel(c.category, t) }}</span>
+          <span class="bars" :aria-label="`${categoryLabel(c.category, t)}: ${formatDuration(c.current)} / ${formatDuration(c.previous)}`">
+            <span class="bar now" :style="{ width: `${(c.current / maxCat) * 100}%`, background: categoryColor(c.category, custom) }" />
           </span>
           <span class="time">{{ formatDuration(c.current) }}</span>
           <span v-if="c.deltaPct" class="cat-delta" :class="dir(c.deltaPct)">

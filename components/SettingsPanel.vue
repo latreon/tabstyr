@@ -3,7 +3,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { browser } from 'wxt/browser';
 import { getSettings, saveSettings } from '@/lib/settings';
-import { CATEGORIES, type Category, type CategoryRule } from '@/lib/categories';
+import { allCategoryIds, categoryColor, categoryLabel, PRODUCTIVITY, type CategoryId, type CategoryRule, type CustomCategory, type Productivity } from '@/lib/categories';
 import { useTheme } from '@/composables/useTheme';
 import { useLocale } from '@/composables/useLocale';
 import { useFocusTrap } from '@/composables/useFocusTrap';
@@ -52,11 +52,22 @@ const themeChoice = ref<'light' | 'dark'>('light');
 const loaded = ref(false);
 let saveTimer: ReturnType<typeof setTimeout> | undefined;
 
-const CATEGORY_OPTIONS = computed(() => CATEGORIES.map((c) => ({ value: c, label: t(`categories.${c}`) })));
+// Built-ins plus any user-added categories — the pool a rule can target.
+const customCategories = ref<CustomCategory[]>([]);
+const CATEGORY_OPTIONS = computed(() =>
+  allCategoryIds(customCategories.value).map((c) => ({ value: c, label: categoryLabel(c, t) })),
+);
 const rules = ref<CategoryRule[]>([]);
 const newPattern = ref('');
-const newCategory = ref<Category>('Work');
+const newCategory = ref<CategoryId>('Work');
 const ruleError = ref('');
+
+// New custom-category form. Productivity classification reuses the shared labels.
+const PRODUCTIVITY_OPTIONS = computed(() => PRODUCTIVITY.map((p) => ({ value: p, label: t(`productivity.${p}`) })));
+const newCatName = ref('');
+const newCatColor = ref('#6366f1');
+const newCatProductivity = ref<Productivity>('neutral');
+const catError = ref('');
 
 const toast = ref<string | null>(null);
 let toastTimer: ReturnType<typeof setTimeout> | undefined;
@@ -79,6 +90,7 @@ onMounted(async () => {
   // If still on the implicit "system" default, show the resolved theme in the picker.
   themeChoice.value = s.theme === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : s.theme;
   rules.value = s.categoryRules;
+  customCategories.value = s.customCategories;
   focusTarget.value = s.focusTarget;
   loaded.value = true;
 });
@@ -136,6 +148,52 @@ async function replayOnboarding() {
     showToast(t('settings.introShown'));
   } catch (e) {
     console.error('[settings] replay onboarding failed', e);
+    showToast(t('settings.saveFailed'));
+  }
+}
+
+async function addCustomCategory() {
+  const name = newCatName.value.trim();
+  catError.value = '';
+  if (!name) return;
+  // Reject collisions with a built-in or an existing custom (case-insensitive), so
+  // the picker never shows two categories the user can't tell apart. allCategoryIds
+  // already includes the built-in names, so this one check covers both.
+  const key = name.toLowerCase();
+  if (allCategoryIds(customCategories.value).some((c) => c.toLowerCase() === key)) {
+    catError.value = t('settings.categoryExists');
+    return;
+  }
+  const next = [...customCategories.value, { name, color: newCatColor.value, productivity: newCatProductivity.value }];
+  try {
+    const saved = await saveSettings({ customCategories: next });
+    customCategories.value = saved.customCategories;
+    // A sanitizer rejection (bad hex, dupe) leaves the list unchanged — surface it.
+    if (!saved.customCategories.some((c) => c.name === name)) {
+      catError.value = t('settings.categoryInvalid');
+      return;
+    }
+    newCatName.value = '';
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    emit('changed');
+    showToast(t('settings.categoryAdded'));
+  } catch (e) {
+    console.error('[settings] add category failed', e);
+    showToast(t('settings.saveFailed'));
+  }
+}
+
+async function removeCustomCategory(name: string) {
+  const next = customCategories.value.filter((c) => c.name !== name);
+  try {
+    const saved = await saveSettings({ customCategories: next });
+    customCategories.value = saved.customCategories;
+    rules.value = saved.categoryRules; // rules referencing the removed name were dropped
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    emit('changed');
+    showToast(t('settings.categoryRemoved'));
+  } catch (e) {
+    console.error('[settings] remove category failed', e);
     showToast(t('settings.saveFailed'));
   }
 }
@@ -503,6 +561,45 @@ async function confirmWipe() {
       <button class="wipe" @click="showWipeModal = true">{{ t('settings.wipe') }}</button>
     </div>
 
+    <div class="rules cats">
+      <span class="field-label">{{ t('settings.customCategories') }}</span>
+      <p class="rules-hint">{{ t('settings.customCategoriesHint') }}</p>
+
+      <ul v-if="customCategories.length" class="rule-list">
+        <li v-for="c in customCategories" :key="c.name" class="rule cat-row">
+          <span class="cat-swatch" :style="{ background: c.color }" aria-hidden="true" />
+          <span class="cat-name">{{ c.name }}</span>
+          <span class="cat-prod">{{ t(`productivity.${c.productivity}`) }}</span>
+          <button class="rule-del" :aria-label="t('settings.removeCategoryAria', { name: c.name })" @click="removeCustomCategory(c.name)">✕</button>
+        </li>
+      </ul>
+
+      <form class="rule-add cat-add" @submit.prevent="addCustomCategory">
+        <input
+          v-model="newCatName"
+          class="rule-input"
+          type="text"
+          :placeholder="t('settings.categoryNamePlaceholder')"
+          :aria-label="t('settings.customCategories')"
+          maxlength="24"
+        />
+        <input
+          v-model="newCatColor"
+          class="cat-color"
+          type="color"
+          :aria-label="t('settings.categoryColorAria')"
+        />
+        <SelectBox
+          :model-value="newCatProductivity"
+          :options="PRODUCTIVITY_OPTIONS"
+          :label="t('settings.categoryProductivityAria')"
+          @update:model-value="newCatProductivity = $event as Productivity"
+        />
+        <button type="submit" class="rule-add-btn" :disabled="!newCatName.trim()">{{ t('settings.add') }}</button>
+      </form>
+      <p v-if="catError" class="rule-error" role="alert">{{ catError }}</p>
+    </div>
+
     <div class="rules">
       <span class="field-label">{{ t('settings.customRules') }}</span>
       <p class="rules-hint">{{ t('settings.rulesHint') }}</p>
@@ -511,7 +608,7 @@ async function confirmWipe() {
         <li v-for="r in rules" :key="r.pattern" class="rule">
           <code class="rule-pattern">{{ r.pattern }}</code>
           <span class="rule-arrow" aria-hidden="true">→</span>
-          <span class="rule-cat">{{ t(`categories.${r.category}`) }}</span>
+          <span class="rule-cat">{{ categoryLabel(r.category, t) }}</span>
           <button class="rule-del" :aria-label="t('settings.removeRuleAria', { pattern: r.pattern })" @click="removeRule(r.pattern)">✕</button>
         </li>
       </ul>
@@ -529,7 +626,7 @@ async function confirmWipe() {
           :model-value="newCategory"
           :options="CATEGORY_OPTIONS"
           :label="t('settings.categoryForRuleAria')"
-          @update:model-value="newCategory = $event as Category"
+          @update:model-value="newCategory = $event as CategoryId"
         />
         <button type="submit" class="rule-add-btn" :disabled="!newPattern.trim()">{{ t('settings.add') }}</button>
       </form>
@@ -796,6 +893,43 @@ button:focus-visible {
   font-size: var(--text-xs);
   color: var(--warn);
 }
+/* Custom-category rows: swatch · name · productivity · delete. */
+.cat-row { gap: 10px; }
+.cat-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  flex: none;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--text) 12%, transparent);
+}
+.cat-name {
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cat-prod {
+  font-size: var(--text-xs);
+  color: var(--text-3);
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--card-strong);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+.cat-color {
+  flex: none;
+  width: 40px;
+  height: 34px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card-strong);
+  cursor: pointer;
+}
+.cat-color::-webkit-color-swatch { border: none; border-radius: 5px; }
+.cat-color::-webkit-color-swatch-wrapper { padding: 0; }
 .export {
   display: flex;
   flex-direction: column;

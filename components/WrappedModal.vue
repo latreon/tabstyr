@@ -6,7 +6,7 @@ import { PERSONA_META } from '@/lib/wrapped-persona';
 import { PERSONA_ICON, ICONS } from '@/lib/wrapped-icons';
 import { renderWrappedCard, canvasToImageBlob, type WrappedCardContent } from '@/lib/wrapped-card';
 import { downloadBlob } from '@/lib/export';
-import { CATEGORY_META, type Category, type CategoryRule, type Productivity } from '@/lib/categories';
+import { categoryColor, categoryLabel, type Category, type CategoryId, type CategoryRule, type CustomCategory, type Productivity } from '@/lib/categories';
 import { formatDuration, longDateLabel, dayLabel } from '@/lib/time';
 import { displayDomain } from '@/lib/domain';
 import { getDateLocale } from '@/lib/locale';
@@ -16,9 +16,10 @@ import { useFocusTrap } from '@/composables/useFocusTrap';
 const props = defineProps<{
   dailyStats: DailyStat[];
   sessions: Session[];
-  overrides: Record<string, Category>;
+  overrides: Record<string, CategoryId>;
   rules?: CategoryRule[];
   productivity?: Record<Category, Productivity>;
+  custom?: CustomCategory[];
 }>();
 const emit = defineEmits<{ close: [] }>();
 const { t } = useI18n();
@@ -35,6 +36,7 @@ const data = computed(() =>
     overrides: props.overrides,
     rules: props.rules ?? [],
     productivity: props.productivity,
+    customCategories: props.custom ?? [],
   }),
 );
 
@@ -58,9 +60,9 @@ const content = computed<WrappedCardContent | null>(() => {
     rows.push({
       label: t('wrapped.card.topSite'),
       value: `${displayDomain(d.topSite.domain)} · ${formatDuration(d.topSite.seconds)}`,
-      chip: { initial: displayDomain(d.topSite.domain).charAt(0).toUpperCase() || '?', color: CATEGORY_META[d.topSite.category].color },
+      chip: { initial: displayDomain(d.topSite.domain).charAt(0).toUpperCase() || '?', color: categoryColor(d.topSite.category, props.custom) },
     });
-  if (d.topCategory) rows.push({ label: t('wrapped.card.topCategory'), value: `${t(`categories.${d.topCategory.category}`)} · ${d.topCategory.pct}%` });
+  if (d.topCategory) rows.push({ label: t('wrapped.card.topCategory'), value: `${categoryLabel(d.topCategory.category, t)} · ${d.topCategory.pct}%` });
   rows.push({ label: t('wrapped.card.focus'), value: `${d.focusPct}%` });
   rows.push({ label: peakLabel.value ? t('wrapped.card.peak') : t('wrapped.card.days'), value: peakLabel.value || String(d.daysCovered) });
   return {
