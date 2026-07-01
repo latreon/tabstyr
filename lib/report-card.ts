@@ -85,9 +85,11 @@ function paint(ctx: CanvasRenderingContext2D, c: ReportCardContent, scale: numbe
   const dark = c.theme === 'dark';
   const bg = dark ? '#1d1d26' : '#ffffff';
   const ink = dark ? '#f4f4f6' : '#16161a';
-  const dim = dark ? 'rgba(244,244,246,0.68)' : 'rgba(22,22,26,0.55)';
-  const line = dark ? 'rgba(244,244,246,0.18)' : 'rgba(22,22,26,0.10)';
-  const rowTint = dark ? 'rgba(255,255,255,0.06)' : 'rgba(22,22,26,0.025)';
+  const dim = dark ? 'rgba(244,244,246,0.72)' : 'rgba(22,22,26,0.62)';
+  const line = dark ? 'rgba(244,244,246,0.18)' : 'rgba(22,22,26,0.12)';
+  // Rows read as clear, distinct bands: a firmer fill + a hairline edge.
+  const rowTint = dark ? 'rgba(255,255,255,0.08)' : 'rgba(22,22,26,0.055)';
+  const rowEdge = dark ? 'rgba(255,255,255,0.12)' : 'rgba(22,22,26,0.09)';
   const W = REPORT_WIDTH;
   const innerW = W - MARGIN * 2;
 
@@ -162,21 +164,25 @@ function paint(ctx: CanvasRenderingContext2D, c: ReportCardContent, scale: numbe
   for (const row of c.rows.slice(0, MAX_ROWS)) {
     const cy = top + ROW_H / 2; // vertical centre of the row band
     const baseline = cy + 8; // 22px text baseline that sits visually centered in the band
-    // Soft row tint so the list reads as spaced rows, not a dense block.
-    ctx.fillStyle = rowTint;
+    // Distinct row band: firmer tint + hairline edge so rows are clearly visible.
     roundRect(ctx, MARGIN - 14, top + 4, innerW + 28, ROW_H - 8, 12);
+    ctx.fillStyle = rowTint;
     ctx.fill();
+    ctx.strokeStyle = rowEdge;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    // Category dot with a soft ring so it reads on any tint.
     ctx.fillStyle = row.color;
     ctx.beginPath();
-    ctx.arc(MARGIN + 6, cy, 5, 0, Math.PI * 2);
+    ctx.arc(MARGIN + 8, cy, 6, 0, Math.PI * 2);
     ctx.fill();
     ctx.textAlign = 'left';
     ctx.fillStyle = ink;
-    ctx.font = `500 22px ${FONT}`;
-    ctx.fillText(fit(ctx, row.label, innerW - 200), MARGIN + 24, baseline);
+    ctx.font = `600 22px ${FONT}`;
+    ctx.fillText(fit(ctx, row.label, innerW - 200), MARGIN + 28, baseline);
     ctx.textAlign = 'right';
-    ctx.fillStyle = dim;
-    ctx.font = `700 22px ${FONT}`;
+    ctx.fillStyle = ink; // full-contrast time value
+    ctx.font = `800 22px ${FONT}`;
     ctx.fillText(row.value, W - MARGIN, baseline);
     ctx.textAlign = 'left';
     top += ROW_H;
