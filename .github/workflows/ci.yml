@@ -10,7 +10,7 @@ jobs:
     name: Type-check · test · build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
           node-version: 22
@@ -32,7 +32,7 @@ jobs:
     # environment quirks never gate a merge. The check job is the gate.
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
           node-version: 22
