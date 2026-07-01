@@ -167,6 +167,7 @@ async function exportPng() {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-wrap: wrap; /* Copy/CSV/Image + date nav wrap instead of overflowing on narrow widths */
 }
 .nav {
   box-sizing: border-box;

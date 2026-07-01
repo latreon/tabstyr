@@ -799,18 +799,23 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px 10px;
+  flex-wrap: wrap; /* long localized labels/controls drop to the next line instead of overflowing */
 }
 .prod-cat {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  min-width: 0; /* allow the label to shrink/ellipsize rather than widen the row */
+  flex: 1 1 auto;
   font-size: 13px;
   color: var(--text-2);
 }
 .prod-controls {
   display: inline-flex;
   align-items: center;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
   gap: 8px;
 }
 .budget-field {
