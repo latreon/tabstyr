@@ -281,15 +281,15 @@ onMounted(async () => {
 .privacy-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   box-sizing: border-box;
-  height: 28px;
-  padding: 0 12px;
+  height: 34px;
+  padding: 0 14px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--card-strong);
   color: var(--text-2);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   font-family: inherit;
   text-decoration: none;
@@ -328,8 +328,8 @@ onMounted(async () => {
   font-weight: 600;
 }
 .privacy-badge .shield {
-  width: 13px;
-  height: 13px;
+  width: 15px;
+  height: 15px;
   flex: none;
   fill: none;
   stroke: var(--positive);
@@ -345,13 +345,13 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--card-strong);
   color: var(--text-2);
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1;
   text-decoration: none;
   transition: border-color 120ms ease, color 120ms ease;
