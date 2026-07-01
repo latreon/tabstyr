@@ -9,6 +9,8 @@ import { buildHourlyHeatmap, type HeatmapData } from '@/lib/heatmap';
 import { groupByCategory, CATEGORY_PRODUCTIVITY, type Category, type CategoryRule, type Productivity } from '@/lib/categories';
 import { activeSeconds } from '@/lib/metrics';
 import { summarizeProductivity } from '@/lib/productivity';
+import { buildComparison } from '@/lib/comparison';
+import { buildInsights, type Insight } from '@/lib/insights';
 import type { DailyStat, Session, Settings, TabMeta } from '@/lib/types';
 
 const RETENTION_MS = 90 * 86_400_000;
@@ -122,6 +124,20 @@ export function useStats() {
   const productivity = computed(() =>
     summarizeProductivity(activeStats.value, todayKey.value, overrides.value, categoryRules.value, focusTarget.value, categoryProductivity.value),
   );
+
+  // Short "insight" lines derived from data already computed above (heatmap, a
+  // week-over-week comparison, and the focus summary). The tile shows the top few.
+  const insights = computed<Insight[]>(() => {
+    const p = productivity.value;
+    const judged = p.productiveSeconds + p.distractingSeconds;
+    return buildInsights({
+      heatmap: heatmap.value,
+      week: buildComparison(activeStats.value, todayKey.value, 'week', overrides.value, categoryRules.value),
+      streakDays: p.streakDays,
+      todayFocusPct: judged > 0 ? p.todayFocusPct : null,
+      focusTarget: p.focusTarget,
+    });
+  });
 
   // "Open tabs by time" — one row per DOMAIN that has an open tab, showing that
   // domain's total foreground active time over the window. Reads from the daily
@@ -323,7 +339,7 @@ export function useStats() {
     stats, activeStats, tabRows, staleTabs, staleTabItems, openTabsList, openTabCount, settings, heatmap, recentSessions,
     loading, loadError, storageWarning, todayKey,
     todaySeconds, todayAudioSeconds, weeklyAvgSeconds, weeklyActiveDays,
-    todayByDomain, todayByCategory, productivity, overrides, categoryRules, categoryProductivity, focusTarget, categoryBudgets, showOnboarding,
+    todayByDomain, todayByCategory, productivity, insights, overrides, categoryRules, categoryProductivity, focusTarget, categoryBudgets, showOnboarding,
     load, closeTab, closeTabs, snoozeTab, setCategoryOverride, setCategoryProductivity, addCategoryRule, removeCategoryRule, dismissOnboarding,
   };
 }

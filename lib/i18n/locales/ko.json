@@ -317,5 +317,17 @@
     "title": "브라우징 랩업",
     "subtitle": "통계를 공유할 수 있는 스토리로. 백업을 내보내 웹에서 열어 보세요.",
     "cta": "랩업 열기"
+  },
+  "insights": {
+    "title": "인사이트",
+    "streak": "{days}일 연속 집중",
+    "weekUp": "활동 시간 지난주 대비 {pct}% 증가",
+    "weekDown": "활동 시간 지난주 대비 {pct}% 감소",
+    "catUp": "{category} 지난주 대비 {pct}% 증가",
+    "catDown": "{category} 지난주 대비 {pct}% 감소",
+    "peakHour": "{weekday} {hour}경에 가장 활발",
+    "busiestDay": "가장 바쁜 요일은 {weekday}",
+    "focusHit": "오늘 집중 {pct}% — 목표 {target}% 초과",
+    "focusUnder": "오늘 집중 {pct}% — 목표 {target}%"
   }
 }

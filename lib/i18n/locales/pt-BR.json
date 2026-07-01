@@ -317,5 +317,17 @@
     "title": "Retrospectiva de navegação",
     "subtitle": "Transforme suas estatísticas em uma história para compartilhar: exporte um backup e abra na web.",
     "cta": "Abrir retrospectiva"
+  },
+  "insights": {
+    "title": "Insights",
+    "streak": "Sequência de foco de {days} dias",
+    "weekUp": "Tempo ativo subiu {pct}% vs semana passada",
+    "weekDown": "Tempo ativo caiu {pct}% vs semana passada",
+    "catUp": "{category} subiu {pct}% vs semana passada",
+    "catDown": "{category} caiu {pct}% vs semana passada",
+    "peakHour": "Mais ativo por volta das {hour} na {weekday}",
+    "busiestDay": "{weekday} é seu dia mais movimentado",
+    "focusHit": "Foco {pct}% hoje — acima da sua meta de {target}%",
+    "focusUnder": "Foco {pct}% hoje — meta {target}%"
   }
 }

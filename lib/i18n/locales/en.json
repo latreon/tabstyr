@@ -317,5 +317,17 @@
     "title": "Browsing Wrapped",
     "subtitle": "Turn your stats into a shareable story — export a backup and open it on the web.",
     "cta": "Open Wrapped"
+  },
+  "insights": {
+    "title": "Insights",
+    "streak": "On a {days}-day focus streak",
+    "weekUp": "Active time up {pct}% vs last week",
+    "weekDown": "Active time down {pct}% vs last week",
+    "catUp": "{category} up {pct}% vs last week",
+    "catDown": "{category} down {pct}% vs last week",
+    "peakHour": "Most active around {hour} on {weekday}",
+    "busiestDay": "{weekday} is your busiest day",
+    "focusHit": "Focus {pct}% today — above your {target}% goal",
+    "focusUnder": "Focus {pct}% today — goal is {target}%"
   }
 }

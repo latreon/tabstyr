@@ -317,5 +317,17 @@
     "title": "Browsing Wrapped",
     "subtitle": "Mach aus deinen Statistiken eine teilbare Story – exportiere ein Backup und öffne es im Web.",
     "cta": "Wrapped öffnen"
+  },
+  "insights": {
+    "title": "Einblicke",
+    "streak": "{days}-Tage-Fokus-Serie",
+    "weekUp": "Aktive Zeit {pct}% höher als letzte Woche",
+    "weekDown": "Aktive Zeit {pct}% niedriger als letzte Woche",
+    "catUp": "{category} {pct}% höher als letzte Woche",
+    "catDown": "{category} {pct}% niedriger als letzte Woche",
+    "peakHour": "Am aktivsten gegen {hour} am {weekday}",
+    "busiestDay": "{weekday} ist dein aktivster Tag",
+    "focusHit": "Fokus heute {pct}% — über deinem Ziel von {target}%",
+    "focusUnder": "Fokus heute {pct}% — Ziel {target}%"
   }
 }

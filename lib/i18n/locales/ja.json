@@ -317,5 +317,17 @@
     "title": "ブラウジング・ラップアップ",
     "subtitle": "統計を共有できるストーリーに。バックアップを書き出してウェブで開きます。",
     "cta": "ラップアップを開く"
+  },
+  "insights": {
+    "title": "インサイト",
+    "streak": "{days}日連続の集中",
+    "weekUp": "アクティブ時間が先週比 {pct}% 増",
+    "weekDown": "アクティブ時間が先週比 {pct}% 減",
+    "catUp": "{category} が先週比 {pct}% 増",
+    "catDown": "{category} が先週比 {pct}% 減",
+    "peakHour": "{weekday}の{hour}頃が最も活発",
+    "busiestDay": "最も活発な曜日は{weekday}",
+    "focusHit": "本日のフォーカス {pct}% — 目標 {target}% を達成",
+    "focusUnder": "本日のフォーカス {pct}% — 目標 {target}%"
   }
 }

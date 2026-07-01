@@ -11,6 +11,7 @@ import StatTile from '@/components/StatTile.vue';
 import TopSitesChart from '@/components/TopSitesChart.vue';
 import CategoryChart from '@/components/CategoryChart.vue';
 import ProductivityTile from '@/components/ProductivityTile.vue';
+import InsightsTile from '@/components/InsightsTile.vue';
 import TrendChart from '@/components/TrendChart.vue';
 import FocusTrend from '@/components/FocusTrend.vue';
 import ComparisonTile from '@/components/ComparisonTile.vue';
@@ -183,6 +184,7 @@ onMounted(async () => {
       <TopSitesChart :domains="s.todayByDomain.value" @select="openDetail" />
       <ProductivityTile id="focus" :summary="s.productivity.value" />
       <!-- full-width rows -->
+      <InsightsTile :insights="s.insights.value" />
       <TrendChart :stats="s.activeStats.value" :now="loadedNow" />
       <FocusTrend :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :productivity="s.categoryProductivity.value" :now="loadedNow" :target="s.productivity.value.focusTarget" />
       <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" />

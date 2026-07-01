@@ -317,5 +317,17 @@
     "title": "Resoconto di navigazione",
     "subtitle": "Trasforma le tue statistiche in una storia da condividere: esporta un backup e aprilo sul web.",
     "cta": "Apri il resoconto"
+  },
+  "insights": {
+    "title": "Approfondimenti",
+    "streak": "Serie di focus di {days} giorni",
+    "weekUp": "Tempo attivo in aumento del {pct}% rispetto alla scorsa settimana",
+    "weekDown": "Tempo attivo in calo del {pct}% rispetto alla scorsa settimana",
+    "catUp": "{category} in aumento del {pct}% rispetto alla scorsa settimana",
+    "catDown": "{category} in calo del {pct}% rispetto alla scorsa settimana",
+    "peakHour": "Più attivo verso le {hour} di {weekday}",
+    "busiestDay": "{weekday} è il tuo giorno più attivo",
+    "focusHit": "Focus {pct}% oggi — sopra il tuo obiettivo del {target}%",
+    "focusUnder": "Focus {pct}% oggi — obiettivo {target}%"
   }
 }

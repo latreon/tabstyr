@@ -317,5 +317,17 @@
     "title": "Gezinti Özeti",
     "subtitle": "İstatistiklerinizi paylaşılabilir bir hikâyeye dönüştürün: bir yedek dışa aktarın ve web'de açın.",
     "cta": "Özeti aç"
+  },
+  "insights": {
+    "title": "İçgörüler",
+    "streak": "{days} günlük odak serisi",
+    "weekUp": "Etkin süre geçen haftaya göre %{pct} arttı",
+    "weekDown": "Etkin süre geçen haftaya göre %{pct} azaldı",
+    "catUp": "{category} geçen haftaya göre %{pct} arttı",
+    "catDown": "{category} geçen haftaya göre %{pct} azaldı",
+    "peakHour": "{weekday} günü {hour} civarında en aktif",
+    "busiestDay": "{weekday} en yoğun günün",
+    "focusHit": "Bugün odak %{pct} — %{target} hedefinin üzerinde",
+    "focusUnder": "Bugün odak %{pct} — hedef %{target}"
   }
 }

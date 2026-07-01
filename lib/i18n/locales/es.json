@@ -317,5 +317,17 @@
     "title": "Resumen de navegación",
     "subtitle": "Convierte tus estadísticas en una historia para compartir: exporta una copia y ábrela en la web.",
     "cta": "Abrir resumen"
+  },
+  "insights": {
+    "title": "Perspectivas",
+    "streak": "Racha de enfoque de {days} días",
+    "weekUp": "Tiempo activo subió {pct}% vs la semana pasada",
+    "weekDown": "Tiempo activo bajó {pct}% vs la semana pasada",
+    "catUp": "{category} subió {pct}% vs la semana pasada",
+    "catDown": "{category} bajó {pct}% vs la semana pasada",
+    "peakHour": "Más activo hacia las {hour} el {weekday}",
+    "busiestDay": "{weekday} es tu día más activo",
+    "focusHit": "Enfoque {pct}% hoy — por encima de tu meta del {target}%",
+    "focusUnder": "Enfoque {pct}% hoy — meta {target}%"
   }
 }
