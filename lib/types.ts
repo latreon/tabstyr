@@ -72,6 +72,14 @@ export interface Settings {
    * social-media manager marking Social as productive).
    */
   categoryProductivity: Record<import('./categories').Category, import('./categories').Productivity>;
+  /** Daily Focus-% goal (0–100). The streak counts days meeting this target. */
+  focusTarget: number;
+  /**
+   * Optional per-category daily time budgets, in MINUTES. A category present here
+   * with a positive value nudges (once/day) when today's active time crosses it.
+   * Absent/zero = no budget. Analytics-only — never blocks a site.
+   */
+  categoryBudgets: Partial<Record<import('./categories').Category, number>>;
   /** Whether the first-run onboarding intro has been dismissed. */
   onboarded: boolean;
   /** Whether the once-a-day stale-tab reminder notification is shown. */

@@ -26,6 +26,8 @@ export const DEFAULT_SETTINGS: Settings = {
   categoryOverrides: {},
   categoryRules: [],
   categoryProductivity: { ...CATEGORY_PRODUCTIVITY },
+  focusTarget: 50,
+  categoryBudgets: {},
   onboarded: false,
   notificationsEnabled: true,
   language: 'auto',
@@ -77,6 +79,23 @@ function sanitizeProductivity(raw: unknown): Record<Category, Productivity> {
   return out;
 }
 
+// Per-category daily budgets in minutes. Keep only known categories with a
+// positive, sane integer minute value (≤ 24h); drop everything else so a crafted
+// value can't inject junk keys or absurd numbers.
+const MAX_BUDGET_MINUTES = 24 * 60;
+function sanitizeBudgets(raw: unknown): Partial<Record<Category, number>> {
+  if (!raw || typeof raw !== 'object') return {};
+  const r = raw as Record<string, unknown>;
+  const out: Partial<Record<Category, number>> = {};
+  for (const c of CATEGORIES) {
+    const v = r[c];
+    if (typeof v === 'number' && Number.isFinite(v) && v > 0) {
+      out[c] = clamp(Math.round(v), 1, MAX_BUDGET_MINUTES);
+    }
+  }
+  return out;
+}
+
 function coerce(raw: unknown): Partial<Settings> {
   if (!raw || typeof raw !== 'object') return {};
   const r = raw as Record<string, unknown>;
@@ -91,6 +110,8 @@ function coerce(raw: unknown): Partial<Settings> {
     ...(rules && { categoryRules: rules }),
     // Always a full, valid mapping (missing/invalid entries fall back to default).
     categoryProductivity: sanitizeProductivity(r.categoryProductivity),
+    ...(typeof r.focusTarget === 'number' && { focusTarget: clamp(Math.round(r.focusTarget), 10, 90) }),
+    categoryBudgets: sanitizeBudgets(r.categoryBudgets),
     ...(typeof r.onboarded === 'boolean' && { onboarded: r.onboarded }),
     ...(typeof r.notificationsEnabled === 'boolean' && { notificationsEnabled: r.notificationsEnabled }),
     ...(typeof r.language === 'string' && { language: r.language.slice(0, 20) }),

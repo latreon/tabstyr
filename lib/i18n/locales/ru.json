@@ -116,7 +116,10 @@
   "category": {
     "title": "Сегодня по категориям",
     "shareAria": "Доля времени по категориям",
-    "segTitle": "{category} · {time} · {pct}%"
+    "segTitle": "{category} · {time} · {pct}%",
+    "overBudget": "превышено",
+    "budgetMinutes": "{budget} мин",
+    "budgetTitle": "Дневной лимит: {budget} мин"
   },
   "focus": {
     "title": "Фокус сегодня",
@@ -277,7 +280,13 @@
     "restoreWrongPass": "Неверная парольная фраза или повреждённый файл.",
     "focusCategories": "Категории фокуса",
     "focusCategoriesHint": "Выберите, как каждая категория влияет на ваш % фокуса.",
-    "productivityForAria": "Как {category} влияет на фокус"
+    "productivityForAria": "Как {category} влияет на фокус",
+    "focusTarget": "Дневная цель фокуса",
+    "focusTargetHint": "Ваш целевой % фокуса. Дни, когда он достигнут, формируют серию.",
+    "budgetOff": "выкл",
+    "budgetUnit": "мин",
+    "budgetForAria": "Дневной лимит для {category}, в минутах",
+    "dailyBudgetsHint": "Необязательный дневной лимит на категорию (минуты). Одно мягкое напоминание в день при превышении — ничего не блокируется."
   },
   "onboarding": {
     "title": "Добро пожаловать в TabStyr",
@@ -296,7 +305,8 @@
     "statsAria": "Статистика использования браузера"
   },
   "notification": {
-    "stale": "{count} вкладок не открывались {days}+ дней"
+    "stale": "{count} вкладок не открывались {days}+ дней",
+    "budget": "Дневной лимит достигнут: {category}"
   },
   "productivity": {
     "productive": "Продуктивно",

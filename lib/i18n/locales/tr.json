@@ -116,7 +116,10 @@
   "category": {
     "title": "Bugün kategoriye göre",
     "shareAria": "Kategoriye göre zaman payı",
-    "segTitle": "{category} · {time} · %{pct}"
+    "segTitle": "{category} · {time} · %{pct}",
+    "overBudget": "aşıldı",
+    "budgetMinutes": "{budget} dk",
+    "budgetTitle": "Günlük bütçe: {budget} dk"
   },
   "focus": {
     "title": "Bugün odak",
@@ -277,7 +280,13 @@
     "restoreWrongPass": "Yanlış parola veya bozuk dosya.",
     "focusCategories": "Odak kategorileri",
     "focusCategoriesHint": "Her kategorinin Odak yüzdenize nasıl sayılacağını seçin.",
-    "productivityForAria": "{category} odağa nasıl sayılır"
+    "productivityForAria": "{category} odağa nasıl sayılır",
+    "focusTarget": "Günlük odak hedefi",
+    "focusTargetHint": "Hedef Odak %'niz. Buna ulaşan günler serinizi oluşturur.",
+    "budgetOff": "kapalı",
+    "budgetUnit": "dk",
+    "budgetForAria": "{category} için günlük bütçe, dakika",
+    "dailyBudgetsHint": "Kategori başına isteğe bağlı günlük limit (dakika). Aştığınızda günde bir nazik hatırlatma — hiçbir şey engellenmez."
   },
   "onboarding": {
     "title": "TabStyr'a hoş geldiniz",
@@ -296,7 +305,8 @@
     "statsAria": "Tarayıcı kullanım istatistikleri"
   },
   "notification": {
-    "stale": "{count} sekme {days}+ gündür kullanılmadı"
+    "stale": "{count} sekme {days}+ gündür kullanılmadı",
+    "budget": "Günlük bütçe doldu: {category}"
   },
   "productivity": {
     "productive": "Üretken",

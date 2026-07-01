@@ -2,8 +2,10 @@ import { browser } from 'wxt/browser';
 import { TrackerEngine } from '@/lib/tracker/engine';
 import { rollup } from '@/lib/tracker/aggregate';
 import { findStale, rematchTabMeta, shouldNotify } from '@/lib/tracker/stale';
-import { staleNotification, storageFullNotification } from '@/lib/i18n/notify';
+import { staleNotification, storageFullNotification, budgetNotification } from '@/lib/i18n/notify';
 import { getSettings, invalidateSettings } from '@/lib/settings';
+import { groupByCategory } from '@/lib/categories';
+import { exceededBudgets, shouldNotifyBudget } from '@/lib/budgets';
 import * as repo from '@/lib/db/repo';
 import { isQuotaError } from '@/lib/db/errors';
 import { addDays, dateKey } from '@/lib/time';
@@ -263,6 +265,36 @@ export default defineBackground(() => {
     await actionApi.setBadgeBackgroundColor({ color: '#b0552f' });
   }
 
+  // Per-category daily budget nudge. Sums today's active time per category and, if a
+  // budget is crossed, fires at most ONE gentle notification per day (same throttle
+  // shape as stale nudges). Analytics only — it never blocks a site. Cheap enough to
+  // run on the badge cadence (every Nth heartbeat), and a no-op when no budgets are set.
+  async function checkBudgets(now: number): Promise<void> {
+    const settings = await getSettings();
+    if (!settings.notificationsEnabled || !browser.notifications) return;
+    const budgets = settings.categoryBudgets;
+    if (!budgets || Object.keys(budgets).length === 0) return;
+    const today = dateKey(now);
+    const stats = await repo.getStatsRange(today, today);
+    const domains = stats
+      .filter((s) => isWebDomain(s.domain))
+      .map((s) => ({ domain: s.domain, seconds: s.seconds, audioSeconds: s.audioSeconds }));
+    const slices = groupByCategory(domains, settings.categoryOverrides, settings.categoryRules);
+    const exceeded = exceededBudgets(slices, budgets);
+    if (!exceeded.length) return;
+    const { budgetNotifyState } = await browser.storage.local.get('budgetNotifyState');
+    const prev = (budgetNotifyState as { lastDate: string }) ?? { lastDate: '' };
+    if (!shouldNotifyBudget(exceeded, prev.lastDate, today)) return;
+    // One nudge per day — name the first over-budget category (usually the only one).
+    await browser.notifications.create('tab-time-budget', {
+      type: 'basic',
+      iconUrl: browser.runtime.getURL('/icon/128.png'),
+      title: 'TabStyr',
+      message: budgetNotification(settings.language, exceeded[0]),
+    });
+    await browser.storage.local.set({ budgetNotifyState: { lastDate: today, ids: exceeded } });
+  }
+
   async function runDailyMaintenance(now: number): Promise<void> {
     const today = dateKey(now);
     await repo.pruneBefore(addDays(today, -RETENTION_DAYS), now - RETENTION_DAYS * DAY_MS);
@@ -484,8 +516,12 @@ export default defineBackground(() => {
       const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
       if (tab) eng.setFocusedAudible(!!tab.audible);
       await persist(eng, eng.checkpoint(now));
-      // Badge is days-granularity — refresh periodically, not every minute.
-      if (++heartbeatTicks % BADGE_HEARTBEAT_INTERVAL === 0) await updateBadge();
+      // Badge is days-granularity — refresh periodically, not every minute. The
+      // budget check rides the same cadence (cheap; no-op when no budgets set).
+      if (++heartbeatTicks % BADGE_HEARTBEAT_INTERVAL === 0) {
+        await updateBadge();
+        await checkBudgets(now);
+      }
     } else if (alarm.name === 'daily') {
       await runDailyMaintenance(now);
     }
@@ -513,8 +549,11 @@ export default defineBackground(() => {
     await updateBadge();
   }));
 
-  browser.notifications?.onClicked?.addListener(() => {
-    void browser.tabs.create({ url: browser.runtime.getURL('/dashboard.html#stale') });
+  browser.notifications?.onClicked?.addListener((notificationId) => {
+    // The budget nudge opens the dashboard to the focus section; stale/other open the
+    // stale-tab manager (the historical default).
+    const hash = notificationId === 'tab-time-budget' ? '#focus' : '#stale';
+    void browser.tabs.create({ url: browser.runtime.getURL(`/dashboard.html${hash}`) });
   });
 
   // Before the service worker unloads (idle eviction or browser close), flush the
@@ -555,7 +594,7 @@ export default defineBackground(() => {
     } else if (msg?.type === 'wipe-data') {
       await repo.wipeAll();
       await sessionStore.remove('engineState');
-      await browser.storage.local.remove(['notifyState', 'keyMigrationV2']);
+      await browser.storage.local.remove(['notifyState', 'keyMigrationV2', 'budgetNotifyState']);
       enginePromise = null;
       await updateBadge();
     }

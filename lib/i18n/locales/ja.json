@@ -116,7 +116,10 @@
   "category": {
     "title": "今日のカテゴリ別",
     "shareAria": "カテゴリ別の時間の割合",
-    "segTitle": "{category} · {time} · {pct}%"
+    "segTitle": "{category} · {time} · {pct}%",
+    "overBudget": "超過",
+    "budgetMinutes": "{budget}分",
+    "budgetTitle": "1日の上限：{budget}分"
   },
   "focus": {
     "title": "今日の集中度",
@@ -277,7 +280,13 @@
     "restoreWrongPass": "パスフレーズが違うか、ファイルが破損しています。",
     "focusCategories": "フォーカスのカテゴリ",
     "focusCategoriesHint": "各カテゴリをフォーカス％にどう反映するか選びます。",
-    "productivityForAria": "{category} のフォーカスへの扱い"
+    "productivityForAria": "{category} のフォーカスへの扱い",
+    "focusTarget": "1日のフォーカス目標",
+    "focusTargetHint": "目標のフォーカス％。達成した日が連続記録になります。",
+    "budgetOff": "オフ",
+    "budgetUnit": "分",
+    "budgetForAria": "{category} の1日の上限（分）",
+    "dailyBudgetsHint": "カテゴリごとの任意の1日の上限（分）。超えると1日1回だけ控えめに通知します。ブロックはしません。"
   },
   "onboarding": {
     "title": "TabStyrへようこそ",
@@ -296,7 +305,8 @@
     "statsAria": "ブラウザ使用統計"
   },
   "notification": {
-    "stale": "{count} 個のタブが {days} 日以上未使用です"
+    "stale": "{count} 個のタブが {days} 日以上未使用です",
+    "budget": "本日の上限に到達: {category}"
   },
   "productivity": {
     "productive": "生産的",

@@ -106,6 +106,10 @@ export function useStats() {
   const categoryProductivity = computed<Record<Category, Productivity>>(
     () => settings.value?.categoryProductivity ?? CATEGORY_PRODUCTIVITY,
   );
+  const focusTarget = computed(() => settings.value?.focusTarget ?? 50);
+  const categoryBudgets = computed<Partial<Record<Category, number>>>(
+    () => settings.value?.categoryBudgets ?? {},
+  );
   // Show the first-run intro only once settings have loaded and it isn't dismissed.
   const showOnboarding = computed(() => !!settings.value && !settings.value.onboarded);
 
@@ -116,8 +120,7 @@ export function useStats() {
 
   // Focus %, productive/distracting split, and the current focus streak.
   const productivity = computed(() =>
-    // focusTarget stays at the built-in default (50) until the goals task exposes it.
-    summarizeProductivity(activeStats.value, todayKey.value, overrides.value, categoryRules.value, 50, categoryProductivity.value),
+    summarizeProductivity(activeStats.value, todayKey.value, overrides.value, categoryRules.value, focusTarget.value, categoryProductivity.value),
   );
 
   // "Open tabs by time" — one row per DOMAIN that has an open tab, showing that
@@ -320,7 +323,7 @@ export function useStats() {
     stats, activeStats, tabRows, staleTabs, staleTabItems, openTabsList, openTabCount, settings, heatmap, recentSessions,
     loading, loadError, storageWarning, todayKey,
     todaySeconds, todayAudioSeconds, weeklyAvgSeconds, weeklyActiveDays,
-    todayByDomain, todayByCategory, productivity, overrides, categoryRules, categoryProductivity, showOnboarding,
+    todayByDomain, todayByCategory, productivity, overrides, categoryRules, categoryProductivity, focusTarget, categoryBudgets, showOnboarding,
     load, closeTab, closeTabs, snoozeTab, setCategoryOverride, setCategoryProductivity, addCategoryRule, removeCategoryRule, dismissOnboarding,
   };
 }

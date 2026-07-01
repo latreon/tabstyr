@@ -116,7 +116,10 @@
   "category": {
     "title": "오늘 카테고리별",
     "shareAria": "카테고리별 시간 비율",
-    "segTitle": "{category} · {time} · {pct}%"
+    "segTitle": "{category} · {time} · {pct}%",
+    "overBudget": "초과",
+    "budgetMinutes": "{budget}분",
+    "budgetTitle": "일일 예산: {budget}분"
   },
   "focus": {
     "title": "오늘의 집중",
@@ -277,7 +280,13 @@
     "restoreWrongPass": "암호가 틀렸거나 파일이 손상되었습니다.",
     "focusCategories": "집중 카테고리",
     "focusCategoriesHint": "각 카테고리가 집중도 %에 반영되는 방식을 선택하세요.",
-    "productivityForAria": "{category}의 집중도 반영 방식"
+    "productivityForAria": "{category}의 집중도 반영 방식",
+    "focusTarget": "일일 집중 목표",
+    "focusTargetHint": "목표 집중도 %. 이를 달성한 날이 연속 기록을 만듭니다.",
+    "budgetOff": "끔",
+    "budgetUnit": "분",
+    "budgetForAria": "{category}의 일일 예산(분)",
+    "dailyBudgetsHint": "카테고리별 선택적 일일 한도(분). 초과하면 하루 한 번 부드럽게 알립니다 — 아무것도 차단하지 않습니다."
   },
   "onboarding": {
     "title": "TabStyr에 오신 것을 환영합니다",
@@ -296,7 +305,8 @@
     "statsAria": "브라우저 사용 통계"
   },
   "notification": {
-    "stale": "{count}개 탭이 {days}일 이상 사용되지 않음"
+    "stale": "{count}개 탭이 {days}일 이상 사용되지 않음",
+    "budget": "오늘 예산 도달: {category}"
   },
   "productivity": {
     "productive": "생산적",

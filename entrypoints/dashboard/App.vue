@@ -117,6 +117,11 @@ onMounted(async () => {
     // list instead of just flashing a number the user can't do anything with.
     if (s.staleTabItems.value.length) openTabsModal('stale');
   }
+  if (location.hash === '#focus') {
+    history.replaceState(null, '', location.pathname);
+    // Opened from a budget nudge — scroll the focus tile into view after paint.
+    requestAnimationFrame(() => document.getElementById('focus')?.scrollIntoView({ block: 'center' }));
+  }
 });
 </script>
 
@@ -173,10 +178,10 @@ onMounted(async () => {
         @activate="openTabsModal('stale')"
       />
       <!-- Today by category fills the space below Open tabs / Stale tabs, beside the tall hero -->
-      <CategoryChart :slices="s.todayByCategory.value" />
+      <CategoryChart :slices="s.todayByCategory.value" :budgets="s.categoryBudgets.value" />
       <!-- Top sites today + Focus today -->
       <TopSitesChart :domains="s.todayByDomain.value" @select="openDetail" />
-      <ProductivityTile :summary="s.productivity.value" />
+      <ProductivityTile id="focus" :summary="s.productivity.value" />
       <!-- full-width rows -->
       <TrendChart :stats="s.activeStats.value" :now="loadedNow" />
       <FocusTrend :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :productivity="s.categoryProductivity.value" :now="loadedNow" :target="s.productivity.value.focusTarget" />

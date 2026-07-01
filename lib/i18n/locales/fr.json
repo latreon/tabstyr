@@ -116,7 +116,10 @@
   "category": {
     "title": "Aujourd'hui par catégorie",
     "shareAria": "Part du temps par catégorie",
-    "segTitle": "{category} · {time} · {pct}%"
+    "segTitle": "{category} · {time} · {pct}%",
+    "overBudget": "dépassé",
+    "budgetMinutes": "{budget} min",
+    "budgetTitle": "Budget quotidien : {budget} min"
   },
   "focus": {
     "title": "Concentration aujourd'hui",
@@ -277,7 +280,13 @@
     "restoreWrongPass": "Phrase secrète incorrecte ou fichier corrompu.",
     "focusCategories": "Catégories de concentration",
     "focusCategoriesHint": "Choisissez comment chaque catégorie compte dans votre % de concentration.",
-    "productivityForAria": "Comment {category} compte pour la concentration"
+    "productivityForAria": "Comment {category} compte pour la concentration",
+    "focusTarget": "Objectif de concentration quotidien",
+    "focusTargetHint": "Votre % de concentration cible. Les jours qui l'atteignent alimentent votre série.",
+    "budgetOff": "désactivé",
+    "budgetUnit": "min",
+    "budgetForAria": "Budget quotidien pour {category}, en minutes",
+    "dailyBudgetsHint": "Limite quotidienne facultative par catégorie (minutes). Un rappel discret par jour en cas de dépassement — rien n'est bloqué."
   },
   "onboarding": {
     "title": "Bienvenue dans TabStyr",
@@ -296,7 +305,8 @@
     "statsAria": "Statistiques d'utilisation du navigateur"
   },
   "notification": {
-    "stale": "{count} onglets inactifs depuis plus de {days} jours"
+    "stale": "{count} onglets inactifs depuis plus de {days} jours",
+    "budget": "Budget quotidien atteint : {category}"
   },
   "productivity": {
     "productive": "Productif",

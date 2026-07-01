@@ -116,7 +116,10 @@
   "category": {
     "title": "Today by category",
     "shareAria": "Share of time by category",
-    "segTitle": "{category} · {time} · {pct}%"
+    "segTitle": "{category} · {time} · {pct}%",
+    "overBudget": "over",
+    "budgetMinutes": "{budget}m",
+    "budgetTitle": "Daily budget: {budget} min"
   },
   "focus": {
     "title": "Focus today",
@@ -277,7 +280,13 @@
     "restoreWrongPass": "Wrong passphrase or corrupted file.",
     "focusCategories": "Focus categories",
     "focusCategoriesHint": "Choose how each category counts toward your Focus %.",
-    "productivityForAria": "How {category} counts toward focus"
+    "productivityForAria": "How {category} counts toward focus",
+    "focusTarget": "Daily focus goal",
+    "focusTargetHint": "Your target Focus %. Days that meet it build your streak.",
+    "budgetOff": "off",
+    "budgetUnit": "m",
+    "budgetForAria": "Daily budget for {category}, in minutes",
+    "dailyBudgetsHint": "Optional daily limit per category (minutes). One gentle reminder a day when you pass it — nothing is blocked."
   },
   "onboarding": {
     "title": "Welcome to TabStyr",
@@ -296,7 +305,8 @@
     "statsAria": "Browser usage statistics"
   },
   "notification": {
-    "stale": "{count} tabs untouched for {days}+ days"
+    "stale": "{count} tabs untouched for {days}+ days",
+    "budget": "Daily budget reached: {category}"
   },
   "productivity": {
     "productive": "Productive",

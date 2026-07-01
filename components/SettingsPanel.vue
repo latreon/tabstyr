@@ -43,6 +43,9 @@ const staleDays = ref(3);
 const idleSeconds = ref(180);
 const audioEnabled = ref(true);
 const notificationsEnabled = ref(true);
+const focusTarget = ref(50);
+// Per-category daily budgets in minutes (only positive entries are kept).
+const budgets = ref<Partial<Record<Category, number>>>({});
 const themeChoice = ref<'light' | 'dark'>('light');
 // Gate auto-save until the initial values are loaded, so seeding the refs in
 // onMounted doesn't immediately persist defaults over stored settings.
@@ -83,6 +86,8 @@ onMounted(async () => {
   themeChoice.value = s.theme === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : s.theme;
   rules.value = s.categoryRules;
   categoryProductivity.value = { ...s.categoryProductivity };
+  focusTarget.value = s.focusTarget;
+  budgets.value = { ...s.categoryBudgets };
   loaded.value = true;
 });
 
@@ -112,8 +117,11 @@ async function persistSettings() {
       idleSeconds: idleSeconds.value,
       audioEnabled: audioEnabled.value,
       notificationsEnabled: notificationsEnabled.value,
+      focusTarget: focusTarget.value,
+      categoryBudgets: budgets.value,
     });
     await browser.runtime.sendMessage({ type: 'settings-changed' });
+    emit('changed'); // refresh the dashboard so focus target + budget pills update
     showToast(t('settings.saved'));
   } catch (e) {
     console.error('[settings] save failed', e);
@@ -121,11 +129,27 @@ async function persistSettings() {
   }
 }
 
-watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled], () => {
+watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, focusTarget], () => {
   if (!loaded.value) return;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(persistSettings, 400);
 });
+// Budgets are an object — deep-watch and debounce onto the same persist path.
+watch(budgets, () => {
+  if (!loaded.value) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(persistSettings, 400);
+}, { deep: true });
+
+// Set/clear a category's daily budget (minutes). Empty or non-positive removes it.
+function onBudgetInput(category: Category, event: Event) {
+  const raw = (event.target as HTMLInputElement).value.trim();
+  const n = raw === '' ? 0 : Math.floor(Number(raw));
+  const next = { ...budgets.value };
+  if (Number.isFinite(n) && n > 0) next[category] = Math.min(n, 1440);
+  else delete next[category];
+  budgets.value = next;
+}
 
 // Re-show the first-run intro on the dashboard. Clearing `onboarded` makes the
 // dashboard's showOnboarding turn true again; emit('changed') reloads it.
@@ -444,6 +468,11 @@ async function confirmWipe() {
       <ToggleSwitch v-model="notificationsEnabled" :label="t('settings.notifications')" />
     </div>
     <p class="field-hint">{{ t('settings.notificationsHint') }}</p>
+    <div class="field">
+      <span class="field-label">{{ t('settings.focusTarget') }}</span>
+      <NumberStepper v-model="focusTarget" :min="10" :max="90" :step="5" :label="t('settings.focusTarget')" />
+    </div>
+    <p class="field-hint">{{ t('settings.focusTargetHint') }}</p>
     <div class="actions">
       <button type="button" class="intro-link" @click="replayOnboarding">{{ t('settings.showIntro') }}</button>
       <button class="wipe" @click="showWipeModal = true">{{ t('settings.wipe') }}</button>
@@ -458,14 +487,31 @@ async function confirmWipe() {
             <span class="cat-dot" :style="{ background: CATEGORY_META[c].color }" aria-hidden="true" />
             {{ t(`categories.${c}`) }}
           </span>
-          <SelectBox
-            :model-value="categoryProductivity[c]"
-            :options="PRODUCTIVITY_OPTIONS"
-            :label="t('settings.productivityForAria', { category: t(`categories.${c}`) })"
-            @update:model-value="setProductivity(c, $event as Productivity)"
-          />
+          <span class="prod-controls">
+            <SelectBox
+              :model-value="categoryProductivity[c]"
+              :options="PRODUCTIVITY_OPTIONS"
+              :label="t('settings.productivityForAria', { category: t(`categories.${c}`) })"
+              @update:model-value="setProductivity(c, $event as Productivity)"
+            />
+            <span class="budget-field">
+              <input
+                class="budget-input"
+                type="number"
+                min="0"
+                max="1440"
+                inputmode="numeric"
+                :value="budgets[c] ?? ''"
+                :placeholder="t('settings.budgetOff')"
+                :aria-label="t('settings.budgetForAria', { category: t(`categories.${c}`) })"
+                @input="onBudgetInput(c, $event)"
+              />
+              <span class="budget-unit" aria-hidden="true">{{ t('settings.budgetUnit') }}</span>
+            </span>
+          </span>
         </li>
       </ul>
+      <p class="rules-hint">{{ t('settings.dailyBudgetsHint') }}</p>
     </div>
 
     <div class="rules">
@@ -686,6 +732,35 @@ button:focus-visible {
   gap: 8px;
   font-size: 13px;
   color: var(--text-2);
+}
+.prod-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.budget-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.budget-input {
+  width: 56px;
+  height: 30px;
+  box-sizing: border-box;
+  padding: 0 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--card-strong);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  text-align: right;
+}
+.budget-input::placeholder { color: var(--text-3); }
+.budget-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+.budget-unit { font-size: 11px; color: var(--text-3); }
+@media (max-width: 420px) {
+  .prod-row { flex-wrap: wrap; }
 }
 .cat-dot {
   width: 10px;

@@ -72,6 +72,36 @@ describe('settings', () => {
     );
   });
 
+  test('focusTarget defaults to 50 and is clamped to 10–90', async () => {
+    expect((await getSettings()).focusTarget).toBe(50);
+    await fakeBrowser.storage.local.set({ settings: { focusTarget: 5 } });
+    invalidateSettings();
+    expect((await getSettings()).focusTarget).toBe(10);
+    await fakeBrowser.storage.local.set({ settings: { focusTarget: 200 } });
+    invalidateSettings();
+    expect((await getSettings()).focusTarget).toBe(90);
+  });
+
+  test('categoryBudgets keeps positive minute values and drops junk / unknown categories', async () => {
+    await fakeBrowser.storage.local.set({
+      settings: {
+        categoryBudgets: { Social: 30, Media: 0, Work: -5, News: 2000, NotACategory: 10, Dev: 'x' },
+      },
+    });
+    const b = (await getSettings()).categoryBudgets;
+    expect(b.Social).toBe(30); // kept
+    expect(b.News).toBe(1440); // clamped to 24h
+    expect('Media' in b).toBe(false); // 0 dropped
+    expect('Work' in b).toBe(false); // negative dropped
+    expect('Dev' in b).toBe(false); // non-number dropped
+    expect((b as Record<string, unknown>).NotACategory).toBeUndefined(); // unknown dropped
+  });
+
+  test('categoryBudgets round-trips a saved budget', async () => {
+    await saveSettings({ categoryBudgets: { Social: 45 } });
+    expect((await getSettings()).categoryBudgets).toEqual({ Social: 45 });
+  });
+
   test('malformed stored values are ignored, defaults win', async () => {
     await fakeBrowser.storage.local.set({ settings: { staleDays: 'seven', audioEnabled: false } });
     expect(await getSettings()).toEqual({ ...DEFAULT_SETTINGS, audioEnabled: false });

@@ -116,7 +116,10 @@
   "category": {
     "title": "Heute nach Kategorie",
     "shareAria": "Zeitanteil nach Kategorie",
-    "segTitle": "{category} · {time} · {pct}%"
+    "segTitle": "{category} · {time} · {pct}%",
+    "overBudget": "über",
+    "budgetMinutes": "{budget} Min",
+    "budgetTitle": "Tagesbudget: {budget} Min"
   },
   "focus": {
     "title": "Fokus heute",
@@ -277,7 +280,13 @@
     "restoreWrongPass": "Falsche Passphrase oder beschädigte Datei.",
     "focusCategories": "Fokus-Kategorien",
     "focusCategoriesHint": "Lege fest, wie jede Kategorie in deinen Fokus-Prozentsatz einfließt.",
-    "productivityForAria": "Wie {category} zum Fokus zählt"
+    "productivityForAria": "Wie {category} zum Fokus zählt",
+    "focusTarget": "Tägliches Fokusziel",
+    "focusTargetHint": "Dein Ziel-Fokus-%. Tage, die es erreichen, bauen deine Serie auf.",
+    "budgetOff": "aus",
+    "budgetUnit": "Min",
+    "budgetForAria": "Tagesbudget für {category}, in Minuten",
+    "dailyBudgetsHint": "Optionales Tageslimit pro Kategorie (Minuten). Eine dezente Erinnerung pro Tag beim Überschreiten – nichts wird blockiert."
   },
   "onboarding": {
     "title": "Willkommen bei TabStyr",
@@ -296,7 +305,8 @@
     "statsAria": "Browser-Nutzungsstatistiken"
   },
   "notification": {
-    "stale": "{count} Tabs seit über {days} Tagen unberührt"
+    "stale": "{count} Tabs seit über {days} Tagen unberührt",
+    "budget": "Tagesbudget erreicht: {category}"
   },
   "productivity": {
     "productive": "Produktiv",

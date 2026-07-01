@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { CATEGORY_META, type CategorySlice } from '@/lib/categories';
+import { CATEGORY_META, type Category, type CategorySlice } from '@/lib/categories';
+import { budgetProgress } from '@/lib/budgets';
 import { formatDuration } from '@/lib/time';
 
-const props = defineProps<{ slices: CategorySlice[] }>();
+const props = defineProps<{ slices: CategorySlice[]; budgets?: Partial<Record<Category, number>> }>();
 const { t } = useI18n();
 
 // Category the pointer is over — used to highlight its segment + chip together.
@@ -15,12 +16,18 @@ const total = computed(() => props.slices.reduce((sum, s) => sum + s.seconds, 0)
 const items = computed(() =>
   props.slices
     .filter((s) => s.seconds > 0)
-    .map((s) => ({
-      category: s.category,
-      color: CATEGORY_META[s.category].color,
-      seconds: s.seconds,
-      pct: total.value ? Math.round((s.seconds / total.value) * 100) : 0,
-    })),
+    .map((s) => {
+      const budget = props.budgets?.[s.category];
+      const progress = budgetProgress(s, budget);
+      return {
+        category: s.category,
+        color: CATEGORY_META[s.category].color,
+        seconds: s.seconds,
+        pct: total.value ? Math.round((s.seconds / total.value) * 100) : 0,
+        budget, // minutes, or undefined
+        overBudget: progress >= 1,
+      };
+    }),
 );
 
 // Screen-reader label for the (purely visual) stacked bar — spells out each
@@ -66,6 +73,12 @@ const stackSummary = computed(() =>
           <span class="dot" :style="{ background: i.color }" aria-hidden="true" />
           <span class="chip-name">{{ t(`categories.${i.category}`) }}</span>
           <span class="chip-time">{{ formatDuration(i.seconds) }}</span>
+          <span
+            v-if="i.budget"
+            class="budget-pill"
+            :class="{ over: i.overBudget }"
+            :title="t('category.budgetTitle', { budget: i.budget })"
+          >{{ i.overBudget ? t('category.overBudget') : t('category.budgetMinutes', { budget: i.budget }) }}</span>
         </li>
       </ul>
     </template>
@@ -159,5 +172,18 @@ const stackSummary = computed(() =>
   font-weight: 700;
   color: var(--text);
   font-variant-numeric: tabular-nums;
+}
+.budget-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  color: var(--text-3);
+  background: var(--bar-track);
+  white-space: nowrap;
+}
+.budget-pill.over {
+  color: var(--warn);
+  background: var(--warn-bg);
 }
 </style>

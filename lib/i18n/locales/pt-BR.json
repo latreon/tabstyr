@@ -116,7 +116,10 @@
   "category": {
     "title": "Hoje por categoria",
     "shareAria": "Proporção de tempo por categoria",
-    "segTitle": "{category} · {time} · {pct}%"
+    "segTitle": "{category} · {time} · {pct}%",
+    "overBudget": "excedido",
+    "budgetMinutes": "{budget} min",
+    "budgetTitle": "Limite diário: {budget} min"
   },
   "focus": {
     "title": "Foco hoje",
@@ -277,7 +280,13 @@
     "restoreWrongPass": "Senha incorreta ou arquivo corrompido.",
     "focusCategories": "Categorias de foco",
     "focusCategoriesHint": "Escolha como cada categoria conta no seu % de foco.",
-    "productivityForAria": "Como {category} conta para o foco"
+    "productivityForAria": "Como {category} conta para o foco",
+    "focusTarget": "Meta de foco diária",
+    "focusTargetHint": "Seu % de foco alvo. Os dias que a atingem formam sua sequência.",
+    "budgetOff": "desligado",
+    "budgetUnit": "min",
+    "budgetForAria": "Limite diário de {category}, em minutos",
+    "dailyBudgetsHint": "Limite diário opcional por categoria (minutos). Um lembrete gentil por dia ao ultrapassá-lo — nada é bloqueado."
   },
   "onboarding": {
     "title": "Bem-vindo ao TabStyr",
@@ -296,7 +305,8 @@
     "statsAria": "Estatísticas de uso do navegador"
   },
   "notification": {
-    "stale": "{count} abas sem uso por {days}+ dias"
+    "stale": "{count} abas sem uso por {days}+ dias",
+    "budget": "Limite diário atingido: {category}"
   },
   "productivity": {
     "productive": "Produtivo",
