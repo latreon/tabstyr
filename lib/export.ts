@@ -34,9 +34,8 @@ export function toJsonBackup(data: BackupData, now: number): string {
   );
 }
 
-/** Trigger a client-side download of `content`. DOM-only — call from a page. */
-export function downloadFile(filename: string, content: string, mime: string): void {
-  const blob = new Blob([content], { type: mime });
+/** Trigger a client-side download of an existing Blob. DOM-only — call from a page. */
+export function downloadBlob(filename: string, blob: Blob): void {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -45,4 +44,9 @@ export function downloadFile(filename: string, content: string, mime: string): v
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
+}
+
+/** Trigger a client-side download of `content`. DOM-only — call from a page. */
+export function downloadFile(filename: string, content: string, mime: string): void {
+  downloadBlob(filename, new Blob([content], { type: mime }));
 }

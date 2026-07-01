@@ -174,7 +174,14 @@
     "nothingTracked": "— nichts erfasst.",
     "legendAria": "Legende der Punktfarben",
     "viewSiteAria": "Details zu {domain} ansehen — {category}",
-    "changeCategory": "Kategorie ändern (aktuell {category})"
+    "changeCategory": "Kategorie ändern (aktuell {category})",
+    "reportHeading": "Aktivitätsbericht",
+    "totalActive": "Aktiv gesamt",
+    "byCategory": "Nach Kategorie",
+    "bySite": "Nach Website",
+    "moreSites": "+{count} weitere Websites",
+    "csv": "CSV",
+    "png": "Bild"
   },
   "tabTable": {
     "title": "Offene Tabs nach Zeit",

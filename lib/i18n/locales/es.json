@@ -174,7 +174,14 @@
     "nothingTracked": "— nada registrado.",
     "legendAria": "Leyenda de colores de los puntos",
     "viewSiteAria": "Ver detalles de {domain} — {category}",
-    "changeCategory": "Cambiar categoría (ahora {category})"
+    "changeCategory": "Cambiar categoría (ahora {category})",
+    "reportHeading": "Informe de actividad",
+    "totalActive": "Total activo",
+    "byCategory": "Por categoría",
+    "bySite": "Por sitio",
+    "moreSites": "+{count} sitios más",
+    "csv": "CSV",
+    "png": "Imagen"
   },
   "tabTable": {
     "title": "Pestañas abiertas por tiempo",

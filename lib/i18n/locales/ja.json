@@ -174,7 +174,14 @@
     "nothingTracked": "— 何も記録されていません。",
     "legendAria": "ドットの色の凡例",
     "viewSiteAria": "{domain}の詳細を表示 — {category}",
-    "changeCategory": "カテゴリを変更（現在：{category}）"
+    "changeCategory": "カテゴリを変更（現在：{category}）",
+    "reportHeading": "アクティビティレポート",
+    "totalActive": "アクティブ合計",
+    "byCategory": "カテゴリ別",
+    "bySite": "サイト別",
+    "moreSites": "他 {count} サイト",
+    "csv": "CSV",
+    "png": "画像"
   },
   "tabTable": {
     "title": "時間別の開いているタブ",

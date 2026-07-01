@@ -174,7 +174,14 @@
     "nothingTracked": "— ничего не записано.",
     "legendAria": "Обозначение цветов точек",
     "viewSiteAria": "Подробнее о {domain} — {category}",
-    "changeCategory": "Изменить категорию (сейчас {category})"
+    "changeCategory": "Изменить категорию (сейчас {category})",
+    "reportHeading": "Отчёт об активности",
+    "totalActive": "Всего активно",
+    "byCategory": "По категориям",
+    "bySite": "По сайтам",
+    "moreSites": "Ещё +{count} сайтов",
+    "csv": "CSV",
+    "png": "Изображение"
   },
   "tabTable": {
     "title": "Открытые вкладки по времени",

@@ -174,7 +174,14 @@
     "nothingTracked": "— nulla registrato.",
     "legendAria": "Legenda dei colori dei punti",
     "viewSiteAria": "Vedi dettagli di {domain} — {category}",
-    "changeCategory": "Cambia categoria (ora {category})"
+    "changeCategory": "Cambia categoria (ora {category})",
+    "reportHeading": "Report attività",
+    "totalActive": "Totale attivo",
+    "byCategory": "Per categoria",
+    "bySite": "Per sito",
+    "moreSites": "+{count} altri siti",
+    "csv": "CSV",
+    "png": "Immagine"
   },
   "tabTable": {
     "title": "Schede aperte per tempo",

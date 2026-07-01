@@ -174,7 +174,14 @@
     "nothingTracked": "— 기록된 항목 없음.",
     "legendAria": "점 색상 범례",
     "viewSiteAria": "{domain} 상세 보기 — {category}",
-    "changeCategory": "카테고리 변경 (현재 {category})"
+    "changeCategory": "카테고리 변경 (현재 {category})",
+    "reportHeading": "활동 리포트",
+    "totalActive": "총 활동",
+    "byCategory": "카테고리별",
+    "bySite": "사이트별",
+    "moreSites": "+{count}개 사이트 더",
+    "csv": "CSV",
+    "png": "이미지"
   },
   "tabTable": {
     "title": "시간별 열린 탭",

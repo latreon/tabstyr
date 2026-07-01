@@ -174,7 +174,14 @@
     "nothingTracked": "— 未记录任何内容。",
     "legendAria": "圆点颜色图例",
     "viewSiteAria": "查看 {domain} 详情 — {category}",
-    "changeCategory": "更改类别（当前：{category}）"
+    "changeCategory": "更改类别（当前：{category}）",
+    "reportHeading": "活动报告",
+    "totalActive": "活跃总计",
+    "byCategory": "按类别",
+    "bySite": "按站点",
+    "moreSites": "+{count} 个更多站点",
+    "csv": "CSV",
+    "png": "图片"
   },
   "tabTable": {
     "title": "按时间排列的打开标签页",

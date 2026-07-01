@@ -174,7 +174,14 @@
     "nothingTracked": "— hiçbir şey kaydedilmedi.",
     "legendAria": "Nokta renk açıklaması",
     "viewSiteAria": "{domain} ayrıntılarını gör — {category}",
-    "changeCategory": "Kategoriyi değiştir (şu an {category})"
+    "changeCategory": "Kategoriyi değiştir (şu an {category})",
+    "reportHeading": "Etkinlik raporu",
+    "totalActive": "Toplam etkin",
+    "byCategory": "Kategoriye göre",
+    "bySite": "Siteye göre",
+    "moreSites": "+{count} site daha",
+    "csv": "CSV",
+    "png": "Görsel"
   },
   "tabTable": {
     "title": "Zamana göre açık sekmeler",

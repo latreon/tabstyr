@@ -174,7 +174,14 @@
     "nothingTracked": "— nada registrado.",
     "legendAria": "Legenda de cores dos pontos",
     "viewSiteAria": "Ver detalhes de {domain} — {category}",
-    "changeCategory": "Mudar categoria (atual {category})"
+    "changeCategory": "Mudar categoria (atual {category})",
+    "reportHeading": "Relatório de atividade",
+    "totalActive": "Total ativo",
+    "byCategory": "Por categoria",
+    "bySite": "Por site",
+    "moreSites": "+{count} outros sites",
+    "csv": "CSV",
+    "png": "Imagem"
   },
   "tabTable": {
     "title": "Abas abertas por tempo",

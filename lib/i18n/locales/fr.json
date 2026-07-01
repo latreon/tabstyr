@@ -174,7 +174,14 @@
     "nothingTracked": "— rien de suivi.",
     "legendAria": "Légende des couleurs de points",
     "viewSiteAria": "Voir les détails de {domain} — {category}",
-    "changeCategory": "Changer de catégorie (actuellement {category})"
+    "changeCategory": "Changer de catégorie (actuellement {category})",
+    "reportHeading": "Rapport d'activité",
+    "totalActive": "Total actif",
+    "byCategory": "Par catégorie",
+    "bySite": "Par site",
+    "moreSites": "+{count} autres sites",
+    "csv": "CSV",
+    "png": "Image"
   },
   "tabTable": {
     "title": "Onglets ouverts par temps",

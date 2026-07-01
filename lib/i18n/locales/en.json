@@ -174,7 +174,14 @@
     "nothingTracked": "— nothing tracked.",
     "legendAria": "Dot colour key",
     "viewSiteAria": "View {domain} details — {category}",
-    "changeCategory": "Change category (now {category})"
+    "changeCategory": "Change category (now {category})",
+    "reportHeading": "Activity report",
+    "totalActive": "Total active",
+    "byCategory": "By category",
+    "bySite": "By site",
+    "moreSites": "+{count} more sites",
+    "csv": "CSV",
+    "png": "Image"
   },
   "tabTable": {
     "title": "Open tabs by time",
