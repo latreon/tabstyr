@@ -274,7 +274,10 @@
     "showIntro": "Tanıtımı tekrar göster",
     "introShown": "Tanıtım panoda gösterilecek",
     "restoreInvalid": "Bu dosya geçerli bir TabStyr yedeği değil.",
-    "restoreWrongPass": "Yanlış parola veya bozuk dosya."
+    "restoreWrongPass": "Yanlış parola veya bozuk dosya.",
+    "focusCategories": "Odak kategorileri",
+    "focusCategoriesHint": "Her kategorinin Odak yüzdenize nasıl sayılacağını seçin.",
+    "productivityForAria": "{category} odağa nasıl sayılır"
   },
   "onboarding": {
     "title": "TabStyr'a hoş geldiniz",
@@ -294,5 +297,10 @@
   },
   "notification": {
     "stale": "{count} sekme {days}+ gündür kullanılmadı"
+  },
+  "productivity": {
+    "productive": "Üretken",
+    "distracting": "Dikkat dağıtıcı",
+    "neutral": "Nötr"
   }
 }

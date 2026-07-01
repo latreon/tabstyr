@@ -274,7 +274,10 @@
     "showIntro": "Einführung erneut anzeigen",
     "introShown": "Einführung wird im Dashboard angezeigt",
     "restoreInvalid": "Diese Datei ist kein gültiges TabStyr-Backup.",
-    "restoreWrongPass": "Falsche Passphrase oder beschädigte Datei."
+    "restoreWrongPass": "Falsche Passphrase oder beschädigte Datei.",
+    "focusCategories": "Fokus-Kategorien",
+    "focusCategoriesHint": "Lege fest, wie jede Kategorie in deinen Fokus-Prozentsatz einfließt.",
+    "productivityForAria": "Wie {category} zum Fokus zählt"
   },
   "onboarding": {
     "title": "Willkommen bei TabStyr",
@@ -294,5 +297,10 @@
   },
   "notification": {
     "stale": "{count} Tabs seit über {days} Tagen unberührt"
+  },
+  "productivity": {
+    "productive": "Produktiv",
+    "distracting": "Ablenkend",
+    "neutral": "Neutral"
   }
 }

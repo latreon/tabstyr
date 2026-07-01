@@ -274,7 +274,10 @@
     "showIntro": "Rivedi l'introduzione",
     "introShown": "L'introduzione apparirà nella dashboard",
     "restoreInvalid": "Questo file non è un backup TabStyr valido.",
-    "restoreWrongPass": "Passphrase errata o file danneggiato."
+    "restoreWrongPass": "Passphrase errata o file danneggiato.",
+    "focusCategories": "Categorie di focus",
+    "focusCategoriesHint": "Scegli come ogni categoria incide sulla tua % di focus.",
+    "productivityForAria": "Come {category} incide sul focus"
   },
   "onboarding": {
     "title": "Benvenuto in TabStyr",
@@ -294,5 +297,10 @@
   },
   "notification": {
     "stale": "{count} schede non toccate da {days}+ giorni"
+  },
+  "productivity": {
+    "productive": "Produttivo",
+    "distracting": "Distrazione",
+    "neutral": "Neutro"
   }
 }

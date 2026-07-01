@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { buildFocusTrend, dailyFocus, focusStreak, summarizeProductivity } from '@/lib/productivity';
+import { CATEGORY_PRODUCTIVITY, type Category, type Productivity } from '@/lib/categories';
 import type { DailyStat } from '@/lib/types';
 
 const NOW = new Date(2026, 5, 11, 12, 0).getTime(); // 2026-06-11 local
@@ -25,6 +26,20 @@ describe('dailyFocus', () => {
 
   test('focus % is 0 when there is no productive/distracting time', () => {
     expect(dailyFocus([stat('2026-06-11', 'cnn.com', 100)]).get('2026-06-11')!.focusPct).toBe(0);
+  });
+
+  test('a custom productivity mapping re-scores the same data', () => {
+    // Social-media-manager mapping: Media counts as productive, Dev as distracting.
+    const prod: Record<Category, Productivity> = { ...CATEGORY_PRODUCTIVITY, Media: 'productive', Dev: 'distracting' };
+    const f = dailyFocus(
+      [stat('2026-06-11', 'github.com', 60), stat('2026-06-11', 'youtube.com', 40)],
+      {},
+      [],
+      prod,
+    ).get('2026-06-11')!;
+    expect(f.productive).toBe(40); // youtube/Media now productive
+    expect(f.distracting).toBe(60); // github/Dev now distracting
+    expect(f.focusPct).toBe(40); // 40 / (40 + 60)
   });
 });
 
@@ -125,5 +140,15 @@ describe('summarizeProductivity', () => {
     const sum = summarizeProductivity(stats, '2026-06-11', { 'youtube.com': 'Work' });
     expect(sum.todayFocusPct).toBe(100);
     expect(sum.distractingSeconds).toBe(0);
+  });
+
+  test('respects a custom productivity mapping', () => {
+    // Media → productive flips youtube's time from distracting to productive.
+    const prod: Record<Category, Productivity> = { ...CATEGORY_PRODUCTIVITY, Media: 'productive' };
+    const stats = [stat('2026-06-11', 'youtube.com', 60), stat('2026-06-11', 'github.com', 40)];
+    const sum = summarizeProductivity(stats, '2026-06-11', {}, [], 50, prod);
+    expect(sum.todayFocusPct).toBe(100);
+    expect(sum.distractingSeconds).toBe(0);
+    expect(sum.productiveSeconds).toBe(100);
   });
 });

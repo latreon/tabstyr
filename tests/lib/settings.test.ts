@@ -44,6 +44,34 @@ describe('settings', () => {
     expect(Object.keys(stored.categoryOverrides).length).toBeLessThanOrEqual(5000);
   });
 
+  test('categoryProductivity defaults to the built-in mapping', async () => {
+    const s = await getSettings();
+    expect(s.categoryProductivity.Work).toBe('productive');
+    expect(s.categoryProductivity.Social).toBe('distracting');
+    expect(s.categoryProductivity.Finance).toBe('neutral');
+  });
+
+  test('categoryProductivity round-trips a user remap and keeps other categories at default', async () => {
+    await saveSettings({ categoryProductivity: { Social: 'productive' } as Parameters<typeof saveSettings>[0]['categoryProductivity'] });
+    const s = await getSettings();
+    expect(s.categoryProductivity.Social).toBe('productive'); // remapped
+    expect(s.categoryProductivity.Work).toBe('productive'); // untouched default
+    expect(s.categoryProductivity.Media).toBe('distracting'); // untouched default
+  });
+
+  test('invalid categoryProductivity entries fall back to the default (full valid mapping)', async () => {
+    await fakeBrowser.storage.local.set({
+      settings: { categoryProductivity: { Work: 'bogus', Social: 'productive', NotACategory: 'productive' } },
+    });
+    const s = await getSettings();
+    expect(s.categoryProductivity.Work).toBe('productive'); // bad value → default
+    expect(s.categoryProductivity.Social).toBe('productive'); // valid override kept
+    expect((s.categoryProductivity as Record<string, unknown>).NotACategory).toBeUndefined();
+    expect(Object.keys(s.categoryProductivity).sort()).toEqual(
+      ['Dev', 'Finance', 'Media', 'News', 'Other', 'Shopping', 'Social', 'Work'].sort(),
+    );
+  });
+
   test('malformed stored values are ignored, defaults win', async () => {
     await fakeBrowser.storage.local.set({ settings: { staleDays: 'seven', audioEnabled: false } });
     expect(await getSettings()).toEqual({ ...DEFAULT_SETTINGS, audioEnabled: false });

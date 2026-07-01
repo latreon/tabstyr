@@ -274,7 +274,10 @@
     "showIntro": "소개 다시 보기",
     "introShown": "대시보드에 소개가 표시됩니다",
     "restoreInvalid": "유효한 TabStyr 백업 파일이 아닙니다.",
-    "restoreWrongPass": "암호가 틀렸거나 파일이 손상되었습니다."
+    "restoreWrongPass": "암호가 틀렸거나 파일이 손상되었습니다.",
+    "focusCategories": "집중 카테고리",
+    "focusCategoriesHint": "각 카테고리가 집중도 %에 반영되는 방식을 선택하세요.",
+    "productivityForAria": "{category}의 집중도 반영 방식"
   },
   "onboarding": {
     "title": "TabStyr에 오신 것을 환영합니다",
@@ -294,5 +297,10 @@
   },
   "notification": {
     "stale": "{count}개 탭이 {days}일 이상 사용되지 않음"
+  },
+  "productivity": {
+    "productive": "생산적",
+    "distracting": "산만함",
+    "neutral": "중립"
   }
 }

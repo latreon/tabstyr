@@ -66,6 +66,12 @@ export interface Settings {
   categoryOverrides: Record<string, import('./categories').Category>;
   /** User-defined substring → category rules, checked before the built-in rules. */
   categoryRules: import('./categories').CategoryRule[];
+  /**
+   * How each category counts toward Focus % — productive, distracting, or neutral.
+   * Seeded from CATEGORY_PRODUCTIVITY; the user can remap any category (e.g. a
+   * social-media manager marking Social as productive).
+   */
+  categoryProductivity: Record<import('./categories').Category, import('./categories').Productivity>;
   /** Whether the first-run onboarding intro has been dismissed. */
   onboarded: boolean;
   /** Whether the once-a-day stale-tab reminder notification is shown. */

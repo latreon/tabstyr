@@ -1,8 +1,9 @@
 import { describe, expect, test } from 'vitest';
 import { toJsonBackup } from '@/lib/export';
+import { CATEGORY_PRODUCTIVITY } from '@/lib/categories';
 import type { Settings } from '@/lib/types';
 
-const SETTINGS: Settings = { staleDays: 3, idleSeconds: 60, audioEnabled: true, theme: 'system', categoryOverrides: {}, categoryRules: [], onboarded: false, notificationsEnabled: true, language: 'auto' };
+const SETTINGS: Settings = { staleDays: 3, idleSeconds: 60, audioEnabled: true, theme: 'system', categoryOverrides: {}, categoryRules: [], categoryProductivity: { ...CATEGORY_PRODUCTIVITY }, onboarded: false, notificationsEnabled: true, language: 'auto' };
 
 describe('toJsonBackup', () => {
   test('produces parseable JSON with metadata and all sections', () => {

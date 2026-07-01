@@ -3,7 +3,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { browser } from 'wxt/browser';
 import { getSettings, saveSettings } from '@/lib/settings';
-import { CATEGORIES, type Category, type CategoryRule } from '@/lib/categories';
+import { CATEGORIES, CATEGORY_META, CATEGORY_PRODUCTIVITY, PRODUCTIVITY, type Category, type CategoryRule, type Productivity } from '@/lib/categories';
 import { useTheme } from '@/composables/useTheme';
 import { useLocale } from '@/composables/useLocale';
 import { useFocusTrap } from '@/composables/useFocusTrap';
@@ -55,6 +55,12 @@ const newPattern = ref('');
 const newCategory = ref<Category>('Work');
 const ruleError = ref('');
 
+// Per-category productive/distracting/neutral classification (drives Focus %).
+const categoryProductivity = ref<Record<Category, Productivity>>({ ...CATEGORY_PRODUCTIVITY });
+const PRODUCTIVITY_OPTIONS = computed(() =>
+  PRODUCTIVITY.map((p) => ({ value: p, label: t(`productivity.${p}`) })),
+);
+
 const toast = ref<string | null>(null);
 let toastTimer: ReturnType<typeof setTimeout> | undefined;
 function showToast(msg: string) {
@@ -76,6 +82,7 @@ onMounted(async () => {
   // If still on the implicit "system" default, show the resolved theme in the picker.
   themeChoice.value = s.theme === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : s.theme;
   rules.value = s.categoryRules;
+  categoryProductivity.value = { ...s.categoryProductivity };
   loaded.value = true;
 });
 
@@ -130,6 +137,22 @@ async function replayOnboarding() {
     showToast(t('settings.introShown'));
   } catch (e) {
     console.error('[settings] replay onboarding failed', e);
+    showToast(t('settings.saveFailed'));
+  }
+}
+
+async function setProductivity(category: Category, value: Productivity) {
+  const prev = categoryProductivity.value;
+  categoryProductivity.value = { ...prev, [category]: value };
+  try {
+    const saved = await saveSettings({ categoryProductivity: categoryProductivity.value });
+    categoryProductivity.value = { ...saved.categoryProductivity };
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    emit('changed');
+    showToast(t('settings.saved'));
+  } catch (e) {
+    console.error('[settings] productivity save failed', e);
+    categoryProductivity.value = prev; // revert the optimistic change
     showToast(t('settings.saveFailed'));
   }
 }
@@ -426,6 +449,25 @@ async function confirmWipe() {
       <button class="wipe" @click="showWipeModal = true">{{ t('settings.wipe') }}</button>
     </div>
 
+    <div class="rules focus-cats">
+      <span class="field-label">{{ t('settings.focusCategories') }}</span>
+      <p class="rules-hint">{{ t('settings.focusCategoriesHint') }}</p>
+      <ul class="prod-list">
+        <li v-for="c in CATEGORIES" :key="c" class="prod-row">
+          <span class="prod-cat">
+            <span class="cat-dot" :style="{ background: CATEGORY_META[c].color }" aria-hidden="true" />
+            {{ t(`categories.${c}`) }}
+          </span>
+          <SelectBox
+            :model-value="categoryProductivity[c]"
+            :options="PRODUCTIVITY_OPTIONS"
+            :label="t('settings.productivityForAria', { category: t(`categories.${c}`) })"
+            @update:model-value="setProductivity(c, $event as Productivity)"
+          />
+        </li>
+      </ul>
+    </div>
+
     <div class="rules">
       <span class="field-label">{{ t('settings.customRules') }}</span>
       <p class="rules-hint">{{ t('settings.rulesHint') }}</p>
@@ -623,6 +665,33 @@ button:focus-visible {
   font-size: 11px;
   line-height: 1.45;
   color: var(--text-3);
+}
+.prod-list {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.prod-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.prod-cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.cat-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: none;
 }
 .rule-list {
   list-style: none;

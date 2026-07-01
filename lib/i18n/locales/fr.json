@@ -274,7 +274,10 @@
     "showIntro": "Revoir l'introduction",
     "introShown": "L'introduction s'affichera sur le tableau de bord",
     "restoreInvalid": "Ce fichier n'est pas une sauvegarde TabStyr valide.",
-    "restoreWrongPass": "Phrase secrète incorrecte ou fichier corrompu."
+    "restoreWrongPass": "Phrase secrète incorrecte ou fichier corrompu.",
+    "focusCategories": "Catégories de concentration",
+    "focusCategoriesHint": "Choisissez comment chaque catégorie compte dans votre % de concentration.",
+    "productivityForAria": "Comment {category} compte pour la concentration"
   },
   "onboarding": {
     "title": "Bienvenue dans TabStyr",
@@ -294,5 +297,10 @@
   },
   "notification": {
     "stale": "{count} onglets inactifs depuis plus de {days} jours"
+  },
+  "productivity": {
+    "productive": "Productif",
+    "distracting": "Distrayant",
+    "neutral": "Neutre"
   }
 }

@@ -274,7 +274,10 @@
     "showIntro": "Show intro again",
     "introShown": "Intro will show on the dashboard",
     "restoreInvalid": "That file isn't a valid TabStyr backup.",
-    "restoreWrongPass": "Wrong passphrase or corrupted file."
+    "restoreWrongPass": "Wrong passphrase or corrupted file.",
+    "focusCategories": "Focus categories",
+    "focusCategoriesHint": "Choose how each category counts toward your Focus %.",
+    "productivityForAria": "How {category} counts toward focus"
   },
   "onboarding": {
     "title": "Welcome to TabStyr",
@@ -294,5 +297,10 @@
   },
   "notification": {
     "stale": "{count} tabs untouched for {days}+ days"
+  },
+  "productivity": {
+    "productive": "Productive",
+    "distracting": "Distracting",
+    "neutral": "Neutral"
   }
 }

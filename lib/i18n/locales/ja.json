@@ -274,7 +274,10 @@
     "showIntro": "イントロをもう一度表示",
     "introShown": "ダッシュボードにイントロを表示します",
     "restoreInvalid": "このファイルは有効な TabStyr バックアップではありません。",
-    "restoreWrongPass": "パスフレーズが違うか、ファイルが破損しています。"
+    "restoreWrongPass": "パスフレーズが違うか、ファイルが破損しています。",
+    "focusCategories": "フォーカスのカテゴリ",
+    "focusCategoriesHint": "各カテゴリをフォーカス％にどう反映するか選びます。",
+    "productivityForAria": "{category} のフォーカスへの扱い"
   },
   "onboarding": {
     "title": "TabStyrへようこそ",
@@ -294,5 +297,10 @@
   },
   "notification": {
     "stale": "{count} 個のタブが {days} 日以上未使用です"
+  },
+  "productivity": {
+    "productive": "生産的",
+    "distracting": "気が散る",
+    "neutral": "中立"
   }
 }

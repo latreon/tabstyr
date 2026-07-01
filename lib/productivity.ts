@@ -1,5 +1,5 @@
 import { addDays, dateKey, dayLabel, monthLabel } from './time';
-import { makeCategorizer, CATEGORY_PRODUCTIVITY, type Category, type CategoryRule } from './categories';
+import { makeCategorizer, CATEGORY_PRODUCTIVITY, type Category, type CategoryRule, type Productivity } from './categories';
 import type { TrendMode } from './trend';
 import type { DailyStat } from './types';
 
@@ -17,13 +17,14 @@ export function dailyFocus(
   stats: DailyStat[],
   overrides: Record<string, Category> = {},
   rules: readonly CategoryRule[] = [],
+  prod: Record<Category, Productivity> = CATEGORY_PRODUCTIVITY,
 ): Map<string, DayFocus> {
   const byDate = new Map<string, DayFocus>();
   const categoryOf = makeCategorizer(overrides, rules);
   for (const s of stats) {
     const f =
       byDate.get(s.date) ?? { date: s.date, productive: 0, distracting: 0, neutral: 0, total: 0, focusPct: 0 };
-    f[CATEGORY_PRODUCTIVITY[categoryOf(s.domain)]] += s.seconds;
+    f[prod[categoryOf(s.domain)]] += s.seconds;
     f.total += s.seconds;
     byDate.set(s.date, f);
   }
@@ -109,8 +110,9 @@ export function buildFocusTrend(
   now: number,
   overrides: Record<string, Category> = {},
   rules: readonly CategoryRule[] = [],
+  prod: Record<Category, Productivity> = CATEGORY_PRODUCTIVITY,
 ): FocusPoint[] {
-  const byDate = dailyFocus(stats, overrides, rules);
+  const byDate = dailyFocus(stats, overrides, rules, prod);
   const today = dateKey(now);
 
   if (mode === 'day') {
@@ -162,8 +164,9 @@ export function summarizeProductivity(
   overrides: Record<string, Category> = {},
   rules: readonly CategoryRule[] = [],
   focusTarget = 50,
+  prod: Record<Category, Productivity> = CATEGORY_PRODUCTIVITY,
 ): ProductivitySummary {
-  const byDate = dailyFocus(stats, overrides, rules);
+  const byDate = dailyFocus(stats, overrides, rules, prod);
   const today = byDate.get(todayKey);
   return {
     todayFocusPct: today?.focusPct ?? 0,

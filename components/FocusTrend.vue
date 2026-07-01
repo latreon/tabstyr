@@ -4,13 +4,14 @@ import { useI18n } from 'vue-i18n';
 import { buildFocusTrend, type FocusPoint } from '@/lib/productivity';
 import { xTickEvery } from '@/lib/chart-scale';
 import type { TrendMode } from '@/lib/trend';
-import type { Category, CategoryRule } from '@/lib/categories';
+import type { Category, CategoryRule, Productivity } from '@/lib/categories';
 import type { DailyStat } from '@/lib/types';
 
 const props = defineProps<{
   stats: DailyStat[];
   overrides: Record<string, Category>;
   rules?: CategoryRule[];
+  productivity?: Record<Category, Productivity>;
   now: number;
   target?: number;
 }>();
@@ -19,7 +20,9 @@ const mode = ref<TrendMode>('day');
 const MODES: TrendMode[] = ['day', 'week', 'month'];
 const target = computed(() => props.target ?? 50);
 
-const points = computed(() => buildFocusTrend(props.stats, mode.value, props.now, props.overrides, props.rules ?? []));
+const points = computed(() =>
+  buildFocusTrend(props.stats, mode.value, props.now, props.overrides, props.rules ?? [], props.productivity),
+);
 const hasData = computed(() => points.value.some((p) => p.judged > 0));
 const labelEvery = computed(() => xTickEvery(mode.value));
 

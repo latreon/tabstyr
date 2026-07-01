@@ -274,7 +274,10 @@
     "showIntro": "再次显示介绍",
     "introShown": "介绍将在仪表盘中显示",
     "restoreInvalid": "该文件不是有效的 TabStyr 备份。",
-    "restoreWrongPass": "密码错误或文件已损坏。"
+    "restoreWrongPass": "密码错误或文件已损坏。",
+    "focusCategories": "专注类别",
+    "focusCategoriesHint": "选择每个类别如何计入你的专注度百分比。",
+    "productivityForAria": "{category} 如何计入专注度"
   },
   "onboarding": {
     "title": "欢迎使用 TabStyr",
@@ -294,5 +297,10 @@
   },
   "notification": {
     "stale": "{count} 个标签页已 {days} 天以上未使用"
+  },
+  "productivity": {
+    "productive": "高效",
+    "distracting": "分心",
+    "neutral": "中性"
   }
 }

@@ -274,7 +274,10 @@
     "showIntro": "Показать введение снова",
     "introShown": "Введение появится на панели",
     "restoreInvalid": "Этот файл не является корректной резервной копией TabStyr.",
-    "restoreWrongPass": "Неверная парольная фраза или повреждённый файл."
+    "restoreWrongPass": "Неверная парольная фраза или повреждённый файл.",
+    "focusCategories": "Категории фокуса",
+    "focusCategoriesHint": "Выберите, как каждая категория влияет на ваш % фокуса.",
+    "productivityForAria": "Как {category} влияет на фокус"
   },
   "onboarding": {
     "title": "Добро пожаловать в TabStyr",
@@ -294,5 +297,10 @@
   },
   "notification": {
     "stale": "{count} вкладок не открывались {days}+ дней"
+  },
+  "productivity": {
+    "productive": "Продуктивно",
+    "distracting": "Отвлекает",
+    "neutral": "Нейтрально"
   }
 }

@@ -274,7 +274,10 @@
     "showIntro": "Ver introdução novamente",
     "introShown": "A introdução aparecerá no painel",
     "restoreInvalid": "Esse arquivo não é um backup válido do TabStyr.",
-    "restoreWrongPass": "Senha incorreta ou arquivo corrompido."
+    "restoreWrongPass": "Senha incorreta ou arquivo corrompido.",
+    "focusCategories": "Categorias de foco",
+    "focusCategoriesHint": "Escolha como cada categoria conta no seu % de foco.",
+    "productivityForAria": "Como {category} conta para o foco"
   },
   "onboarding": {
     "title": "Bem-vindo ao TabStyr",
@@ -294,5 +297,10 @@
   },
   "notification": {
     "stale": "{count} abas sem uso por {days}+ dias"
+  },
+  "productivity": {
+    "productive": "Produtivo",
+    "distracting": "Distração",
+    "neutral": "Neutro"
   }
 }

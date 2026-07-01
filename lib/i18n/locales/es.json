@@ -274,7 +274,10 @@
     "showIntro": "Mostrar la introducción otra vez",
     "introShown": "La introducción se mostrará en el panel",
     "restoreInvalid": "Ese archivo no es una copia de seguridad válida de TabStyr.",
-    "restoreWrongPass": "Contraseña incorrecta o archivo dañado."
+    "restoreWrongPass": "Contraseña incorrecta o archivo dañado.",
+    "focusCategories": "Categorías de enfoque",
+    "focusCategoriesHint": "Elige cómo cuenta cada categoría en tu % de enfoque.",
+    "productivityForAria": "Cómo cuenta {category} para el enfoque"
   },
   "onboarding": {
     "title": "Te damos la bienvenida a TabStyr",
@@ -294,5 +297,10 @@
   },
   "notification": {
     "stale": "{count} pestañas sin tocar durante más de {days} días"
+  },
+  "productivity": {
+    "productive": "Productivo",
+    "distracting": "Distracción",
+    "neutral": "Neutral"
   }
 }
