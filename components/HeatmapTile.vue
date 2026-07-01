@@ -121,7 +121,6 @@ const LEGEND = [0, 25, 50, 75, 100];
             :key="`${day}-${h}`"
             type="button"
             class="hm-cell"
-            :class="{ peak: !!peak && peak.day === day && peak.hour === h }"
             :style="cellStyles[day][h]"
             :aria-label="cellLabel(day, h)"
             :tabindex="isActive(day, h) ? 0 : -1"
@@ -239,11 +238,6 @@ const LEGEND = [0, 25, 50, 75, 100];
 .hm-cell:hover {
   transform: scale(1.35);
   outline: 1px solid var(--accent);
-  z-index: 1;
-}
-/* The peak hour reads as the chart's focal point — an accent ring + soft glow. */
-.hm-cell.peak {
-  box-shadow: 0 0 0 2px var(--accent), 0 0 10px -1px var(--accent-muted);
   z-index: 1;
 }
 .hm-cell:focus-visible {
