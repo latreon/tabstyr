@@ -15,6 +15,8 @@ const MAX_RULES = 100;
 const MAX_PATTERN_LEN = 100;
 const MAX_OVERRIDES = 5_000;
 const MAX_DOMAIN_LEN = 253;
+const MAX_TAGS = 5_000;
+const MAX_TAG_LEN = 60;
 
 export const DEFAULT_SETTINGS: Settings = {
   staleDays: 3,
@@ -28,6 +30,7 @@ export const DEFAULT_SETTINGS: Settings = {
   categoryProductivity: { ...CATEGORY_PRODUCTIVITY },
   focusTarget: 50,
   categoryBudgets: {},
+  domainTags: {},
   onboarded: false,
   notificationsEnabled: true,
   language: 'auto',
@@ -96,6 +99,23 @@ function sanitizeBudgets(raw: unknown): Partial<Record<Category, number>> {
   return out;
 }
 
+// domain → project/client tag. Trim + length-cap the tag, cap the domain and the
+// total entry count so a crafted file can't bloat storage. Empty tags are dropped.
+function sanitizeDomainTags(raw: unknown): Record<string, string> {
+  if (!raw || typeof raw !== 'object') return {};
+  const out: Record<string, string> = {};
+  let count = 0;
+  for (const [domain, value] of Object.entries(raw as Record<string, unknown>)) {
+    if (typeof domain !== 'string' || !domain || domain.length > MAX_DOMAIN_LEN) continue;
+    if (typeof value !== 'string') continue;
+    const tag = value.trim().slice(0, MAX_TAG_LEN);
+    if (!tag) continue;
+    out[domain] = tag;
+    if (++count >= MAX_TAGS) break;
+  }
+  return out;
+}
+
 function coerce(raw: unknown): Partial<Settings> {
   if (!raw || typeof raw !== 'object') return {};
   const r = raw as Record<string, unknown>;
@@ -112,6 +132,7 @@ function coerce(raw: unknown): Partial<Settings> {
     categoryProductivity: sanitizeProductivity(r.categoryProductivity),
     ...(typeof r.focusTarget === 'number' && { focusTarget: clamp(Math.round(r.focusTarget), 10, 90) }),
     categoryBudgets: sanitizeBudgets(r.categoryBudgets),
+    domainTags: sanitizeDomainTags(r.domainTags),
     ...(typeof r.onboarded === 'boolean' && { onboarded: r.onboarded }),
     ...(typeof r.notificationsEnabled === 'boolean' && { notificationsEnabled: r.notificationsEnabled }),
     ...(typeof r.language === 'string' && { language: r.language.slice(0, 20) }),

@@ -336,5 +336,19 @@
     "busiestDay": "{weekday} é seu dia mais movimentado",
     "focusHit": "Foco {pct}% hoje — acima da sua meta de {target}%",
     "focusUnder": "Foco {pct}% hoje — meta {target}%"
+  },
+  "projects": {
+    "title": "Projetos e clientes",
+    "hint": "Marque qualquer site com um projeto ou cliente e exporte o tempo por tag como fatura ou CSV.",
+    "tagPlaceholder": "Adicionar tag…",
+    "tagForAria": "Tag de projeto/cliente para {domain}",
+    "untagged": "Sem tag",
+    "invoice": "Fatura",
+    "invoiceHeading": "Relatório de tempo",
+    "billable": "Total faturável",
+    "share": "Proporção",
+    "byClient": "Por cliente",
+    "empty": "Sem atividade neste período.",
+    "days": "{count} dia | {count} dias"
   }
 }

@@ -336,5 +336,19 @@
     "busiestDay": "最も活発な曜日は{weekday}",
     "focusHit": "本日のフォーカス {pct}% — 目標 {target}% を達成",
     "focusUnder": "本日のフォーカス {pct}% — 目標 {target}%"
+  },
+  "projects": {
+    "title": "プロジェクトとクライアント",
+    "hint": "サイトにプロジェクトやクライアントのタグを付け、タグ別の時間を請求書やCSVとして書き出します。",
+    "tagPlaceholder": "タグを追加…",
+    "tagForAria": "{domain} のプロジェクト/クライアントタグ",
+    "untagged": "タグなし",
+    "invoice": "請求書",
+    "invoiceHeading": "時間レポート",
+    "billable": "請求対象の合計",
+    "share": "割合",
+    "byClient": "クライアント別",
+    "empty": "この期間のアクティビティはありません。",
+    "days": "{count}日 | {count}日"
   }
 }

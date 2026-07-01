@@ -80,6 +80,12 @@ export interface Settings {
    * Absent/zero = no budget. Analytics-only — never blocks a site.
    */
   categoryBudgets: Partial<Record<import('./categories').Category, number>>;
+  /**
+   * Maps a domain → a free-form project/client tag, an axis independent of category.
+   * Powers the Projects view and invoice/report exports (time-per-client). Absent
+   * domains are "untagged".
+   */
+  domainTags: Record<string, string>;
   /** Whether the first-run onboarding intro has been dismissed. */
   onboarded: boolean;
   /** Whether the once-a-day stale-tab reminder notification is shown. */

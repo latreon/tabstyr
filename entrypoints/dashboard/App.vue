@@ -17,6 +17,7 @@ import FocusTrend from '@/components/FocusTrend.vue';
 import ComparisonTile from '@/components/ComparisonTile.vue';
 import HeatmapTile from '@/components/HeatmapTile.vue';
 import WorkLog from '@/components/WorkLog.vue';
+import ProjectsTile from '@/components/ProjectsTile.vue';
 import WrappedTile from '@/components/WrappedTile.vue';
 import DomainDetail from '@/components/DomainDetail.vue';
 import TabTable from '@/components/TabTable.vue';
@@ -190,6 +191,8 @@ onMounted(async () => {
       <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" />
       <HeatmapTile :data="s.heatmap.value" />
       <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :now="loadedNow" @select="openDetail" @set-category="s.setCategoryOverride" />
+      <!-- Projects / clients — tag domains, see time per tag, export invoice/CSV -->
+      <ProjectsTile :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :domain-tags="s.domainTags.value" :now="loadedNow" @set-tag="s.setDomainTag" />
       <!-- Browsing Wrapped — opens the shareable web summary (export a backup first) -->
       <WrappedTile />
       <!-- row: 2 + 1 -->

@@ -336,5 +336,19 @@
     "busiestDay": "{weekday} en yoğun günün",
     "focusHit": "Bugün odak %{pct} — %{target} hedefinin üzerinde",
     "focusUnder": "Bugün odak %{pct} — hedef %{target}"
+  },
+  "projects": {
+    "title": "Projeler ve müşteriler",
+    "hint": "Herhangi bir siteyi bir proje veya müşteriyle etiketleyin, ardından etiket başına süreyi fatura veya CSV olarak dışa aktarın.",
+    "tagPlaceholder": "Etiket ekle…",
+    "tagForAria": "{domain} için proje/müşteri etiketi",
+    "untagged": "Etiketsiz",
+    "invoice": "Fatura",
+    "invoiceHeading": "Zaman raporu",
+    "billable": "Faturalanabilir toplam",
+    "share": "Pay",
+    "byClient": "Müşteriye göre",
+    "empty": "Bu aralıkta etkinlik yok.",
+    "days": "{count} gün | {count} gün"
   }
 }

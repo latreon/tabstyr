@@ -102,6 +102,24 @@ describe('settings', () => {
     expect((await getSettings()).categoryBudgets).toEqual({ Social: 45 });
   });
 
+  test('domainTags trims/caps tag values and drops empty or non-string ones', async () => {
+    await fakeBrowser.storage.local.set({
+      settings: {
+        domainTags: { 'github.com': '  Acme  ', 'a.com': '', 'b.com': 123, 'c.com': 'x'.repeat(200) },
+      },
+    });
+    const dt = (await getSettings()).domainTags;
+    expect(dt['github.com']).toBe('Acme'); // trimmed
+    expect('a.com' in dt).toBe(false); // empty dropped
+    expect('b.com' in dt).toBe(false); // non-string dropped
+    expect(dt['c.com'].length).toBe(60); // length-capped
+  });
+
+  test('domainTags round-trips a saved assignment', async () => {
+    await saveSettings({ domainTags: { 'github.com': 'Acme' } });
+    expect((await getSettings()).domainTags).toEqual({ 'github.com': 'Acme' });
+  });
+
   test('malformed stored values are ignored, defaults win', async () => {
     await fakeBrowser.storage.local.set({ settings: { staleDays: 'seven', audioEnabled: false } });
     expect(await getSettings()).toEqual({ ...DEFAULT_SETTINGS, audioEnabled: false });

@@ -336,5 +336,19 @@
     "busiestDay": "가장 바쁜 요일은 {weekday}",
     "focusHit": "오늘 집중 {pct}% — 목표 {target}% 초과",
     "focusUnder": "오늘 집중 {pct}% — 목표 {target}%"
+  },
+  "projects": {
+    "title": "프로젝트 및 클라이언트",
+    "hint": "사이트에 프로젝트나 클라이언트 태그를 지정하고 태그별 시간을 청구서 또는 CSV로 내보내세요.",
+    "tagPlaceholder": "태그 추가…",
+    "tagForAria": "{domain}의 프로젝트/클라이언트 태그",
+    "untagged": "태그 없음",
+    "invoice": "청구서",
+    "invoiceHeading": "시간 리포트",
+    "billable": "청구 대상 합계",
+    "share": "비율",
+    "byClient": "클라이언트별",
+    "empty": "이 기간에 활동이 없습니다.",
+    "days": "{count}일 | {count}일"
   }
 }

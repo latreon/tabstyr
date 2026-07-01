@@ -112,6 +112,7 @@ export function useStats() {
   const categoryBudgets = computed<Partial<Record<Category, number>>>(
     () => settings.value?.categoryBudgets ?? {},
   );
+  const domainTags = computed<Record<string, string>>(() => settings.value?.domainTags ?? {});
   // Show the first-run intro only once settings have loaded and it isn't dismissed.
   const showOnboarding = computed(() => !!settings.value && !settings.value.onboarded);
 
@@ -194,6 +195,14 @@ export function useStats() {
     settings.value = await saveSettings({
       categoryProductivity: { ...categoryProductivity.value, [category]: value },
     });
+  }
+
+  // Assign (or clear, with an empty/blank tag) a domain's project/client tag.
+  async function setDomainTag(domain: string, tag: string): Promise<void> {
+    const next = { ...domainTags.value };
+    if (tag.trim()) next[domain] = tag.trim();
+    else delete next[domain];
+    settings.value = await saveSettings({ domainTags: next });
   }
 
   async function addCategoryRule(pattern: string, category: Category): Promise<void> {
@@ -339,7 +348,7 @@ export function useStats() {
     stats, activeStats, tabRows, staleTabs, staleTabItems, openTabsList, openTabCount, settings, heatmap, recentSessions,
     loading, loadError, storageWarning, todayKey,
     todaySeconds, todayAudioSeconds, weeklyAvgSeconds, weeklyActiveDays,
-    todayByDomain, todayByCategory, productivity, insights, overrides, categoryRules, categoryProductivity, focusTarget, categoryBudgets, showOnboarding,
-    load, closeTab, closeTabs, snoozeTab, setCategoryOverride, setCategoryProductivity, addCategoryRule, removeCategoryRule, dismissOnboarding,
+    todayByDomain, todayByCategory, productivity, insights, overrides, categoryRules, categoryProductivity, focusTarget, categoryBudgets, domainTags, showOnboarding,
+    load, closeTab, closeTabs, snoozeTab, setCategoryOverride, setCategoryProductivity, setDomainTag, addCategoryRule, removeCategoryRule, dismissOnboarding,
   };
 }

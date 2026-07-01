@@ -336,5 +336,19 @@
     "busiestDay": "{weekday} è il tuo giorno più attivo",
     "focusHit": "Focus {pct}% oggi — sopra il tuo obiettivo del {target}%",
     "focusUnder": "Focus {pct}% oggi — obiettivo {target}%"
+  },
+  "projects": {
+    "title": "Progetti e clienti",
+    "hint": "Assegna un progetto o cliente a un sito ed esporta il tempo per etichetta come fattura o CSV.",
+    "tagPlaceholder": "Aggiungi etichetta…",
+    "tagForAria": "Etichetta progetto/cliente per {domain}",
+    "untagged": "Senza etichetta",
+    "invoice": "Fattura",
+    "invoiceHeading": "Report tempo",
+    "billable": "Totale fatturabile",
+    "share": "Quota",
+    "byClient": "Per cliente",
+    "empty": "Nessuna attività in questo intervallo.",
+    "days": "{count} giorno | {count} giorni"
   }
 }
