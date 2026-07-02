@@ -115,6 +115,7 @@ async function removeCustomCategory(name: string) {
     const saved = await saveSettings({ customCategories: next });
     customCategories.value = saved.customCategories;
     rules.value = saved.categoryRules; // rules referencing the removed name were dropped
+    catError.value = '';
     await browser.runtime.sendMessage({ type: 'settings-changed' });
     emit('changed');
     showToast(t('settings.categoryRemoved'));
@@ -151,6 +152,7 @@ async function removeRule(pattern: string) {
   try {
     const saved = await saveSettings({ categoryRules: next });
     rules.value = saved.categoryRules;
+    ruleError.value = '';
     await browser.runtime.sendMessage({ type: 'settings-changed' });
     emit('changed');
   } catch (e) {
