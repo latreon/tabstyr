@@ -49,7 +49,7 @@ function onKeydown(e: KeyboardEvent) {
     return;
   }
   if (!open.value) return;
-  if (e.key === 'Escape') { open.value = false; return; }
+  if (e.key === 'Escape') { e.stopPropagation(); open.value = false; return; }
   if (e.key === 'ArrowDown') { e.preventDefault(); activeIndex.value = Math.min(props.options.length - 1, activeIndex.value + 1); }
   if (e.key === 'ArrowUp') { e.preventDefault(); activeIndex.value = Math.max(0, activeIndex.value - 1); }
   if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(props.options[activeIndex.value].value); }
