@@ -220,6 +220,7 @@
   },
   "settings": {
     "title": "Ayarlar",
+    "customTitle": "Özel",
     "theme": "Tema",
     "switchTheme": "Temayı değiştir · {mode}",
     "light": "Açık",
@@ -234,6 +235,7 @@
     "saveFailed": "Ayarlar kaydedilemedi",
     "customRules": "Özel kategori kuralları",
     "rulesHint": "Çoğu popüler site otomatik olarak tanınır. Yalnızca henüz sınıflandırmadığımız bir site için kural ekleyin: metninizi içeren her adres o kategoriye gider (yerleşik kurallardan önce kontrol edilir).",
+    "noCustomRules": "Henüz özel kural yok.",
     "rulePlaceholder": "örn. yandex",
     "add": "Ekle",
     "ruleExists": "Bu desenin zaten bir kuralı var.",
@@ -244,8 +246,13 @@
     "categoryForRuleAria": "Kural için kategori",
     "customCategories": "Özel kategoriler",
     "customCategoriesHint": "Yerleşik kategorilere ek olarak kendi kategorilerinizi ekleyin ve onlara site veya kural atayın. Yerleşik kategoriler yeniden adlandırılamaz veya kaldırılamaz.",
+    "noCustomCategories": "Henüz özel kategori yok.",
     "categoryNamePlaceholder": "örn. Öğrenme",
     "categoryColorAria": "Kategori rengi",
+    "colorPresets": "Hızlı renkler",
+    "colorCustom": "Özel",
+    "colorHueAria": "Ton",
+    "colorHexAria": "Hex değeri",
     "categoryProductivityAria": "Bu kategorinin üretkenliği",
     "categoryExists": "Bu ada sahip bir kategori zaten var.",
     "categoryInvalid": "Kategori eklenemedi. Adı ve rengi kontrol edin.",
@@ -337,66 +344,6 @@
     "productive": "Üretken",
     "distracting": "Dikkat dağıtıcı",
     "neutral": "Nötr"
-  },
-  "wrapped": {
-    "title": "Gezinti Özeti",
-    "subtitle": "İstatistiklerinizi paylaşılabilir bir hikâyeye dönüştürün: bir yedek dışa aktarın ve web'de açın.",
-    "cta": "Özeti aç",
-    "persona": {
-      "builder": {
-        "title": "İnşacı"
-      },
-      "operator": {
-        "title": "Operatör"
-      },
-      "socialite": {
-        "title": "Sosyal"
-      },
-      "binger": {
-        "title": "Maratoncu"
-      },
-      "analyst": {
-        "title": "Analist"
-      },
-      "tycoon": {
-        "title": "Patron"
-      },
-      "collector": {
-        "title": "Koleksiyoncu"
-      },
-      "wanderer": {
-        "title": "Gezgin"
-      },
-      "explorer": {
-        "title": "Kaşif"
-      }
-    },
-    "card": {
-      "heading": "Gezinti Özeti",
-      "totalCaption": "toplam etkin süre",
-      "topSite": "En çok site",
-      "topCategory": "En çok kategori",
-      "focus": "Odak",
-      "peak": "En aktif",
-      "days": "Takip edilen gün",
-      "footer": "TabStyr · cihazından 0 bayt ayrılır"
-    },
-    "chrono": {
-      "earlyBird": "Erkenci",
-      "daytimer": "Gündüzcü",
-      "nightOwl": "Gece kuşu",
-      "allHours": "Her saat"
-    },
-    "modal": {
-      "download": "Kartı indir",
-      "downloading": "Hazırlanıyor…",
-      "empty": "Biraz gezin, özetin burada görünecek.",
-      "streakStat": "En uzun odak serisi",
-      "busiestStat": "En yoğun gün",
-      "longestStat": "En uzun ziyaret",
-      "sitesStat": "Ziyaret edilen siteler"
-    },
-    "daysCovered": "{count} gün | {count} gün"
   },
   "insights": {
     "title": "İçgörüler",

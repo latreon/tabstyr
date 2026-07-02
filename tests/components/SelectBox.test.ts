@@ -1,5 +1,6 @@
-import { describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import SelectBox from '@/components/ui/SelectBox.vue';
 
 const OPTIONS = [
@@ -53,5 +54,42 @@ describe('SelectBox', () => {
     await w.get('.trigger').trigger('keydown', { key: 'Escape' });
     expect(w.find('.menu').exists()).toBe(false);
     expect(w.emitted('update:modelValue')).toBeUndefined();
+  });
+
+  describe('placement', () => {
+    const originalRect = Element.prototype.getBoundingClientRect;
+
+    afterEach(() => {
+      Element.prototype.getBoundingClientRect = originalRect;
+      vi.unstubAllGlobals();
+    });
+
+    function stubRects(triggerRect: Partial<DOMRect>, menuRect: Partial<DOMRect>) {
+      Element.prototype.getBoundingClientRect = function (this: Element) {
+        if (this.classList.contains('selectbox')) return triggerRect as DOMRect;
+        if (this.classList.contains('menu')) return menuRect as DOMRect;
+        return originalRect.call(this);
+      };
+    }
+
+    test('flips above the trigger when there is no room below', async () => {
+      vi.stubGlobal('innerHeight', 400);
+      stubRects({ top: 350, bottom: 380 }, { height: 150 });
+      const w = makeWrapper();
+      await w.get('.trigger').trigger('click');
+      await nextTick();
+      await nextTick();
+      expect(w.get('.menu').classes()).toContain('open-up');
+    });
+
+    test('stays below the trigger when there is enough room', async () => {
+      vi.stubGlobal('innerHeight', 900);
+      stubRects({ top: 100, bottom: 130 }, { height: 150 });
+      const w = makeWrapper();
+      await w.get('.trigger').trigger('click');
+      await nextTick();
+      await nextTick();
+      expect(w.get('.menu').classes()).not.toContain('open-up');
+    });
   });
 });

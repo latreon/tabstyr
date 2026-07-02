@@ -220,6 +220,7 @@
   },
   "settings": {
     "title": "Settings",
+    "customTitle": "Custom",
     "theme": "Theme",
     "switchTheme": "Switch theme · {mode}",
     "light": "Light",
@@ -234,6 +235,7 @@
     "saveFailed": "Could not save settings",
     "customRules": "Custom category rules",
     "rulesHint": "Most popular sites are recognized automatically. Add a rule only for one we don't classify yet: any address containing your text goes to that category (checked before the built-in rules).",
+    "noCustomRules": "No custom rules yet.",
     "rulePlaceholder": "e.g. yandex",
     "add": "Add",
     "ruleExists": "That pattern already has a rule.",
@@ -244,8 +246,13 @@
     "categoryForRuleAria": "Category for rule",
     "customCategories": "Custom categories",
     "customCategoriesHint": "Add your own categories on top of the built-in ones, then assign sites or rules to them. Built-in categories can't be renamed or removed.",
+    "noCustomCategories": "No custom categories yet.",
     "categoryNamePlaceholder": "e.g. Learning",
     "categoryColorAria": "Category color",
+    "colorPresets": "Quick colors",
+    "colorCustom": "Custom",
+    "colorHueAria": "Hue",
+    "colorHexAria": "Hex value",
     "categoryProductivityAria": "Productivity for this category",
     "categoryExists": "A category with that name already exists.",
     "categoryInvalid": "Could not add that category. Check the name and color.",
@@ -337,66 +344,6 @@
     "productive": "Productive",
     "distracting": "Distracting",
     "neutral": "Neutral"
-  },
-  "wrapped": {
-    "title": "Browsing Wrapped",
-    "subtitle": "Turn your stats into a shareable story — export a backup and open it on the web.",
-    "cta": "Open Wrapped",
-    "persona": {
-      "builder": {
-        "title": "The Builder"
-      },
-      "operator": {
-        "title": "The Operator"
-      },
-      "socialite": {
-        "title": "The Socialite"
-      },
-      "binger": {
-        "title": "The Binger"
-      },
-      "analyst": {
-        "title": "The Analyst"
-      },
-      "tycoon": {
-        "title": "The Tycoon"
-      },
-      "collector": {
-        "title": "The Collector"
-      },
-      "wanderer": {
-        "title": "The Wanderer"
-      },
-      "explorer": {
-        "title": "The Explorer"
-      }
-    },
-    "card": {
-      "heading": "Browsing Wrapped",
-      "totalCaption": "total active time",
-      "topSite": "Top site",
-      "topCategory": "Top category",
-      "focus": "Focus",
-      "peak": "Most active",
-      "days": "Days tracked",
-      "footer": "TabStyr · 0 bytes leave your device"
-    },
-    "chrono": {
-      "earlyBird": "Early bird",
-      "daytimer": "Daytimer",
-      "nightOwl": "Night owl",
-      "allHours": "All hours"
-    },
-    "modal": {
-      "download": "Download share card",
-      "downloading": "Preparing…",
-      "empty": "Browse a little and your Wrapped will appear here.",
-      "streakStat": "Longest focus streak",
-      "busiestStat": "Busiest day",
-      "longestStat": "Longest single visit",
-      "sitesStat": "Sites visited"
-    },
-    "daysCovered": "{count} day | {count} days"
   },
   "insights": {
     "title": "Insights",

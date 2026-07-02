@@ -220,6 +220,7 @@
   },
   "settings": {
     "title": "Ajustes",
+    "customTitle": "Personalizado",
     "theme": "Tema",
     "switchTheme": "Cambiar tema · {mode}",
     "light": "Claro",
@@ -234,6 +235,7 @@
     "saveFailed": "No se pudieron guardar los ajustes",
     "customRules": "Reglas de categoría personalizadas",
     "rulesHint": "La mayoría de los sitios populares se reconocen automáticamente. Añade una regla solo para uno que aún no clasifiquemos: cualquier dirección que contenga tu texto irá a esa categoría (se comprueba antes que las reglas integradas).",
+    "noCustomRules": "Aún no hay reglas personalizadas.",
     "rulePlaceholder": "p. ej. yandex",
     "add": "Añadir",
     "ruleExists": "Ese patrón ya tiene una regla.",
@@ -244,8 +246,13 @@
     "categoryForRuleAria": "Categoría para la regla",
     "customCategories": "Categorías personalizadas",
     "customCategoriesHint": "Añade tus propias categorías además de las integradas y asígnales sitios o reglas. Las categorías integradas no se pueden renombrar ni eliminar.",
+    "noCustomCategories": "Aún no hay categorías personalizadas.",
     "categoryNamePlaceholder": "p. ej. Aprendizaje",
     "categoryColorAria": "Color de la categoría",
+    "colorPresets": "Colores rápidos",
+    "colorCustom": "Personalizado",
+    "colorHueAria": "Tono",
+    "colorHexAria": "Valor hex",
     "categoryProductivityAria": "Productividad de esta categoría",
     "categoryExists": "Ya existe una categoría con ese nombre.",
     "categoryInvalid": "No se pudo añadir esa categoría. Revisa el nombre y el color.",
@@ -337,66 +344,6 @@
     "productive": "Productivo",
     "distracting": "Distracción",
     "neutral": "Neutral"
-  },
-  "wrapped": {
-    "title": "Resumen de navegación",
-    "subtitle": "Convierte tus estadísticas en una historia para compartir: exporta una copia y ábrela en la web.",
-    "cta": "Abrir resumen",
-    "persona": {
-      "builder": {
-        "title": "El Constructor"
-      },
-      "operator": {
-        "title": "El Operador"
-      },
-      "socialite": {
-        "title": "El Sociable"
-      },
-      "binger": {
-        "title": "El Maratonista"
-      },
-      "analyst": {
-        "title": "El Analista"
-      },
-      "tycoon": {
-        "title": "El Magnate"
-      },
-      "collector": {
-        "title": "El Coleccionista"
-      },
-      "wanderer": {
-        "title": "El Errante"
-      },
-      "explorer": {
-        "title": "El Explorador"
-      }
-    },
-    "card": {
-      "heading": "Resumen de navegación",
-      "totalCaption": "tiempo activo total",
-      "topSite": "Sitio principal",
-      "topCategory": "Categoría principal",
-      "focus": "Enfoque",
-      "peak": "Más activo",
-      "days": "Días registrados",
-      "footer": "TabStyr · 0 bytes salen de tu dispositivo"
-    },
-    "chrono": {
-      "earlyBird": "Madrugador",
-      "daytimer": "Diurno",
-      "nightOwl": "Noctámbulo",
-      "allHours": "A toda hora"
-    },
-    "modal": {
-      "download": "Descargar tarjeta",
-      "downloading": "Preparando…",
-      "empty": "Navega un poco y tu resumen aparecerá aquí.",
-      "streakStat": "Racha de enfoque más larga",
-      "busiestStat": "Día más activo",
-      "longestStat": "Visita más larga",
-      "sitesStat": "Sitios visitados"
-    },
-    "daysCovered": "{count} día | {count} días"
   },
   "insights": {
     "title": "Perspectivas",

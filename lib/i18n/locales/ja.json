@@ -220,6 +220,7 @@
   },
   "settings": {
     "title": "設定",
+    "customTitle": "カスタム",
     "theme": "テーマ",
     "switchTheme": "テーマを切り替え · {mode}",
     "light": "ライト",
@@ -234,6 +235,7 @@
     "saveFailed": "設定を保存できませんでした",
     "customRules": "カスタムカテゴリルール",
     "rulesHint": "人気のあるサイトは自動的に認識されます。まだ分類できていないサイトにのみルールを追加してください：入力したテキストを含むアドレスはそのカテゴリに分類されます（組み込みルールより先に確認されます）。",
+    "noCustomRules": "カスタムルールはまだありません。",
     "rulePlaceholder": "例：yandex",
     "add": "追加",
     "ruleExists": "そのパターンには既にルールがあります。",
@@ -244,8 +246,13 @@
     "categoryForRuleAria": "ルールのカテゴリ",
     "customCategories": "カスタムカテゴリ",
     "customCategoriesHint": "組み込みのカテゴリに加えて独自のカテゴリを追加し、サイトやルールを割り当てられます。組み込みカテゴリは名前の変更や削除はできません。",
+    "noCustomCategories": "カスタムカテゴリはまだありません。",
     "categoryNamePlaceholder": "例: 学習",
     "categoryColorAria": "カテゴリの色",
+    "colorPresets": "クイックカラー",
+    "colorCustom": "カスタム",
+    "colorHueAria": "色相",
+    "colorHexAria": "16進数値",
     "categoryProductivityAria": "このカテゴリの生産性",
     "categoryExists": "その名前のカテゴリは既に存在します。",
     "categoryInvalid": "カテゴリを追加できませんでした。名前と色を確認してください。",
@@ -337,66 +344,6 @@
     "productive": "生産的",
     "distracting": "気が散る",
     "neutral": "中立"
-  },
-  "wrapped": {
-    "title": "ブラウジング・ラップアップ",
-    "subtitle": "統計を共有できるストーリーに。バックアップを書き出してウェブで開きます。",
-    "cta": "ラップアップを開く",
-    "persona": {
-      "builder": {
-        "title": "ビルダー"
-      },
-      "operator": {
-        "title": "オペレーター"
-      },
-      "socialite": {
-        "title": "ソーシャライザー"
-      },
-      "binger": {
-        "title": "ビンジャー"
-      },
-      "analyst": {
-        "title": "アナリスト"
-      },
-      "tycoon": {
-        "title": "タイクーン"
-      },
-      "collector": {
-        "title": "コレクター"
-      },
-      "wanderer": {
-        "title": "ワンダラー"
-      },
-      "explorer": {
-        "title": "エクスプローラー"
-      }
-    },
-    "card": {
-      "heading": "ブラウジング・ラップアップ",
-      "totalCaption": "アクティブ合計時間",
-      "topSite": "トップサイト",
-      "topCategory": "トップカテゴリ",
-      "focus": "フォーカス",
-      "peak": "最も活発",
-      "days": "記録日数",
-      "footer": "TabStyr · デバイスから0バイトも出ません"
-    },
-    "chrono": {
-      "earlyBird": "早起き",
-      "daytimer": "昼型",
-      "nightOwl": "夜型",
-      "allHours": "終日"
-    },
-    "modal": {
-      "download": "シェアカードを保存",
-      "downloading": "準備中…",
-      "empty": "少し閲覧すると、ここにラップアップが表示されます。",
-      "streakStat": "最長フォーカス連続記録",
-      "busiestStat": "最も忙しい日",
-      "longestStat": "最長の単一訪問",
-      "sitesStat": "訪問サイト数"
-    },
-    "daysCovered": "{count}日 | {count}日"
   },
   "insights": {
     "title": "インサイト",

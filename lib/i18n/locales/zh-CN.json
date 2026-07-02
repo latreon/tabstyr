@@ -220,6 +220,7 @@
   },
   "settings": {
     "title": "设置",
+    "customTitle": "自定义",
     "theme": "主题",
     "switchTheme": "切换主题 · {mode}",
     "light": "浅色",
@@ -234,6 +235,7 @@
     "saveFailed": "无法保存设置",
     "customRules": "自定义类别规则",
     "rulesHint": "大多数热门网站会被自动识别。仅为我们尚未分类的网站添加规则：任何包含你所输入文本的网址都会归入该类别（在内置规则之前检查）。",
+    "noCustomRules": "暂无自定义规则。",
     "rulePlaceholder": "例如 yandex",
     "add": "添加",
     "ruleExists": "该模式已有规则。",
@@ -244,8 +246,13 @@
     "categoryForRuleAria": "规则的类别",
     "customCategories": "自定义分类",
     "customCategoriesHint": "在内置分类之外添加你自己的分类，并为其分配网站或规则。内置分类无法重命名或删除。",
+    "noCustomCategories": "暂无自定义分类。",
     "categoryNamePlaceholder": "例如：学习",
     "categoryColorAria": "分类颜色",
+    "colorPresets": "快速颜色",
+    "colorCustom": "自定义",
+    "colorHueAria": "色相",
+    "colorHexAria": "十六进制值",
     "categoryProductivityAria": "该分类的生产力",
     "categoryExists": "已存在同名分类。",
     "categoryInvalid": "无法添加该分类。请检查名称和颜色。",
@@ -337,66 +344,6 @@
     "productive": "高效",
     "distracting": "分心",
     "neutral": "中性"
-  },
-  "wrapped": {
-    "title": "浏览总结",
-    "subtitle": "把你的统计变成可分享的故事：导出备份并在网页中打开。",
-    "cta": "打开总结",
-    "persona": {
-      "builder": {
-        "title": "建造者"
-      },
-      "operator": {
-        "title": "操盘手"
-      },
-      "socialite": {
-        "title": "社交达人"
-      },
-      "binger": {
-        "title": "刷剧狂人"
-      },
-      "analyst": {
-        "title": "分析师"
-      },
-      "tycoon": {
-        "title": "大亨"
-      },
-      "collector": {
-        "title": "收藏家"
-      },
-      "wanderer": {
-        "title": "漫游者"
-      },
-      "explorer": {
-        "title": "探索者"
-      }
-    },
-    "card": {
-      "heading": "浏览总结",
-      "totalCaption": "活跃总时长",
-      "topSite": "热门站点",
-      "topCategory": "热门类别",
-      "focus": "专注",
-      "peak": "最活跃",
-      "days": "记录天数",
-      "footer": "TabStyr · 0 字节离开你的设备"
-    },
-    "chrono": {
-      "earlyBird": "早起型",
-      "daytimer": "日间型",
-      "nightOwl": "夜猫型",
-      "allHours": "全天候"
-    },
-    "modal": {
-      "download": "下载分享卡片",
-      "downloading": "准备中…",
-      "empty": "浏览一会儿，你的总结就会出现在这里。",
-      "streakStat": "最长专注连续",
-      "busiestStat": "最忙的一天",
-      "longestStat": "最长单次访问",
-      "sitesStat": "访问的站点"
-    },
-    "daysCovered": "{count} 天 | {count} 天"
   },
   "insights": {
     "title": "洞察",

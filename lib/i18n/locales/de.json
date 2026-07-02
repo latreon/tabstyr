@@ -220,6 +220,7 @@
   },
   "settings": {
     "title": "Einstellungen",
+    "customTitle": "Eigene",
     "theme": "Design",
     "switchTheme": "Design wechseln · {mode}",
     "light": "Hell",
@@ -234,6 +235,7 @@
     "saveFailed": "Einstellungen konnten nicht gespeichert werden",
     "customRules": "Eigene Kategorieregeln",
     "rulesHint": "Die meisten beliebten Seiten werden automatisch erkannt. Füge nur dann eine Regel hinzu, wenn wir eine noch nicht klassifizieren: jede Adresse, die deinen Text enthält, kommt in diese Kategorie (wird vor den eingebauten Regeln geprüft).",
+    "noCustomRules": "Noch keine eigenen Regeln.",
     "rulePlaceholder": "z. B. yandex",
     "add": "Hinzufügen",
     "ruleExists": "Für dieses Muster gibt es bereits eine Regel.",
@@ -244,8 +246,13 @@
     "categoryForRuleAria": "Kategorie für Regel",
     "customCategories": "Eigene Kategorien",
     "customCategoriesHint": "Füge eigene Kategorien zusätzlich zu den integrierten hinzu und weise ihnen Websites oder Regeln zu. Integrierte Kategorien können nicht umbenannt oder entfernt werden.",
+    "noCustomCategories": "Noch keine eigenen Kategorien.",
     "categoryNamePlaceholder": "z. B. Lernen",
     "categoryColorAria": "Kategoriefarbe",
+    "colorPresets": "Schnellfarben",
+    "colorCustom": "Eigene",
+    "colorHueAria": "Farbton",
+    "colorHexAria": "Hex-Wert",
     "categoryProductivityAria": "Produktivität für diese Kategorie",
     "categoryExists": "Eine Kategorie mit diesem Namen existiert bereits.",
     "categoryInvalid": "Kategorie konnte nicht hinzugefügt werden. Prüfe Name und Farbe.",
@@ -337,66 +344,6 @@
     "productive": "Produktiv",
     "distracting": "Ablenkend",
     "neutral": "Neutral"
-  },
-  "wrapped": {
-    "title": "Browsing Wrapped",
-    "subtitle": "Mach aus deinen Statistiken eine teilbare Story – exportiere ein Backup und öffne es im Web.",
-    "cta": "Wrapped öffnen",
-    "persona": {
-      "builder": {
-        "title": "Der Macher"
-      },
-      "operator": {
-        "title": "Der Organisator"
-      },
-      "socialite": {
-        "title": "Der Kontaktfreudige"
-      },
-      "binger": {
-        "title": "Der Serienjunkie"
-      },
-      "analyst": {
-        "title": "Der Analyst"
-      },
-      "tycoon": {
-        "title": "Der Tycoon"
-      },
-      "collector": {
-        "title": "Der Sammler"
-      },
-      "wanderer": {
-        "title": "Der Wanderer"
-      },
-      "explorer": {
-        "title": "Der Entdecker"
-      }
-    },
-    "card": {
-      "heading": "Browsing Wrapped",
-      "totalCaption": "aktive Gesamtzeit",
-      "topSite": "Top-Seite",
-      "topCategory": "Top-Kategorie",
-      "focus": "Fokus",
-      "peak": "Am aktivsten",
-      "days": "Erfasste Tage",
-      "footer": "TabStyr · 0 Bytes verlassen dein Gerät"
-    },
-    "chrono": {
-      "earlyBird": "Frühaufsteher",
-      "daytimer": "Tagmensch",
-      "nightOwl": "Nachteule",
-      "allHours": "Rund um die Uhr"
-    },
-    "modal": {
-      "download": "Karte herunterladen",
-      "downloading": "Wird erstellt…",
-      "empty": "Surf ein wenig, dann erscheint dein Wrapped hier.",
-      "streakStat": "Längste Fokus-Serie",
-      "busiestStat": "Aktivster Tag",
-      "longestStat": "Längster Einzelbesuch",
-      "sitesStat": "Besuchte Seiten"
-    },
-    "daysCovered": "{count} Tag | {count} Tage"
   },
   "insights": {
     "title": "Einblicke",
