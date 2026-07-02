@@ -25,7 +25,11 @@ const items = computed(() =>
     .filter((s) => s.seconds > 0)
     .map((s) => {
       const budget = budgetFor(s.category);
-      const progress = budgetProgress(s, budget);
+      // `s.seconds` here is already active-only (todayByCategory is built from
+      // useStats' activeStats), so don't let budgetProgress subtract audioSeconds
+      // a second time — that's the raw-stats contract background.ts's own budget
+      // check relies on.
+      const progress = budgetProgress({ seconds: s.seconds, audioSeconds: 0 }, budget);
       return {
         category: s.category,
         label: categoryLabel(s.category, t),

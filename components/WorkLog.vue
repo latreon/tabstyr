@@ -60,7 +60,13 @@ const exporting = ref(false);
 
 // A single day's report drives both exports (buildReport supports ranges too — the
 // project/client invoicing feature reuses it over a wider window).
-const report = computed(() => buildReport(props.stats, selected.value, selected.value, props.overrides, props.rules ?? []));
+// props.stats is already active-only (audio excluded) — buildReport expects raw
+// stats and subtracts audioSeconds itself, so zero it out here to avoid double-
+// subtracting (a domain whose audioSeconds ≥ its already-active seconds would
+// otherwise vanish from the exported report entirely).
+const report = computed(() =>
+  buildReport(props.stats.map((s) => ({ ...s, audioSeconds: 0 })), selected.value, selected.value, props.overrides, props.rules ?? []),
+);
 
 function exportCsv() {
   downloadFile(`tabstyr-report-${selected.value}.csv`, reportCsv(report.value), 'text/csv');
