@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { faviconUrl, letterChip } from '@/lib/favicon';
+import { faviconUrl, isLightFavicon, letterChip } from '@/lib/favicon';
 
 const props = defineProps<{ domain: string }>();
 const failed = ref(false);
+const isLight = ref(false);
 const src = computed(() => faviconUrl(props.domain));
 const chip = computed(() => letterChip(props.domain));
 // Internal browser pages (chrome://, edge://, about:) have no real favicon —
@@ -12,13 +13,20 @@ const special = computed(() => SPECIAL_ICONS[props.domain] ?? null);
 
 watch(() => props.domain, () => {
   failed.value = false;
+  isLight.value = false;
 });
 
 // Some decode failures resolve as a 0×0 image without firing `error`; treat an
 // empty raster as a failure so the letter chip takes over.
 function onLoad(e: Event): void {
   const img = e.target as HTMLImageElement;
-  if (img.naturalWidth === 0) failed.value = true;
+  if (img.naturalWidth === 0) {
+    failed.value = true;
+    return;
+  }
+  // A white/near-white icon (e.g. a mono glyph exported on transparent) would
+  // vanish on the tile's default white background — flip to a dark tile instead.
+  isLight.value = isLightFavicon(img);
 }
 
 const SPECIAL_ICONS: Record<string, 'chrome' | 'edge'> = {
@@ -51,6 +59,7 @@ const SPECIAL_ICONS: Record<string, 'chrome' | 'edge'> = {
   <img
     v-else-if="src && !failed"
     class="favicon raster"
+    :class="{ 'raster-dark': isLight }"
     :src="src"
     alt=""
     @error="failed = true"
@@ -78,6 +87,13 @@ const SPECIAL_ICONS: Record<string, 'chrome' | 'edge'> = {
   object-fit: contain;
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.08);
+}
+/* A predominantly white/light glyph would vanish on the white tile above — this
+   dark tile is fixed (not theme-based) since it exists purely for contrast
+   against the icon's own color, not to match the page. */
+.raster-dark {
+  background: #1e2330;
+  border-color: rgba(255, 255, 255, 0.14);
 }
 .chip {
   display: inline-flex;

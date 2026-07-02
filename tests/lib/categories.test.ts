@@ -1,5 +1,16 @@
 import { describe, expect, test } from 'vitest';
-import { categorize, groupByCategory, isCategory, CATEGORIES } from '@/lib/categories';
+import {
+  categorize,
+  groupByCategory,
+  isCategory,
+  CATEGORIES,
+  CATEGORY_PRODUCTIVITY,
+  allCategoryIds,
+  categoryColor,
+  categoryLabel,
+  categoryProductivityOf,
+  type CustomCategory,
+} from '@/lib/categories';
 
 describe('categorize', () => {
   test('maps known domains to their default category', () => {
@@ -119,5 +130,39 @@ describe('groupByCategory', () => {
       'youtube.com': 'Work',
     });
     expect(out).toEqual([{ category: 'Work', seconds: 60, audioSeconds: 0 }]);
+  });
+});
+
+describe('custom category resolvers', () => {
+  const CUSTOM: CustomCategory[] = [{ name: 'Learning', color: '#123abc', productivity: 'productive' }];
+
+  test('an override can assign a domain to a custom category', () => {
+    expect(categorize('coursera.org', { 'coursera.org': 'Learning' })).toBe('Learning');
+  });
+
+  test('a rule can route a domain to a custom category', () => {
+    expect(categorize('go.udemy.com', {}, [{ pattern: 'udemy', category: 'Learning' }])).toBe('Learning');
+  });
+
+  test('categoryColor resolves built-ins from the map and customs from their def', () => {
+    expect(categoryColor('Dev')).toBe('#10b981');
+    expect(categoryColor('Learning', CUSTOM)).toBe('#123abc');
+    expect(categoryColor('Unknown', CUSTOM)).toBe('#94a3b8'); // fallback
+  });
+
+  test('categoryLabel localizes built-ins but shows a custom name verbatim', () => {
+    const t = (key: string) => `T:${key}`;
+    expect(categoryLabel('Dev', t)).toBe('T:categories.Dev');
+    expect(categoryLabel('Learning', t)).toBe('Learning');
+  });
+
+  test('categoryProductivityOf reads the mapping for built-ins and the def for customs', () => {
+    expect(categoryProductivityOf('Social', CATEGORY_PRODUCTIVITY)).toBe('distracting');
+    expect(categoryProductivityOf('Learning', CATEGORY_PRODUCTIVITY, CUSTOM)).toBe('productive');
+    expect(categoryProductivityOf('Ghost', CATEGORY_PRODUCTIVITY, CUSTOM)).toBe('neutral'); // fallback
+  });
+
+  test('allCategoryIds appends custom names after the built-ins', () => {
+    expect(allCategoryIds(CUSTOM)).toEqual([...CATEGORIES, 'Learning']);
   });
 });

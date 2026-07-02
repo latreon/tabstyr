@@ -27,3 +27,40 @@ export function letterChip(domain: string): { letter: string; color: string } {
   for (const ch of domain) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
   return { letter, color: CHIP_COLORS[hash % CHIP_COLORS.length] };
 }
+
+// Above this average perceived luminance (0-255, opaque pixels only) a favicon
+// counts as "light" — e.g. a white glyph on a transparent background — and would
+// vanish on the chip's white tile, so the caller should swap to a dark tile instead.
+const LIGHT_ICON_LUMA = 225;
+
+/**
+ * Samples a loaded favicon <img> to tell whether it's light enough to disappear
+ * on a white tile background. Downsamples to 16x16 and averages perceived
+ * luminance over non-transparent pixels only, so a light glyph on a transparent
+ * PNG isn't washed out by the surrounding transparency.
+ */
+export function isLightFavicon(img: HTMLImageElement): boolean {
+  try {
+    const size = 16;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return false;
+    ctx.drawImage(img, 0, 0, size, size);
+    const { data } = ctx.getImageData(0, 0, size, size);
+    let sum = 0;
+    let opaque = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      const alpha = data[i + 3];
+      if (alpha < 16) continue; // ignore near-transparent pixels
+      sum += 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+      opaque++;
+    }
+    if (opaque === 0) return false;
+    return sum / opaque > LIGHT_ICON_LUMA;
+  } catch {
+    // getImageData throws on a tainted (cross-origin) canvas — keep the default tile.
+    return false;
+  }
+}

@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { Insight } from '@/lib/insights';
+import { categoryLabel } from '@/lib/categories';
 import { getDateLocale } from '@/lib/locale';
 
 const props = defineProps<{ insights: Insight[]; max?: number }>();
@@ -18,7 +19,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 // interpolating the template. Numbers (pct/target/days) pass straight through.
 function localizedParams(insight: Insight): Record<string, string | number> {
   const out: Record<string, string | number> = { ...insight.params };
-  if (typeof out.category === 'string') out.category = t(`categories.${out.category}`);
+  if (typeof out.category === 'string') out.category = categoryLabel(out.category, t);
   if (typeof out.weekday === 'number') out.weekday = weekdayName(out.weekday);
   if (typeof out.hour === 'number') out.hour = `${pad(out.hour)}:00`;
   return out;

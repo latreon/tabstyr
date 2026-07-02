@@ -110,7 +110,19 @@ export function mergeSettingsMaps(local: Settings, incoming: unknown): Record<st
       mergedRules.push(r as { pattern: string; category: never });
     }
   }
+  // Union custom categories, local winning on a name clash (case-insensitive), so a
+  // restore adopts the other device's extra categories without clobbering ours.
+  const catsIn = Array.isArray(inc.customCategories) ? (inc.customCategories as Array<{ name?: unknown }>) : [];
+  const catSeen = new Set(local.customCategories.map((c) => c.name.toLowerCase()));
+  const mergedCats = [...local.customCategories];
+  for (const c of catsIn) {
+    if (c && typeof c.name === 'string' && !catSeen.has(c.name.toLowerCase())) {
+      catSeen.add(c.name.toLowerCase());
+      mergedCats.push(c as { name: string; color: never; productivity: never });
+    }
+  }
   return {
+    customCategories: mergedCats,
     categoryOverrides: { ...obj(inc.categoryOverrides), ...local.categoryOverrides },
     domainTags: { ...obj(inc.domainTags), ...local.domainTags },
     categoryBudgets: { ...obj(inc.categoryBudgets), ...local.categoryBudgets },

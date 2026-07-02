@@ -205,4 +205,69 @@ describe('settings', () => {
     await saveSettings({ language: 'ja' });
     expect((await getSettings()).language).toBe('ja');
   });
+
+  describe('custom categories', () => {
+    const CAT = { name: 'Learning', color: '#123abc', productivity: 'productive' as const };
+
+    test('defaults to an empty list', async () => {
+      expect((await getSettings()).customCategories).toEqual([]);
+    });
+
+    test('a valid custom category round-trips', async () => {
+      await saveSettings({ customCategories: [CAT] });
+      expect((await getSettings()).customCategories).toEqual([CAT]);
+    });
+
+    test('rejects a name that collides with a built-in', async () => {
+      await saveSettings({ customCategories: [{ name: 'Work', color: '#123abc', productivity: 'neutral' }] });
+      expect((await getSettings()).customCategories).toEqual([]);
+    });
+
+    test('drops entries with an invalid hex color or bad productivity', async () => {
+      await saveSettings({
+        customCategories: [
+          { name: 'BadColor', color: 'red', productivity: 'neutral' },
+          { name: 'BadProd', color: '#abcdef', productivity: 'ultra' },
+        ],
+      } as unknown as Parameters<typeof saveSettings>[0]);
+      const stored = (await getSettings()).customCategories;
+      expect(stored.find((c) => c.name === 'BadColor')).toBeUndefined();
+      // A bad productivity is coerced to 'neutral' rather than dropping the category.
+      expect(stored.find((c) => c.name === 'BadProd')?.productivity).toBe('neutral');
+    });
+
+    test('dedupes custom names case-insensitively', async () => {
+      await saveSettings({
+        customCategories: [
+          { name: 'Gaming', color: '#111111', productivity: 'distracting' },
+          { name: 'gaming', color: '#222222', productivity: 'neutral' },
+        ],
+      });
+      expect((await getSettings()).customCategories).toHaveLength(1);
+    });
+
+    test('an override or rule pointing at a valid custom name is kept', async () => {
+      await saveSettings({
+        customCategories: [CAT],
+        categoryOverrides: { 'coursera.org': 'Learning' },
+        categoryRules: [{ pattern: 'udemy', category: 'Learning' }],
+      });
+      const s = await getSettings();
+      expect(s.categoryOverrides['coursera.org']).toBe('Learning');
+      expect(s.categoryRules).toEqual([{ pattern: 'udemy', category: 'Learning' }]);
+    });
+
+    test('removing a custom category drops overrides/rules that referenced it', async () => {
+      await saveSettings({
+        customCategories: [CAT],
+        categoryOverrides: { 'coursera.org': 'Learning' },
+        categoryRules: [{ pattern: 'udemy', category: 'Learning' }],
+      });
+      // Save the list without the custom category — its references are now invalid.
+      await saveSettings({ customCategories: [] });
+      const s = await getSettings();
+      expect(s.categoryOverrides).toEqual({});
+      expect(s.categoryRules).toEqual([]);
+    });
+  });
 });

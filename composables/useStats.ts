@@ -6,7 +6,7 @@ import { findStale } from '@/lib/tracker/stale';
 import { getSettings, saveSettings } from '@/lib/settings';
 import { addDays, dateKey } from '@/lib/time';
 import { buildHourlyHeatmap, type HeatmapData } from '@/lib/heatmap';
-import { groupByCategory, CATEGORY_PRODUCTIVITY, type Category, type CategoryRule, type Productivity } from '@/lib/categories';
+import { groupByCategory, CATEGORY_PRODUCTIVITY, type Category, type CategoryId, type CategoryRule, type CustomCategory, type Productivity } from '@/lib/categories';
 import { activeSeconds } from '@/lib/metrics';
 import { summarizeProductivity } from '@/lib/productivity';
 import { buildComparison } from '@/lib/comparison';
@@ -105,6 +105,7 @@ export function useStats() {
 
   const overrides = computed(() => settings.value?.categoryOverrides ?? {});
   const categoryRules = computed<CategoryRule[]>(() => settings.value?.categoryRules ?? []);
+  const customCategories = computed<CustomCategory[]>(() => settings.value?.customCategories ?? []);
   const categoryProductivity = computed<Record<Category, Productivity>>(
     () => settings.value?.categoryProductivity ?? CATEGORY_PRODUCTIVITY,
   );
@@ -123,7 +124,7 @@ export function useStats() {
 
   // Focus %, productive/distracting split, and the current focus streak.
   const productivity = computed(() =>
-    summarizeProductivity(activeStats.value, todayKey.value, overrides.value, categoryRules.value, focusTarget.value, categoryProductivity.value),
+    summarizeProductivity(activeStats.value, todayKey.value, overrides.value, categoryRules.value, focusTarget.value, categoryProductivity.value, customCategories.value),
   );
 
   // Short "insight" lines derived from data already computed above (heatmap, a
@@ -187,8 +188,23 @@ export function useStats() {
       .sort((a, b) => a.lastActiveAt - b.lastActiveAt),
   );
 
-  async function setCategoryOverride(domain: string, category: Category): Promise<void> {
+  async function setCategoryOverride(domain: string, category: CategoryId): Promise<void> {
     settings.value = await saveSettings({ categoryOverrides: { ...overrides.value, [domain]: category } });
+  }
+
+  // Add a user-defined category. saveSettings sanitizes (dedupes, validates hex +
+  // name), so a bad/duplicate entry is silently dropped rather than persisted.
+  async function addCustomCategory(name: string, color: string, productivity: Productivity): Promise<void> {
+    const next = [...customCategories.value, { name: name.trim(), color, productivity }];
+    settings.value = await saveSettings({ customCategories: next });
+  }
+
+  // Remove a custom category. Overrides/rules that referenced it become invalid and
+  // are dropped by the settings sanitizer on save, so no dangling references remain.
+  async function removeCustomCategory(name: string): Promise<void> {
+    settings.value = await saveSettings({
+      customCategories: customCategories.value.filter((c) => c.name !== name),
+    });
   }
 
   async function setCategoryProductivity(category: Category, value: Productivity): Promise<void> {
@@ -205,7 +221,7 @@ export function useStats() {
     settings.value = await saveSettings({ domainTags: next });
   }
 
-  async function addCategoryRule(pattern: string, category: Category): Promise<void> {
+  async function addCategoryRule(pattern: string, category: CategoryId): Promise<void> {
     const clean = pattern.trim().toLowerCase();
     if (!clean) return;
     // Replace any existing rule with the same pattern, then append the new one.
@@ -348,7 +364,7 @@ export function useStats() {
     stats, activeStats, tabRows, staleTabs, staleTabItems, openTabsList, openTabCount, settings, heatmap, recentSessions,
     loading, loadError, storageWarning, todayKey,
     todaySeconds, todayAudioSeconds, weeklyAvgSeconds, weeklyActiveDays,
-    todayByDomain, todayByCategory, productivity, insights, overrides, categoryRules, categoryProductivity, focusTarget, categoryBudgets, domainTags, showOnboarding,
-    load, closeTab, closeTabs, snoozeTab, setCategoryOverride, setCategoryProductivity, setDomainTag, addCategoryRule, removeCategoryRule, dismissOnboarding,
+    todayByDomain, todayByCategory, productivity, insights, overrides, categoryRules, customCategories, categoryProductivity, focusTarget, categoryBudgets, domainTags, showOnboarding,
+    load, closeTab, closeTabs, snoozeTab, setCategoryOverride, setCategoryProductivity, setDomainTag, addCategoryRule, removeCategoryRule, addCustomCategory, removeCustomCategory, dismissOnboarding,
   };
 }

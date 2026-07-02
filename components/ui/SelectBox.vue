@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, useId } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId } from 'vue';
 
 interface Option {
   value: string;
@@ -11,16 +11,31 @@ const emit = defineEmits<{ 'update:modelValue': [value: string] }>();
 
 const uid = useId();
 const open = ref(false);
+const openUp = ref(false);
 const root = ref<HTMLElement | null>(null);
+const menu = ref<HTMLElement | null>(null);
 const activeIndex = ref(0);
 
 const selected = computed(() => props.options.find((o) => o.value === props.modelValue) ?? props.options[0]);
+
+// Flip the menu above the trigger when there isn't enough room below it —
+// otherwise a select opened near the bottom of a tile renders half off-screen.
+async function updatePlacement() {
+  await nextTick();
+  const triggerRect = root.value?.getBoundingClientRect();
+  const menuRect = menu.value?.getBoundingClientRect();
+  if (!triggerRect || !menuRect) return;
+  const spaceBelow = window.innerHeight - triggerRect.bottom;
+  const spaceAbove = triggerRect.top;
+  openUp.value = spaceBelow < menuRect.height + 8 && spaceAbove > spaceBelow;
+}
 
 function toggle() {
   open.value = !open.value;
   if (open.value) {
     const i = props.options.findIndex((o) => o.value === props.modelValue);
     activeIndex.value = i >= 0 ? i : 0;
+    void updatePlacement();
   }
 }
 function choose(value: string) {
@@ -34,7 +49,7 @@ function onKeydown(e: KeyboardEvent) {
     return;
   }
   if (!open.value) return;
-  if (e.key === 'Escape') { open.value = false; return; }
+  if (e.key === 'Escape') { e.stopPropagation(); open.value = false; return; }
   if (e.key === 'ArrowDown') { e.preventDefault(); activeIndex.value = Math.min(props.options.length - 1, activeIndex.value + 1); }
   if (e.key === 'ArrowUp') { e.preventDefault(); activeIndex.value = Math.max(0, activeIndex.value - 1); }
   if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(props.options[activeIndex.value].value); }
@@ -68,7 +83,9 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
     <ul
       v-if="open"
       :id="`${uid}-list`"
+      ref="menu"
       class="menu"
+      :class="{ 'open-up': openUp }"
       role="listbox"
       :aria-label="label"
       :aria-activedescendant="`${uid}-opt-${activeIndex}`"
@@ -144,6 +161,12 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
   border: 1px solid var(--border);
   border-radius: 10px;
   box-shadow: var(--shadow-pop);
+}
+/* Flipped when there isn't enough viewport space below the trigger — see
+   updatePlacement(). */
+.menu.open-up {
+  top: auto;
+  bottom: calc(100% + 4px);
 }
 .menu li {
   display: flex;

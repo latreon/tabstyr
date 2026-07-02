@@ -19,10 +19,10 @@ import ComparisonTile from '@/components/ComparisonTile.vue';
 import HeatmapTile from '@/components/HeatmapTile.vue';
 import WorkLog from '@/components/WorkLog.vue';
 import ProjectsTile from '@/components/ProjectsTile.vue';
-import WrappedTile from '@/components/WrappedTile.vue';
 import DomainDetail from '@/components/DomainDetail.vue';
 import TabTable from '@/components/TabTable.vue';
 import SettingsPanel from '@/components/SettingsPanel.vue';
+import CustomizationPanel from '@/components/CustomizationPanel.vue';
 import OnboardingCard from '@/components/OnboardingCard.vue';
 import RingLogo from '@/components/RingLogo.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
@@ -190,25 +190,24 @@ onMounted(async () => {
         @activate="openTabsModal('stale')"
       />
       <!-- Today by category fills the space below Open tabs / Stale tabs, beside the tall hero -->
-      <CategoryChart :slices="s.todayByCategory.value" :budgets="s.categoryBudgets.value" />
+      <CategoryChart :slices="s.todayByCategory.value" :budgets="s.categoryBudgets.value" :custom="s.customCategories.value" />
       <!-- Top sites today + Focus today -->
       <TopSitesChart :domains="s.todayByDomain.value" @select="openDetail" />
       <ProductivityTile id="focus" :summary="s.productivity.value" />
       <!-- full-width rows -->
       <InsightsTile :insights="s.insights.value" />
       <TrendChart :stats="s.activeStats.value" :now="loadedNow" />
-      <FocusTrend :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :productivity="s.categoryProductivity.value" :now="loadedNow" :target="s.productivity.value.focusTarget" />
-      <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" />
+      <FocusTrend :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :productivity="s.categoryProductivity.value" :custom="s.customCategories.value" :now="loadedNow" :target="s.productivity.value.focusTarget" />
+      <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :custom="s.customCategories.value" />
       <HeatmapTile :data="s.heatmap.value" />
-      <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :now="loadedNow" @select="openDetail" @set-category="s.setCategoryOverride" />
+      <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :custom="s.customCategories.value" :now="loadedNow" @select="openDetail" @set-category="s.setCategoryOverride" />
       <!-- Projects / clients — tag domains, see time per tag, export invoice/CSV -->
       <ProjectsTile :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :domain-tags="s.domainTags.value" :now="loadedNow" />
-      <!-- Browsing Wrapped — opens the shareable web summary (export a backup first) -->
-      <WrappedTile />
       <FocusCategoriesTile :productivity="s.categoryProductivity.value" @set="s.setCategoryProductivity" />
       <!-- row: 2 + 1 — Open tabs by time beside Settings -->
       <TabTable :rows="s.tabRows.value" />
       <SettingsPanel @changed="() => s.load({ silent: true })" />
+      <CustomizationPanel @changed="() => s.load({ silent: true })" />
       </section>
     </template>
   </main>
@@ -221,6 +220,7 @@ onMounted(async () => {
     :now="selected.now"
     :overrides="s.overrides.value"
     :rules="s.categoryRules.value"
+    :custom="s.customCategories.value"
     @close="selected = null"
     @set-category="s.setCategoryOverride"
   />

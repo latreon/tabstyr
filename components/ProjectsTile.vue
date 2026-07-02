@@ -5,7 +5,7 @@ import { buildReport } from '@/lib/report';
 import { buildTagReport, tagReportCsv } from '@/lib/tags';
 import { renderReportCard, canvasToImageBlob, REPORT_MAX_ROWS, type ReportCardContent } from '@/lib/report-card';
 import { downloadBlob, downloadFile } from '@/lib/export';
-import type { Category, CategoryRule } from '@/lib/categories';
+import type { CategoryId, CategoryRule } from '@/lib/categories';
 import { addDays, dateKey, formatDuration, longDateLabel } from '@/lib/time';
 import { displayDomain } from '@/lib/domain';
 import type { DailyStat } from '@/lib/types';
@@ -14,7 +14,7 @@ import DatePicker from '@/components/ui/DatePicker.vue';
 
 const props = defineProps<{
   stats: DailyStat[];
-  overrides: Record<string, Category>;
+  overrides: Record<string, CategoryId>;
   rules?: CategoryRule[];
   domainTags: Record<string, string>;
   now: number;
@@ -26,8 +26,14 @@ const minDate = addDays(today, -89);
 const from = ref(addDays(today, -6)); // default: last 7 days
 const to = ref(today);
 
+// props.stats is already active-only (audio excluded) — buildReport expects raw
+// stats and subtracts audioSeconds itself, so zero it out here to avoid double-
+// subtracting (a domain whose audioSeconds ≥ its already-active seconds would
+// otherwise vanish from the exported report/invoice entirely).
 const report = computed(() =>
-  from.value <= to.value ? buildReport(props.stats, from.value, to.value, props.overrides, props.rules ?? []) : null,
+  from.value <= to.value
+    ? buildReport(props.stats.map((s) => ({ ...s, audioSeconds: 0 })), from.value, to.value, props.overrides, props.rules ?? [])
+    : null,
 );
 const tagReport = computed(() => (report.value ? buildTagReport(report.value.domains, props.domainTags) : null));
 

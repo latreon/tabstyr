@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { CATEGORIES, CATEGORY_META, type Category } from '@/lib/categories';
+import { allCategoryIds, categoryColor, categoryLabel, type CategoryId, type CustomCategory } from '@/lib/categories';
 
-const props = defineProps<{ current: Category }>();
-const emit = defineEmits<{ select: [Category] }>();
+const props = defineProps<{ current: CategoryId; custom?: CustomCategory[] }>();
+const emit = defineEmits<{ select: [CategoryId] }>();
 const { t } = useI18n();
+
+// Built-ins plus any user-added categories — each with a resolved color + label.
+const options = computed(() =>
+  allCategoryIds(props.custom).map((c) => ({ value: c, color: categoryColor(c, props.custom), label: categoryLabel(c, t) })),
+);
 
 const open = ref(false);
 const root = ref<HTMLElement | null>(null);
@@ -23,7 +28,7 @@ function toggle() {
     });
   }
 }
-function choose(c: Category) {
+function choose(c: CategoryId) {
   if (c !== props.current) emit('select', c);
   open.value = false;
 }
@@ -63,27 +68,27 @@ onBeforeUnmount(() => {
       class="trigger"
       :aria-expanded="open"
       aria-haspopup="menu"
-      :aria-label="t('worklog.changeCategory', { category: t(`categories.${current}`) })"
-      :title="t('worklog.changeCategory', { category: t(`categories.${current}`) })"
+      :aria-label="t('worklog.changeCategory', { category: categoryLabel(current, t) })"
+      :title="t('worklog.changeCategory', { category: categoryLabel(current, t) })"
       @click="toggle"
     >
-      <span class="dot" :style="{ background: CATEGORY_META[current].color }" />
+      <span class="dot" :style="{ background: categoryColor(current, custom) }" />
     </button>
 
     <div v-if="open" ref="menu" class="menu" :class="{ up: dropUp }" role="menu" @keydown="onMenuKey">
       <button
-        v-for="c in CATEGORIES"
-        :key="c"
+        v-for="o in options"
+        :key="o.value"
         type="button"
         role="menuitemradio"
-        :aria-checked="c === current"
+        :aria-checked="o.value === current"
         class="opt"
-        :class="{ active: c === current }"
-        @click="choose(c)"
+        :class="{ active: o.value === current }"
+        @click="choose(o.value)"
       >
-        <span class="dot" :style="{ background: CATEGORY_META[c].color }" />
-        <span class="opt-label">{{ t(`categories.${c}`) }}</span>
-        <svg v-if="c === current" class="check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7" /></svg>
+        <span class="dot" :style="{ background: o.color }" />
+        <span class="opt-label">{{ o.label }}</span>
+        <svg v-if="o.value === current" class="check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7" /></svg>
       </button>
     </div>
   </div>

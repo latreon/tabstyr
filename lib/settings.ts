@@ -5,7 +5,9 @@ import {
   isCategory,
   isProductivity,
   type Category,
+  type CategoryId,
   type CategoryRule,
+  type CustomCategory,
   type Productivity,
 } from './categories';
 import type { Settings } from './types';
@@ -17,6 +19,9 @@ const MAX_OVERRIDES = 5_000;
 const MAX_DOMAIN_LEN = 253;
 const MAX_TAGS = 5_000;
 const MAX_TAG_LEN = 60;
+const MAX_CUSTOM_CATEGORIES = 20;
+const MAX_CAT_NAME_LEN = 24;
+const HEX_COLOR = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 
 export const DEFAULT_SETTINGS: Settings = {
   staleDays: 3,
@@ -25,6 +30,7 @@ export const DEFAULT_SETTINGS: Settings = {
   idleSeconds: 180,
   audioEnabled: true,
   theme: 'system',
+  customCategories: [],
   categoryOverrides: {},
   categoryRules: [],
   categoryProductivity: { ...CATEGORY_PRODUCTIVITY },
@@ -38,12 +44,49 @@ export const DEFAULT_SETTINGS: Settings = {
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
 
-function sanitizeOverrides(raw: unknown): Record<string, Category> | undefined {
+// User-added categories. Keep only well-formed entries: a non-empty name that
+// doesn't collide with a built-in (add-only — built-ins are reserved) nor with an
+// earlier custom (case-insensitive), a valid hex color, and a valid productivity.
+// Cap the count so a crafted file can't bloat storage.
+function sanitizeCustomCategories(raw: unknown): CustomCategory[] {
+  if (!Array.isArray(raw)) return [];
+  const seen = new Set<string>();
+  const out: CustomCategory[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== 'object') continue;
+    const { name, color, productivity } = item as Record<string, unknown>;
+    if (typeof name !== 'string' || typeof color !== 'string') continue;
+    const trimmed = name.trim().slice(0, MAX_CAT_NAME_LEN);
+    const key = trimmed.toLowerCase();
+    if (!trimmed || isCategory(trimmed) || seen.has(key)) continue;
+    if (!HEX_COLOR.test(color)) continue;
+    seen.add(key);
+    out.push({
+      name: trimmed,
+      color: color.toLowerCase(),
+      productivity: isProductivity(productivity) ? productivity : 'neutral',
+    });
+    if (out.length >= MAX_CUSTOM_CATEGORIES) break;
+  }
+  return out;
+}
+
+// A category VALUE is valid if it's a built-in or one of the (already-sanitized)
+// custom category names. Overrides/rules may point at either.
+function makeIsValidCategory(custom: readonly CustomCategory[]): (v: unknown) => v is CategoryId {
+  const names = new Set(custom.map((c) => c.name));
+  return (v: unknown): v is CategoryId => typeof v === 'string' && (isCategory(v) || names.has(v));
+}
+
+function sanitizeOverrides(
+  raw: unknown,
+  isValid: (v: unknown) => v is CategoryId,
+): Record<string, CategoryId> | undefined {
   if (!raw || typeof raw !== 'object') return undefined;
-  const out: Record<string, Category> = {};
+  const out: Record<string, CategoryId> = {};
   let count = 0;
   for (const [domain, value] of Object.entries(raw as Record<string, unknown>)) {
-    if (typeof domain === 'string' && domain && domain.length <= MAX_DOMAIN_LEN && isCategory(value)) {
+    if (typeof domain === 'string' && domain && domain.length <= MAX_DOMAIN_LEN && isValid(value)) {
       out[domain] = value;
       if (++count >= MAX_OVERRIDES) break; // cap so a crafted file can't bloat storage
     }
@@ -51,14 +94,17 @@ function sanitizeOverrides(raw: unknown): Record<string, Category> | undefined {
   return out;
 }
 
-function sanitizeRules(raw: unknown): CategoryRule[] | undefined {
+function sanitizeRules(
+  raw: unknown,
+  isValid: (v: unknown) => v is CategoryId,
+): CategoryRule[] | undefined {
   if (!Array.isArray(raw)) return undefined;
   const seen = new Set<string>();
   const out: CategoryRule[] = [];
   for (const item of raw) {
     if (!item || typeof item !== 'object') continue;
     const { pattern, category } = item as Record<string, unknown>;
-    if (typeof pattern !== 'string' || !isCategory(category)) continue;
+    if (typeof pattern !== 'string' || !isValid(category)) continue;
     const trimmed = pattern.trim().toLowerCase().slice(0, MAX_PATTERN_LEN);
     if (!trimmed || seen.has(trimmed)) continue; // drop blanks and duplicates
     seen.add(trimmed);
@@ -119,13 +165,16 @@ function sanitizeDomainTags(raw: unknown): Record<string, string> {
 function coerce(raw: unknown): Partial<Settings> {
   if (!raw || typeof raw !== 'object') return {};
   const r = raw as Record<string, unknown>;
-  const overrides = sanitizeOverrides(r.categoryOverrides);
-  const rules = sanitizeRules(r.categoryRules);
+  const customCategories = sanitizeCustomCategories(r.customCategories);
+  const isValid = makeIsValidCategory(customCategories);
+  const overrides = sanitizeOverrides(r.categoryOverrides, isValid);
+  const rules = sanitizeRules(r.categoryRules, isValid);
   return {
     ...(typeof r.staleDays === 'number' && { staleDays: clamp(r.staleDays, 1, 60) }),
     ...(typeof r.idleSeconds === 'number' && { idleSeconds: clamp(r.idleSeconds, 15, 600) }),
     ...(typeof r.audioEnabled === 'boolean' && { audioEnabled: r.audioEnabled }),
     ...((r.theme === 'system' || r.theme === 'dark' || r.theme === 'light') && { theme: r.theme }),
+    customCategories,
     ...(overrides && { categoryOverrides: overrides }),
     ...(rules && { categoryRules: rules }),
     // Always a full, valid mapping (missing/invalid entries fall back to default).

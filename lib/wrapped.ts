@@ -15,9 +15,13 @@ import { buildHourlyHeatmap, peakHour, type HeatmapData } from './heatmap';
 import { coalesceSessions } from './sessionize';
 import {
   makeCategorizer,
+  categoryProductivityOf,
+  isCategory,
   CATEGORY_PRODUCTIVITY,
   type Category,
+  type CategoryId,
   type CategoryRule,
+  type CustomCategory,
   type Productivity,
 } from './categories';
 import type { DailyStat, Session } from './types';
@@ -26,10 +30,12 @@ import type { DailyStat, Session } from './types';
 export interface WrappedInput {
   dailyStats: DailyStat[];
   sessions: Session[];
-  overrides?: Record<string, Category>;
+  overrides?: Record<string, CategoryId>;
   rules?: readonly CategoryRule[];
   /** Per-category productive/distracting split; defaults to CATEGORY_PRODUCTIVITY. */
   productivity?: Record<Category, Productivity>;
+  /** User-added categories, so their productivity classification is honoured. */
+  customCategories?: readonly CustomCategory[];
 }
 
 export interface WrappedSite {
@@ -39,11 +45,11 @@ export interface WrappedSite {
   label: string;
   /** Active foreground seconds across the whole range. */
   seconds: number;
-  category: Category;
+  category: CategoryId;
 }
 
 export interface WrappedCategory {
-  category: Category;
+  category: CategoryId;
   seconds: number;
   /** Share of total active time, 0–100 (rounded). */
   pct: number;
@@ -67,7 +73,7 @@ export type PersonaId =
 export interface WrappedPersona {
   id: PersonaId;
   /** The category that drove the persona (null for the diffuse "explorer"). */
-  category: Category | null;
+  category: CategoryId | null;
 }
 
 export interface WrappedData {
@@ -153,15 +159,16 @@ interface DayAgg {
  * truth for both the overall focus % and the longest-streak scan. */
 function aggregateByDate(
   stats: DailyStat[],
-  categoryOf: (domain: string) => Category,
+  categoryOf: (domain: string) => CategoryId,
   prod: Record<Category, Productivity> = CATEGORY_PRODUCTIVITY,
+  custom: readonly CustomCategory[] = [],
 ): Map<string, DayAgg> {
   const byDate = new Map<string, DayAgg>();
   for (const s of stats) {
     const active = activeSeconds(s);
     if (active <= 0) continue;
     const agg = byDate.get(s.date) ?? { productive: 0, distracting: 0, neutral: 0, total: 0 };
-    agg[prod[categoryOf(s.domain)]] += active;
+    agg[categoryProductivityOf(categoryOf(s.domain), prod, custom)] += active;
     agg.total += active;
     byDate.set(s.date, agg);
   }
@@ -211,7 +218,7 @@ function longestFocusStreak(
 /** Aggregate active foreground seconds per real web domain, time desc. */
 function topDomains(
   stats: DailyStat[],
-  categoryOf: (domain: string) => Category,
+  categoryOf: (domain: string) => CategoryId,
 ): WrappedSite[] {
   const byDomain = new Map<string, number>();
   for (const s of stats) {
@@ -231,7 +238,7 @@ function topDomains(
 }
 
 function buildCategories(sites: WrappedSite[], totalSeconds: number): WrappedCategory[] {
-  const byCat = new Map<Category, number>();
+  const byCat = new Map<CategoryId, number>();
   for (const s of sites) byCat.set(s.category, (byCat.get(s.category) ?? 0) + s.seconds);
   return [...byCat.entries()]
     .map(([category, seconds]) => ({
@@ -280,9 +287,11 @@ function busiestDay(stats: DailyStat[]): { date: string | null; seconds: number 
 
 function pickPersona(top: WrappedCategory | null, totalSeconds: number): WrappedPersona {
   if (!top || totalSeconds <= 0) return { id: 'explorer', category: null };
-  const dominant = top.seconds / totalSeconds >= PERSONA_DOMINANCE;
+  // A custom category has no built-in persona mapping — fall back to the diffuse
+  // "explorer" so a dominant custom category still yields a valid Wrapped.
+  const dominant = top.seconds / totalSeconds >= PERSONA_DOMINANCE && isCategory(top.category);
   return dominant
-    ? { id: PERSONA_BY_CATEGORY[top.category], category: top.category }
+    ? { id: PERSONA_BY_CATEGORY[top.category as Category], category: top.category }
     : { id: 'explorer', category: null };
 }
 
@@ -307,7 +316,7 @@ export function buildWrapped(input: WrappedInput): WrappedData | null {
   // aggregateByDate only records dates with active time, so its keys ARE the
   // coverage window — derive the date range from it instead of a separate pass +
   // Set over every stat row.
-  const byDate = aggregateByDate(stats, categoryOf, input.productivity ?? CATEGORY_PRODUCTIVITY);
+  const byDate = aggregateByDate(stats, categoryOf, input.productivity ?? CATEGORY_PRODUCTIVITY, input.customCategories ?? []);
   const activeDates = [...byDate.keys()].sort();
   const startDate = activeDates[0];
   const endDate = activeDates[activeDates.length - 1];

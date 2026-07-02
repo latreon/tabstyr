@@ -62,8 +62,14 @@ export interface Settings {
   idleSeconds: number;
   audioEnabled: boolean;
   theme: ThemeSetting;
+  /**
+   * User-added categories on top of the 8 built-ins (add-only: built-ins can't be
+   * renamed or removed). Each carries its own color + productivity classification;
+   * its `name` is the stored value referenced by overrides and rules.
+   */
+  customCategories: import('./categories').CustomCategory[];
   /** User reassignments of domain → category, overriding the default rules. */
-  categoryOverrides: Record<string, import('./categories').Category>;
+  categoryOverrides: Record<string, import('./categories').CategoryId>;
   /** User-defined substring → category rules, checked before the built-in rules. */
   categoryRules: import('./categories').CategoryRule[];
   /**

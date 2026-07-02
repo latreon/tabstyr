@@ -18,8 +18,15 @@ function bump(dir: number) {
   emit('update:modelValue', clamp(props.modelValue + dir * step.value));
 }
 function onInput(e: Event) {
-  const raw = Number((e.target as HTMLInputElement).value);
-  if (Number.isFinite(raw)) emit('update:modelValue', clamp(raw));
+  const target = e.target as HTMLInputElement;
+  const raw = Number(target.value);
+  if (!Number.isFinite(raw)) return;
+  const next = clamp(Math.round(raw));
+  // Force the native value back in sync: if `next` equals the already-set
+  // modelValue, Vue skips the :value patch (no reactive change) and the input
+  // is left showing whatever un-clamped digits the user just typed.
+  target.value = String(next);
+  emit('update:modelValue', next);
 }
 </script>
 

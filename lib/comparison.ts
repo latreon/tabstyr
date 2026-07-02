@@ -1,5 +1,5 @@
 import { addDays } from './time';
-import { makeCategorizer, type Category, type CategoryRule } from './categories';
+import { makeCategorizer, type CategoryId, type CategoryRule } from './categories';
 import type { DailyStat } from './types';
 
 export type ComparePeriod = 'week' | 'month';
@@ -7,7 +7,7 @@ export type ComparePeriod = 'week' | 'month';
 export const PERIOD_DAYS: Record<ComparePeriod, number> = { week: 7, month: 30 };
 
 interface CategoryDelta {
-  category: Category;
+  category: CategoryId;
   current: number;
   previous: number;
   deltaSeconds: number;
@@ -49,7 +49,7 @@ export function buildComparison(
   stats: DailyStat[],
   todayKey: string,
   period: ComparePeriod,
-  overrides: Record<string, Category> = {},
+  overrides: Record<string, CategoryId> = {},
   rules: readonly CategoryRule[] = [],
 ): Comparison {
   const days = PERIOD_DAYS[period];
@@ -59,8 +59,8 @@ export function buildComparison(
   let currentSeconds = 0;
   let previousSeconds = 0;
   // Per-category totals for each window.
-  const cur = new Map<Category, number>();
-  const prev = new Map<Category, number>();
+  const cur = new Map<CategoryId, number>();
+  const prev = new Map<CategoryId, number>();
 
   const categoryOf = makeCategorizer(overrides, rules);
   for (const s of stats) {
