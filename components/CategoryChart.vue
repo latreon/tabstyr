@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { categoryColor, categoryLabel, isCategory, type Category, type CategoryId, type CategorySlice, type CustomCategory } from '@/lib/categories';
+import { categoryColor, categoryLabel, type CategoryId, type CategorySlice, type CustomCategory } from '@/lib/categories';
 import { budgetProgress } from '@/lib/budgets';
 import { formatDuration } from '@/lib/time';
 
 const props = defineProps<{
   slices: CategorySlice[];
-  budgets?: Partial<Record<Category, number>>;
+  budgets?: Partial<Record<CategoryId, number>>;
   custom?: CustomCategory[];
 }>();
 const { t } = useI18n();
@@ -17,8 +17,8 @@ const hovered = ref<string | null>(null);
 
 const total = computed(() => props.slices.reduce((sum, s) => sum + s.seconds, 0));
 
-// Budgets are built-in only; a custom category never carries one.
-const budgetFor = (c: CategoryId) => (isCategory(c) ? props.budgets?.[c] : undefined);
+// Budgets are keyed by category value — built-in or custom name alike.
+const budgetFor = (c: CategoryId) => props.budgets?.[c];
 
 const items = computed(() =>
   props.slices

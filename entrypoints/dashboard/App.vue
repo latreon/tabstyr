@@ -18,7 +18,6 @@ import FocusTrend from '@/components/FocusTrend.vue';
 import ComparisonTile from '@/components/ComparisonTile.vue';
 import HeatmapTile from '@/components/HeatmapTile.vue';
 import WorkLog from '@/components/WorkLog.vue';
-import ProjectsTile from '@/components/ProjectsTile.vue';
 import DomainDetail from '@/components/DomainDetail.vue';
 import TabTable from '@/components/TabTable.vue';
 import SettingsPanel from '@/components/SettingsPanel.vue';
@@ -201,13 +200,11 @@ onMounted(async () => {
       <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :custom="s.customCategories.value" />
       <HeatmapTile :data="s.heatmap.value" />
       <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :custom="s.customCategories.value" :now="loadedNow" @select="openDetail" @set-category="s.setCategoryOverride" />
-      <!-- Projects / clients — tag domains, see time per tag, export invoice/CSV -->
-      <ProjectsTile :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :domain-tags="s.domainTags.value" :now="loadedNow" />
-      <FocusCategoriesTile :productivity="s.categoryProductivity.value" @set="s.setCategoryProductivity" />
+      <FocusCategoriesTile :productivity="s.categoryProductivity.value" :custom="s.customCategories.value" @set="s.setCategoryProductivity" @set-custom="s.setCustomProductivity" />
       <!-- row: 2 + 1 — Open tabs by time beside Settings -->
       <TabTable :rows="s.tabRows.value" />
       <SettingsPanel @changed="() => s.load({ silent: true })" />
-      <CustomizationPanel @changed="() => s.load({ silent: true })" />
+      <CustomizationPanel :custom="s.customCategories.value" :category-rules="s.categoryRules.value" @changed="() => s.load({ silent: true })" />
       </section>
     </template>
   </main>

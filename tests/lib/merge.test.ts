@@ -95,18 +95,15 @@ describe('mergeSettingsMaps', () => {
   const local: Settings = {
     ...DEFAULT_SETTINGS,
     categoryOverrides: { 'a.com': 'Work' },
-    domainTags: { 'a.com': 'Acme' },
     categoryRules: [{ pattern: 'foo', category: 'Dev' }],
   };
 
   test('unions maps with local winning on conflicts, adopts incoming extras', () => {
     const merged = mergeSettingsMaps(local, {
       categoryOverrides: { 'a.com': 'Social', 'b.com': 'News' }, // a.com conflict → local wins
-      domainTags: { 'c.com': 'Beta' },
       categoryRules: [{ pattern: 'foo', category: 'Media' }, { pattern: 'bar', category: 'Finance' }],
     });
     expect(merged.categoryOverrides).toEqual({ 'a.com': 'Work', 'b.com': 'News' });
-    expect(merged.domainTags).toEqual({ 'a.com': 'Acme', 'c.com': 'Beta' });
     expect(merged.categoryRules).toEqual([
       { pattern: 'foo', category: 'Dev' }, // local kept, incoming dup ignored
       { pattern: 'bar', category: 'Finance' }, // incoming extra adopted
@@ -116,7 +113,6 @@ describe('mergeSettingsMaps', () => {
   test('missing/invalid incoming settings → local maps unchanged', () => {
     const merged = mergeSettingsMaps(local, undefined);
     expect(merged.categoryOverrides).toEqual({ 'a.com': 'Work' });
-    expect(merged.domainTags).toEqual({ 'a.com': 'Acme' });
   });
 
   test('unions custom categories, local winning on a name clash', () => {

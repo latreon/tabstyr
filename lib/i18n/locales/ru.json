@@ -70,7 +70,7 @@
   },
   "hero": {
     "todayActive": "Сегодня · активно",
-    "vsWeeklyAvg": "{pct}% к среднему за неделю",
+    "vsDailyAvg": "{pct}% к среднему за день",
     "up": "Рост",
     "down": "Падение",
     "backgroundAudio": "♪ +{time} фоновое аудио",
@@ -356,19 +356,5 @@
     "busiestDay": "{weekday} — ваш самый активный день",
     "focusHit": "Фокус сегодня {pct}% — выше цели {target}%",
     "focusUnder": "Фокус сегодня {pct}% — цель {target}%"
-  },
-  "projects": {
-    "title": "Проекты и клиенты",
-    "hint": "Пометьте любой сайт проектом или клиентом и экспортируйте время по метке как счёт или CSV.",
-    "tagPlaceholder": "Добавить метку…",
-    "tagForAria": "Метка проекта/клиента для {domain}",
-    "untagged": "Без метки",
-    "invoice": "Счёт",
-    "invoiceHeading": "Отчёт по времени",
-    "billable": "Итого к оплате",
-    "share": "Доля",
-    "byClient": "По клиентам",
-    "empty": "Нет активности за этот период.",
-    "days": "{count} день | {count} дней"
   }
 }

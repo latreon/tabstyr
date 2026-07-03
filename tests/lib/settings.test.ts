@@ -102,22 +102,46 @@ describe('settings', () => {
     expect((await getSettings()).categoryBudgets).toEqual({ Social: 45 });
   });
 
-  test('domainTags trims/caps tag values and drops empty or non-string ones', async () => {
-    await fakeBrowser.storage.local.set({
-      settings: {
-        domainTags: { 'github.com': '  Acme  ', 'a.com': '', 'b.com': 123, 'c.com': 'x'.repeat(200) },
-      },
-    });
-    const dt = (await getSettings()).domainTags;
-    expect(dt['github.com']).toBe('Acme'); // trimmed
-    expect('a.com' in dt).toBe(false); // empty dropped
-    expect('b.com' in dt).toBe(false); // non-string dropped
-    expect(dt['c.com'].length).toBe(60); // length-capped
+  test('categoryBudgets accepts custom category names', async () => {
+    await saveSettings({ customCategories: [{ name: 'Gaming', color: '#ff0000', productivity: 'distracting' }] });
+    await saveSettings({ categoryBudgets: { Gaming: 60, Social: 30 } });
+    expect((await getSettings()).categoryBudgets).toEqual({ Gaming: 60, Social: 30 });
   });
 
-  test('domainTags round-trips a saved assignment', async () => {
-    await saveSettings({ domainTags: { 'github.com': 'Acme' } });
-    expect((await getSettings()).domainTags).toEqual({ 'github.com': 'Acme' });
+  test('categoryBudgets drops a budget for a name that is not a custom category', async () => {
+    await fakeBrowser.storage.local.set({
+      settings: {
+        customCategories: [{ name: 'Gaming', color: '#ff0000', productivity: 'neutral' }],
+        categoryBudgets: { Gaming: 60, Studying: 45 }, // Studying is not defined
+      },
+    });
+    expect((await getSettings()).categoryBudgets).toEqual({ Gaming: 60 });
+  });
+
+  test('deleting a custom category drops its budget on the next save', async () => {
+    await saveSettings({ customCategories: [{ name: 'Gaming', color: '#ff0000', productivity: 'neutral' }] });
+    await saveSettings({ categoryBudgets: { Gaming: 60, Social: 30 } });
+    await saveSettings({ customCategories: [] }); // user removes the category
+    expect((await getSettings()).categoryBudgets).toEqual({ Social: 30 }); // Gaming budget gone
+  });
+
+  test('legacy built-in-only budgets still load unchanged', async () => {
+    await fakeBrowser.storage.local.set({
+      settings: { categoryBudgets: { Social: 30, Media: 90 } }, // pre-custom-budget shape
+    });
+    expect((await getSettings()).categoryBudgets).toEqual({ Social: 30, Media: 90 });
+  });
+
+  // Legacy stored settings/backups may still carry removed fields (e.g. the old
+  // domainTags project-tag map). coerce() copies field-by-field, so unknown keys
+  // must be silently dropped rather than throwing or leaking through.
+  test('unknown legacy fields (e.g. old domainTags) are silently dropped', async () => {
+    await fakeBrowser.storage.local.set({
+      settings: { staleDays: 5, domainTags: { 'github.com': 'Acme' } },
+    });
+    const s = await getSettings();
+    expect(s.staleDays).toBe(5);
+    expect('domainTags' in s).toBe(false);
   });
 
   test('malformed stored values are ignored, defaults win', async () => {

@@ -3,7 +3,7 @@ import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { useI18n } from '@/i18n';
 import { dayLabel, longDateLabel, formatDuration } from '@ext/time';
 import { getDateLocale } from '@ext/locale';
-import { CATEGORY_META } from '@ext/categories';
+import { categoryColor, categoryLabel, type CustomCategory } from '@ext/categories';
 import { PERSONA_META } from '@ext/wrapped-persona';
 import { PERSONA_ICON, CHRONOTYPE_ICON, type IconName } from '@ext/wrapped-icons';
 import type { WrappedData } from '@ext/wrapped';
@@ -13,7 +13,7 @@ import SiteIcon from './SiteIcon.vue';
 import CountUp from './CountUp.vue';
 import WrappedShareCard from './WrappedShareCard.vue';
 
-const props = defineProps<{ data: WrappedData }>();
+const props = defineProps<{ data: WrappedData; custom?: CustomCategory[] }>();
 const emit = defineEmits<{ (e: 'restart'): void }>();
 const { t } = useI18n();
 
@@ -74,15 +74,15 @@ const slides = computed<StorySlide[]>(() => {
 
   if (d.topSite) {
     const pct = Math.round((d.topSite.seconds / d.totalSeconds) * 100);
-    out.push({ kind: 'num', id: 'topSite', icon: 'eye', kicker: t('wrapped.slide.topSite.kicker'), title: d.topSite.label, value: d.topSite.seconds, format: formatDuration, caption: t('wrapped.slide.topSite.caption', { pct }), chip: { domain: d.topSite.domain, color: CATEGORY_META[d.topSite.category].color } });
+    out.push({ kind: 'num', id: 'topSite', icon: 'eye', kicker: t('wrapped.slide.topSite.kicker'), title: d.topSite.label, value: d.topSite.seconds, format: formatDuration, caption: t('wrapped.slide.topSite.caption', { pct }), chip: { domain: d.topSite.domain, color: categoryColor(d.topSite.category, props.custom) } });
   }
 
   if (d.topSites.length > 1) {
-    out.push({ kind: 'list', id: 'top5', icon: 'trophy', kicker: t('wrapped.slide.top5.kicker'), list: d.topSites.map((s) => ({ domain: s.domain, label: s.label, value: formatDuration(s.seconds), color: CATEGORY_META[s.category].color })) });
+    out.push({ kind: 'list', id: 'top5', icon: 'trophy', kicker: t('wrapped.slide.top5.kicker'), list: d.topSites.map((s) => ({ domain: s.domain, label: s.label, value: formatDuration(s.seconds), color: categoryColor(s.category, props.custom) })) });
   }
 
   if (d.categories.length) {
-    out.push({ kind: 'bars', id: 'breakdown', icon: 'layers', kicker: t('wrapped.slide.category.kicker'), bars: d.categories.slice(0, 5).map((c) => ({ label: t(`categories.${c.category}`), pct: c.pct, color: CATEGORY_META[c.category].color })) });
+    out.push({ kind: 'bars', id: 'breakdown', icon: 'layers', kicker: t('wrapped.slide.category.kicker'), bars: d.categories.slice(0, 5).map((c) => ({ label: categoryLabel(c.category, t), pct: c.pct, color: categoryColor(c.category, props.custom) })) });
   }
 
   if (d.busiestDate) {
@@ -219,7 +219,7 @@ const rootStyle = computed(() => ({ '--w-a': persona.value.accentA, '--w-b': per
       <Transition name="slide" mode="out-in">
         <div :key="current?.id" class="slide" :aria-hidden="onShare ? undefined : 'true'">
           <template v-if="current?.kind === 'share'">
-            <WrappedShareCard :data="data" />
+            <WrappedShareCard :data="data" :custom="custom" />
           </template>
 
           <template v-else-if="current?.kind === 'bars'">

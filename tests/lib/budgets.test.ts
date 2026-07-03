@@ -52,6 +52,16 @@ describe('exceededBudgets', () => {
   test('audio-only time does not exceed a budget', () => {
     expect(exceededBudgets([slice('Media', 3600, 3600)], { Media: 30 })).toEqual([]);
   });
+
+  test('flags a custom category keyed by its name', () => {
+    const slices = [slice('Gaming', 3600), slice('Social', 60)];
+    expect(exceededBudgets(slices, { Gaming: 30, Social: 30 })).toEqual(['Gaming']);
+  });
+
+  test('built-ins come first, then custom categories', () => {
+    const slices = [slice('Gaming', 3600), slice('Media', 3600), slice('Social', 3600)];
+    expect(exceededBudgets(slices, { Gaming: 1, Media: 1, Social: 1 })).toEqual(['Social', 'Media', 'Gaming']);
+  });
 });
 
 describe('shouldNotifyBudget', () => {

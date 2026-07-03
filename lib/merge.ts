@@ -95,7 +95,7 @@ const obj = (v: unknown): Record<string, unknown> =>
 /**
  * Union the map-like settings from an imported backup into the local ones, LOCAL
  * winning on key conflicts (never silently override this device's choices) while
- * adopting the other device's extra classifications/tags. Scalar prefs (theme,
+ * adopting the other device's extra classifications. Scalar prefs (theme,
  * language, focusTarget, …) are left untouched. The result is re-sanitized by
  * saveSettings, so untyped imported values are safe here.
  */
@@ -124,7 +124,6 @@ export function mergeSettingsMaps(local: Settings, incoming: unknown): Record<st
   return {
     customCategories: mergedCats,
     categoryOverrides: { ...obj(inc.categoryOverrides), ...local.categoryOverrides },
-    domainTags: { ...obj(inc.domainTags), ...local.domainTags },
     categoryBudgets: { ...obj(inc.categoryBudgets), ...local.categoryBudgets },
     categoryRules: mergedRules,
   };

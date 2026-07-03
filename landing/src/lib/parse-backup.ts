@@ -6,7 +6,7 @@
 
 import { isWebDomain, pageOf } from '@ext/domain';
 import { SCHEMA_VERSION } from '@ext/export';
-import { isCategory, type Category, type CategoryRule } from '@ext/categories';
+import { isCategory, isProductivity, type CategoryId, type CategoryRule, type CustomCategory } from '@ext/categories';
 import type { DailyStat, Session } from '@ext/types';
 
 export interface ParsedBackup {
@@ -33,6 +33,9 @@ const MAX_RULES = 100;
 const MAX_PATTERN_LEN = 100;
 const MAX_OVERRIDES = 5_000;
 const MAX_DOMAIN_LEN = 253;
+const MAX_CUSTOM_CATEGORIES = 20;
+const MAX_CAT_NAME_LEN = 24;
+const HEX_COLOR = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 
 const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
 const isStr = (v: unknown): v is string => typeof v === 'string';
@@ -100,21 +103,56 @@ export function parseBackup(text: string): ParsedBackup {
   };
 }
 
+// User-added categories, mirroring the extension's lib/settings.ts sanitization:
+// keep only well-formed entries — a non-empty name that doesn't collide with a
+// built-in nor with an earlier custom (case-insensitive), a valid hex color, and a
+// valid productivity. Cap the count so a crafted file can't bloat memory.
+function sanitizeCustomCategories(raw: unknown): CustomCategory[] {
+  if (!Array.isArray(raw)) return [];
+  const seen = new Set<string>();
+  const out: CustomCategory[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== 'object') continue;
+    const { name, color, productivity } = item as Record<string, unknown>;
+    if (typeof name !== 'string' || typeof color !== 'string') continue;
+    const trimmed = name.trim().slice(0, MAX_CAT_NAME_LEN);
+    const key = trimmed.toLowerCase();
+    if (!trimmed || isCategory(trimmed) || seen.has(key)) continue;
+    if (!HEX_COLOR.test(color)) continue;
+    seen.add(key);
+    out.push({
+      name: trimmed,
+      color: color.toLowerCase(),
+      productivity: isProductivity(productivity) ? productivity : 'neutral',
+    });
+    if (out.length >= MAX_CUSTOM_CATEGORIES) break;
+  }
+  return out;
+}
+
 /** Pull the user's category config out of an untrusted settings blob, sanitized to
- * the same caps the extension uses, so Wrapped categorizes exactly like the dashboard. */
+ * the same caps the extension uses, so Wrapped categorizes exactly like the dashboard.
+ * Overrides/rules may point at a built-in OR at one of the (sanitized) custom
+ * category names — anything else is dropped. */
 export function sanitizeCategoryConfig(raw: unknown): {
-  overrides: Record<string, Category>;
+  overrides: Record<string, CategoryId>;
   rules: CategoryRule[];
+  customCategories: CustomCategory[];
 } {
-  const overrides: Record<string, Category> = {};
+  const overrides: Record<string, CategoryId> = {};
   const rules: CategoryRule[] = [];
-  if (!raw || typeof raw !== 'object') return { overrides, rules };
+  if (!raw || typeof raw !== 'object') return { overrides, rules, customCategories: [] };
   const r = raw as Record<string, unknown>;
+
+  const customCategories = sanitizeCustomCategories(r.customCategories);
+  const customNames = new Set(customCategories.map((c) => c.name));
+  const isValidCategory = (v: unknown): v is CategoryId =>
+    typeof v === 'string' && (isCategory(v) || customNames.has(v));
 
   if (r.categoryOverrides && typeof r.categoryOverrides === 'object') {
     let count = 0;
     for (const [domain, value] of Object.entries(r.categoryOverrides as Record<string, unknown>)) {
-      if (typeof domain === 'string' && domain && domain.length <= MAX_DOMAIN_LEN && isCategory(value)) {
+      if (typeof domain === 'string' && domain && domain.length <= MAX_DOMAIN_LEN && isValidCategory(value)) {
         overrides[domain] = value;
         if (++count >= MAX_OVERRIDES) break;
       }
@@ -126,7 +164,7 @@ export function sanitizeCategoryConfig(raw: unknown): {
     for (const item of r.categoryRules) {
       if (!item || typeof item !== 'object') continue;
       const { pattern, category } = item as Record<string, unknown>;
-      if (typeof pattern !== 'string' || !isCategory(category)) continue;
+      if (typeof pattern !== 'string' || !isValidCategory(category)) continue;
       const trimmed = pattern.trim().toLowerCase().slice(0, MAX_PATTERN_LEN);
       if (!trimmed || seen.has(trimmed)) continue;
       seen.add(trimmed);
@@ -134,5 +172,5 @@ export function sanitizeCategoryConfig(raw: unknown): {
       if (rules.length >= MAX_RULES) break;
     }
   }
-  return { overrides, rules };
+  return { overrides, rules, customCategories };
 }

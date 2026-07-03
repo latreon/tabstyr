@@ -70,7 +70,7 @@
   },
   "hero": {
     "todayActive": "Aujourd'hui · actif",
-    "vsWeeklyAvg": "{pct}% vs moyenne hebdo",
+    "vsDailyAvg": "{pct}% vs moyenne quotidienne",
     "up": "En hausse",
     "down": "En baisse",
     "backgroundAudio": "♪ +{time} audio en arrière-plan",
@@ -356,19 +356,5 @@
     "busiestDay": "{weekday} est votre jour le plus actif",
     "focusHit": "Concentration {pct}% aujourd'hui — au-dessus de votre objectif de {target}%",
     "focusUnder": "Concentration {pct}% aujourd'hui — objectif {target}%"
-  },
-  "projects": {
-    "title": "Projets et clients",
-    "hint": "Étiquetez un site avec un projet ou un client, puis exportez le temps par étiquette en facture ou CSV.",
-    "tagPlaceholder": "Ajouter une étiquette…",
-    "tagForAria": "Étiquette projet/client pour {domain}",
-    "untagged": "Sans étiquette",
-    "invoice": "Facture",
-    "invoiceHeading": "Rapport de temps",
-    "billable": "Total facturable",
-    "share": "Répartition",
-    "byClient": "Par client",
-    "empty": "Aucune activité sur cette période.",
-    "days": "{count} jour | {count} jours"
   }
 }

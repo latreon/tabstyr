@@ -70,7 +70,7 @@
   },
   "hero": {
     "todayActive": "Today · active",
-    "vsWeeklyAvg": "{pct}% vs weekly avg",
+    "vsDailyAvg": "{pct}% vs daily average",
     "up": "Up",
     "down": "Down",
     "backgroundAudio": "♪ +{time} background audio",
@@ -356,19 +356,5 @@
     "busiestDay": "{weekday} is your busiest day",
     "focusHit": "Focus {pct}% today — above your {target}% goal",
     "focusUnder": "Focus {pct}% today — goal is {target}%"
-  },
-  "projects": {
-    "title": "Projects & clients",
-    "hint": "Tag any site with a project or client, then export time per tag as an invoice or CSV.",
-    "tagPlaceholder": "Add tag…",
-    "tagForAria": "Project/client tag for {domain}",
-    "untagged": "Untagged",
-    "invoice": "Invoice",
-    "invoiceHeading": "Time report",
-    "billable": "Billable total",
-    "share": "Share",
-    "byClient": "By client",
-    "empty": "No activity in this range.",
-    "days": "{count} day | {count} days"
   }
 }

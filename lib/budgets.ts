@@ -1,4 +1,4 @@
-import { CATEGORIES, type Category, type CategoryId, type CategorySlice } from './categories';
+import { CATEGORIES, isCategory, type CategoryId, type CategorySlice } from './categories';
 
 // Per-category daily time budgets — pure helpers shared by the dashboard (progress
 // + "over" markers) and the background nudge. Analytics only: nothing here blocks a
@@ -22,16 +22,18 @@ export function budgetProgress(
 }
 
 /**
- * Categories whose today active time has reached or passed their budget. Returned in
- * the canonical CATEGORIES order so the result is stable across calls.
+ * Categories whose today active time has reached or passed their budget. Built-ins
+ * come first in the canonical CATEGORIES order, then any custom-category budgets in
+ * their stored key order, so the result is stable across calls.
  */
 export function exceededBudgets(
   slices: CategorySlice[],
-  budgets: Partial<Record<Category, number>>,
-): Category[] {
+  budgets: Partial<Record<CategoryId, number>>,
+): CategoryId[] {
   const byCat = new Map<CategoryId, CategorySlice>(slices.map((s) => [s.category, s]));
-  const out: Category[] = [];
-  for (const c of CATEGORIES) {
+  const keys: CategoryId[] = [...CATEGORIES, ...Object.keys(budgets).filter((k) => !isCategory(k))];
+  const out: CategoryId[] = [];
+  for (const c of keys) {
     const budget = budgets[c];
     if (!budget || budget <= 0) continue;
     const active = activeCategorySeconds(byCat.get(c) ?? { seconds: 0, audioSeconds: 0 });
@@ -46,6 +48,6 @@ export function exceededBudgets(
  * the stale-tab throttle — we deliberately do NOT dedupe against yesterday's
  * categories: crossing a budget again on a new day is a fresh, notify-worthy event.
  */
-export function shouldNotifyBudget(exceeded: Category[], lastNotifiedDate: string, today: string): boolean {
+export function shouldNotifyBudget(exceeded: CategoryId[], lastNotifiedDate: string, today: string): boolean {
   return lastNotifiedDate !== today && exceeded.length > 0;
 }

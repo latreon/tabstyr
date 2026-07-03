@@ -17,8 +17,6 @@ const MAX_RULES = 100;
 const MAX_PATTERN_LEN = 100;
 const MAX_OVERRIDES = 5_000;
 const MAX_DOMAIN_LEN = 253;
-const MAX_TAGS = 5_000;
-const MAX_TAG_LEN = 60;
 const MAX_CUSTOM_CATEGORIES = 20;
 const MAX_CAT_NAME_LEN = 24;
 const HEX_COLOR = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
@@ -36,7 +34,6 @@ export const DEFAULT_SETTINGS: Settings = {
   categoryProductivity: { ...CATEGORY_PRODUCTIVITY },
   focusTarget: 50,
   categoryBudgets: {},
-  domainTags: {},
   onboarded: false,
   notificationsEnabled: true,
   language: 'auto',
@@ -128,36 +125,23 @@ function sanitizeProductivity(raw: unknown): Record<Category, Productivity> {
   return out;
 }
 
-// Per-category daily budgets in minutes. Keep only known categories with a
-// positive, sane integer minute value (≤ 24h); drop everything else so a crafted
-// value can't inject junk keys or absurd numbers.
+// Per-category daily budgets in minutes. Keep only known categories (built-in or
+// sanitized custom name) with a positive, sane integer minute value (≤ 24h); drop
+// everything else so a crafted value can't inject junk keys or absurd numbers.
+// Because validity is checked against the already-sanitized custom list, deleting
+// a custom category automatically drops its budget on the next save/read.
 const MAX_BUDGET_MINUTES = 24 * 60;
-function sanitizeBudgets(raw: unknown): Partial<Record<Category, number>> {
+function sanitizeBudgets(
+  raw: unknown,
+  isValid: (v: unknown) => v is CategoryId,
+): Partial<Record<CategoryId, number>> {
   if (!raw || typeof raw !== 'object') return {};
-  const r = raw as Record<string, unknown>;
-  const out: Partial<Record<Category, number>> = {};
-  for (const c of CATEGORIES) {
-    const v = r[c];
+  const out: Partial<Record<CategoryId, number>> = {};
+  for (const [key, v] of Object.entries(raw as Record<string, unknown>)) {
+    if (!isValid(key)) continue;
     if (typeof v === 'number' && Number.isFinite(v) && v > 0) {
-      out[c] = clamp(Math.round(v), 1, MAX_BUDGET_MINUTES);
+      out[key] = clamp(Math.round(v), 1, MAX_BUDGET_MINUTES);
     }
-  }
-  return out;
-}
-
-// domain → project/client tag. Trim + length-cap the tag, cap the domain and the
-// total entry count so a crafted file can't bloat storage. Empty tags are dropped.
-function sanitizeDomainTags(raw: unknown): Record<string, string> {
-  if (!raw || typeof raw !== 'object') return {};
-  const out: Record<string, string> = {};
-  let count = 0;
-  for (const [domain, value] of Object.entries(raw as Record<string, unknown>)) {
-    if (typeof domain !== 'string' || !domain || domain.length > MAX_DOMAIN_LEN) continue;
-    if (typeof value !== 'string') continue;
-    const tag = value.trim().slice(0, MAX_TAG_LEN);
-    if (!tag) continue;
-    out[domain] = tag;
-    if (++count >= MAX_TAGS) break;
   }
   return out;
 }
@@ -180,8 +164,7 @@ function coerce(raw: unknown): Partial<Settings> {
     // Always a full, valid mapping (missing/invalid entries fall back to default).
     categoryProductivity: sanitizeProductivity(r.categoryProductivity),
     ...(typeof r.focusTarget === 'number' && { focusTarget: clamp(Math.round(r.focusTarget), 10, 90) }),
-    categoryBudgets: sanitizeBudgets(r.categoryBudgets),
-    domainTags: sanitizeDomainTags(r.domainTags),
+    categoryBudgets: sanitizeBudgets(r.categoryBudgets, isValid),
     ...(typeof r.onboarded === 'boolean' && { onboarded: r.onboarded }),
     ...(typeof r.notificationsEnabled === 'boolean' && { notificationsEnabled: r.notificationsEnabled }),
     ...(typeof r.language === 'string' && { language: r.language.slice(0, 20) }),

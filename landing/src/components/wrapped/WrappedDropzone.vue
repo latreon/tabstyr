@@ -4,10 +4,11 @@ import { useI18n } from '@/i18n';
 import { parseBackup, sanitizeCategoryConfig, MAX_BACKUP_BYTES } from '@/lib/parse-backup';
 import { isEncryptedEnvelope, decryptFromEnvelope } from '@ext/crypto';
 import { buildWrapped, type WrappedData } from '@ext/wrapped';
+import type { CustomCategory } from '@ext/categories';
 import RingLogo from '@/components/RingLogo.vue';
 import WrappedIcon from './WrappedIcon.vue';
 
-const emit = defineEmits<{ (e: 'loaded', data: WrappedData): void }>();
+const emit = defineEmits<{ (e: 'loaded', data: WrappedData, custom: CustomCategory[]): void }>();
 const { t } = useI18n();
 
 const dragging = ref(false);
@@ -31,15 +32,15 @@ function finishFromText(text: string): void {
     busy.value = false;
     return;
   }
-  const { overrides, rules } = sanitizeCategoryConfig(parsed.settings);
-  const data = buildWrapped({ dailyStats: parsed.dailyStats, sessions: parsed.sessions, overrides, rules });
+  const { overrides, rules, customCategories } = sanitizeCategoryConfig(parsed.settings);
+  const data = buildWrapped({ dailyStats: parsed.dailyStats, sessions: parsed.sessions, overrides, rules, customCategories });
   if (!data) {
     fail('wrapped.error.empty');
     return;
   }
   error.value = '';
   busy.value = false;
-  emit('loaded', data);
+  emit('loaded', data, customCategories);
 }
 
 async function readFile(file: File): Promise<void> {

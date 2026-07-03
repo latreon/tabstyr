@@ -5,13 +5,13 @@ import { dayLabel, longDateLabel, formatDuration } from '@ext/time';
 import { getDateLocale } from '@ext/locale';
 import { PERSONA_ICON, ICONS } from '@ext/wrapped-icons';
 import { PERSONA_META } from '@ext/wrapped-persona';
-import { CATEGORY_META } from '@ext/categories';
+import { categoryColor, categoryLabel, type CustomCategory } from '@ext/categories';
 import { renderWrappedCard, canvasToImageBlob, type WrappedCardContent } from '@ext/wrapped-card';
 import type { WrappedData } from '@ext/wrapped';
 import { faviconUrl } from '@/lib/favicon';
 import WrappedIcon from './WrappedIcon.vue';
 
-const props = defineProps<{ data: WrappedData }>();
+const props = defineProps<{ data: WrappedData; custom?: CustomCategory[] }>();
 const { t } = useI18n();
 
 const canvas = ref<HTMLCanvasElement | null>(null);
@@ -58,11 +58,11 @@ const content = computed<WrappedCardContent>(() => {
       value: `${d.topSite.label} · ${formatDuration(d.topSite.seconds)}`,
       chip: {
         initial: d.topSite.label.replace(/^www\./, '').charAt(0).toUpperCase() || '?',
-        color: CATEGORY_META[d.topSite.category].color,
+        color: categoryColor(d.topSite.category, props.custom),
         image: siteIcon.value,
       },
     });
-  if (d.topCategory) rows.push({ label: t('wrapped.card.topCategory'), value: `${t('categories.' + d.topCategory.category)} · ${d.topCategory.pct}%` });
+  if (d.topCategory) rows.push({ label: t('wrapped.card.topCategory'), value: `${categoryLabel(d.topCategory.category, t)} · ${d.topCategory.pct}%` });
   rows.push({ label: t('wrapped.card.focus'), value: `${d.focusPct}%` });
   rows.push({ label: peakLabel.value ? t('wrapped.card.peak') : t('wrapped.card.days'), value: peakLabel.value || String(d.daysCovered) });
 
@@ -220,7 +220,7 @@ const cardAria = computed(() => {
     `${t('wrapped.card.totalCaption')}: ${formatDuration(d.totalSeconds)}`,
   ];
   if (d.topSite) parts.push(`${t('wrapped.card.topSite')}: ${d.topSite.label} ${formatDuration(d.topSite.seconds)}`);
-  if (d.topCategory) parts.push(`${t('wrapped.card.topCategory')}: ${t('categories.' + d.topCategory.category)} ${d.topCategory.pct}%`);
+  if (d.topCategory) parts.push(`${t('wrapped.card.topCategory')}: ${categoryLabel(d.topCategory.category, t)} ${d.topCategory.pct}%`);
   parts.push(`${t('wrapped.card.focus')}: ${d.focusPct}%`);
   return parts.join('. ');
 });

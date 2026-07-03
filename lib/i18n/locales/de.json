@@ -70,7 +70,7 @@
   },
   "hero": {
     "todayActive": "Heute · aktiv",
-    "vsWeeklyAvg": "{pct}% vs. Wochendurchschnitt",
+    "vsDailyAvg": "{pct}% vs. Tagesdurchschnitt",
     "up": "Hoch",
     "down": "Runter",
     "backgroundAudio": "♪ +{time} Hintergrund-Audio",
@@ -356,19 +356,5 @@
     "busiestDay": "{weekday} ist dein aktivster Tag",
     "focusHit": "Fokus heute {pct}% — über deinem Ziel von {target}%",
     "focusUnder": "Fokus heute {pct}% — Ziel {target}%"
-  },
-  "projects": {
-    "title": "Projekte & Kunden",
-    "hint": "Weise jeder Website ein Projekt oder einen Kunden zu und exportiere die Zeit pro Tag als Rechnung oder CSV.",
-    "tagPlaceholder": "Tag hinzufügen…",
-    "tagForAria": "Projekt-/Kunden-Tag für {domain}",
-    "untagged": "Ohne Tag",
-    "invoice": "Rechnung",
-    "invoiceHeading": "Zeitbericht",
-    "billable": "Abrechenbar gesamt",
-    "share": "Anteil",
-    "byClient": "Nach Kunde",
-    "empty": "Keine Aktivität in diesem Zeitraum.",
-    "days": "{count} Tag | {count} Tage"
   }
 }

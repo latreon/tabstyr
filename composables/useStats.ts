@@ -14,6 +14,8 @@ import { buildInsights, type Insight } from '@/lib/insights';
 import type { DailyStat, Session, Settings, TabMeta } from '@/lib/types';
 
 const RETENTION_MS = 90 * 86_400_000;
+// Rolling window shown in the hourly heatmap: today + the 6 prior days.
+const HEATMAP_DAYS = 7;
 
 export interface TabRow {
   tabId: number; // a representative open tab of this domain, for click-to-focus
@@ -110,10 +112,9 @@ export function useStats() {
     () => settings.value?.categoryProductivity ?? CATEGORY_PRODUCTIVITY,
   );
   const focusTarget = computed(() => settings.value?.focusTarget ?? 50);
-  const categoryBudgets = computed<Partial<Record<Category, number>>>(
+  const categoryBudgets = computed<Partial<Record<CategoryId, number>>>(
     () => settings.value?.categoryBudgets ?? {},
   );
-  const domainTags = computed<Record<string, string>>(() => settings.value?.domainTags ?? {});
   // Show the first-run intro only once settings have loaded and it isn't dismissed.
   const showOnboarding = computed(() => !!settings.value && !settings.value.onboarded);
 
@@ -192,33 +193,29 @@ export function useStats() {
     settings.value = await saveSettings({ categoryOverrides: { ...overrides.value, [domain]: category } });
   }
 
-  // Add a user-defined category. saveSettings sanitizes (dedupes, validates hex +
-  // name), so a bad/duplicate entry is silently dropped rather than persisted.
-  async function addCustomCategory(name: string, color: string, productivity: Productivity): Promise<void> {
-    const next = [...customCategories.value, { name: name.trim(), color, productivity }];
-    settings.value = await saveSettings({ customCategories: next });
-  }
-
-  // Remove a custom category. Overrides/rules that referenced it become invalid and
-  // are dropped by the settings sanitizer on save, so no dangling references remain.
-  async function removeCustomCategory(name: string): Promise<void> {
-    settings.value = await saveSettings({
-      customCategories: customCategories.value.filter((c) => c.name !== name),
-    });
-  }
-
   async function setCategoryProductivity(category: Category, value: Productivity): Promise<void> {
     settings.value = await saveSettings({
       categoryProductivity: { ...categoryProductivity.value, [category]: value },
     });
   }
 
-  // Assign (or clear, with an empty/blank tag) a domain's project/client tag.
-  async function setDomainTag(domain: string, tag: string): Promise<void> {
-    const next = { ...domainTags.value };
-    if (tag.trim()) next[domain] = tag.trim();
-    else delete next[domain];
-    settings.value = await saveSettings({ domainTags: next });
+  // Reclassify a custom category's productivity. Custom categories carry their own
+  // productivity (unlike built-ins, which read the shared mapping), so this rewrites
+  // the matching entry in the customCategories array.
+  async function setCustomProductivity(name: CategoryId, value: Productivity): Promise<void> {
+    const next = customCategories.value.map((c) => (c.name === name ? { ...c, productivity: value } : c));
+    settings.value = await saveSettings({ customCategories: next });
+  }
+
+  // Set/clear a category's daily budget (minutes). null/0 removes it. Unlike the
+  // productivity mapping (dashboard-only), budgets drive the background nudge, so
+  // broadcast settings-changed to invalidate the background's settings cache.
+  async function setCategoryBudget(category: CategoryId, minutes: number | null): Promise<void> {
+    const next = { ...categoryBudgets.value };
+    if (minutes && minutes > 0) next[category] = minutes;
+    else delete next[category];
+    settings.value = await saveSettings({ categoryBudgets: next });
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
   }
 
   async function addCategoryRule(pattern: string, category: CategoryId): Promise<void> {
@@ -332,7 +329,20 @@ export function useStats() {
       // match the active-time metric everywhere else.
       const foreground = loadedSessions.filter((sx) => !sx.audio && isWebDomain(sx.domain));
       recentSessions.value = foreground;
-      heatmap.value = buildHourlyHeatmap(foreground);
+      // Heatmap covers a ROLLING last-7-days window ending right now: from midnight
+      // of (today − 6 days) to the present moment. That's 7 distinct weekdays, so
+      // each maps to exactly one grid row — no piling every past Friday into "Friday"
+      // (which made today's row look like a full day when it's only reached ~noon).
+      // Sessions straddling the window start are clipped so only the in-window slice
+      // counts; today's row naturally stops at the current hour.
+      const windowStart = new Date();
+      windowStart.setHours(0, 0, 0, 0);
+      windowStart.setDate(windowStart.getDate() - (HEATMAP_DAYS - 1));
+      const startMs = windowStart.getTime();
+      const windowed = foreground
+        .filter((sx) => sx.end > startMs)
+        .map((sx) => (sx.start < startMs ? { ...sx, start: startMs } : sx));
+      heatmap.value = buildHourlyHeatmap(windowed);
     } catch (e) {
       if (token === loadToken) console.error('[dashboard] session/heatmap load failed', e);
     }
@@ -364,7 +374,7 @@ export function useStats() {
     stats, activeStats, tabRows, staleTabs, staleTabItems, openTabsList, openTabCount, settings, heatmap, recentSessions,
     loading, loadError, storageWarning, todayKey,
     todaySeconds, todayAudioSeconds, weeklyAvgSeconds, weeklyActiveDays,
-    todayByDomain, todayByCategory, productivity, insights, overrides, categoryRules, customCategories, categoryProductivity, focusTarget, categoryBudgets, domainTags, showOnboarding,
-    load, closeTab, closeTabs, snoozeTab, setCategoryOverride, setCategoryProductivity, setDomainTag, addCategoryRule, removeCategoryRule, addCustomCategory, removeCustomCategory, dismissOnboarding,
+    todayByDomain, todayByCategory, productivity, insights, overrides, categoryRules, customCategories, categoryProductivity, focusTarget, categoryBudgets, showOnboarding,
+    load, closeTab, closeTabs, snoozeTab, setCategoryOverride, setCategoryProductivity, setCustomProductivity, setCategoryBudget, addCategoryRule, removeCategoryRule, dismissOnboarding,
   };
 }

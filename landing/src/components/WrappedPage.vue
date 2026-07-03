@@ -6,10 +6,18 @@ import LangSwitch from './LangSwitch.vue';
 import WrappedDropzone from './wrapped/WrappedDropzone.vue';
 import WrappedStory from './wrapped/WrappedStory.vue';
 import type { WrappedData } from '@ext/wrapped';
+import type { CustomCategory } from '@ext/categories';
 
 const { t } = useI18n();
 const home = computed(() => localizedPath(locale.value, ''));
 const data = ref<WrappedData | null>(null);
+// The backup's (sanitized) custom categories — needed to resolve their colors/labels.
+const custom = ref<CustomCategory[]>([]);
+
+function onLoaded(d: WrappedData, c: CustomCategory[]): void {
+  custom.value = c;
+  data.value = d;
+}
 </script>
 
 <template>
@@ -27,8 +35,8 @@ const data = ref<WrappedData | null>(null);
     </header>
 
     <main class="container body">
-      <WrappedDropzone v-if="!data" @loaded="data = $event" />
-      <WrappedStory v-else :data="data" @restart="data = null" />
+      <WrappedDropzone v-if="!data" @loaded="onLoaded" />
+      <WrappedStory v-else :data="data" :custom="custom" @restart="data = null" />
     </main>
   </div>
 </template>

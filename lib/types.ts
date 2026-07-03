@@ -81,17 +81,12 @@ export interface Settings {
   /** Daily Focus-% goal (0–100). The streak counts days meeting this target. */
   focusTarget: number;
   /**
-   * Optional per-category daily time budgets, in MINUTES. A category present here
-   * with a positive value nudges (once/day) when today's active time crosses it.
+   * Optional per-category daily time budgets, in MINUTES, keyed by category value
+   * (built-in name or custom category name). A category present here with a
+   * positive value nudges (once/day) when today's active time crosses it.
    * Absent/zero = no budget. Analytics-only — never blocks a site.
    */
-  categoryBudgets: Partial<Record<import('./categories').Category, number>>;
-  /**
-   * Maps a domain → a free-form project/client tag, an axis independent of category.
-   * Powers the Projects view and invoice/report exports (time-per-client). Absent
-   * domains are "untagged".
-   */
-  domainTags: Record<string, string>;
+  categoryBudgets: Partial<Record<import('./categories').CategoryId, number>>;
   /** Whether the first-run onboarding intro has been dismissed. */
   onboarded: boolean;
   /** Whether the once-a-day stale-tab reminder notification is shown. */
