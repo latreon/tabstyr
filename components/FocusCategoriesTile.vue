@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { CATEGORIES, CATEGORY_META, PRODUCTIVITY, type Category, type Productivity } from '@/lib/categories';
+import { CATEGORIES, CATEGORY_META, PRODUCTIVITY, categoryLabel, type Category, type CategoryId, type CustomCategory, type Productivity } from '@/lib/categories';
 import SelectBox from '@/components/ui/SelectBox.vue';
 
-const props = defineProps<{ productivity: Record<Category, Productivity> }>();
-const emit = defineEmits<{ set: [category: Category, value: Productivity] }>();
+defineProps<{
+  productivity: Record<Category, Productivity>;
+  custom?: CustomCategory[];
+}>();
+const emit = defineEmits<{
+  set: [category: Category, value: Productivity];
+  setCustom: [name: CategoryId, value: Productivity];
+}>();
 const { t } = useI18n();
 
 const OPTIONS = computed(() => PRODUCTIVITY.map((p) => ({ value: p, label: t(`productivity.${p}`) })));
@@ -21,12 +27,30 @@ const OPTIONS = computed(() => PRODUCTIVITY.map((p) => ({ value: p, label: t(`pr
           <span class="cat-dot" :style="{ background: CATEGORY_META[c].color }" aria-hidden="true" />
           {{ t(`categories.${c}`) }}
         </span>
-        <SelectBox
-          :model-value="productivity[c]"
-          :options="OPTIONS"
-          :label="t('settings.productivityForAria', { category: t(`categories.${c}`) })"
-          @update:model-value="emit('set', c, $event as Productivity)"
-        />
+        <span class="prod-controls">
+          <SelectBox
+            :model-value="productivity[c]"
+            :options="OPTIONS"
+            :label="t('settings.productivityForAria', { category: t(`categories.${c}`) })"
+            @update:model-value="emit('set', c, $event as Productivity)"
+          />
+        </span>
+      </li>
+      <!-- Custom categories carry their own productivity — reclassify it here, the
+           same way built-ins are remapped above. -->
+      <li v-for="c in custom ?? []" :key="c.name" class="prod-row">
+        <span class="prod-cat">
+          <span class="cat-dot" :style="{ background: c.color }" aria-hidden="true" />
+          {{ categoryLabel(c.name, t) }}
+        </span>
+        <span class="prod-controls">
+          <SelectBox
+            :model-value="c.productivity"
+            :options="OPTIONS"
+            :label="t('settings.productivityForAria', { category: c.name })"
+            @update:model-value="emit('setCustom', c.name, $event as Productivity)"
+          />
+        </span>
       </li>
     </ul>
   </div>
@@ -67,4 +91,10 @@ const OPTIONS = computed(() => PRODUCTIVITY.map((p) => ({ value: p, label: t(`pr
   color: var(--text-2);
 }
 .cat-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.prod-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: none;
+}
 </style>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { WEEK_ORDER, peakHour, type HeatmapData } from '@/lib/heatmap';
+import { rollingWeekOrder, peakHour, type HeatmapData } from '@/lib/heatmap';
 import { formatDuration } from '@/lib/time';
 import { getDateLocale } from '@/lib/locale';
 
@@ -10,6 +10,11 @@ const { t, locale } = useI18n();
 
 const HOURS = Array.from({ length: 24 }, (_, h) => h);
 const pad = (n: number) => String(n).padStart(2, '0');
+
+// Rows run as a rolling last-7-days window ending today (today in the bottom row),
+// so the grid reads as "the past week" rather than a fixed Mon→Sun calendar. Frozen
+// at mount — a dashboard left open past midnight keeps a stable order until reload.
+const WEEK_ORDER = rollingWeekOrder(new Date().getDay());
 
 // Localized short weekday names indexed by getDay() (0 = Sunday). 2023-01-01 was
 // a Sunday; referencing locale.value keeps this reactive to a language switch.

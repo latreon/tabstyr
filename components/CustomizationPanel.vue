@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
+import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { browser } from 'wxt/browser';
 import { getSettings, saveSettings } from '@/lib/settings';
@@ -17,6 +17,15 @@ import ColorPicker from '@/components/ui/ColorPicker.vue';
 
 const { t } = useI18n();
 const emit = defineEmits<{ changed: [] }>();
+
+// Reactive settings from the parent (useStats). Edits made elsewhere on the same
+// page — e.g. reclassifying a custom category's productivity in Focus categories —
+// update these props, and Chrome doesn't deliver runtime 'settings-changed' to the
+// sender's own page, so we mirror the props into the local refs to stay live.
+const props = defineProps<{
+  custom?: CustomCategory[];
+  categoryRules?: CategoryRule[];
+}>();
 
 // Semantic tint per productivity bucket — same palette the rest of the app
 // (streaks, focus %) already uses for productive/distracting, so a category's
@@ -67,6 +76,10 @@ async function refresh() {
 function onSettingsChanged(msg: unknown) {
   if ((msg as { type?: string } | undefined)?.type === 'settings-changed') void refresh();
 }
+
+// Mirror parent props into the local lists whenever they change (same-page sync).
+watch(() => props.custom, (v) => { if (v) customCategories.value = v; }, { immediate: true });
+watch(() => props.categoryRules, (v) => { if (v) rules.value = v; }, { immediate: true });
 
 onMounted(() => {
   void refresh();

@@ -1,6 +1,15 @@
 /** Display order: Monday first, weekend last. Maps row → getDay() index. */
 export const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0] as const;
 
+/**
+ * Row order for a rolling last-7-days view ending on `todayDow` (a getDay() index,
+ * 0 = Sunday) — oldest day first, so today lands in the last row. E.g. on a Friday
+ * (5) this yields Sat, Sun, Mon, Tue, Wed, Thu, Fri, which reads as "the last week".
+ */
+export function rollingWeekOrder(todayDow: number): number[] {
+  return Array.from({ length: 7 }, (_, i) => (todayDow - 6 + i + 7) % 7);
+}
+
 export interface HeatmapData {
   /** grid[getDay()][hour] = seconds. 7 rows × 24 cols. */
   grid: number[][];

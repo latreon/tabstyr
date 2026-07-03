@@ -349,15 +349,16 @@ onUnmounted(() => {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  /* One shared grid for all rows (rows use display:contents) so every column has
+     the SAME width down the list — otherwise a per-row grid sizes the auto time
+     column to each row's own text, and the bar tracks end at ragged x positions. */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(60px, 90px) max-content;
+  align-items: center;
+  gap: 6px 10px;
 }
 .page-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(60px, 90px) auto;
-  align-items: center;
-  gap: 10px;
+  display: contents;
 }
 .page-path {
   font-size: var(--text-sm);

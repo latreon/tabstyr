@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { formatDuration } from '@/lib/time';
 import { buildTrend } from '@/lib/trend';
@@ -14,32 +14,6 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
-
-// Count the headline up from 0 on load (and on data change) — a small, one-shot
-// delight. Skipped entirely under prefers-reduced-motion, where it snaps to value.
-const displaySeconds = ref(0);
-let raf = 0;
-function animateTo(target: number): void {
-  cancelAnimationFrame(raf);
-  const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  if (reduce || target <= 0) {
-    displaySeconds.value = target;
-    return;
-  }
-  const from = displaySeconds.value;
-  const start = performance.now();
-  const dur = 650;
-  const ease = (x: number) => 1 - Math.pow(1 - x, 3);
-  const step = (now: number) => {
-    const p = Math.min(1, (now - start) / dur);
-    displaySeconds.value = Math.round(from + (target - from) * ease(p));
-    if (p < 1) raf = requestAnimationFrame(step);
-  };
-  raf = requestAnimationFrame(step);
-}
-onMounted(() => animateTo(props.todaySeconds));
-watch(() => props.todaySeconds, (v) => animateTo(v));
-onBeforeUnmount(() => cancelAnimationFrame(raf));
 
 // On a brand-new install (or any day with zero tracked time) the sparkline is a
 // dead-flat line and the "0s" reads as broken. Swap in a one-line hint instead.
@@ -67,12 +41,12 @@ const sparkArea = computed(() => {
 <template>
   <div class="tile hero-tile">
     <h2 class="label">{{ t('hero.todayActive') }}</h2>
-    <span class="hero-value gradient-text">{{ formatDuration(displaySeconds) }}</span>
+    <span class="hero-value gradient-text">{{ formatDuration(todaySeconds) }}</span>
     <template v-if="hasActivity">
       <span v-if="deltaPct !== null" class="hero-delta" :class="deltaPct > 0 ? 'up' : 'down'">
         <span aria-hidden="true">{{ deltaPct > 0 ? '↑' : '↓' }}</span>
         <span class="sr-only">{{ deltaPct > 0 ? t('hero.up') : t('hero.down') }}</span>
-        {{ t('hero.vsWeeklyAvg', { pct: Math.abs(deltaPct) }) }}
+        {{ t('hero.vsDailyAvg', { pct: Math.abs(deltaPct) }) }}
       </span>
       <span v-if="todayAudioSeconds > 0" class="hero-audio">{{ t('hero.backgroundAudio', { time: formatDuration(todayAudioSeconds) }) }}</span>
       <svg viewBox="0 0 100 30" preserveAspectRatio="none" class="spark" aria-hidden="true">

@@ -191,6 +191,7 @@ const hideTip = () => (tooltip.value = null);
   display: flex;
   align-items: flex-end;
   gap: 4px;
+  padding: 0 10px; /* breathing room so end bars don't touch the plot edges */
 }
 .bar-col {
   flex: 1;
@@ -264,7 +265,10 @@ const hideTip = () => (tooltip.value = null);
   display: flex;
   gap: 4px;
   margin-top: 6px;
-  padding-left: 46px;
+  /* 46px = y-axis (38) + chart gap (8); +10px each side matches the bars' padding
+     so labels stay centred under their bars. */
+  padding-left: 56px;
+  padding-right: 10px;
 }
 .x-label {
   flex: 1;
