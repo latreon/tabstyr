@@ -6,7 +6,12 @@
 export { canvasToImageBlob } from './wrapped-card';
 
 export const REPORT_WIDTH = 1000;
-export const REPORT_HEIGHT = 1414; // ~A4 portrait ratio
+// Content is drawn top-anchored; a full 18-row list ends ~1404px, leaving the
+// old 1414 canvas with almost no room underneath. Add a bottom margin (matching
+// the side MARGIN) so a full report always has comfortable breathing room below
+// the last row. Extra height on a sparse report is just more bottom padding.
+const REPORT_BOTTOM_PAD = 72;
+export const REPORT_HEIGHT = 1414 + REPORT_BOTTOM_PAD; // ≈ A4 portrait + bottom padding
 
 export interface ReportCardCategory {
   label: string;
