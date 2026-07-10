@@ -114,6 +114,26 @@ describe('TrackerEngine.handleUrlChange', () => {
   });
 });
 
+describe('TrackerEngine idle + media', () => {
+  test('keeps counting a focused media tab through idle, then closes it once media stops', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://youtube.com/v', T0, true); // watching a video
+    // User goes idle while the video plays — session stays open.
+    expect(e.handleIdle(T0 + 60_000)).toEqual([]);
+    expect(e.getState().focused).not.toBeNull();
+    // A heartbeat while still watching still accrues time.
+    expect(e.checkpoint(T0 + 120_000)).toHaveLength(1);
+    // Video ends: the heartbeat marks the focused tab silent, then checkpoints.
+    e.setFocusedAudible(false);
+    const closed = e.checkpoint(T0 + 180_000);
+    // The tail since the last checkpoint is booked once, then the session closes —
+    // no further slices accrue while the user stays idle (no phantom time).
+    expect(closed).toHaveLength(1);
+    expect(e.getState().focused).toBeNull();
+    expect(e.checkpoint(T0 + 600_000)).toEqual([]);
+  });
+});
+
 describe('TrackerEngine.handleTabRemoved', () => {
   test('closes focused and audio sessions for the removed tab', () => {
     const e = new TrackerEngine();
