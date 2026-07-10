@@ -43,8 +43,11 @@ export const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mvzjggkv';
 
 // Cloudflare Web Analytics beacon token (cookieless, no PII). Create a free site
 // at https://www.cloudflare.com/web-analytics/ for the deployed URL and paste the
-// token. Leave '' to ship with zero analytics — the beacon only loads when set.
-export const CF_ANALYTICS_TOKEN = '98d31c2e37914d69ac3870a84b965aa9';
+// token. Left '' so the site ships with zero analytics — this honors the site's
+// "no analytics, no third-party scripts" promise: the beacon (main.ts) only loads
+// when this is set. If you re-enable it, prefer reading it from a gitignored env
+// var (like the Polar/hCaptcha values) rather than committing the token to source.
+export const CF_ANALYTICS_TOKEN = '';
 
 // hCaptcha sitekey (public) for the idea form's spam protection. Read from env
 // (VITE_HCAPTCHA_SITEKEY in landing/.env). Empty = no captcha rendered, and the
