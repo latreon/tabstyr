@@ -36,6 +36,17 @@ describe('mergeSessions', () => {
     expect(sessionKey(session({}))).not.toBe(sessionKey(session({ audio: true })));
     expect(mergeSessions([session({})], [session({ audio: true })])).toHaveLength(2);
   });
+
+  test('strips the surrogate id so colliding cross-device ids do not abort restoreAll', () => {
+    // Two devices both number sessions from 1 → the union holds distinct sessions
+    // sharing id:1. restoreAll re-adds with add(); a duplicate key would throw
+    // ConstraintError and abort the whole merge. Merged output must carry no id.
+    const local = [{ ...session({ domain: 'a.com' }), id: 1 } as Session & { id: number }];
+    const incoming = [{ ...session({ domain: 'b.com', start: T0 + 300_000, end: T0 + 360_000 }), id: 1 } as Session & { id: number }];
+    const merged = mergeSessions(local, incoming);
+    expect(merged).toHaveLength(2);
+    expect(merged.every((s) => !('id' in s))).toBe(true);
+  });
 });
 
 describe('maxMonthly', () => {
