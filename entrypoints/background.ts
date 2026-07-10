@@ -5,6 +5,7 @@ import { findStale, rematchTabMeta, shouldNotify } from '@/lib/tracker/stale';
 import { staleNotification, storageFullNotification, budgetNotification } from '@/lib/i18n/notify';
 import { getSettings, invalidateSettings } from '@/lib/settings';
 import { groupByCategory } from '@/lib/categories';
+import { activeSeconds } from '@/lib/metrics';
 import { exceededBudgets, shouldNotifyBudget } from '@/lib/budgets';
 import * as repo from '@/lib/db/repo';
 import { isQuotaError } from '@/lib/db/errors';
@@ -132,12 +133,19 @@ export default defineBackground(() => {
   }
 
   async function persist(eng: TrackerEngine, closed: ClosedSession[]): Promise<void> {
+    // Persist the rebased engine state BEFORE committing the slices. The engine
+    // already advanced each open session's `start` when it produced `closed`, so
+    // the state is consistent with those slices being saved. The two writes can't
+    // be atomic; ordering state-first means that if the MV3 worker is evicted
+    // between them, the next cold start resumes from the new `start` and at worst
+    // loses one ≤1-minute slice. Committing first instead would let reconcile
+    // re-emit an already-saved slice from the stale `start` — double-counting time.
+    await sessionStore.set({ engineState: eng.getState() });
     if (closed.length) {
       const sessions = await stampKeys(closed);
       // Sessions + their daily rollup committed atomically (single transaction).
       await commitWithRecovery(sessions, rollup(sessions));
     }
-    await sessionStore.set({ engineState: eng.getState() });
   }
 
   // Commit sessions, recovering from a full disk instead of silently dropping
@@ -276,9 +284,11 @@ export default defineBackground(() => {
     if (!budgets || Object.keys(budgets).length === 0) return;
     const today = dateKey(now);
     const stats = await repo.getStatsRange(today, today);
+    // Feed ACTIVE seconds (audio excluded here — the single subtraction point) so
+    // the budget helpers receive the same active-only shape the dashboard uses.
     const domains = stats
       .filter((s) => isWebDomain(s.domain))
-      .map((s) => ({ domain: s.domain, seconds: s.seconds, audioSeconds: s.audioSeconds }));
+      .map((s) => ({ domain: s.domain, seconds: activeSeconds(s), audioSeconds: 0 }));
     const slices = groupByCategory(domains, settings.categoryOverrides, settings.categoryRules);
     const exceeded = exceededBudgets(slices, budgets);
     if (!exceeded.length) return;
@@ -352,12 +362,20 @@ export default defineBackground(() => {
     const eng = await getEngine();
     const now = Date.now();
     if (windowId === browser.windows.WINDOW_ID_NONE) {
-      await persist(eng, eng.handleBlur(now));
+      // Browser lost OS focus (user alt-tabbed to another app). Close the focused
+      // session, but re-sync audio so a tab still playing media keeps counting as a
+      // background-audio session — matching every other focus path. Without this,
+      // audio time is lost until the browser regains focus.
+      const closed = eng.handleBlur(now);
+      closed.push(...(await syncAudioSessions(eng, now)));
+      await persist(eng, closed);
       return;
     }
     const [tab] = await browser.tabs.query({ active: true, windowId });
     if (!tab?.id || !tab.url || tab.incognito) {
-      await persist(eng, eng.handleBlur(now));
+      const closed = eng.handleBlur(now);
+      closed.push(...(await syncAudioSessions(eng, now)));
+      await persist(eng, closed);
       return;
     }
     const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible);
