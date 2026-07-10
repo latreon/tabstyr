@@ -17,14 +17,19 @@ function clamp(v: number): number {
 function bump(dir: number) {
   emit('update:modelValue', clamp(props.modelValue + dir * step.value));
 }
-function onInput(e: Event) {
+// Reconcile only when the edit is COMMITTED (blur / Enter), not on every
+// keystroke. Clamping mid-typing corrupted multi-digit entry: with min=15,
+// typing "180" clamped "1"→15 on the first digit and rewrote the field, so the
+// user could never reach 180; clearing the field snapped to min. On commit we
+// parse, clamp, sync the field, and emit; an empty/invalid entry reverts.
+function onChange(e: Event) {
   const target = e.target as HTMLInputElement;
   const raw = Number(target.value);
-  if (!Number.isFinite(raw)) return;
+  if (target.value.trim() === '' || !Number.isFinite(raw)) {
+    target.value = String(props.modelValue); // revert
+    return;
+  }
   const next = clamp(Math.round(raw));
-  // Force the native value back in sync: if `next` equals the already-set
-  // modelValue, Vue skips the :value patch (no reactive change) and the input
-  // is left showing whatever un-clamped digits the user just typed.
   target.value = String(next);
   emit('update:modelValue', next);
 }
@@ -40,7 +45,7 @@ function onInput(e: Event) {
       :max="max"
       :step="step"
       :aria-label="label"
-      @input="onInput"
+      @change="onChange"
     />
     <button type="button" :aria-label="t('common.increase', { label: label ?? '' })" :disabled="max !== undefined && modelValue >= max" @click="bump(1)">+</button>
   </div>
