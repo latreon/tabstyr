@@ -9,9 +9,10 @@ const slice = (category: CategorySlice['category'], seconds: number, audioSecond
 });
 
 describe('activeCategorySeconds', () => {
-  test('subtracts audio and never goes negative', () => {
-    expect(activeCategorySeconds({ seconds: 100, audioSeconds: 30 })).toBe(70);
-    expect(activeCategorySeconds({ seconds: 10, audioSeconds: 99 })).toBe(0);
+  test('returns already-active seconds, clamped to zero (audio excluded upstream)', () => {
+    expect(activeCategorySeconds({ seconds: 70, audioSeconds: 0 })).toBe(70);
+    expect(activeCategorySeconds({ seconds: 70 })).toBe(70); // audioSeconds optional
+    expect(activeCategorySeconds({ seconds: -5, audioSeconds: 0 })).toBe(0);
   });
 });
 
@@ -27,8 +28,9 @@ describe('budgetProgress', () => {
     expect(budgetProgress(slice('Social', 3600), 30)).toBeCloseTo(2);
   });
 
-  test('excludes audio time from progress', () => {
-    expect(budgetProgress(slice('Media', 1800, 1800), 30)).toBe(0); // all audio → 0 active
+  test('a category with no active time has zero progress', () => {
+    // Audio is excluded upstream, so an all-audio category arrives as 0 active.
+    expect(budgetProgress(slice('Media', 0), 30)).toBe(0);
   });
 });
 
@@ -49,8 +51,9 @@ describe('exceededBudgets', () => {
     expect(exceededBudgets(slices, { Social: 1, Media: 1 })).toEqual(['Social', 'Media']);
   });
 
-  test('audio-only time does not exceed a budget', () => {
-    expect(exceededBudgets([slice('Media', 3600, 3600)], { Media: 30 })).toEqual([]);
+  test('a category with no active time does not exceed a budget', () => {
+    // All-audio time arrives as 0 active (excluded upstream).
+    expect(exceededBudgets([slice('Media', 0)], { Media: 30 })).toEqual([]);
   });
 
   test('flags a custom category keyed by its name', () => {
