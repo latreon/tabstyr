@@ -86,14 +86,36 @@ export function isWebDomain(domain: string): boolean {
 }
 
 // IPv4 literal (each octet loosely 1–3 digits — host strings come from
-// URL.hostname, already well-formed, so range-checking adds no real safety).
+// URL.hostname, already well-formed).
 const IPV4_RE = /^(?:\d{1,3}\.){3}\d{1,3}$/;
 
 /**
- * A local development host: `localhost` or any bare IPv4 literal. These are
- * tracked as web pages (see isWebDomain) and grouped under the Dev category so a
- * dev server doesn't scatter across "Other" by raw IP.
+ * A PRIVATE/loopback IPv4 literal — the ranges a local dev server actually lives
+ * on. Public IPs (a CDN, a router's WAN address, `8.8.8.8`) are deliberately
+ * excluded: they are not dev work and must not be force-labeled Dev. Invalid
+ * octets (>255) are rejected too, so a bogus `999.999.999.999` isn't treated as a
+ * dev host either.
+ */
+function isPrivateIpv4(domain: string): boolean {
+  if (!IPV4_RE.test(domain)) return false;
+  const octets = domain.split('.').map(Number);
+  if (octets.some((n) => n > 255)) return false;
+  const [a, b] = octets;
+  return (
+    a === 127 || // loopback 127.0.0.0/8
+    a === 10 || // private 10.0.0.0/8
+    (a === 172 && b >= 16 && b <= 31) || // private 172.16.0.0/12
+    (a === 192 && b === 168) || // private 192.168.0.0/16
+    (a === 169 && b === 254) // link-local 169.254.0.0/16
+  );
+}
+
+/**
+ * A local development host: `localhost` or a private/loopback IPv4 literal. These
+ * are tracked as web pages (see isWebDomain) and grouped under the Dev category so
+ * a dev server doesn't scatter across "Other" by raw IP. A public IP is NOT a dev
+ * host and falls through to normal categorization.
  */
 export function isLocalDevHost(domain: string): boolean {
-  return domain === 'localhost' || IPV4_RE.test(domain);
+  return domain === 'localhost' || isPrivateIpv4(domain);
 }
