@@ -80,6 +80,27 @@
       }
     ]
   },
+  "howItWorks": {
+    "eyebrow": "So funktioniert's",
+    "title": "In drei Schritten vom Install zur Einsicht",
+    "sub": "Keine Einrichtung, kein Konto, keine Konfiguration nötig.",
+    "steps": [
+      {
+        "title": "Zum Browser hinzufügen",
+        "body": "Ein Klick im Chrome Web Store. Keine Anmeldung, keine Rechte über den aktiven Tab hinaus."
+      },
+      {
+        "title": "Wie gewohnt browsen",
+        "body": "TabStyr erfasst aktive Zeit im Hintergrund — leerlauf- und audiobewusst, komplett lokal."
+      },
+      {
+        "title": "Dashboard jederzeit öffnen",
+        "body": "Trends, Heatmap, Fokus-Score und eine vollständige Aufschlüsselung — ohne Sync, ohne Warten."
+      }
+    ],
+    "watchDemo": "40-Sekunden-Demo ansehen",
+    "videoAria": "TabStyr-Dashboard-Rundgang"
+  },
   "showcase": {
     "eyebrow": "Von überall ein Blick",
     "title": "Eine ruhige, hochwertige Sicht auf deinen Tag",

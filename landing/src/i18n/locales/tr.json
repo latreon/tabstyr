@@ -80,6 +80,27 @@
       }
     ]
   },
+  "howItWorks": {
+    "eyebrow": "Nasıl çalışır",
+    "title": "Kurulumdan analize üç adımda",
+    "sub": "Kurulum yok, hesap yok, ayarlanacak bir şey yok.",
+    "steps": [
+      {
+        "title": "Tarayıcına ekle",
+        "body": "Chrome Web Store'dan tek tıkla. Kayıt yok, aktif sekme dışında izin yok."
+      },
+      {
+        "title": "Her zamanki gibi gezin",
+        "body": "TabStyr arka planda aktif süreyi izler — boşta kalmayı ve sesi algılar, hepsi cihazında kalır."
+      },
+      {
+        "title": "İstediğin an panoyu aç",
+        "body": "Trendler, ısı haritası, odak skoru ve tam döküm — senkronizasyon veya bekleme yok."
+      }
+    ],
+    "watchDemo": "40 saniyelik demoyu izle",
+    "videoAria": "TabStyr pano turu"
+  },
   "showcase": {
     "eyebrow": "Her yerden bir bakış",
     "title": "Gününüzün sakin, premium bir görünümü",

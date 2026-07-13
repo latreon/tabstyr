@@ -80,6 +80,27 @@
       }
     ]
   },
+  "howItWorks": {
+    "eyebrow": "How it works",
+    "title": "From install to insight in three steps",
+    "sub": "No setup, no account, no config to get right.",
+    "steps": [
+      {
+        "title": "Add it to your browser",
+        "body": "One click from the Chrome Web Store. No sign-up, no permissions beyond the active tab."
+      },
+      {
+        "title": "Browse like you normally do",
+        "body": "TabStyr tracks active time in the background — idle-aware, audio-aware, entirely on-device."
+      },
+      {
+        "title": "Open the dashboard whenever",
+        "body": "Trends, heatmap, focus score, and a full breakdown — right there, nothing to sync or wait for."
+      }
+    ],
+    "watchDemo": "Watch a 40-second demo",
+    "videoAria": "TabStyr dashboard walkthrough"
+  },
   "showcase": {
     "eyebrow": "Glance from anywhere",
     "title": "A quiet, premium view of your day",

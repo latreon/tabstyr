@@ -80,6 +80,27 @@
       }
     ]
   },
+  "howItWorks": {
+    "eyebrow": "Come funziona",
+    "title": "Dall'installazione alle statistiche in tre passi",
+    "sub": "Nessuna configurazione, nessun account, niente da impostare.",
+    "steps": [
+      {
+        "title": "Aggiungilo al browser",
+        "body": "Un clic dal Chrome Web Store. Nessuna registrazione, nessun permesso oltre alla scheda attiva."
+      },
+      {
+        "title": "Naviga come sempre",
+        "body": "TabStyr traccia il tempo attivo in background — rileva inattività e audio, tutto sul dispositivo."
+      },
+      {
+        "title": "Apri la dashboard quando vuoi",
+        "body": "Trend, heatmap, focus score e un riepilogo completo — nessuna sincronizzazione, nessuna attesa."
+      }
+    ],
+    "watchDemo": "Guarda la demo di 40 secondi",
+    "videoAria": "Tour della dashboard di TabStyr"
+  },
   "showcase": {
     "eyebrow": "Uno sguardo da ovunque",
     "title": "Una visione serena e premium della tua giornata",

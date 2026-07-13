@@ -80,6 +80,27 @@
       }
     ]
   },
+  "howItWorks": {
+    "eyebrow": "Cómo funciona",
+    "title": "De la instalación a los datos en tres pasos",
+    "sub": "Sin configuración, sin cuenta, nada que ajustar.",
+    "steps": [
+      {
+        "title": "Añádelo a tu navegador",
+        "body": "Un clic desde Chrome Web Store. Sin registro ni permisos más allá de la pestaña activa."
+      },
+      {
+        "title": "Navega como siempre",
+        "body": "TabStyr registra el tiempo activo en segundo plano: detecta inactividad y audio, todo en tu dispositivo."
+      },
+      {
+        "title": "Abre el panel cuando quieras",
+        "body": "Tendencias, mapa de calor, puntuación de enfoque y un desglose completo, sin sincronizar ni esperar."
+      }
+    ],
+    "watchDemo": "Ver demo de 40 segundos",
+    "videoAria": "Recorrido por el panel de TabStyr"
+  },
   "showcase": {
     "eyebrow": "Echa un vistazo desde cualquier lugar",
     "title": "Una vista serena y premium de tu día",
