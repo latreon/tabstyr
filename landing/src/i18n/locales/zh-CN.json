@@ -10,7 +10,9 @@
     "wrappedTitle": "浏览年度回顾 — TabStyr",
     "wrappedDescription": "拖入你的 TabStyr 导出文件，即可获得一份精美、可分享的浏览年度回顾 — 你在网络上的时光，100% 在你的浏览器中计算。",
     "changelogTitle": "更新日志 — TabStyr",
-    "changelogDescription": "TabStyr 的每个版本，直接来自 GitHub —— 查看新功能和变更内容。"
+    "changelogDescription": "TabStyr 的每个版本，直接来自 GitHub —— 查看新功能和变更内容。",
+    "blogTitle": "博客 — TabStyr",
+    "blogDescription": "TabStyr 如何统计时间、为何没有服务器，以及它与 RescueTime 和 Toggl Track 的比较。"
   },
   "nav": {
     "features": "功能",
@@ -471,5 +473,15 @@
     "sub": "每个版本，直接来自 GitHub。",
     "back": "返回",
     "backCta": "返回首页"
+  },
+  "blogPage": {
+    "eyebrow": "博客",
+    "title": "关于 TabStyr 的笔记",
+    "sub": "它如何运作、为何如此设计，以及它与其他工具的比较。",
+    "back": "返回",
+    "backCta": "返回首页",
+    "readMore": "阅读更多",
+    "backToBlog": "返回文章列表",
+    "notFound": "该文章不存在。"
   }
 }

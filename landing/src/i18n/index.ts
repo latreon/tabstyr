@@ -151,17 +151,20 @@ function upsertLink(rel: string, href: string, hreflang?: string): HTMLLinkEleme
 /** Sync <html lang>, title, description, canonical and hreflang alternates to the
  * active locale + current route. `rest` is the un-prefixed route ('', 'privacy', 'ideas'). */
 export function applyHead(rest: string): void {
+  const isBlog = rest === 'blog' || rest.startsWith('blog/');
   const titleKey =
     rest === 'privacy' ? 'meta.privacyTitle'
     : rest === 'ideas' ? 'meta.ideasTitle'
     : rest === 'wrapped' ? 'meta.wrappedTitle'
     : rest === 'changelog' ? 'meta.changelogTitle'
+    : isBlog ? 'meta.blogTitle'
     : 'meta.title';
   const descKey =
     rest === 'privacy' ? 'meta.privacyDescription'
     : rest === 'ideas' ? 'meta.ideasDescription'
     : rest === 'wrapped' ? 'meta.wrappedDescription'
     : rest === 'changelog' ? 'meta.changelogDescription'
+    : isBlog ? 'meta.blogDescription'
     : 'meta.description';
   const loc = localeForCode(locale.value);
 

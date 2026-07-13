@@ -10,7 +10,9 @@
     "wrappedTitle": "Tarama Özeti — TabStyr",
     "wrappedDescription": "TabStyr dışa aktarımınızı bırakın ve şık, paylaşılabilir bir Tarama Özeti elde edin — web'de geçirdiğiniz zaman, %100 tarayıcınızda hesaplanır.",
     "changelogTitle": "Değişiklik günlüğü — TabStyr",
-    "changelogDescription": "TabStyr'ın her sürümü, doğrudan GitHub'dan — yenilikleri ve değişiklikleri görün."
+    "changelogDescription": "TabStyr'ın her sürümü, doğrudan GitHub'dan — yenilikleri ve değişiklikleri görün.",
+    "blogTitle": "Blog — TabStyr",
+    "blogDescription": "TabStyr zamanı nasıl izler, neden sunucusu yoktur ve RescueTime ile Toggl Track ile nasıl karşılaştırılır."
   },
   "nav": {
     "features": "Özellikler",
@@ -471,5 +473,15 @@
     "sub": "Her sürüm, doğrudan GitHub'dan.",
     "back": "Geri",
     "backCta": "Ana sayfaya dön"
+  },
+  "blogPage": {
+    "eyebrow": "Blog",
+    "title": "TabStyr üzerine notlar",
+    "sub": "Nasıl çalışır, neden böyle tasarlandı ve nasıl karşılaştırılır.",
+    "back": "Geri",
+    "backCta": "Ana sayfaya dön",
+    "readMore": "Devamını oku",
+    "backToBlog": "Tüm yazılara dön",
+    "notFound": "Bu yazı mevcut değil."
   }
 }

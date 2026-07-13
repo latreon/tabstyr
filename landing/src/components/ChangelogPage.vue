@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import RingLogo from './RingLogo.vue';
 import { localizedPath, locale, useI18n } from '@/i18n';
-import { renderChangelogMarkdown } from '@/lib/changelog-markdown';
+import { renderMarkdown } from '@/lib/markdown';
 import releases from '@/data/changelog.json';
 
 const { t } = useI18n();
@@ -12,7 +12,7 @@ const entries = computed(() =>
   releases.map((r) => ({
     tag: r.tag,
     date: new Date(r.publishedAt).toLocaleDateString(locale.value, { year: 'numeric', month: 'long', day: 'numeric' }),
-    html: renderChangelogMarkdown(r.body),
+    html: renderMarkdown(r.body),
   })),
 );
 </script>

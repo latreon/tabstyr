@@ -10,7 +10,9 @@
     "wrappedTitle": "Browsing Wrapped — TabStyr",
     "wrappedDescription": "TabStyr のエクスポートファイルをドロップすると、美しくシェアできる Browsing Wrapped が完成 — あなたのウェブでの時間を、100% ブラウザ内で算出します。",
     "changelogTitle": "更新履歴 — TabStyr",
-    "changelogDescription": "GitHubから直接届く、TabStyrのすべてのリリース情報。新機能や変更点を確認できます。"
+    "changelogDescription": "GitHubから直接届く、TabStyrのすべてのリリース情報。新機能や変更点を確認できます。",
+    "blogTitle": "ブログ — TabStyr",
+    "blogDescription": "TabStyrが時間を記録する方法、サーバーを持たない理由、RescueTimeやToggl Trackとの比較。"
   },
   "nav": {
     "features": "機能",
@@ -471,5 +473,15 @@
     "sub": "GitHubから直接届く、すべてのリリース情報。",
     "back": "戻る",
     "backCta": "ホームに戻る"
+  },
+  "blogPage": {
+    "eyebrow": "ブログ",
+    "title": "TabStyrについてのノート",
+    "sub": "仕組み、なぜこう作られているか、そして他との比較。",
+    "back": "戻る",
+    "backCta": "ホームに戻る",
+    "readMore": "続きを読む",
+    "backToBlog": "記事一覧に戻る",
+    "notFound": "この記事は存在しません。"
   }
 }
