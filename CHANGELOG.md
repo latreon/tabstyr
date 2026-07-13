@@ -2,6 +2,49 @@
 
 All notable changes to TabStyr. Generated from [GitHub Releases](https://github.com/latreon/tabstyr/releases) — the release page is the source of truth; run `npm run changelog:fetch && node scripts/generate-changelog.mjs` to refresh this file after a new release.
 
+## v1.9.0 — 2026-07-13
+
+TabStyr 1.9.0 — an audit-driven correctness, privacy, and accessibility pass across the extension and website, plus a review-prompt/uninstall-feedback loop and a real `/blog`.
+
+### Highlights
+
+#### Correctness (extension)
+- **Idle over-count** — a focused tab that had been playing audio kept booking active minutes every heartbeat after playback stopped while the user was idle. Now closes the session instead of re-basing it.
+- **Cross-device sync aborts** — merging a backup from another device could throw `ConstraintError` and abort the whole restore, because both devices numbered sessions from 1. Surrogate ids are now stripped so IndexedDB assigns fresh keys.
+- **Worker-death double-count** — a mid-write service-worker eviction could let a slice be re-emitted after already being saved. State is now written before slices, capping the loss at ≤1 minute.
+- **Alt-tab audio lost** — switching windows while a background tab kept playing audio silently stopped counting it. Audio focus now re-syncs on window-focus changes, including `WINDOW_ID_NONE`.
+- **mergeDaily data loss** — rolling up sessions into a daily total could overwrite a larger already-stored value (e.g. from a CSV import) instead of taking the max.
+- **Import domain spoofing** — a crafted backup could pair a trusted `domain` field with an unrelated `url`. Domain is now re-derived from the url on import.
+- **Chronotype bias** — unequal morning/afternoon/night band widths skewed the stat toward "night owl" on a raw-sum comparison; now compares per-hour intensity.
+- **Wrapped web-only consistency** — coverage window, daily average, and busiest day used to count all domains while totals were web-only; now consistent throughout.
+- **Double-subtracted background-audio time** — reports and budget calculations could subtract audio time twice; unified on a single subtraction point.
+
+#### Accessibility
+- **NumberStepper** — per-keystroke clamping corrupted multi-digit entry (e.g. typing "180" with a min of 15 could land on the wrong value). Now clamps on commit.
+- **Restore/merge dialog** — the destructive confirmation dialog never received keyboard focus on open; now focuses its Cancel button.
+
+#### Privacy
+- **Wrapped no longer leaks visited domains** — favicons were being fetched from icon.horse and Google's S2 service, disclosing top-site hostnames despite the "0 bytes leave your device" promise. Replaced with a local letter-chip fallback.
+- **Removed a live analytics beacon** — a Cloudflare Web Analytics token had been committed and was loading on every page visit, contradicting the site's "no analytics" claim.
+
+#### Review prompt & uninstall feedback
+- A small, dismissible corner card now offers a link to the Chrome Web Store review tab once the extension has been installed for 6+ days.
+- Uninstalling now opens the site's existing `/ideas` feedback form (tagged `src=uninstall`) instead of going nowhere.
+
+#### Website
+- A real **`/blog`** (three articles) and a **TabStyr vs. RescueTime vs. Toggl Track** comparison table.
+- **`CHANGELOG.md`** is now generated from GitHub Releases instead of 404ing.
+- **Static prerendering** for all 99 routes (9 pages × 11 locales) so crawlers and no-JS visitors get fully-rendered HTML, not an empty SPA shell.
+- **i18n test coverage** extended from 5 to all 11 locales — confirmed translation keys are actually complete.
+- **CONTRIBUTING.md** added; GitHub topics and Discussions enabled.
+- Restored a GitHub link in the footer now that the repo is public (MIT).
+
+#### Housekeeping
+- Removed a short-lived "vs. RescueTime & Toggl" footer link per follow-up feedback.
+- Added bottom padding to the activity report card image.
+
+_See the commit history for the full list of smaller fixes._
+
 ## v1.8.0 — 2026-07-04
 
 TabStyr 1.8.0 — a big one. Everything since 1.6.4, including the reworked features that were briefly on the 1.7.x line.
