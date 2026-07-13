@@ -155,11 +155,13 @@ export function applyHead(rest: string): void {
     rest === 'privacy' ? 'meta.privacyTitle'
     : rest === 'ideas' ? 'meta.ideasTitle'
     : rest === 'wrapped' ? 'meta.wrappedTitle'
+    : rest === 'changelog' ? 'meta.changelogTitle'
     : 'meta.title';
   const descKey =
     rest === 'privacy' ? 'meta.privacyDescription'
     : rest === 'ideas' ? 'meta.ideasDescription'
     : rest === 'wrapped' ? 'meta.wrappedDescription'
+    : rest === 'changelog' ? 'meta.changelogDescription'
     : 'meta.description';
   const loc = localeForCode(locale.value);
 

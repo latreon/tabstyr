@@ -16,7 +16,9 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "check:version": "node scripts/sync-readme-version.mjs",
-    "version": "node scripts/sync-readme-version.mjs --write && git add .github/badges/version.svg"
+    "version": "node scripts/sync-readme-version.mjs --write && git add .github/badges/version.svg",
+    "promo:video": "node scripts/make-promo-video.mjs",
+    "changelog:fetch": "node scripts/fetch-changelog.mjs"
   },
   "dependencies": {
     "idb": "^8.0.0",

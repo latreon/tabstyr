@@ -1,0 +1,152 @@
+[
+  {
+    "body": "TabStyr 1.8.0 — a big one. Everything since 1.6.4, including the reworked features that were briefly on the 1.7.x line.\n\n## Highlights\n\n### Categories & Focus\n- **Custom categories** — add your own categories with a color, on top of the built-ins.\n- **Per-category productivity** — mark any category (built-in *or* custom) as productive / distracting / neutral, and reclassify it right from **Focus categories**. Changes apply live.\n- **Category time budgets** + a **daily focus goal**, with gentle nudges when you pass a budget (nothing is blocked).\n\n### Dashboard\n- **Auto-generated Insights** — short, plain-language takeaways derived from your own data.\n- **Activity heatmap** now reads as a rolling **last-7-days** window ending today, instead of a fixed Mon–Sun week.\n- **Design-system overhaul** — new color system, spacing/scale tokens, and signature data-viz styling.\n- Polish: trend charts get breathing room at the edges, the site-detail modal aligns its page rows cleanly, and the headline compares against your **daily average**.\n\n### Data\n- **Work log export** — save your activity report as a PNG image or CSV.\n- **Encrypted manual sync** — merge your data across devices via an encrypted sync file.\n- **CSV import** — seed day-one data from another time tracker.\n- **Monthly rollup archive** kept before pruning old rows.\n\n### Housekeeping\n- Removed the in-extension **Projects/Tags** feature and **Browsing Wrapped** (Wrapped now lives on the website).\n- Refreshed Chrome Web Store screenshots and landing-page assets to match the current UI.\n\n_See the commit history for the full list of fixes and smaller improvements._\n",
+    "name": "TabStyr v1.8.0",
+    "publishedAt": "2026-07-04T15:17:42Z",
+    "tag": "v1.8.0"
+  },
+  {
+    "body": "Latest stable release. (Versions 1.7.0–1.7.2 were rolled back — landing-page Browsing Wrapped work, not extension releases.)",
+    "name": "TabStyr v1.6.4",
+    "publishedAt": "2026-06-28T11:48:12Z",
+    "tag": "v1.6.4"
+  },
+  {
+    "body": "Private, local-only browsing-time tracker.\n\n## What's new in 1.6.3\nLaunch-readiness pass — no behavior change to time tracking.\n\n**Security**\n- Patched all 4 Dependabot advisories (shell-quote, tmp, uuid, esbuild) via npm overrides. All are transitive, build/dev-only deps — none ship in the extension. `npm audit` now reports 0 vulnerabilities.\n\n**Reliability & correctness**\n- DST fall-back edge no longer drops the remainder of a session in daily totals or the heatmap.\n- Dashboard load: overlapping refreshes can no longer clobber each other (load token); headline stats now paint before the heavy 90-day session scan + heatmap build.\n- Theme/locale: storage failures no longer break the toggle or leave an unhandled rejection.\n\n**Privacy & store readiness**\n- Privacy policy + store listing now disclose the optional Ko-fi link (user-initiated navigation; the extension still makes no automated network requests).\n- Firefox MV2 CSP hardened with `img-src 'self' data:`.\n\n**Accessibility**\n- SelectBox announces the active option to screen readers; CategoryPicker menu gets arrow/Home/End navigation.\n\n## Verification\nvue-tsc clean · 278 unit tests · Chrome MV3 + Firefox MV2 builds green at 1.6.3 · npm audit: 0 vulnerabilities.\n\n## Assets\n- tabstyr-1.6.3-chrome.zip — Chrome Web Store / Edge / Chromium\n- tabstyr-1.6.3-firefox.zip — Firefox AMO\n- tabstyr-1.6.3-sources.zip — AMO source review",
+    "name": "TabStyr v1.6.3",
+    "publishedAt": "2026-06-23T07:43:54Z",
+    "tag": "v1.6.3"
+  },
+  {
+    "body": "Private, local-only browsing-time tracker.\n\n## What's new in 1.6.2\n- **Exact seconds under an hour** — durations now show real minutes + seconds (\"5m 23s\", \"45s\") instead of rounding to the nearest minute. Hours and above unchanged.\n- **Top sites layout** — active time and the \"♪ audio\" time now stack on separate rows instead of crowding side by side.\n- **Readability** — focus legend/note, comparison subtitle, and tab-table subtitle bumped to 12px.\n- **Repo cleanup** — removed internal scaffolding/references ahead of open-sourcing.\n\n## Verification\nvue-tsc clean · 278 unit tests · 13/13 e2e against the loaded extension · Chrome MV3 + Firefox MV2 builds green at 1.6.2.\n\n## Assets\n- tabstyr-1.6.2-chrome.zip — Chrome Web Store / Edge / Chromium\n- tabstyr-1.6.2-firefox.zip — Firefox AMO\n- tabstyr-1.6.2-sources.zip — AMO source review\n",
+    "name": "TabStyr v1.6.2",
+    "publishedAt": "2026-06-22T19:36:30Z",
+    "tag": "v1.6.2"
+  },
+  {
+    "body": "Private, local-only browsing-time tracker. Rolls up the 1.6.0 launch-readiness audit and the 1.6.1 launch-quality fixes.\n\n## Highlights\n- First-run fixed — installing now opens the dashboard so onboarding is actually seen.\n- Notifications opt-out — stale-tab reminder has a real on/off toggle.\n- Settings auto-save — steppers/toggles persist on change (no silent loss); \"Show intro again\" link.\n- Sleep accuracy — long unobserved gaps (sleep/throttle) no longer book phantom media time; genuine playback still counts.\n- Performance — lighter dashboard memory (shallow session ref), fewer Date allocations, memoized categorization, precomputed heatmap styles.\n- A11y — chart roles, listbox labels, non-modal date popover.\n- Security — Firefox CSP parity (style-src), restore errors no longer leak raw text.\n- Accepted trade-offs documented in docs/KNOWN-LIMITATIONS.md.\n\n## Verification\nvue-tsc clean · 275 unit tests · locale parity 237 keys x 11 · Chrome MV3 + Firefox MV2 builds green · 13/13 e2e against the loaded extension.\n\n## Assets\n- tabstyr-1.6.1-chrome.zip — Chrome Web Store / Edge / Chromium\n- tabstyr-1.6.1-firefox.zip — Firefox AMO\n- tabstyr-1.6.1-sources.zip — AMO source review\n",
+    "name": "TabStyr v1.6.1",
+    "publishedAt": "2026-06-22T10:43:04Z",
+    "tag": "v1.6.1"
+  },
+  {
+    "body": "fix(a11y,i18n,tracking,security,perf): launch-readiness audit fixes (1.6.0)\n\nAccessibility\n- AA contrast: white text now on darker --accent-grad-strong gradient for all\n  primary buttons, active toggles, selected day (was 2.5-3.5:1, now >=5:1)\n- Tile titles promoted to <h2> for screen-reader heading navigation\n- Replace misapplied tablist roles with role=group + aria-pressed toggles\n- role=alert on inline rule/encrypt/restore errors; aria-label on passphrase inputs\n- ToggleSwitch >=24px target (WCAG 2.5.8); darker light-mode --positive (AA)\n\ni18n\n- Localize the full PrivacyDialog body (33 keys) and the trend tooltip across all\n  11 locales; locale-aware dates via getDateLocale()\n- Disclose that JSON backups include tab titles (settings.backupNote)\n\nTracking\n- Serialize background event handlers through one promise queue so interleaved\n  events can no longer corrupt or stale-overwrite engine state\n- Absolute 24h session ceiling (even for media) caps forward clock-jumps; drop\n  slices when the clock jumps backward\n- Empty-state UX for HeroTile and ProductivityTile on zero-data days\n\nSecurity\n- Reject non-http(s) URLs in imported tabMeta (restore.ts)\n- Explicit CSP for Firefox/Safari MV2 (connect-src/base-uri/form-action 'none')\n\nPerformance\n- Cache settings in-process (invalidated on settings-changed) — removes redundant\n  storage reads on every heartbeat\n- Batch the v1->v2 key backfill in 1000-row chunks to avoid a long IndexedDB lock\n\nDocs: README scope notes for MV3 long-read undercount and the 24h ceiling.\n\n",
+    "name": "TabStyr v1.6.0",
+    "publishedAt": "2026-06-22T10:42:35Z",
+    "tag": "v1.6.0"
+  },
+  {
+    "body": "fix(privacy,tracking,settings,a11y): 5 audit findings (1.5.8)\n\n1. Privacy — tabMeta stored raw tab.url (query/token leaked into JSON exports).\n   Store pageOf(url); normalize the live url on restart rematch; re-normalize\n   imported Session.url/TabMeta.url in restore.\n\n2. Tracking — tab.active is per-window, so a background window's active tab could\n   steal focus/audio on URL/audio updates. Gate handleFocus/setFocusedAudible (and\n   onActivated focus) on isInFocusedWindow(windowId); degrade-open where the\n   windows API is absent.\n\n3. Settings — saveSettings wrote the raw patch; only reads sanitized. Sanitize the\n   merged result before persisting and cap categoryOverrides (5000) so a hostile\n   backup can't bloat/corrupt stored settings or fail a restore mid-write.\n\n4. a11y/i18n — setLocale now syncs document.documentElement.lang; DatePicker aria\n   strings localized via t() (new datePicker.* keys in all 11 locales).\n\n5. e2e — dismiss onboarding in the 'tracking accumulates' test (was flaky: the\n   onboarding overlay inerts the background). e2e now 13/13, no flake.\n\nTests: +3 (url-normalized import, sanitize-on-write, override cap). 271 unit + 13 e2e green.\n\n",
+    "name": "TabStyr v1.5.8",
+    "publishedAt": "2026-06-22T10:42:34Z",
+    "tag": "v1.5.8"
+  },
+  {
+    "body": "fix(heatmap,ui): no heatmap scrollbar, show all 24 hour labels, audio text margin (1.5.7)\n\n- HeatmapTile: columns use minmax(0,1fr) so the grid always fits — removes the\n  persistent horizontal scrollbar and the one the hover pop spawned at the edges\n  (dropped the overflow-x:auto scroll container; the scale is transform-only)\n- HeatmapTile: show every hour label 0–23 (was every 3rd); smaller font + clip\n  so the extra labels don't widen the grid\n- TopSitesChart: 6px left margin on the .audio (♪) text\n\n",
+    "name": "TabStyr v1.5.7",
+    "publishedAt": "2026-06-22T10:42:33Z",
+    "tag": "v1.5.7"
+  },
+  {
+    "body": "feat(a11y,categorize): explicit local-dev policy + chart a11y + forced-colors (1.5.6)\n\nPhase 1 — local-dev host policy (#9):\n- domain.ts: document that bare IPv4 hosts are tracked (intended) and IPv6\n  literals are an accepted gap; add isLocalDevHost(localhost|IPv4)\n- categories.ts: map local-dev hosts to Dev so dev servers don't scatter to Other\n- tests for IPv4 tracking + local-dev categorization\n\nPhase 2 — accessibility (#27 + forced-colors):\n- TrendChart: role=group on bars container, role=img on each bar (named graphics)\n- CategoryChart: role=img label now spells out per-category share (not generic)\n- theme.css: add forced-colors block — legible gradient text, visible focus,\n  bordered color-only swatches (reduced-motion blanket already present)\n\n",
+    "name": "TabStyr v1.5.6",
+    "publishedAt": "2026-06-22T10:42:32Z",
+    "tag": "v1.5.6"
+  },
+  {
+    "body": "fix(restore,a11y): atomic restore, import validation, size guard, heatmap keyboard, category boundary match (1.5.5)\n\n- restore.ts/repo.ts: clear+write all stores in ONE transaction (repo.restoreAll)\n  so a failed import rolls back and never wipes/half-restores existing data\n- restore.ts: validate imported values — reject negative/impossible seconds,\n  audioSeconds>seconds, end<=start, bad dates, non-web domains, oversize strings,\n  far-future timestamps; bound payload size before parse\n- SettingsPanel.vue: reject backup by file.size before read (MAX_BACKUP_BYTES 64MB)\n- categories.ts: match built-in tokens on dot-label boundaries, not raw substring\n  (notx.com no longer Social, myamazon-clone.com no longer Shopping)\n- HeatmapTile.vue: cells are focusable buttons with roving tabindex + arrow/Home/End\n  navigation and per-cell aria-label (keyboard + screen-reader access)\n- i18n: add common.retry/storageFull (prior) and settings.restoreTooLarge (11 locales)\n- tests: import validation, atomic-restore rollback, category boundary\n\n",
+    "name": "TabStyr v1.5.5",
+    "publishedAt": "2026-06-22T10:42:31Z",
+    "tag": "v1.5.5"
+  },
+  {
+    "body": "fix(storage): surface quota-full + recover from load errors (1.5.4)\n\n- detect QuotaExceededError; auto-prune past-retention + retry once\n- on persistent quota: throttled notification + dashboard warning banner\n- dashboard/popup load-error screens get Retry button (re-opens DB)\n- storageWarning flag in storage.local, cleared on successful write\n- localized storage-full text (notify.ts + common.storageFull, 11 locales)\n- add common.retry; new lib/db/errors.ts + tests\n\n",
+    "name": "TabStyr v1.5.4",
+    "publishedAt": "2026-06-22T10:42:30Z",
+    "tag": "v1.5.4"
+  },
+  {
+    "body": "feat: SPA sub-page tracking, stronger backup crypto, i18n verification (v1.5.3)\n\nTracking\n- Attribute time per sub-page on single-page apps: the engine now splits\n  the focused session on path changes, not just domain changes, so time on\n  successive YouTube videos / Gmail views lands on the page actually viewed.\n- Add the webNavigation permission and listen for onHistoryStateUpdated /\n  onReferenceFragmentUpdated to catch in-page (pushState / #/ hash-route)\n  navigations that tabs.onUpdated misses.\n- Store normalized page URLs (scheme+host+path, plus #/ hash routes only),\n  stripping query strings and non-route fragments so secrets — OAuth tokens,\n  search terms — are never persisted.\n- New \"Top pages\" breakdown in the site detail view.\n\nBackups\n- Raise PBKDF2 to 600k iterations (OWASP 2023 floor); honor each file's own\n  stored count so older backups still decrypt. Zero the plaintext buffer\n  after encrypt.\n- Reject backups stamped with a newer schemaVersion than this build supports\n  instead of importing partial/garbage data.\n\ni18n / UI\n- Add Top-pages strings to all 11 locales.\n- Verified German + Japanese render with no overflow at 320/768/1440;\n  add overflow-wrap insurance on uppercase labels.\n\nTests: +unit coverage for pageOf/pagePath, subpages, sub-page splitting,\ncrypto iterations, schema guard; live e2e proving SPA navigations record\ndistinct sub-pages with tokens stripped.\n\n",
+    "name": "TabStyr v1.5.3",
+    "publishedAt": "2026-06-22T10:42:29Z",
+    "tag": "v1.5.3"
+  },
+  {
+    "body": "perf: subset font, lazy-load locales, slim the worker (v1.5.2)\n\nCuts the shipped package ~23% (924 KB → 708 KB) with no behavior change.\n\n- Font: re-subset InterVariable to Latin + Cyrillic + used symbols/weights\n  (CJK already falls back to system fonts), variable axis kept — 352 → 151 KB.\n- i18n: English bundled eagerly as default/fallback; the other 10 locales load\n  on demand via dynamic import (own chunks). setLocale is async; main.ts awaits\n  bootstrapLocale() before mount so non-English users get no English flash. The\n  shared Vue+i18n chunk drops from 88 → 60 KB gz (no more 11 bundled catalogs).\n- background.js 77 → 19 KB: notify.ts inlines just the 11 stale-notification\n  strings instead of importing 6 full locale catalogs into the worker.\n\nvue-tsc clean, 233 unit tests, 8/8 e2e pass.\n\n\n",
+    "name": "TabStyr v1.5.2",
+    "publishedAt": "2026-06-22T10:42:28Z",
+    "tag": "v1.5.2"
+  },
+  {
+    "body": "fix: production-readiness a11y/UX hardening + green CI (v1.5.1)\n\nCI: e2e asserted the old \"Trend\" tile name; updated to \"Activity trend\" +\n\"Focus trend\" (the rename shipped in 1.5.0 but the test fix was uncommitted).\n\nAccessibility / UX\n- Toast is now a persistent role=status live region (announces wipe/restore/\n  export results); clear toastTimer on unmount\n- Dashboard + popup loading/error states announced (role=status/alert, aria-busy)\n- Modals hide the background from AT: useFocusTrap ref-counts open dialogs and\n  sets inert+aria-hidden on #app; all five dialogs teleported to <body> so the\n  dialog itself stays active\n- CategoryPicker tap target 20→24px (WCAG 2.5.8)\n- DatePicker malformed role=grid → labeled role=group\n- NumberStepper +/- buttons localized (common.decrease/increase, all 11 locales)\n- TopSitesChart single shared gradient def (no duplicate ids)\n- OnboardingCard: drop redundant aria-label (keep aria-labelledby)\n\nBrand\n- Page titles + toolbar tooltip now \"TabStyr\" (were \"Tab Time\")\n\nDocs\n- Regenerate store screenshots (now show Activity trend + Focus trend tiles)\n\n\n",
+    "name": "TabStyr v1.5.1",
+    "publishedAt": "2026-06-22T10:42:27Z",
+    "tag": "v1.5.1"
+  },
+  {
+    "body": "feat: focus trend graph + rename activity trend; bar-anchored tooltips (v1.5.0)\n\n- New Focus trend tile: daily/weekly/monthly focus % (productive ÷ productive +\n  distracting), green above target / red below, day-week-month toggle. Built on\n  buildFocusTrend() in lib/productivity.ts (weekly/monthly buckets aggregate the\n  underlying seconds before computing the ratio); honors category overrides/rules\n- Rename the activity \"Trend\" tile to \"Activity trend\" (distinct from Focus trend)\n- Trend tooltips now anchor just above each bar's tip and track bar height, and use\n  an opaque --popover background (was translucent --card-strong, so neighbouring\n  bars showed through in dark mode)\n- i18n: focus.trendTitle + activity-trend rename across all 6 locales\n- +3 unit tests for buildFocusTrend (233 passing)\n\n\n",
+    "name": "TabStyr v1.5.0",
+    "publishedAt": "2026-06-22T10:42:26Z",
+    "tag": "v1.5.0"
+  },
+  {
+    "body": "feat: cross-browser support for Firefox & Safari (v1.4.2)\n\nFirefox (AMO-ready)\n- Real gecko add-on id + strict_min_version 115 (storage.session floor)\n- data_collection_permissions: { required: ['none'] } — required for new AMO\n  listings since Nov 2025; honest, the extension transmits nothing\n- favicon permission omitted (FF lacks _favicon → letter-chip fallback)\n- add zip:firefox script; suppress the now-satisfied WXT data-collection warning\n\nSafari\n- build:safari script; manifest branches to MV2 defaults (no favicon perm, no\n  MV3 CSP object)\n- docs/store/browser-support.md: full matrix + xcrun safari-web-extension-converter\n  → Xcode → App Store path, and per-browser install/publish steps\n\nCross-engine resilience\n- storage.session accessed via a guarded sessionStore wrapper — degrades to\n  rebuilding engine state from tabs.query() where it's absent (older Safari)\n- tabs.onReplaced listener optional-chained (Chromium-centric API)\n- manifest now branches cleanly: Chromium gets MV3 CSP + favicon; Firefox gets\n  gecko + data-collection; Safari keeps platform defaults\n\nChromium (Chrome/Edge/Opera/Arc/Brave) unchanged — installs as-is.\n\n\n",
+    "name": "TabStyr v1.4.2",
+    "publishedAt": "2026-06-22T10:42:25Z",
+    "tag": "v1.4.2"
+  },
+  {
+    "body": "fix: security hardening + CSP, privacy CSP fix (v1.4.1)\n\nSecurity (backup import + crypto)\n- crypto: clamp file-supplied PBKDF2 iterations to [100k, 2M] (blocks KDF\n  downgrade and CPU-exhaustion); validate salt/iv length; enforce a 10-char\n  minimum passphrase at the crypto layer, not just the UI\n- restore: hard caps on imported record counts (stats/sessions/tabMeta);\n  stricter type guards (full tabMeta fields, session url); validate exportedAt\n  as a real date; reject settings objects with an absurd key count\n- navigate/domain: isWebDomain is now a strict hostname check and openDomain\n  re-parses and confirms https + same host before tabs.create\n- TabTable: clamp attacker-controlled tab titles in title/aria-label\n- SettingsPanel: zero passphrase refs on unmount\n\nHardening\n- Explicit CSP for Chromium MV3 extension pages: script-src/object-src 'self',\n  connect-src 'none', img-src 'self' data:, base-uri/form-action 'none'\n  (Firefox MV2 keeps its default)\n\nFixes\n- privacy.html: move the theme pre-paint snippet to an external file\n  (public/privacy-theme.js) so it satisfies the strict CSP (no inline script)\n- revert the dashboard directory-index experiment: extension pages can't serve\n  a clean /dashboard/ path (ERR_FILE_NOT_FOUND); open dashboard.html again\n\nTests\n- +8 tests covering iteration clamping, oversized salt, short-passphrase reject,\n  stricter tabMeta guard, exportedAt validation, __proto__ non-pollution, and\n  settings key-count rejection (230 passing)\n\n\n",
+    "name": "TabStyr v1.4.1",
+    "publishedAt": "2026-06-22T10:42:24Z",
+    "tag": "v1.4.1"
+  },
+  {
+    "body": "feat: dashboard polish, per-domain tab table, inline category picker (v1.4.0)\n\nDashboard / UI\n- Tiles use --card-strong; refined light-mode palette (cooler surface,\n  accent glow, deeper soft shadow) across dashboard, cards, and modals\n- CategoryChart + ComparisonTile: hover highlights the segment/row and its label\n- TopSitesChart grid columns widened; clearer log line color\n- ThemeToggle: clean Lucide sun/moon/monitor icons; consistent chip radii\n- Bigger, uniform WorkLog controls (nav/copy/date picker)\n\nOpen tabs by time\n- Now aggregated per domain (key-independent, stable across restarts);\n  excludes background audio; shows open-tab count per site\n- rematchTabMeta: same-domain fallback so a tab's stable key survives a\n  cold restart when the restored URL drifted\n\nCategory editing\n- New CategoryPicker: change a site's category inline from the work log\n  via a colored popover; applies instantly as a per-domain override\n\nPrivacy\n- privacy.html restyled to match the dashboard (tokens, glow, brand, theme sync)\n- In-app privacy overlay (PrivacyDialog) so the badge/popup no longer open a\n  separate .html page; dashboard opens at /dashboard/ (no .html in the URL)\n\nSettings / i18n\n- Language picker drops \"Automatic\" and always shows a concrete locale\n- Trend periods shortened (fewer bars); new strings across all 6 locales\n\n\n",
+    "name": "TabStyr v1.4.0",
+    "publishedAt": "2026-06-22T10:42:23Z",
+    "tag": "v1.4.0"
+  },
+  {
+    "body": "fix(tracking): handle tab replacement, flush on suspend, count more reading (v1.3.1)\n\nTighten tracking-time accuracy at the edges (no permission/identity change).\n\n- tabs.onReplaced: new engine.handleTabReplaced() remaps the focused/audio\n  session to the new tabId (continuous, nothing closed); background also remaps\n  the stored tabMeta so the stable per-tab key survives. Fixes prerender /\n  discard-restore mis-attribution.\n- runtime.onSuspend: checkpoint + commit the open session before the worker\n  unloads, recovering the ≤1-minute tail lost on every browser close / SW\n  eviction (best-effort).\n- Raise default idle threshold 60s -> 180s so reading without mouse/keyboard\n  input still counts; existing users keep their saved value. Add an in-app hint\n  under the Idle setting (all 6 locales).\n- Tests: onReplaced remap (focused + audio + no-op), checkpoint-past-cap slice.\n\nDeferred (privacy tradeoff, not adopted): visibility-based \"reading mode\" would\nneed a content script + host permissions, breaking the no-host-permissions\nguarantee.\n\nBump version to 1.3.1.\n\n",
+    "name": "TabStyr v1.3.1",
+    "publishedAt": "2026-06-22T10:42:22Z",
+    "tag": "v1.3.1"
+  },
+  {
+    "body": "feat(i18n): full internationalization with 6 languages (v1.3.0)\n\nAdd reactive, in-app internationalization via vue-i18n.\n\n- lib/i18n: vue-i18n instance, SUPPORTED_LOCALES, resolveLocale() (preference →\n  browser UI language → English), setLocale() with a localStorage pre-mount\n  cache; wired into both popup and dashboard entrypoints.\n- Languages: English, Español, Deutsch, Français, 日本語, 中文（简体） —\n  full catalogs with matching keys, placeholders, and 3-form plurals.\n- composables/useLocale: load/persist the language from settings; both apps\n  apply it on mount. New `language` setting ('auto' or a locale code).\n- Every component converted to t(): popup, dashboard, all tiles, charts,\n  WorkLog, TabTable, DomainDetail, onboarding, settings — including translated\n  category names, pluralized summary, and aria labels.\n- Localized dates (lib/locale + lib/time): trend axes, worklog, heatmap\n  weekdays, and DatePicker month/initials/trigger — reactive to a live switch.\n- Background stale notification localized via a vue-i18n-free catalog reader.\n- Language picker added to Settings; switching updates the UI instantly.\n- Tests: locale key/placeholder/plural parity across all 6 locales, locale\n  switching renders, settings language round-trip; global test setup registers\n  i18n for component mounts. e2e: dismiss onboarding overlay in 3 tests.\n- Bump version to 1.3.0.\n\n",
+    "name": "TabStyr v1.3.0",
+    "publishedAt": "2026-06-22T10:42:21Z",
+    "tag": "v1.3.0"
+  },
+  {
+    "body": "feat: accessibility hardening + privacy-first backups (v1.2.0)\n\nAccessibility & polish\n- Reusable focus trap (composables/useFocusTrap) wired into the onboarding,\n  domain-detail, and wipe-confirm dialogs; focus returns to the opener on close.\n- DatePicker: full keyboard nav — roving tabindex, arrow keys (±1/±7), Home/End,\n  month auto-switch at boundaries, min/max clamping, focus returns to trigger.\n- Settings tile sizes to its own content (align-self) instead of stretching to\n  the Open-tabs table beside it.\n- Light-theme --warn darkened to meet AA contrast on the Wipe action.\n- Reduced-motion: gate the JS smooth-scroll (global CSS already covers the rest).\n- First component interaction tests (Vue Test Utils + @vitejs/plugin-vue):\n  SelectBox, DatePicker, OnboardingCard (focus trap), TabTable.\n\nPrivacy as the differentiator\n- \"0 bytes leave your device\" badge in the popup and dashboard, plus a bundled\n  privacy page at /privacy.html, all using a shared shield-check icon.\n- Encrypted local backup: passphrase-wrapped JSON via Web Crypto\n  (PBKDF2 -> AES-256-GCM), and restore (plain or encrypted) from a file, with a\n  destructive-action confirm. No server, no network.\n- Header theme toggle restyled to match the privacy badge (surface, border,\n  28px height, 14px radius).\n- Store listing + privacy policy copy updated to lean into local-only privacy\n  and the new encrypted backup/restore.\n\nBump version to 1.2.0.\n\n",
+    "name": "TabStyr v1.2.0",
+    "publishedAt": "2026-06-22T10:42:20Z",
+    "tag": "v1.2.0"
+  },
+  {
+    "body": "feat: broaden categorization, add Finance + custom rules and onboarding (v1.1.0)\n\nCategorization\n- Greatly expand built-in rules with international/global sites so non-US users\n  don't land everything in \"Other\" (Dev, Work, Social, Media, News, Shopping).\n- Add a Finance category (banks, payments, crypto, investing) — global + regional.\n- User-defined substring rules: precedence is exact override → user rules →\n  built-in → Other. Threaded through categorize/groupByCategory/productivity/\n  worklog/comparison and every component.\n- Settings: manage custom rules (add/list/remove), sanitized and capped.\n- Tokens kept specific (brand/brand+TLD) to avoid lookalike collisions\n  (e.g. chase.com not bare \"chase\"); regression test added.\n\nOnboarding\n- First-run modal (centered, scroll-locked, SVG icons, category legend)\n  explaining what's tracked, the local-only privacy promise, and how\n  categories work. Dismissal persists via an `onboarded` flag.\n\nFixes / polish\n- Settings changes now trigger a silent in-place reload, so adding/removing a\n  rule no longer jumps the page to the top.\n- Export reduced to two options: Export JSON and Export CSV.\n\nSettings schema gains categoryRules + onboarded (sanitized, back-compatible).\nBump version to 1.1.0.\n\n",
+    "name": "TabStyr v1.1.0",
+    "publishedAt": "2026-06-22T10:42:19Z",
+    "tag": "v1.1.0"
+  },
+  {
+    "body": "fix: repair stale deep-link, drop dead code, expose sessions export (v1.0.1)\n\n- Popup \"{n} stale\" deep-link now scrolls to and briefly flashes the Stale tabs\n  stat tile; the old #stale target was removed with the StaleList view. Honors\n  prefers-reduced-motion.\n- Remove orphaned StaleList.vue (imported nowhere since the dashboard refactor).\n- Settings: add \"Sessions CSV\" export wiring the already-tested sessionsToCsv;\n  relabel exports to JSON backup / Daily CSV / Sessions CSV with clearer filenames.\n- README: correct session cap 10 -> 30 min (matches MAX_SESSION_MS) and note the\n  media-playback exemption.\n- Bump version to 1.0.1.\n\n",
+    "name": "TabStyr v1.0.1",
+    "publishedAt": "2026-06-22T10:42:18Z",
+    "tag": "v1.0.1"
+  },
+  {
+    "body": "ci: add GitHub Actions (type-check, test, build + non-blocking e2e); bump to 1.0.0\n\n",
+    "name": "TabStyr v1.0.0",
+    "publishedAt": "2026-06-22T10:42:17Z",
+    "tag": "v1.0.0"
+  },
+  {
+    "body": "fix: hero sparkline, blur on url-less focus, settings range clamp, wipe notify state, firefox signing prep\n\n- HeroTile: add 14-day sparkline polyline using buildTrend; accept stats prop\n- App.vue: pass :stats to HeroTile\n- background.ts: persist blur before early-returning when tab has no url (onActivated + onFocusChanged)\n- settings.ts: clamp staleDays [1,60] and idleSeconds [15,600] in coerce()\n- settings.test.ts: add out-of-range clamp test (67 tests total)\n- background.ts wipe-data: also remove notifyState from local storage\n- package.json: version 0.1.0\n- wxt.config.ts: per-browser manifest fn; browser_specific_settings only for firefox\n- README.md: add Known limitations section\n\n",
+    "name": "TabStyr v0.1.0",
+    "publishedAt": "2026-06-22T10:42:15Z",
+    "tag": "v0.1.0"
+  }
+]

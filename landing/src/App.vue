@@ -13,6 +13,7 @@ import {
 import SiteNav from '@/components/SiteNav.vue';
 import HeroSection from '@/components/HeroSection.vue';
 import FeatureGrid from '@/components/FeatureGrid.vue';
+import HowItWorksSection from '@/components/HowItWorksSection.vue';
 import ShowcaseSection from '@/components/ShowcaseSection.vue';
 import PrivacySection from '@/components/PrivacySection.vue';
 import FaqSection from '@/components/FaqSection.vue';
@@ -27,6 +28,7 @@ import WrappedSection from '@/components/WrappedSection.vue';
 const PrivacyPage = defineAsyncComponent(() => import('@/components/PrivacyPage.vue'));
 const IdeaPage = defineAsyncComponent(() => import('@/components/IdeaPage.vue'));
 const WrappedPage = defineAsyncComponent(() => import('@/components/WrappedPage.vue'));
+const ChangelogPage = defineAsyncComponent(() => import('@/components/ChangelogPage.vue'));
 
 // Clean-URL router (no '#') with a leading locale slug: '/', '/de', '/fr/privacy',
 // '/pt-br/ideas'. English is the un-prefixed root. Works on static hosts via a
@@ -45,6 +47,7 @@ const rest = ref(splitLocale(pathFromBase()).rest);
 const isPrivacy = computed(() => rest.value === 'privacy');
 const isIdeas = computed(() => rest.value === 'ideas');
 const isWrapped = computed(() => rest.value === 'wrapped');
+const isChangelog = computed(() => rest.value === 'changelog');
 
 // Expose the current locale-less route so the language switcher can build links
 // that keep the visitor on the same page in another language.
@@ -136,6 +139,7 @@ onBeforeUnmount(() => {
     <PrivacyPage v-if="isPrivacy" />
     <IdeaPage v-else-if="isIdeas" />
     <WrappedPage v-else-if="isWrapped" />
+    <ChangelogPage v-else-if="isChangelog" />
 
     <template v-else>
       <a class="skip-link" href="#main">{{ t('a11y.skipToContent') }}</a>
@@ -143,6 +147,7 @@ onBeforeUnmount(() => {
       <main id="main" tabindex="-1">
         <HeroSection />
         <FeatureGrid />
+        <HowItWorksSection />
         <ShowcaseSection />
         <WrappedSection />
         <PrivacySection />

@@ -561,4 +561,191 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
+  <url>
+    <loc>https://tabstyr.com/changelog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/changelog" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/changelog" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/changelog" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/changelog" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/changelog" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/changelog" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/changelog" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/changelog" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/changelog" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/changelog" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/changelog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/changelog" />
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/es/changelog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/changelog" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/changelog" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/changelog" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/changelog" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/changelog" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/changelog" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/changelog" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/changelog" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/changelog" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/changelog" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/changelog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/changelog" />
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/de/changelog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/changelog" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/changelog" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/changelog" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/changelog" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/changelog" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/changelog" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/changelog" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/changelog" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/changelog" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/changelog" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/changelog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/changelog" />
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/fr/changelog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/changelog" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/changelog" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/changelog" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/changelog" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/changelog" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/changelog" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/changelog" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/changelog" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/changelog" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/changelog" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/changelog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/changelog" />
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/it/changelog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/changelog" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/changelog" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/changelog" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/changelog" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/changelog" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/changelog" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/changelog" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/changelog" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/changelog" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/changelog" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/changelog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/changelog" />
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/pt-br/changelog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/changelog" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/changelog" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/changelog" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/changelog" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/changelog" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/changelog" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/changelog" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/changelog" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/changelog" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/changelog" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/changelog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/changelog" />
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/ru/changelog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/changelog" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/changelog" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/changelog" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/changelog" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/changelog" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/changelog" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/changelog" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/changelog" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/changelog" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/changelog" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/changelog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/changelog" />
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/tr/changelog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/changelog" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/changelog" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/changelog" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/changelog" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/changelog" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/changelog" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/changelog" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/changelog" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/changelog" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/changelog" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/changelog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/changelog" />
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/ja/changelog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/changelog" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/changelog" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/changelog" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/changelog" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/changelog" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/changelog" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/changelog" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/changelog" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/changelog" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/changelog" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/changelog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/changelog" />
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/ko/changelog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/changelog" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/changelog" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/changelog" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/changelog" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/changelog" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/changelog" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/changelog" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/changelog" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/changelog" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/changelog" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/changelog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/changelog" />
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://tabstyr.com/zh-cn/changelog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabstyr.com/changelog" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://tabstyr.com/es/changelog" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://tabstyr.com/de/changelog" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://tabstyr.com/fr/changelog" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://tabstyr.com/it/changelog" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://tabstyr.com/pt-br/changelog" />
+    <xhtml:link rel="alternate" hreflang="ru" href="https://tabstyr.com/ru/changelog" />
+    <xhtml:link rel="alternate" hreflang="tr" href="https://tabstyr.com/tr/changelog" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tabstyr.com/ja/changelog" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://tabstyr.com/ko/changelog" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://tabstyr.com/zh-cn/changelog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tabstyr.com/changelog" />
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
 </urlset>

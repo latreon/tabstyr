@@ -8,7 +8,9 @@
     "ideasTitle": "Compartilhe uma ideia — TabStyr",
     "ideasDescription": "Sugira um recurso ou relate um bug para o TabStyr. Sem conta, sem rastreamento — vai direto para o criador.",
     "wrappedTitle": "Retrospectiva de Navegação — TabStyr",
-    "wrappedDescription": "Solte aqui a sua exportação do TabStyr e receba uma linda Retrospectiva de Navegação, pronta para compartilhar — o seu tempo na web, calculado 100% no seu navegador."
+    "wrappedDescription": "Solte aqui a sua exportação do TabStyr e receba uma linda Retrospectiva de Navegação, pronta para compartilhar — o seu tempo na web, calculado 100% no seu navegador.",
+    "changelogTitle": "Changelog — TabStyr",
+    "changelogDescription": "Cada versão do TabStyr, direto do GitHub — veja o que há de novo e o que mudou."
   },
   "nav": {
     "features": "Recursos",
@@ -79,6 +81,27 @@
         "body": "Exporte todo o seu histórico como JSON, opcionalmente criptografado com senha (AES-256-GCM). Restaure em qualquer dispositivo."
       }
     ]
+  },
+  "howItWorks": {
+    "eyebrow": "Como funciona",
+    "title": "Da instalação aos insights em três passos",
+    "sub": "Sem configuração, sem conta, nada para ajustar.",
+    "steps": [
+      {
+        "title": "Adicione ao seu navegador",
+        "body": "Um clique na Chrome Web Store. Sem cadastro, sem permissões além da aba ativa."
+      },
+      {
+        "title": "Navegue como sempre",
+        "body": "O TabStyr rastreia o tempo ativo em segundo plano — detecta inatividade e áudio, tudo no seu dispositivo."
+      },
+      {
+        "title": "Abra o painel quando quiser",
+        "body": "Tendências, mapa de calor, pontuação de foco e um detalhamento completo — sem sincronizar, sem esperar."
+      }
+    ],
+    "watchDemo": "Ver demo de 40 segundos",
+    "videoAria": "Tour pelo painel do TabStyr"
   },
   "showcase": {
     "eyebrow": "Confira de qualquer lugar",
@@ -441,5 +464,12 @@
   },
   "a11y": {
     "skipToContent": "Pular para o conteúdo"
+  },
+  "changelogPage": {
+    "eyebrow": "Changelog",
+    "title": "Novidades do TabStyr",
+    "sub": "Cada versão, direto do GitHub.",
+    "back": "Voltar",
+    "backCta": "Voltar para o início"
   }
 }

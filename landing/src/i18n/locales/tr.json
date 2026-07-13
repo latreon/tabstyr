@@ -8,7 +8,9 @@
     "ideasTitle": "Bir fikir paylaşın — TabStyr",
     "ideasDescription": "TabStyr için bir özellik önerin veya bir hata bildirin. Hesap yok, takip yok — doğrudan geliştiriciye ulaşır.",
     "wrappedTitle": "Tarama Özeti — TabStyr",
-    "wrappedDescription": "TabStyr dışa aktarımınızı bırakın ve şık, paylaşılabilir bir Tarama Özeti elde edin — web'de geçirdiğiniz zaman, %100 tarayıcınızda hesaplanır."
+    "wrappedDescription": "TabStyr dışa aktarımınızı bırakın ve şık, paylaşılabilir bir Tarama Özeti elde edin — web'de geçirdiğiniz zaman, %100 tarayıcınızda hesaplanır.",
+    "changelogTitle": "Değişiklik günlüğü — TabStyr",
+    "changelogDescription": "TabStyr'ın her sürümü, doğrudan GitHub'dan — yenilikleri ve değişiklikleri görün."
   },
   "nav": {
     "features": "Özellikler",
@@ -79,6 +81,27 @@
         "body": "Tüm geçmişinizi JSON olarak, isteğe bağlı olarak parolayla şifrelenmiş (AES-256-GCM) şekilde dışa aktarın. Herhangi bir cihazda geri yükleyin."
       }
     ]
+  },
+  "howItWorks": {
+    "eyebrow": "Nasıl çalışır",
+    "title": "Kurulumdan analize üç adımda",
+    "sub": "Kurulum yok, hesap yok, ayarlanacak bir şey yok.",
+    "steps": [
+      {
+        "title": "Tarayıcına ekle",
+        "body": "Chrome Web Store'dan tek tıkla. Kayıt yok, aktif sekme dışında izin yok."
+      },
+      {
+        "title": "Her zamanki gibi gezin",
+        "body": "TabStyr arka planda aktif süreyi izler — boşta kalmayı ve sesi algılar, hepsi cihazında kalır."
+      },
+      {
+        "title": "İstediğin an panoyu aç",
+        "body": "Trendler, ısı haritası, odak skoru ve tam döküm — senkronizasyon veya bekleme yok."
+      }
+    ],
+    "watchDemo": "40 saniyelik demoyu izle",
+    "videoAria": "TabStyr pano turu"
   },
   "showcase": {
     "eyebrow": "Her yerden bir bakış",
@@ -441,5 +464,12 @@
   },
   "a11y": {
     "skipToContent": "İçeriğe geç"
+  },
+  "changelogPage": {
+    "eyebrow": "Değişiklik günlüğü",
+    "title": "TabStyr'da yenilikler",
+    "sub": "Her sürüm, doğrudan GitHub'dan.",
+    "back": "Geri",
+    "backCta": "Ana sayfaya dön"
   }
 }

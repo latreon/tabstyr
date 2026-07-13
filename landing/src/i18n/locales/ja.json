@@ -8,7 +8,9 @@
     "ideasTitle": "アイデアを共有 — TabStyr",
     "ideasDescription": "TabStyr への機能の提案やバグの報告。アカウント不要、トラッキングなし — 作者に直接届きます。",
     "wrappedTitle": "Browsing Wrapped — TabStyr",
-    "wrappedDescription": "TabStyr のエクスポートファイルをドロップすると、美しくシェアできる Browsing Wrapped が完成 — あなたのウェブでの時間を、100% ブラウザ内で算出します。"
+    "wrappedDescription": "TabStyr のエクスポートファイルをドロップすると、美しくシェアできる Browsing Wrapped が完成 — あなたのウェブでの時間を、100% ブラウザ内で算出します。",
+    "changelogTitle": "更新履歴 — TabStyr",
+    "changelogDescription": "GitHubから直接届く、TabStyrのすべてのリリース情報。新機能や変更点を確認できます。"
   },
   "nav": {
     "features": "機能",
@@ -79,6 +81,27 @@
         "body": "履歴全体を JSON としてエクスポート。任意でパスフレーズによる暗号化（AES-256-GCM）も。どの端末でも復元できます。"
       }
     ]
+  },
+  "howItWorks": {
+    "eyebrow": "使い方",
+    "title": "インストールから分析まで3ステップ",
+    "sub": "セットアップもアカウントも設定も不要です。",
+    "steps": [
+      {
+        "title": "ブラウザに追加",
+        "body": "Chrome ウェブストアからワンクリック。登録不要、アクティブタブ以外の権限もありません。"
+      },
+      {
+        "title": "いつも通りブラウジング",
+        "body": "TabStyrはバックグラウンドでアクティブ時間を記録します — アイドル検知・音声検知もすべて端末内で処理。"
+      },
+      {
+        "title": "好きなときにダッシュボードを開く",
+        "body": "トレンド、ヒートマップ、フォーカススコア、詳細な内訳 — 同期も待ち時間もありません。"
+      }
+    ],
+    "watchDemo": "40秒のデモを見る",
+    "videoAria": "TabStyrダッシュボードのウォークスルー"
   },
   "showcase": {
     "eyebrow": "どこからでもひと目で",
@@ -441,5 +464,12 @@
   },
   "a11y": {
     "skipToContent": "コンテンツへスキップ"
+  },
+  "changelogPage": {
+    "eyebrow": "更新履歴",
+    "title": "TabStyrの新機能",
+    "sub": "GitHubから直接届く、すべてのリリース情報。",
+    "back": "戻る",
+    "backCta": "ホームに戻る"
   }
 }

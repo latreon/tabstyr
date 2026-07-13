@@ -8,7 +8,9 @@
     "ideasTitle": "Share an idea — TabStyr",
     "ideasDescription": "Suggest a feature or report a bug for TabStyr. No account, no tracking — it goes straight to the maker.",
     "wrappedTitle": "Browsing Wrapped — TabStyr",
-    "wrappedDescription": "Drop your TabStyr export and get a gorgeous, shareable Browsing Wrapped — your time on the web, computed 100% in your browser."
+    "wrappedDescription": "Drop your TabStyr export and get a gorgeous, shareable Browsing Wrapped — your time on the web, computed 100% in your browser.",
+    "changelogTitle": "Changelog — TabStyr",
+    "changelogDescription": "Every TabStyr release, straight from GitHub — see what's new and what changed."
   },
   "nav": {
     "features": "Features",
@@ -79,6 +81,27 @@
         "body": "Export your full history as JSON, optionally passphrase-encrypted (AES-256-GCM). Restore on any device."
       }
     ]
+  },
+  "howItWorks": {
+    "eyebrow": "How it works",
+    "title": "From install to insight in three steps",
+    "sub": "No setup, no account, no config to get right.",
+    "steps": [
+      {
+        "title": "Add it to your browser",
+        "body": "One click from the Chrome Web Store. No sign-up, no permissions beyond the active tab."
+      },
+      {
+        "title": "Browse like you normally do",
+        "body": "TabStyr tracks active time in the background — idle-aware, audio-aware, entirely on-device."
+      },
+      {
+        "title": "Open the dashboard whenever",
+        "body": "Trends, heatmap, focus score, and a full breakdown — right there, nothing to sync or wait for."
+      }
+    ],
+    "watchDemo": "Watch a 40-second demo",
+    "videoAria": "TabStyr dashboard walkthrough"
   },
   "showcase": {
     "eyebrow": "Glance from anywhere",
@@ -441,5 +464,12 @@
   },
   "a11y": {
     "skipToContent": "Skip to content"
+  },
+  "changelogPage": {
+    "eyebrow": "Changelog",
+    "title": "What's new in TabStyr",
+    "sub": "Every release, straight from GitHub.",
+    "back": "Back",
+    "backCta": "Back to home"
   }
 }

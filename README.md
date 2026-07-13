@@ -118,6 +118,9 @@ network requests. Your data lives in your browser's database and never leaves it
 > Captured from the live extension with sample data. Your own dashboard fills in
 > as you browse.
 
+**[Watch a 40-second demo](https://tabstyr.com/#how-it-works)** — a real screen
+recording of the dashboard, not a slideshow.
+
 ## Privacy
 
 TabStyr collects **nothing** and sends **nothing**. All activity is stored locally
@@ -287,6 +290,7 @@ npm run build:safari     # Safari    → dist/safari-mv2 (then convert with Xcod
 npm run zip              # Chromium store-ready zip
 npm run zip:firefox      # Firefox store-ready zip
 node scripts/make-promo.mjs   # regenerate promo images
+npm run promo:video           # regenerate the demo video (docs/store/promo/)
 ```
 
 ## Testing
