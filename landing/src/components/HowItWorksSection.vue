@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from '@/i18n';
+import DemoPlayer from './DemoPlayer.vue';
 
 const { t, tm } = useI18n();
 const steps = computed(() => tm<{ title: string; body: string }[]>('howItWorks.steps'));
@@ -26,21 +27,14 @@ const steps = computed(() => tm<{ title: string; body: string }[]>('howItWorks.s
           </li>
         </ol>
 
-        <figure class="demo reveal">
-          <!-- preload="none": nothing downloads until the visitor presses play,
-               so the 1.8MB clip never costs a byte of the initial page weight. -->
-          <video
-            controls
-            preload="none"
+        <div class="demo reveal">
+          <DemoPlayer
+            src="/demo/tabstyr-demo.mp4"
             poster="/demo/tabstyr-demo-poster.jpg"
-            width="1280"
-            height="800"
-            :aria-label="t('howItWorks.videoAria')"
-          >
-            <source src="/demo/tabstyr-demo.mp4" type="video/mp4" />
-          </video>
-          <figcaption>{{ t('howItWorks.watchDemo') }}</figcaption>
-        </figure>
+            :label="t('howItWorks.videoAria')"
+            :watch-label="t('howItWorks.watchDemo')"
+          />
+        </div>
       </div>
     </div>
   </section>
@@ -80,21 +74,6 @@ const steps = computed(() => tm<{ title: string; body: string }[]>('howItWorks.s
 .steps p { margin: 0; color: var(--text-2); font-size: 14px; line-height: 1.6; }
 
 .demo { margin: 0; }
-.demo video {
-  width: 100%;
-  height: auto;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-pop);
-  display: block;
-  background: #000;
-}
-.demo figcaption {
-  text-align: center;
-  margin-top: 12px;
-  font-size: 13px;
-  color: var(--text-3);
-}
 
 @media (max-width: 860px) {
   .grid { grid-template-columns: 1fr; gap: 32px; }
