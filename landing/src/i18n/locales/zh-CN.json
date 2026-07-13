@@ -8,7 +8,9 @@
     "ideasTitle": "分享想法 — TabStyr",
     "ideasDescription": "为 TabStyr 提交功能建议或反馈 bug。无需账户、没有追踪 — 直接送达开发者。",
     "wrappedTitle": "浏览年度回顾 — TabStyr",
-    "wrappedDescription": "拖入你的 TabStyr 导出文件，即可获得一份精美、可分享的浏览年度回顾 — 你在网络上的时光，100% 在你的浏览器中计算。"
+    "wrappedDescription": "拖入你的 TabStyr 导出文件，即可获得一份精美、可分享的浏览年度回顾 — 你在网络上的时光，100% 在你的浏览器中计算。",
+    "changelogTitle": "更新日志 — TabStyr",
+    "changelogDescription": "TabStyr 的每个版本，直接来自 GitHub —— 查看新功能和变更内容。"
   },
   "nav": {
     "features": "功能",
@@ -462,5 +464,12 @@
   },
   "a11y": {
     "skipToContent": "跳到内容"
+  },
+  "changelogPage": {
+    "eyebrow": "更新日志",
+    "title": "TabStyr 更新内容",
+    "sub": "每个版本，直接来自 GitHub。",
+    "back": "返回",
+    "backCta": "返回首页"
   }
 }

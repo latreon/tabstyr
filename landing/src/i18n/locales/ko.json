@@ -8,7 +8,9 @@
     "ideasTitle": "아이디어 공유 — TabStyr",
     "ideasDescription": "TabStyr에 대한 기능 제안이나 버그 제보를 보내주세요. 계정도, 추적도 없이 — 곧바로 제작자에게 전달됩니다.",
     "wrappedTitle": "브라우징 결산 — TabStyr",
-    "wrappedDescription": "TabStyr 내보내기 파일을 끌어다 놓으면 멋지고 공유 가능한 브라우징 결산이 만들어집니다 — 웹에서 보낸 당신의 시간, 100% 브라우저 안에서 계산됩니다."
+    "wrappedDescription": "TabStyr 내보내기 파일을 끌어다 놓으면 멋지고 공유 가능한 브라우징 결산이 만들어집니다 — 웹에서 보낸 당신의 시간, 100% 브라우저 안에서 계산됩니다.",
+    "changelogTitle": "변경 내역 — TabStyr",
+    "changelogDescription": "GitHub에서 직접 가져온 TabStyr의 모든 릴리스 — 새로운 점과 변경된 점을 확인하세요."
   },
   "nav": {
     "features": "기능",
@@ -462,5 +464,12 @@
   },
   "a11y": {
     "skipToContent": "본문으로 건너뛰기"
+  },
+  "changelogPage": {
+    "eyebrow": "변경 내역",
+    "title": "TabStyr의 새로운 기능",
+    "sub": "GitHub에서 직접 가져온 모든 릴리스.",
+    "back": "뒤로",
+    "backCta": "홈으로 돌아가기"
   }
 }

@@ -8,7 +8,9 @@
     "ideasTitle": "Condividi un'idea — TabStyr",
     "ideasDescription": "Suggerisci una funzione o segnala un bug per TabStyr. Nessun account, nessun tracciamento — arriva direttamente a chi lo crea.",
     "wrappedTitle": "Browsing Wrapped — TabStyr",
-    "wrappedDescription": "Trascina il tuo export di TabStyr e ottieni un Browsing Wrapped splendido e condivisibile — il tuo tempo sul web, calcolato al 100% nel tuo browser."
+    "wrappedDescription": "Trascina il tuo export di TabStyr e ottieni un Browsing Wrapped splendido e condivisibile — il tuo tempo sul web, calcolato al 100% nel tuo browser.",
+    "changelogTitle": "Changelog — TabStyr",
+    "changelogDescription": "Ogni versione di TabStyr, direttamente da GitHub: scopri le novità e le modifiche."
   },
   "nav": {
     "features": "Funzioni",
@@ -462,5 +464,12 @@
   },
   "a11y": {
     "skipToContent": "Vai al contenuto"
+  },
+  "changelogPage": {
+    "eyebrow": "Changelog",
+    "title": "Novità di TabStyr",
+    "sub": "Ogni versione, direttamente da GitHub.",
+    "back": "Indietro",
+    "backCta": "Torna alla home"
   }
 }

@@ -8,7 +8,9 @@
     "ideasTitle": "Compartilhe uma ideia — TabStyr",
     "ideasDescription": "Sugira um recurso ou relate um bug para o TabStyr. Sem conta, sem rastreamento — vai direto para o criador.",
     "wrappedTitle": "Retrospectiva de Navegação — TabStyr",
-    "wrappedDescription": "Solte aqui a sua exportação do TabStyr e receba uma linda Retrospectiva de Navegação, pronta para compartilhar — o seu tempo na web, calculado 100% no seu navegador."
+    "wrappedDescription": "Solte aqui a sua exportação do TabStyr e receba uma linda Retrospectiva de Navegação, pronta para compartilhar — o seu tempo na web, calculado 100% no seu navegador.",
+    "changelogTitle": "Changelog — TabStyr",
+    "changelogDescription": "Cada versão do TabStyr, direto do GitHub — veja o que há de novo e o que mudou."
   },
   "nav": {
     "features": "Recursos",
@@ -462,5 +464,12 @@
   },
   "a11y": {
     "skipToContent": "Pular para o conteúdo"
+  },
+  "changelogPage": {
+    "eyebrow": "Changelog",
+    "title": "Novidades do TabStyr",
+    "sub": "Cada versão, direto do GitHub.",
+    "back": "Voltar",
+    "backCta": "Voltar para o início"
   }
 }

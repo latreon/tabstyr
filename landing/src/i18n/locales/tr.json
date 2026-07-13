@@ -8,7 +8,9 @@
     "ideasTitle": "Bir fikir paylaşın — TabStyr",
     "ideasDescription": "TabStyr için bir özellik önerin veya bir hata bildirin. Hesap yok, takip yok — doğrudan geliştiriciye ulaşır.",
     "wrappedTitle": "Tarama Özeti — TabStyr",
-    "wrappedDescription": "TabStyr dışa aktarımınızı bırakın ve şık, paylaşılabilir bir Tarama Özeti elde edin — web'de geçirdiğiniz zaman, %100 tarayıcınızda hesaplanır."
+    "wrappedDescription": "TabStyr dışa aktarımınızı bırakın ve şık, paylaşılabilir bir Tarama Özeti elde edin — web'de geçirdiğiniz zaman, %100 tarayıcınızda hesaplanır.",
+    "changelogTitle": "Değişiklik günlüğü — TabStyr",
+    "changelogDescription": "TabStyr'ın her sürümü, doğrudan GitHub'dan — yenilikleri ve değişiklikleri görün."
   },
   "nav": {
     "features": "Özellikler",
@@ -462,5 +464,12 @@
   },
   "a11y": {
     "skipToContent": "İçeriğe geç"
+  },
+  "changelogPage": {
+    "eyebrow": "Değişiklik günlüğü",
+    "title": "TabStyr'da yenilikler",
+    "sub": "Her sürüm, doğrudan GitHub'dan.",
+    "back": "Geri",
+    "backCta": "Ana sayfaya dön"
   }
 }
