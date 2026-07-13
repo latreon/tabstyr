@@ -121,6 +121,25 @@ network requests. Your data lives in your browser's database and never leaves it
 **[Watch a 40-second demo](https://tabstyr.com/#how-it-works)** — a real screen
 recording of the dashboard, not a slideshow.
 
+## TabStyr vs. RescueTime / Toggl Track
+
+Not a like-for-like replacement — TabStyr only sees browser tabs, not other
+apps. If you need cross-app tracking, a system-level tool is the right choice.
+For browser time specifically:
+
+| | TabStyr | RescueTime | Toggl Track |
+|---|---|---|---|
+| Where your data lives | Only your device (IndexedDB) | RescueTime's servers | Toggl's servers |
+| Account required | No | Yes | Yes |
+| Price | Free, no tiers | Free tier + paid plans | Free tier + paid plans |
+| Tracks | Browser tabs only | All apps + browser | Manual/automatic time entries |
+| Source | Open (MIT) | Closed | Closed |
+| Setup | Install, done | Install + account + sync | Install + account + workspace setup |
+
+If cross-app tracking or team reporting is what you need, RescueTime or Toggl
+are the better fit. If you specifically want to see where *browser* time goes
+without an account or your data leaving the device, that's what TabStyr is for.
+
 ## Privacy
 
 TabStyr collects **nothing** and sends **nothing**. All activity is stored locally
