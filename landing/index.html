@@ -45,6 +45,36 @@
     <meta name="twitter:description" content="Active time per site, trends, heatmaps, focus. 100% local — nothing leaves your device." />
     <meta name="twitter:image" content="https://tabstyr.com/shots/dashboard-dark.png" />
 
+    <!-- Structured data for rich results. No aggregateRating/review: there's no
+         real rating data yet, and fabricating one would violate Google's
+         structured-data guidelines (and just be dishonest). Add it once reviews
+         exist. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "TabStyr",
+        "description": "See where your browser time really goes — active time per site, trends, heatmaps, focus, and stale-tab nudges. 100% local. 0 bytes leave your device.",
+        "url": "https://tabstyr.com/",
+        "applicationCategory": "BrowserApplication",
+        "operatingSystem": "Chrome",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "author": {
+          "@type": "Person",
+          "name": "latreon",
+          "url": "https://github.com/latreon"
+        },
+        "sameAs": [
+          "https://github.com/latreon/tabstyr",
+          "https://chromewebstore.google.com/detail/tabstyr/mgckngagefippkemgmmccfaaljmgllpa"
+        ]
+      }
+    </script>
+
     <link rel="icon" type="image/svg+xml" href="./icon.svg" />
     <link rel="icon" type="image/png" href="./icon-128.png" />
     <!-- Fonts are self-hosted (bundled via @fontsource and imported in main.ts),
