@@ -318,7 +318,13 @@
     "importCsvHint": "Seed data from another tracker: a CSV with date, site and time columns (e.g. a RescueTime export). Imported time is shown as an estimate and never overwrites measured days.",
     "imported": "Imported {count} entries (estimated).",
     "importEmpty": "No usable rows found in that CSV.",
-    "importInvalid": "Couldn't read that CSV — it needs date, site and time columns."
+    "importInvalid": "Couldn't read that CSV — it needs date, site and time columns.",
+    "dataExport": "Export data",
+    "dataExportHint": "Every tracked day, flattened to one row per site with its category and productivity — for Excel, Google Sheets, or any analysis tool. Read-only: unlike JSON backups, this can't be restored.",
+    "exportCsv": "Export CSV",
+    "exportDataJson": "Export data (JSON)",
+    "exportedDataCsv": "Exported data as CSV",
+    "exportedDataJson": "Exported data as JSON"
   },
   "onboarding": {
     "title": "Welcome to TabStyr",

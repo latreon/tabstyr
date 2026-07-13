@@ -99,9 +99,29 @@ test('settings export buttons are present', async ({ context, extensionId }) => 
   await dismissOnboarding(page); // onboarding inerts the background until dismissed
   // SettingsPanel sits deep in the dashboard and mounts after data load; give it
   // the same headroom the other post-load assertions use.
-  await expect(page.getByRole('button', { name: 'Export JSON' })).toBeVisible({ timeout: 10_000 });
-  // JSON is the only export format now (CSV removed). Restore is the other action.
+  await expect(page.getByRole('button', { name: 'Export JSON', exact: true })).toBeVisible({ timeout: 10_000 });
+  // JSON is the only backup export format (CSV removed). Restore is the other action.
   await expect(page.getByRole('button', { name: 'Restore' })).toBeVisible();
+  // Separate "export for analysis" pair — flat CSV/JSON of all tracked activity,
+  // not the restorable backup above.
+  await expect(page.getByRole('button', { name: 'Export CSV', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Export data (JSON)' })).toBeVisible();
+});
+
+test('data export CSV button downloads a spreadsheet-ready file', async ({ context, extensionId }) => {
+  const page = await context.newPage();
+  await page.goto(`chrome-extension://${extensionId}/dashboard.html`);
+  await dismissOnboarding(page);
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByRole('button', { name: 'Export CSV', exact: true }).click(),
+  ]);
+  expect(download.suggestedFilename()).toMatch(/^tabstyr-data-\d{4}-\d{2}-\d{2}\.csv$/);
+  const stream = await download.createReadStream();
+  const chunks: Buffer[] = [];
+  for await (const chunk of stream) chunks.push(chunk as Buffer);
+  const csv = Buffer.concat(chunks).toString('utf8');
+  expect(csv.split('\r\n')[0]).toBe('period,granularity,domain,category,productivity,active_seconds,active_hm,audio_seconds');
 });
 
 test('theme toggle flips data-theme', async ({ context, extensionId }) => {
