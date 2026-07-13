@@ -3,11 +3,18 @@ import en from '@/lib/i18n/locales/en.json';
 import es from '@/lib/i18n/locales/es.json';
 import de from '@/lib/i18n/locales/de.json';
 import fr from '@/lib/i18n/locales/fr.json';
+import it from '@/lib/i18n/locales/it.json';
 import ja from '@/lib/i18n/locales/ja.json';
+import ko from '@/lib/i18n/locales/ko.json';
+import ptBR from '@/lib/i18n/locales/pt-BR.json';
+import ru from '@/lib/i18n/locales/ru.json';
+import tr from '@/lib/i18n/locales/tr.json';
 import zhCN from '@/lib/i18n/locales/zh-CN.json';
 
 type Tree = { [k: string]: string | Tree };
-const LOCALES: Record<string, Tree> = { es, de, fr, ja, 'zh-CN': zhCN };
+// All 11 shipped locales — was previously only checking 5 of them (es/de/fr/ja/zh-CN),
+// so a broken/missing key in it, ko, pt-BR, ru, or tr could ship undetected.
+const LOCALES: Record<string, Tree> = { es, de, fr, it, ja, ko, 'pt-BR': ptBR, ru, tr, 'zh-CN': zhCN };
 
 function flatten(obj: Tree, prefix = ''): Record<string, string> {
   const out: Record<string, string> = {};

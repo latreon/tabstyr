@@ -18,7 +18,8 @@
     "check:version": "node scripts/sync-readme-version.mjs",
     "version": "node scripts/sync-readme-version.mjs --write && git add .github/badges/version.svg",
     "promo:video": "node scripts/make-promo-video.mjs",
-    "changelog:fetch": "node scripts/fetch-changelog.mjs"
+    "changelog:fetch": "node scripts/fetch-changelog.mjs",
+    "changelog:md": "node scripts/generate-changelog.mjs"
   },
   "dependencies": {
     "idb": "^8.0.0",
