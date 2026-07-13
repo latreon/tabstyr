@@ -298,6 +298,8 @@
     "backupNote": "JSON backups include open-tab titles. Encrypt the backup if titles may be sensitive.",
     "notifications": "Stale-tab reminders",
     "notificationsHint": "A once-a-day notification when tabs sit untouched past the stale threshold.",
+    "sessionAlert": "Continuous-session alert (min)",
+    "sessionAlertHint": "A gentle nudge after this many minutes straight on one distracting-category site (0 = off). Productive and neutral sites are never interrupted.",
     "showIntro": "Show intro again",
     "introShown": "Intro will show on the dashboard",
     "restoreInvalid": "That file isn't a valid TabStyr backup.",
@@ -322,14 +324,16 @@
   },
   "onboarding": {
     "title": "Welcome to TabStyr",
-    "lede": "A quiet picture of where your browser time actually goes. Here's the gist:",
-    "trackTitle": "What it tracks",
-    "trackBody": "Active foreground time on each site — the tab you're actually looking at. Background audio is counted separately.",
-    "privateTitle": "100% private",
-    "privateBody": "Everything stays in this browser. No account, no servers, no network calls. Export or wipe your data anytime.",
-    "categorizedTitle": "Auto-categorized",
-    "categorizedBody": "Sites are sorted into the categories below — the colored dots across the dashboard use these. Reclassify any site, or add your own rules in Settings.",
+    "stepLabel": "Step {n} of {total}",
+    "step1Title": "You're all set",
+    "step1Body": "TabStyr is already tracking active foreground time on each site — no setup needed. Everything stays on this device: no account, no servers, no network calls.",
+    "step2Title": "Just browse normally",
+    "step2Body": "There's nothing to do right now. Click the toolbar icon any time for a quick look at today's activity.",
+    "step3Title": "Check back tomorrow",
+    "step3Body": "Come back after a day of browsing to see trends, your activity heatmap, and Focus %. Sites are auto-categorized below — reclassify any of them, or add your own rules, in Settings.",
     "legendAria": "Category colour key",
+    "back": "Back",
+    "next": "Next",
     "gotIt": "Got it",
     "close": "Close"
   },
@@ -344,7 +348,8 @@
   },
   "notification": {
     "stale": "{count} tabs untouched for {days}+ days",
-    "budget": "Daily budget reached: {category}"
+    "budget": "Daily budget reached: {category}",
+    "sessionAlert": "You've been on {domain} for {minutes}+ min"
   },
   "productivity": {
     "productive": "Productive",

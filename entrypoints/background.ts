@@ -2,9 +2,10 @@ import { browser } from 'wxt/browser';
 import { TrackerEngine } from '@/lib/tracker/engine';
 import { rollup } from '@/lib/tracker/aggregate';
 import { findStale, rematchTabMeta, shouldNotify } from '@/lib/tracker/stale';
-import { staleNotification, storageFullNotification, budgetNotification } from '@/lib/i18n/notify';
+import { advanceSessionAlertState, shouldNotifySessionAlert, type SessionAlertState } from '@/lib/tracker/session-alert';
+import { staleNotification, storageFullNotification, budgetNotification, sessionAlertNotification } from '@/lib/i18n/notify';
 import { getSettings, invalidateSettings } from '@/lib/settings';
-import { groupByCategory } from '@/lib/categories';
+import { categorize, categoryProductivityOf, groupByCategory } from '@/lib/categories';
 import { activeSeconds } from '@/lib/metrics';
 import { exceededBudgets, shouldNotifyBudget } from '@/lib/budgets';
 import * as repo from '@/lib/db/repo';
@@ -307,6 +308,34 @@ export default defineBackground(() => {
     await browser.storage.local.set({ budgetNotifyState: { lastDate: today, ids: exceeded } });
   }
 
+  // Continuous-session nudge: fires (at most once per uninterrupted visit) once the
+  // currently-focused domain — if classified 'distracting' — has been continuously
+  // in view for `sessionAlertMinutes`. Runs every heartbeat (not the coarser badge
+  // cadence) so it fires promptly; the work itself is cheap (one settings read, one
+  // categorize() call, one storage.local round-trip) and a no-op once the day's
+  // settings are cached.
+  async function checkSessionAlert(eng: TrackerEngine, now: number): Promise<void> {
+    const settings = await getSettings();
+    if (!settings.notificationsEnabled || !browser.notifications || settings.sessionAlertMinutes <= 0) return;
+    const focused = eng.getState().focused;
+    const domain = focused && isWebDomain(focused.domain) ? focused.domain : null;
+    const { sessionAlertState } = await browser.storage.local.get('sessionAlertState');
+    const prev = (sessionAlertState as SessionAlertState | undefined) ?? null;
+    const state = advanceSessionAlertState(domain, prev, now);
+    const category = domain ? categorize(domain, settings.categoryOverrides, settings.categoryRules) : null;
+    const isDistracting = !!category && categoryProductivityOf(category, settings.categoryProductivity, settings.customCategories) === 'distracting';
+    const fire = shouldNotifySessionAlert(state, isDistracting, settings.sessionAlertMinutes, now);
+    if (fire) {
+      await browser.notifications.create('tab-time-session', {
+        type: 'basic',
+        iconUrl: browser.runtime.getURL('/icon/128.png'),
+        title: 'TabStyr',
+        message: sessionAlertNotification(settings.language, domain!, settings.sessionAlertMinutes),
+      });
+    }
+    await browser.storage.local.set({ sessionAlertState: fire ? { ...state, notified: true } : state });
+  }
+
   async function runDailyMaintenance(now: number): Promise<void> {
     const today = dateKey(now);
     await repo.pruneBefore(addDays(today, -RETENTION_DAYS), now - RETENTION_DAYS * DAY_MS);
@@ -536,6 +565,9 @@ export default defineBackground(() => {
       const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
       if (tab) eng.setFocusedAudible(!!tab.audible);
       await persist(eng, eng.checkpoint(now));
+      // Every heartbeat, not the coarser badge cadence — a continuous-session nudge
+      // needs to fire promptly once the threshold is crossed, not up to ~10 min late.
+      await checkSessionAlert(eng, now);
       // Badge is days-granularity — refresh periodically, not every minute. The
       // budget check rides the same cadence (cheap; no-op when no budgets set).
       if (++heartbeatTicks % BADGE_HEARTBEAT_INTERVAL === 0) {
@@ -577,9 +609,9 @@ export default defineBackground(() => {
   }));
 
   browser.notifications?.onClicked?.addListener((notificationId) => {
-    // The budget nudge opens the dashboard to the focus section; stale/other open the
-    // stale-tab manager (the historical default).
-    const hash = notificationId === 'tab-time-budget' ? '#focus' : '#stale';
+    // The budget nudge and the continuous-session nudge both open the dashboard to
+    // the focus section; stale/other open the stale-tab manager (the historical default).
+    const hash = notificationId === 'tab-time-budget' || notificationId === 'tab-time-session' ? '#focus' : '#stale';
     void browser.tabs.create({ url: browser.runtime.getURL(`/dashboard.html${hash}`) });
   });
 
@@ -621,7 +653,7 @@ export default defineBackground(() => {
     } else if (msg?.type === 'wipe-data') {
       await repo.wipeAll();
       await sessionStore.remove('engineState');
-      await browser.storage.local.remove(['notifyState', 'keyMigrationV2', 'budgetNotifyState']);
+      await browser.storage.local.remove(['notifyState', 'keyMigrationV2', 'budgetNotifyState', 'sessionAlertState']);
       enginePromise = null;
       await updateBadge();
     }

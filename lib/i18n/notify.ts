@@ -45,6 +45,22 @@ const BUDGET: Record<string, string> = {
   'zh-CN': '已达每日预算：{category}',
 };
 
+// Keep in sync with each locale's `notification.sessionAlert`. {domain} is the
+// raw hostname (not localized — a hostname reads the same in every language).
+const SESSION_ALERT: Record<string, string> = {
+  en: "You've been on {domain} for {minutes}+ min",
+  es: 'Llevas {minutes}+ min en {domain}',
+  de: 'Du bist seit {minutes}+ Min. auf {domain}',
+  fr: 'Vous êtes sur {domain} depuis {minutes}+ min',
+  it: 'Sei su {domain} da {minutes}+ min',
+  'pt-BR': 'Você está em {domain} há {minutes}+ min',
+  ru: 'Вы на {domain} уже {minutes}+ мин',
+  tr: '{domain} üzerinde {minutes}+ dk’dır bulunuyorsunuz',
+  ja: '{domain} を {minutes} 分以上見ています',
+  ko: '{domain}에서 {minutes}분 이상 머물렀습니다',
+  'zh-CN': '你已在 {domain} 停留 {minutes}+ 分钟',
+};
+
 // Localized category names for the SW (which has no vue-i18n). Small, single-word
 // strings — same rationale as STALE/STORAGE_FULL: inline rather than bundle the
 // full catalogs. Keep in sync with each locale's `categories.*`.
@@ -94,4 +110,9 @@ export function budgetNotification(languagePref: string | undefined, category: s
   const lang = resolve(languagePref);
   const label = CATEGORY_LABELS[lang]?.[category] ?? CATEGORY_LABELS.en[category] ?? category;
   return interpolate(BUDGET[lang] ?? BUDGET.en, { category: label });
+}
+
+/** Localized continuous-session nudge, e.g. "You've been on reddit.com for 30+ min". */
+export function sessionAlertNotification(languagePref: string | undefined, domain: string, minutes: number): string {
+  return interpolate(SESSION_ALERT[resolve(languagePref)] ?? SESSION_ALERT.en, { domain, minutes });
 }

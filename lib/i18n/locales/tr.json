@@ -298,6 +298,8 @@
     "backupNote": "JSON yedekleri açık sekme başlıklarını içerir. Başlıklar hassas olabiliyorsa yedeği şifreleyin.",
     "notifications": "Durağan sekme hatırlatıcıları",
     "notificationsHint": "Sekmeler eşik süresini aşarak dokunulmadan kaldığında günde bir bildirim.",
+    "sessionAlert": "Kesintisiz oturum uyarısı (dk)",
+    "sessionAlertHint": "Dikkat dağıtıcı kategorideki bir sitede bu kadar dakika kesintisiz kaldığınızda nazik bir hatırlatma (0 = kapalı). Üretken ve nötr siteler asla kesintiye uğratılmaz.",
     "showIntro": "Tanıtımı tekrar göster",
     "introShown": "Tanıtım panoda gösterilecek",
     "restoreInvalid": "Bu dosya geçerli bir TabStyr yedeği değil.",
@@ -322,14 +324,16 @@
   },
   "onboarding": {
     "title": "TabStyr'a hoş geldiniz",
-    "lede": "Tarayıcı zamanınızın gerçekte nereye gittiğine dair sakin bir tablo. Özetle:",
-    "trackTitle": "Neyi izler",
-    "trackBody": "Her sitedeki aktif ön plan süresi — gerçekten baktığınız sekme. Arka plan sesi ayrı sayılır.",
-    "privateTitle": "%100 gizli",
-    "privateBody": "Her şey bu tarayıcıda kalır. Hesap yok, sunucu yok, ağ çağrısı yok. Verilerinizi istediğiniz zaman dışa aktarın veya silin.",
-    "categorizedTitle": "Otomatik sınıflandırma",
-    "categorizedBody": "Siteler aşağıdaki kategorilere ayrılır — paneldeki renkli noktalar bunları kullanır. Herhangi bir siteyi yeniden sınıflandırın veya Ayarlar'da kendi kurallarınızı ekleyin.",
+    "stepLabel": "{total} adımdan {n}.",
+    "step1Title": "Her şey hazır",
+    "step1Body": "TabStyr her sitedeki aktif ön plan süresini zaten izliyor — kurulum gerekmez. Her şey bu cihazda kalır: hesap yok, sunucu yok, ağ çağrısı yok.",
+    "step2Title": "Normal şekilde gezinmeye devam edin",
+    "step2Body": "Şu an yapılacak bir şey yok. Bugünün etkinliğine hızlıca göz atmak için istediğiniz zaman araç çubuğu simgesine tıklayın.",
+    "step3Title": "Yarın tekrar bakın",
+    "step3Body": "Bir günlük kullanımdan sonra tekrar gelip eğilimleri, etkinlik ısı haritanızı ve odak %'sini görün. Siteler aşağıda otomatik olarak sınıflandırılır — herhangi birini yeniden sınıflandırın veya Ayarlar'da kendi kurallarınızı ekleyin.",
     "legendAria": "Kategori renk açıklaması",
+    "back": "Geri",
+    "next": "İleri",
     "gotIt": "Anladım",
     "close": "Kapat"
   },
@@ -344,7 +348,8 @@
   },
   "notification": {
     "stale": "{count} sekme {days}+ gündür kullanılmadı",
-    "budget": "Günlük bütçe doldu: {category}"
+    "budget": "Günlük bütçe doldu: {category}",
+    "sessionAlert": "{domain} üzerinde {minutes}+ dk’dır bulunuyorsunuz"
   },
   "productivity": {
     "productive": "Üretken",

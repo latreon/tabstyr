@@ -298,6 +298,8 @@
     "backupNote": "Las copias JSON incluyen los títulos de las pestañas abiertas. Cifra la copia si los títulos pueden ser sensibles.",
     "notifications": "Recordatorios de pestañas inactivas",
     "notificationsHint": "Una notificación al día cuando hay pestañas sin tocar más allá del umbral.",
+    "sessionAlert": "Alerta de sesión continua (min)",
+    "sessionAlertHint": "Un aviso suave tras este número de minutos seguidos en un sitio de categoría distractora (0 = desactivado). Los sitios productivos y neutros nunca se interrumpen.",
     "showIntro": "Mostrar la introducción otra vez",
     "introShown": "La introducción se mostrará en el panel",
     "restoreInvalid": "Ese archivo no es una copia de seguridad válida de TabStyr.",
@@ -322,14 +324,16 @@
   },
   "onboarding": {
     "title": "Te damos la bienvenida a TabStyr",
-    "lede": "Una imagen tranquila de adónde va realmente tu tiempo de navegación. Esto es lo esencial:",
-    "trackTitle": "Qué registra",
-    "trackBody": "El tiempo activo en primer plano de cada sitio: la pestaña que realmente estás viendo. El audio en segundo plano se cuenta por separado.",
-    "privateTitle": "100% privado",
-    "privateBody": "Todo permanece en este navegador. Sin cuenta, sin servidores, sin llamadas de red. Exporta o borra tus datos en cualquier momento.",
-    "categorizedTitle": "Categorizado automáticamente",
-    "categorizedBody": "Los sitios se ordenan en las categorías de abajo: los puntos de colores de todo el panel las usan. Reclasifica cualquier sitio o añade tus propias reglas en Ajustes.",
+    "stepLabel": "Paso {n} de {total}",
+    "step1Title": "Ya está todo listo",
+    "step1Body": "TabStyr ya está registrando el tiempo activo en primer plano de cada sitio — sin configuración. Todo permanece en este dispositivo: sin cuenta, sin servidores, sin llamadas de red.",
+    "step2Title": "Navega con normalidad",
+    "step2Body": "Ahora mismo no hay nada que hacer. Haz clic en el icono de la barra de herramientas cuando quieras para ver un resumen rápido de la actividad de hoy.",
+    "step3Title": "Vuelve mañana",
+    "step3Body": "Vuelve tras un día de navegación para ver tendencias, tu mapa de calor de actividad y el % de enfoque. Los sitios se categorizan automáticamente más abajo — reclasifica cualquiera de ellos o añade tus propias reglas en Ajustes.",
     "legendAria": "Leyenda de colores de categorías",
+    "back": "Atrás",
+    "next": "Siguiente",
     "gotIt": "Entendido",
     "close": "Cerrar"
   },
@@ -344,7 +348,8 @@
   },
   "notification": {
     "stale": "{count} pestañas sin tocar durante más de {days} días",
-    "budget": "Presupuesto diario alcanzado: {category}"
+    "budget": "Presupuesto diario alcanzado: {category}",
+    "sessionAlert": "Llevas {minutes}+ min en {domain}"
   },
   "productivity": {
     "productive": "Productivo",

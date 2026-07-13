@@ -298,6 +298,8 @@
     "backupNote": "Os backups JSON incluem os títulos das abas abertas. Criptografe o backup se os títulos puderem ser sensíveis.",
     "notifications": "Lembretes de abas inativas",
     "notificationsHint": "Uma notificação por dia quando há abas sem uso além do limite.",
+    "sessionAlert": "Alerta de sessão contínua (min)",
+    "sessionAlertHint": "Um lembrete gentil após esses minutos seguidos em um site de categoria distraidora (0 = desativado). Sites produtivos e neutros nunca são interrompidos.",
     "showIntro": "Ver introdução novamente",
     "introShown": "A introdução aparecerá no painel",
     "restoreInvalid": "Esse arquivo não é um backup válido do TabStyr.",
@@ -322,14 +324,16 @@
   },
   "onboarding": {
     "title": "Bem-vindo ao TabStyr",
-    "lede": "Um retrato tranquilo de para onde vai o seu tempo no navegador. Em resumo:",
-    "trackTitle": "O que ele rastreia",
-    "trackBody": "Tempo ativo em primeiro plano em cada site — a aba que você está realmente olhando. O áudio em segundo plano é contado separadamente.",
-    "privateTitle": "100% privado",
-    "privateBody": "Tudo permanece neste navegador. Sem conta, sem servidores, sem chamadas de rede. Exporte ou apague seus dados quando quiser.",
-    "categorizedTitle": "Categorizado automaticamente",
-    "categorizedBody": "Os sites são organizados nas categorias abaixo — os pontos coloridos no painel usam isso. Reclassifique qualquer site ou adicione suas regras nas Configurações.",
+    "stepLabel": "Etapa {n} de {total}",
+    "step1Title": "Tudo pronto",
+    "step1Body": "O TabStyr já está rastreando o tempo ativo em primeiro plano em cada site — sem configuração necessária. Tudo permanece neste dispositivo: sem conta, sem servidores, sem chamadas de rede.",
+    "step2Title": "Navegue normalmente",
+    "step2Body": "Não há nada para fazer agora. Clique no ícone da barra de ferramentas a qualquer momento para uma olhada rápida na atividade de hoje.",
+    "step3Title": "Volte amanhã",
+    "step3Body": "Volte depois de um dia de navegação para ver tendências, seu mapa de calor de atividade e o % de foco. Os sites são categorizados automaticamente abaixo — reclassifique qualquer um deles ou adicione suas próprias regras nas Configurações.",
     "legendAria": "Legenda de cores das categorias",
+    "back": "Voltar",
+    "next": "Avançar",
     "gotIt": "Entendi",
     "close": "Fechar"
   },
@@ -344,7 +348,8 @@
   },
   "notification": {
     "stale": "{count} abas sem uso por {days}+ dias",
-    "budget": "Limite diário atingido: {category}"
+    "budget": "Limite diário atingido: {category}",
+    "sessionAlert": "Você está em {domain} há {minutes}+ min"
   },
   "productivity": {
     "productive": "Produtivo",

@@ -44,6 +44,7 @@ const staleDays = ref(3);
 const idleSeconds = ref(180);
 const audioEnabled = ref(true);
 const notificationsEnabled = ref(true);
+const sessionAlertMinutes = ref(30);
 const focusTarget = ref(50);
 const themeChoice = ref<'light' | 'dark'>('light');
 // Gate auto-save until the initial values are loaded, so seeding the refs in
@@ -69,6 +70,7 @@ onMounted(async () => {
   idleSeconds.value = s.idleSeconds;
   audioEnabled.value = s.audioEnabled;
   notificationsEnabled.value = s.notificationsEnabled;
+  sessionAlertMinutes.value = s.sessionAlertMinutes;
   // If still on the implicit "system" default, show the resolved theme in the picker.
   themeChoice.value = s.theme === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : s.theme;
   focusTarget.value = s.focusTarget;
@@ -101,6 +103,7 @@ async function persistSettings() {
       idleSeconds: idleSeconds.value,
       audioEnabled: audioEnabled.value,
       notificationsEnabled: notificationsEnabled.value,
+      sessionAlertMinutes: sessionAlertMinutes.value,
       focusTarget: focusTarget.value,
     });
     await browser.runtime.sendMessage({ type: 'settings-changed' });
@@ -112,7 +115,7 @@ async function persistSettings() {
   }
 }
 
-watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, focusTarget], () => {
+watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, sessionAlertMinutes, focusTarget], () => {
   if (!loaded.value) return;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(persistSettings, 400);
@@ -460,6 +463,11 @@ async function confirmWipe() {
       <ToggleSwitch v-model="notificationsEnabled" :label="t('settings.notifications')" />
     </div>
     <p class="field-hint">{{ t('settings.notificationsHint') }}</p>
+    <div class="field">
+      <span class="field-label">{{ t('settings.sessionAlert') }}</span>
+      <NumberStepper v-model="sessionAlertMinutes" :min="0" :max="180" :step="5" :label="t('settings.sessionAlert')" />
+    </div>
+    <p class="field-hint">{{ t('settings.sessionAlertHint') }}</p>
     <div class="field">
       <span class="field-label">{{ t('settings.focusTarget') }}</span>
       <NumberStepper v-model="focusTarget" :min="10" :max="90" :step="5" :label="t('settings.focusTarget')" />
