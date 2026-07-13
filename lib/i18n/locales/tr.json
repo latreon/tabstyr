@@ -333,6 +333,12 @@
     "gotIt": "Anladım",
     "close": "Kapat"
   },
+  "reviewPrompt": {
+    "title": "TabStyr'ı beğendiniz mi?",
+    "body": "Hızlı bir değerlendirme başkalarının bulmasına yardımcı olur.",
+    "rate": "Değerlendir",
+    "dismiss": "Hayır, teşekkürler"
+  },
   "dashboard": {
     "statsAria": "Tarayıcı kullanım istatistikleri"
   },

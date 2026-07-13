@@ -13,3 +13,8 @@ export const WRAPPED_URL = `${SITE_URL}/wrapped`;
 // left. Routes to the same in-app "share an idea" form the rest of the site
 // uses, tagged so responses are distinguishable from general feedback.
 export const UNINSTALL_FEEDBACK_URL = `${SITE_URL}/ideas?src=uninstall`;
+
+// Chrome Web Store listing — the /reviews suffix opens straight to the
+// "Write a review" tab instead of the general listing page.
+export const CHROME_STORE_REVIEW_URL =
+  'https://chromewebstore.google.com/detail/tabstyr/mgckngagefippkemgmmccfaaljmgllpa/reviews';

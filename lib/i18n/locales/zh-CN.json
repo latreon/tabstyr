@@ -333,6 +333,12 @@
     "gotIt": "知道了",
     "close": "关闭"
   },
+  "reviewPrompt": {
+    "title": "喜欢 TabStyr 吗？",
+    "body": "简短的评价能帮助更多人发现它。",
+    "rate": "去评价",
+    "dismiss": "不用了"
+  },
   "dashboard": {
     "statsAria": "浏览器使用统计"
   },

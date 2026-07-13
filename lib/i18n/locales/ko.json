@@ -333,6 +333,12 @@
     "gotIt": "확인",
     "close": "닫기"
   },
+  "reviewPrompt": {
+    "title": "TabStyr가 마음에 드시나요?",
+    "body": "간단한 리뷰가 다른 사람들이 찾는 데 도움이 됩니다.",
+    "rate": "평가하기",
+    "dismiss": "괜찮습니다"
+  },
   "dashboard": {
     "statsAria": "브라우저 사용 통계"
   },

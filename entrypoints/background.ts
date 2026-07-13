@@ -11,6 +11,7 @@ import { isQuotaError } from '@/lib/db/errors';
 import { addDays, dateKey } from '@/lib/time';
 import { domainOf, isWebDomain, pageOf } from '@/lib/domain';
 import { UNINSTALL_FEEDBACK_URL } from '@/lib/links';
+import { recordInstallDate } from '@/lib/review-prompt';
 import type { ClosedSession, EngineState, Session } from '@/lib/types';
 
 // Firefox MV2 builds expose browserAction; Chromium MV3 exposes action.
@@ -537,6 +538,7 @@ export default defineBackground(() => {
   browser.runtime.onInstalled.addListener((details) => {
     if (details.reason === 'install') {
       void browser.tabs.create({ url: browser.runtime.getURL('/dashboard.html') });
+      void recordInstallDate(Date.now());
     }
   });
 

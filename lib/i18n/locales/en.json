@@ -333,6 +333,12 @@
     "gotIt": "Got it",
     "close": "Close"
   },
+  "reviewPrompt": {
+    "title": "Enjoying TabStyr?",
+    "body": "A quick review helps others find it.",
+    "rate": "Rate it",
+    "dismiss": "No thanks"
+  },
   "dashboard": {
     "statsAria": "Browser usage statistics"
   },
