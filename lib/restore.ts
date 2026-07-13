@@ -1,7 +1,7 @@
 import * as repo from './db/repo';
 import { SCHEMA_VERSION } from './export';
 import { saveSettings } from './settings';
-import { isWebDomain, pageOf } from './domain';
+import { domainOf, isWebDomain, pageOf } from './domain';
 import type { DailyStat, MonthlyStat, Session, Settings, TabMeta } from './types';
 
 export interface ParsedBackup {
@@ -137,11 +137,20 @@ export function parseBackup(text: string): ParsedBackup {
     monthlyStats: Array.isArray(o.monthlyStats) ? o.monthlyStats.filter(isMonthlyStat).slice(0, MAX_MONTHLY) : [],
     // Re-normalize urls on import: a backup from an older build may carry raw
     // query/fragment values — strip them so restored data also holds no tokens.
+    // Re-derive `domain` from the (normalized) url rather than trusting the stored
+    // field: isSession validates url and domain independently, so a crafted file
+    // could pair domain:"wikipedia.org" with url:"https://attacker.example" and
+    // mis-attribute time to a spoofed domain that round-trips into the next export.
+    // Bind them, then drop any row whose url isn't a real web page.
     sessions: Array.isArray(o.sessions)
       ? o.sessions
           .filter(isSession)
           .slice(0, MAX_SESSIONS)
-          .map((s) => ({ ...s, url: pageOf(s.url), tabKey: s.tabKey ?? '' }))
+          .map((s) => {
+            const url = pageOf(s.url);
+            return { ...s, url, domain: domainOf(url), tabKey: s.tabKey ?? '' };
+          })
+          .filter((s) => isWebDomain(s.domain))
       : [],
     tabMeta: Array.isArray(o.tabMeta)
       ? o.tabMeta.filter(isMeta).slice(0, MAX_TABMETA).map((m) => ({ ...m, url: pageOf(m.url) }))

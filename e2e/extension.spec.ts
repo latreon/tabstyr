@@ -43,15 +43,22 @@ test('dashboard renders bento tiles', async ({ context, extensionId }) => {
 });
 
 // The first-run onboarding modal overlays the dashboard; dismiss it so it
-// doesn't intercept clicks or duplicate text matches.
+// doesn't intercept clicks or duplicate text matches. It mounts once the
+// (async, storage-backed) settings load resolves, so `count()` can read 0
+// before it ever appears — checking count synchronously raced the card's
+// mount and let it pop in *after* this returned, leaving its backdrop to
+// intercept later clicks. Wait for it to actually show up first.
 async function dismissOnboarding(page: import('@playwright/test').Page) {
   const got = page.getByRole('button', { name: 'Got it' });
-  if (await got.count()) {
-    await got.click();
-    // Wait for the card (and its backdrop) to leave the DOM so a following click
-    // or visibility check doesn't race the dismissal transition.
-    await got.waitFor({ state: 'detached' }).catch(() => {});
+  try {
+    await got.waitFor({ state: 'visible', timeout: 5_000 });
+  } catch {
+    return; // never showed (e.g. already onboarded) — nothing to dismiss
   }
+  await got.click();
+  // Wait for the card (and its backdrop) to leave the DOM so a following click
+  // or visibility check doesn't race the dismissal transition.
+  await got.waitFor({ state: 'detached' });
 }
 
 // Playwright-launched Chromium doesn't treat a programmatically opened tab as the

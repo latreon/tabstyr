@@ -4,7 +4,7 @@
 // Every record is treated as untrusted: malformed rows are dropped, insane values
 // clamped, oversized files refused.
 
-import { isWebDomain, pageOf } from '@ext/domain';
+import { domainOf, isWebDomain, pageOf } from '@ext/domain';
 import { SCHEMA_VERSION } from '@ext/export';
 import { isCategory, isProductivity, type CategoryId, type CategoryRule, type CustomCategory } from '@ext/categories';
 import type { DailyStat, Session } from '@ext/types';
@@ -92,11 +92,17 @@ export function parseBackup(text: string): ParsedBackup {
   }
   return {
     dailyStats: Array.isArray(o.dailyStats) ? o.dailyStats.filter(isStat).slice(0, MAX_STATS) : [],
+    // Re-derive `domain` from the normalized url so a crafted backup can't pair a
+    // spoofed domain with an unrelated url (isSession validates them independently).
     sessions: Array.isArray(o.sessions)
       ? o.sessions
           .filter(isSession)
           .slice(0, MAX_SESSIONS)
-          .map((s) => ({ ...s, url: pageOf(s.url), tabKey: s.tabKey ?? '' }))
+          .map((s) => {
+            const url = pageOf(s.url);
+            return { ...s, url, domain: domainOf(url), tabKey: s.tabKey ?? '' };
+          })
+          .filter((s) => isWebDomain(s.domain))
       : [],
     settings: safeSettings(o.settings),
     exportedAt: isExportedAt(o.exportedAt) ? o.exportedAt : undefined,

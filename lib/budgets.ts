@@ -6,9 +6,14 @@ import { CATEGORIES, isCategory, type CategoryId, type CategorySlice } from './c
 
 const SECONDS_PER_MINUTE = 60;
 
-/** Foreground active seconds in a category slice (audio never counts toward a budget). */
-export function activeCategorySeconds(slice: { seconds: number; audioSeconds: number }): number {
-  return Math.max(0, slice.seconds - slice.audioSeconds);
+/**
+ * Active seconds in a category slice, clamped ≥0. Input is already active-only —
+ * the single audio-subtraction point is `activeSeconds` (applied upstream in
+ * useStats.activeStats and by the background nudge before grouping). This does NOT
+ * subtract audio again; doing so double-counted audio for pre-subtracted callers.
+ */
+export function activeCategorySeconds(slice: { seconds: number; audioSeconds?: number }): number {
+  return Math.max(0, slice.seconds);
 }
 
 /** Fraction of a category's daily budget used (0–1+, clamped ≥0). 0 when unset. */

@@ -373,8 +373,20 @@ const cancelBtn = ref<HTMLButtonElement | null>(null);
 const restoreModalEl = ref<HTMLElement | null>(null);
 const showRestoreConfirm = computed(() => !!pendingRestore.value);
 
+const restoreCancelBtn = ref<HTMLButtonElement | null>(null);
 useFocusTrap(wipeModalEl, showWipeModal);
 useFocusTrap(restoreModalEl, showRestoreConfirm);
+
+// The focus trap intentionally doesn't steal initial focus, so — like the wipe
+// modal — move focus to the safe Cancel button when this destructive dialog opens.
+// Without it a keyboard/screen-reader user gets no announcement and focus is left
+// on the now-inert page body (the file input that opened it was just cleared).
+watch(showRestoreConfirm, async (open) => {
+  if (open) {
+    await nextTick();
+    restoreCancelBtn.value?.focus();
+  }
+});
 
 // Focus the safe (Cancel) action when the destructive dialog opens, and allow Esc to close.
 watch(showWipeModal, async (open) => {
@@ -508,7 +520,7 @@ async function confirmWipe() {
         }) }}</p>
         <p class="modal-hint">{{ t('settings.mergeHint') }}</p>
         <div class="modal-actions">
-          <button class="cancel" :disabled="restoring" @click="cancelRestore">{{ t('settings.cancel') }}</button>
+          <button ref="restoreCancelBtn" class="cancel" :disabled="restoring" @click="cancelRestore">{{ t('settings.cancel') }}</button>
           <button class="merge" :disabled="restoring" @click="confirmMerge">
             {{ restoring ? t('settings.restoring') : t('settings.mergeData') }}
           </button>
