@@ -24,6 +24,7 @@ const ideasHref = computed(() => localizedPath(locale.value, 'ideas'));
           <a href="#showcase">{{ t('nav.dashboard') }}</a>
           <a href="#privacy">{{ t('nav.privacy') }}</a>
           <a href="#faq">{{ t('nav.faq') }}</a>
+          <a :href="LINKS.github" target="_blank" rel="noopener">GitHub</a>
         </div>
         <div class="col">
           <span class="head">{{ t('footer.install') }}</span>

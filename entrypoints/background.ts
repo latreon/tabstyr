@@ -10,6 +10,7 @@ import * as repo from '@/lib/db/repo';
 import { isQuotaError } from '@/lib/db/errors';
 import { addDays, dateKey } from '@/lib/time';
 import { domainOf, isWebDomain, pageOf } from '@/lib/domain';
+import { UNINSTALL_FEEDBACK_URL } from '@/lib/links';
 import type { ClosedSession, EngineState, Session } from '@/lib/types';
 
 // Firefox MV2 builds expose browserAction; Chromium MV3 exposes action.
@@ -538,6 +539,12 @@ export default defineBackground(() => {
       void browser.tabs.create({ url: browser.runtime.getURL('/dashboard.html') });
     }
   });
+
+  // Opened in a browser tab right before the extension is removed — the only
+  // way to learn why someone left. Re-set on every worker wake (cheap, no
+  // network call) rather than gating on 'install' so an update never leaves
+  // it unset for a user who installed before this shipped.
+  void browser.runtime.setUninstallURL?.(UNINSTALL_FEEDBACK_URL);
 
   browser.runtime.onStartup.addListener(guard(async () => {
     // Tab IDs reset on browser restart: re-match saved tabMeta to live tabs by URL.
