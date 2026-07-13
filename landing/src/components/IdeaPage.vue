@@ -9,6 +9,11 @@ import SelectBox from './SelectBox.vue';
 const { t, tm } = useI18n();
 const home = computed(() => localizedPath(locale.value, ''));
 
+// chrome.runtime.setUninstallURL lands here with ?src=uninstall so uninstall
+// feedback (the only signal we get on why someone left) is distinguishable
+// from general "share an idea" submissions in the inbox.
+const source = new URLSearchParams(window.location.search).get('src') || undefined;
+
 const CATEGORIES = computed(() => tm<string[]>('ideaPage.categories'));
 
 const category = ref(CATEGORIES.value[0]);
@@ -98,7 +103,10 @@ async function submit() {
         category: category.value,
         message: message.value.trim(),
         email: email.value.trim() || undefined,
-        _subject: `TabStyr idea — ${category.value}`,
+        source,
+        _subject: source === 'uninstall'
+          ? `TabStyr uninstall feedback — ${category.value}`
+          : `TabStyr idea — ${category.value}`,
         // Formspree's server-side spam trap: a non-empty value here is dropped by
         // Formspree itself, so bots that bypass our client check are still filtered.
         _gotcha: honeypot.value,

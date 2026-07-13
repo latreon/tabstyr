@@ -20,9 +20,10 @@ export const LINKS = {
   // In-app routes (clean URLs, handled by the history router in App.vue).
   privacy: import.meta.env.BASE_URL + 'privacy',
   ideas: import.meta.env.BASE_URL + 'ideas',
-  // No public repo links: the source repo is private, so bug reports and ideas
-  // route through the in-app /ideas form (Formspree) instead of GitHub issues /
-  // Discussions. Re-add github/issues/discussions here if the repo goes public.
+  // The repo is public (MIT) — link it directly so the "open source" claim is
+  // one click from verifiable. Bug reports/ideas still route through the
+  // in-app /ideas form (Formspree) rather than GitHub Issues (kept disabled).
+  github: 'https://github.com/latreon/tabstyr',
   // Support / tip — Polar pay-what-you-want checkout ($5 prefilled, adjustable).
   // Read from env (VITE_POLAR_CHECKOUT_URL in landing/.env, gitignored — see
   // .env.example) to keep the URL out of source. Public URL; empty hides the

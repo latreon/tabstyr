@@ -333,6 +333,12 @@
     "gotIt": "了解",
     "close": "閉じる"
   },
+  "reviewPrompt": {
+    "title": "TabStyrは気に入りましたか？",
+    "body": "簡単なレビューが他の人の発見に役立ちます。",
+    "rate": "評価する",
+    "dismiss": "いいえ結構です"
+  },
   "dashboard": {
     "statsAria": "ブラウザ使用統計"
   },

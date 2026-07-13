@@ -23,6 +23,8 @@ import TabTable from '@/components/TabTable.vue';
 import SettingsPanel from '@/components/SettingsPanel.vue';
 import CustomizationPanel from '@/components/CustomizationPanel.vue';
 import OnboardingCard from '@/components/OnboardingCard.vue';
+import ReviewPrompt from '@/components/ReviewPrompt.vue';
+import { shouldShowReviewPrompt, dismissReviewPrompt } from '@/lib/review-prompt';
 import RingLogo from '@/components/RingLogo.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
 import PrivacyDialog from '@/components/PrivacyDialog.vue';
@@ -33,6 +35,11 @@ const locale = useLocale();
 const s = useStats();
 const loadedNow = Date.now();
 const selected = ref<{ domain: string; now: number } | null>(null);
+const showReviewPrompt = ref(false);
+function onDismissReviewPrompt() {
+  showReviewPrompt.value = false;
+  void dismissReviewPrompt();
+}
 const showPrivacy = ref(false);
 function openDetail(domain: string) {
   selected.value = { domain, now: Date.now() };
@@ -124,6 +131,9 @@ onMounted(async () => {
     // Opened from a budget nudge — scroll the focus tile into view after paint.
     requestAnimationFrame(() => document.getElementById('focus')?.scrollIntoView({ block: 'center' }));
   }
+  // Never alongside onboarding — a brand-new install is nowhere near the
+  // day-6 threshold anyway, but the check is explicit rather than assumed.
+  if (!s.showOnboarding.value) showReviewPrompt.value = await shouldShowReviewPrompt(Date.now());
 });
 </script>
 
@@ -164,6 +174,7 @@ onMounted(async () => {
     <template v-else>
       <p v-if="s.storageWarning.value" class="storage-warn" role="alert">{{ t('common.storageFull') }}</p>
       <OnboardingCard v-if="s.showOnboarding.value" @dismiss="s.dismissOnboarding" />
+      <ReviewPrompt v-if="showReviewPrompt" @dismiss="onDismissReviewPrompt" />
       <section class="bento" :aria-label="t('dashboard.statsAria')">
       <HeroTile
         :today-seconds="s.todaySeconds.value"

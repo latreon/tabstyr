@@ -333,6 +333,12 @@
     "gotIt": "Capito",
     "close": "Chiudi"
   },
+  "reviewPrompt": {
+    "title": "Ti piace TabStyr?",
+    "body": "Una recensione veloce aiuta altri a trovarlo.",
+    "rate": "Lascia una recensione",
+    "dismiss": "No grazie"
+  },
   "dashboard": {
     "statsAria": "Statistiche di utilizzo del browser"
   },
