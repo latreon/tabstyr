@@ -77,6 +77,15 @@ describe('mergeDaily', () => {
     const out = mergeDaily([daily({ date: '2026-01-01', seconds: 100 })], [daily({ date: '2026-01-01', seconds: 250 })], []);
     expect(out).toEqual([daily({ date: '2026-01-01', seconds: 250 })]);
   });
+
+  test('keeps a stored daily value that exceeds the session rollup (CSV estimate / retention edge)', () => {
+    // Two 60s sessions → rollup 120s, but a stored daily row says 150s (e.g. a CSV
+    // import estimate, or a retention-boundary day whose morning sessions were
+    // pruned). Max must win so the larger stored value is not silently dropped.
+    const s = mergeSessions([session({})], [session({ start: T0 + 120_000, end: T0 + 180_000 })]);
+    const out = mergeDaily([daily({ seconds: 150 })], [], s);
+    expect(out).toEqual([daily({ seconds: 150 })]);
+  });
 });
 
 describe('mergeBackup', () => {

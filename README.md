@@ -319,14 +319,8 @@ Entirely optional — stars and bug reports help just as much.
 
 ## Contributing
 
-Issues and pull requests are welcome. Before opening a PR:
-
-```bash
-npm run typecheck && npm test && npm run build
-```
-
-Keep changes focused, add tests for new `lib/` logic, and follow the existing
-file conventions.
+Issues and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md)
+for setup, quality gates, and PR guidelines.
 
 ## License
 

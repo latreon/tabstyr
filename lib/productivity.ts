@@ -46,38 +46,24 @@ export function dailyFocus(
 }
 
 /**
- * Consecutive days (ending today) whose focus % meets the target. Today may be
- * empty (the day just started) without breaking the streak; any later gap or a
- * below-target day ends it.
+ * Consecutive days (ending today) whose focus % meets the target. Days with
+ * nothing to judge are TRANSPARENT — a day you didn't browse (no active time) and
+ * a day spent only on neutral sites both leave the streak untouched, so a day off
+ * neither extends nor breaks it. A judged day below target ends the streak. This
+ * matches Wrapped's `longestFocusStreak` so the two surfaces never disagree.
  */
 export function focusStreak(byDate: Map<string, DayFocus>, todayKey: string, target: number): number {
   let streak = 0;
   let cursor = todayKey;
-  let allowEmpty = true; // tolerate an empty "today"
   for (let i = 0; i < 400; i++) {
     const f = byDate.get(cursor);
-    if (!f || f.total === 0) {
-      if (allowEmpty) {
-        allowEmpty = false;
-        cursor = addDays(cursor, -1);
-        continue;
-      }
-      break;
+    const judged = f ? f.productive + f.distracting : 0;
+    if (judged > 0) {
+      if (f!.focusPct >= target) streak++;
+      else break; // a judged day below target ends the run
     }
-    allowEmpty = false;
-    // A day spent only on neutral sites (no productive or distracting time) has
-    // nothing to judge — treat it as transparent so it neither breaks nor extends
-    // the streak rather than scoring it 0% and resetting unfairly.
-    if (f.productive + f.distracting === 0) {
-      cursor = addDays(cursor, -1);
-      continue;
-    }
-    if (f.focusPct >= target) {
-      streak++;
-      cursor = addDays(cursor, -1);
-    } else {
-      break;
-    }
+    // else: empty or neutral-only day → transparent, keep scanning back.
+    cursor = addDays(cursor, -1);
   }
   return streak;
 }

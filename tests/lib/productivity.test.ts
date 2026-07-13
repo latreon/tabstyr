@@ -77,6 +77,17 @@ describe('focusStreak', () => {
     ]);
     expect(focusStreak(map, '2026-06-11', target)).toBe(2);
   });
+
+  test('a no-browsing day in the middle is transparent (matches Wrapped)', () => {
+    // 06-10 has no data at all; it should neither extend nor break the streak, so
+    // the productive 06-11 and 06-09 days still count as a run of 2.
+    const map = dailyFocus([
+      stat('2026-06-11', 'github.com', 70), stat('2026-06-11', 'youtube.com', 30), // 70%
+      // 2026-06-10: user didn't browse → absent from the map
+      stat('2026-06-09', 'github.com', 80), stat('2026-06-09', 'youtube.com', 20), // 80%
+    ]);
+    expect(focusStreak(map, '2026-06-11', target)).toBe(2);
+  });
 });
 
 describe('buildFocusTrend', () => {

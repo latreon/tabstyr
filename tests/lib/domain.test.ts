@@ -47,10 +47,21 @@ describe('isWebDomain', () => {
 });
 
 describe('isLocalDevHost', () => {
-  test('matches localhost and IPv4 literals', () => {
+  test('matches localhost and private/loopback IPv4 ranges', () => {
     expect(isLocalDevHost('localhost')).toBe(true);
     expect(isLocalDevHost('127.0.0.1')).toBe(true);
     expect(isLocalDevHost('10.0.0.5')).toBe(true);
+    expect(isLocalDevHost('192.168.1.10')).toBe(true);
+    expect(isLocalDevHost('172.16.0.1')).toBe(true);
+    expect(isLocalDevHost('172.31.255.255')).toBe(true);
+    expect(isLocalDevHost('169.254.0.1')).toBe(true);
+  });
+
+  test('does NOT match public IPs, out-of-range private-ish, or invalid octets', () => {
+    expect(isLocalDevHost('8.8.8.8')).toBe(false); // public → not dev
+    expect(isLocalDevHost('172.15.0.1')).toBe(false); // below the 172.16/12 block
+    expect(isLocalDevHost('172.32.0.1')).toBe(false); // above the 172.16/12 block
+    expect(isLocalDevHost('999.999.999.999')).toBe(false); // invalid octets
   });
 
   test('does not match real domains', () => {

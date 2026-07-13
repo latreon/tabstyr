@@ -69,15 +69,22 @@ export function maxMonthly(local: MonthlyStat[], incoming: MonthlyStat[]): Month
   return [...map.values()];
 }
 
-/** Daily merged: rollup of the merged sessions, with a max-fallback for session-less keys. */
+/**
+ * Daily merged: start from the rollup of the merged sessions, then take the MAX
+ * against every stored daily row (local + incoming). A stored value can legitimately
+ * exceed what the surviving sessions justify — a CSV import writes daily estimates
+ * with no backing session (applyDailyStatsMax), and retention prunes a boundary
+ * day's morning sessions while keeping its full daily row. Treating the session
+ * rollup as authoritative would silently drop those. Max never inflates real
+ * combined totals (the rollup already unions both devices' sessions) and stays
+ * idempotent.
+ */
 export function mergeDaily(local: DailyStat[], incoming: DailyStat[], mergedSessions: Session[]): DailyStat[] {
   const key = (d: DailyStat) => `${d.date}|${d.domain}`;
   const out = new Map<string, DailyStat>();
-  for (const d of rollup(mergedSessions)) out.set(key(d), d); // session-backed → authoritative
-  const derivedKeys = new Set(out.keys());
+  for (const d of rollup(mergedSessions)) out.set(key(d), { ...d });
   for (const d of [...local, ...incoming]) {
     const k = key(d);
-    if (derivedKeys.has(k)) continue; // trust the session-derived value
     const cur = out.get(k);
     if (!cur) out.set(k, { ...d });
     else {

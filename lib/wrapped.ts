@@ -165,6 +165,11 @@ function aggregateByDate(
 ): Map<string, DayAgg> {
   const byDate = new Map<string, DayAgg>();
   for (const s of stats) {
+    // Web domains only — topDomains/totalSeconds are web-only, so the coverage
+    // window, daily average, and focus split derived from this map must match.
+    // Counting internal-page rows (chrome/file/other) here would inflate
+    // daysCovered and skew dailyAverageSeconds (web total ÷ inflated day count).
+    if (!isWebDomain(s.domain)) continue;
     const active = activeSeconds(s);
     if (active <= 0) continue;
     const agg = byDate.get(s.date) ?? { productive: 0, distracting: 0, neutral: 0, total: 0 };
@@ -263,10 +268,15 @@ function chronotypeOf(heatmap: HeatmapData): Chronotype {
     { type: 'daytimer', hours: [11, 12, 13, 14, 15, 16, 17] },
     { type: 'nightOwl', hours: [18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4] },
   ];
-  let best = { type: 'allHours' as Chronotype, seconds: -1 };
+  // Pick the band by its PER-HOUR intensity, not its raw sum: the bands cover
+  // different numbers of hours (earlyBird 6h, daytimer 7h, nightOwl 11h), so
+  // comparing raw sums structurally favors the widest band and mislabels uniform
+  // activity as nightOwl. Dominance is still the winning band's share of the day.
+  let best = { type: 'allHours' as Chronotype, perHour: -1, seconds: 0 };
   for (const b of bands) {
     const seconds = sumBand(b.hours);
-    if (seconds > best.seconds) best = { type: b.type, seconds };
+    const perHour = seconds / b.hours.length;
+    if (perHour > best.perHour) best = { type: b.type, perHour, seconds };
   }
   return best.seconds / total >= CHRONOTYPE_DOMINANCE ? best.type : 'allHours';
 }
@@ -274,6 +284,7 @@ function chronotypeOf(heatmap: HeatmapData): Chronotype {
 function busiestDay(stats: DailyStat[]): { date: string | null; seconds: number } {
   const byDate = new Map<string, number>();
   for (const s of stats) {
+    if (!isWebDomain(s.domain)) continue; // web-only, consistent with totalSeconds
     const active = activeSeconds(s);
     if (active <= 0) continue;
     byDate.set(s.date, (byDate.get(s.date) ?? 0) + active);

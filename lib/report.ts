@@ -1,13 +1,14 @@
-import { activeSeconds } from './metrics';
 import { isWebDomain } from './domain';
 import { categorize, type CategoryId, type CategoryRule, type CategorySlice } from './categories';
 import type { DailyStat } from './types';
 
 // Builds a per-site activity report over a date range, plus CSV serialization.
 // Pure (no DOM, no clock): the report card renderer and CSV/PNG exporters consume
-// this. Uses ACTIVE foreground seconds (audio excluded) — the honest, billable
-// number — and works for a single day (from === to) or any range, which is what the
-// project/client invoicing feature builds on.
+// this. Its `seconds` are ACTIVE foreground seconds (audio excluded) — the honest,
+// billable number. Input `DailyStat.seconds` is expected to ALREADY be active
+// (audio subtracted upstream via activeSeconds / useStats.activeStats); this does
+// not subtract audio again. Works for a single day (from === to) or any range,
+// which is what the project/client invoicing feature builds on.
 
 export interface ReportDomain {
   domain: string;
@@ -35,8 +36,8 @@ function daySpan(from: string, to: string): number {
 
 /**
  * Aggregate active per-domain time across [from, to] (inclusive), grouped by domain
- * and by category. Web domains only. `stats` are the raw daily rows; active time
- * (seconds − audioSeconds) is summed so audio never inflates a billable report.
+ * and by category. Web domains only. `stats.seconds` are already active foreground
+ * seconds (audio excluded upstream), summed as-is; rows with no active time drop out.
  */
 export function buildReport(
   stats: DailyStat[],
@@ -48,7 +49,7 @@ export function buildReport(
   const byDomain = new Map<string, number>();
   for (const s of stats) {
     if (s.date < from || s.date > to || !isWebDomain(s.domain)) continue;
-    const active = activeSeconds(s);
+    const active = Math.max(0, s.seconds); // already active-only; clamp defensively
     if (active <= 0) continue;
     byDomain.set(s.domain, (byDomain.get(s.domain) ?? 0) + active);
   }

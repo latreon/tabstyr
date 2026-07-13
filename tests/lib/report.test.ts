@@ -10,12 +10,13 @@ const stat = (date: string, domain: string, seconds: number, audioSeconds = 0): 
 });
 
 describe('buildReport', () => {
-  test('sums active per-domain time across the range, excluding audio and internal pages', () => {
+  test('sums active per-domain time across the range, excluding zero-active and internal pages', () => {
+    // Input seconds are already active-only (audio subtracted upstream).
     const r = buildReport(
       [
         stat('2026-06-10', 'github.com', 600),
-        stat('2026-06-11', 'github.com', 300, 60), // 240 active
-        stat('2026-06-11', 'youtube.com', 1000, 1000), // all audio → 0 active → excluded
+        stat('2026-06-11', 'github.com', 240),
+        stat('2026-06-11', 'youtube.com', 0), // no active time → excluded
         stat('2026-06-11', 'newtab', 999), // non-web → excluded
         stat('2026-06-09', 'github.com', 500), // before range → excluded
       ],

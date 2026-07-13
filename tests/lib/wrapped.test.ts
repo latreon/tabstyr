@@ -176,6 +176,15 @@ describe('buildWrapped — time of day', () => {
     })!;
     expect(w.chronotype).toBe('nightOwl');
   });
+
+  test('uniform activity across the whole day is allHours, not biased to nightOwl', () => {
+    // One session per hour, all equal. The night band is the widest (11h), so
+    // comparing raw band sums would mislabel this nightOwl; per-hour normalization
+    // makes every band equal and the low share falls back to allHours.
+    const sessions = Array.from({ length: 24 }, (_, h) => session([2026, 6, 1], h, 60));
+    const w = build({ dailyStats: [stat('2026-06-01', 'github.com', 100)], sessions })!;
+    expect(w.chronotype).toBe('allHours');
+  });
 });
 
 // ── busiest day ──────────────────────────────────────────────────────────────
@@ -190,6 +199,23 @@ describe('buildWrapped — busiest day', () => {
     })!;
     expect(w.busiestDate).toBe('2026-06-02');
     expect(w.busiestDateSeconds).toBe(400);
+  });
+});
+
+// ── web-only aggregation consistency ─────────────────────────────────────────
+describe('buildWrapped — web-only coverage', () => {
+  test('internal-page days do not inflate the coverage window or daily average', () => {
+    const w = build({
+      dailyStats: [
+        stat('2026-06-01', 'github.com', 100),
+        stat('2026-06-05', 'chrome', 100), // internal-only day → must not count
+      ],
+    })!;
+    expect(w.daysCovered).toBe(1);
+    expect(w.startDate).toBe('2026-06-01');
+    expect(w.endDate).toBe('2026-06-01');
+    expect(w.dailyAverageSeconds).toBe(100);
+    expect(w.busiestDate).toBe('2026-06-01');
   });
 });
 

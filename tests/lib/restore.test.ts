@@ -63,6 +63,31 @@ describe('parseBackup', () => {
     expect(parsed.sessions[1].tabKey).toBe('');
   });
 
+  test('re-derives a session domain from its url so a spoofed domain cannot survive', () => {
+    const text = JSON.stringify({
+      app: 'tabstyr',
+      sessions: [
+        // Crafted: a trusted-looking domain paired with an unrelated url.
+        { tabKey: 'k', domain: 'wikipedia.org', url: 'https://attacker.example/x', start: 1, end: 2, audio: false },
+      ],
+    });
+    const parsed = parseBackup(text);
+    expect(parsed.sessions).toHaveLength(1);
+    expect(parsed.sessions[0].domain).toBe('attacker.example'); // bound to the url, not the claim
+    expect(parsed.sessions[0].url).toBe('https://attacker.example/x');
+  });
+
+  test('drops a session whose url is not a real web page even if domain claims otherwise', () => {
+    const text = JSON.stringify({
+      app: 'tabstyr',
+      sessions: [
+        { tabKey: 'k', domain: 'github.com', url: 'file:///etc/passwd', start: 1, end: 2, audio: false },
+      ],
+    });
+    // The url rebinds to the non-web 'file' bucket → dropped rather than mis-stored.
+    expect(parseBackup(text).sessions).toHaveLength(0);
+  });
+
   test('drops tabMeta missing required fields (title/lastActiveAt/createdAt)', () => {
     const text = JSON.stringify({
       app: 'tabstyr',
