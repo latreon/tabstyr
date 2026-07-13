@@ -123,9 +123,20 @@ export class TrackerEngine {
   checkpoint(now: number): ClosedSession[] {
     const out: ClosedSession[] = [];
     if (this.focused) {
-      const emitted = this.closed(this.focused, now, this.stalled(this.focused, now));
-      out.push(...emitted);
-      if (emitted.length) this.focused = { ...this.focused, start: now };
+      // A focused session only survives idle while it is playing media (handleIdle
+      // keeps it open for a video the user is watching). Once that media stops the
+      // user is idle AND nothing is playing — they're away, so close the session
+      // instead of re-basing it. Without this the session would keep booking ~1-min
+      // slices every heartbeat until the next real close event (screen lock, tab
+      // close), turning an away period into hours of phantom active time.
+      if (this.idle && !this.focused.audible) {
+        out.push(...this.closed(this.focused, now, true));
+        this.focused = null;
+      } else {
+        const emitted = this.closed(this.focused, now, this.stalled(this.focused, now));
+        out.push(...emitted);
+        if (emitted.length) this.focused = { ...this.focused, start: now };
+      }
     }
     for (const [tabId, open] of this.audio) {
       const emitted = this.closed(open, now, this.stalled(open, now));

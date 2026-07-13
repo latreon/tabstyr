@@ -42,7 +42,16 @@ export function mergeSessions(local: Session[], incoming: Session[]): Session[] 
     const k = sessionKey(s);
     if (!byKey.has(k)) byKey.set(k, s);
   }
-  return [...byKey.values()];
+  // Drop the IndexedDB autoincrement primary key: `local` and another device's
+  // `incoming` both number their sessions from 1, so the union holds distinct
+  // sessions that share an `id`. restoreAll re-adds these with add(), which throws
+  // ConstraintError on a duplicate key and aborts the entire merge — making
+  // cross-device sync fail by construction. The key is a local surrogate with no
+  // cross-device meaning, so strip it and let IndexedDB assign fresh ids on add.
+  return [...byKey.values()].map((s) => {
+    const { id: _id, ...row } = s as Session & { id?: number };
+    return row as Session;
+  });
 }
 
 /** Max per (month, domain) across both archives. */
