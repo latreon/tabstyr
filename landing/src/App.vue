@@ -29,6 +29,8 @@ const PrivacyPage = defineAsyncComponent(() => import('@/components/PrivacyPage.
 const IdeaPage = defineAsyncComponent(() => import('@/components/IdeaPage.vue'));
 const WrappedPage = defineAsyncComponent(() => import('@/components/WrappedPage.vue'));
 const ChangelogPage = defineAsyncComponent(() => import('@/components/ChangelogPage.vue'));
+const BlogIndexPage = defineAsyncComponent(() => import('@/components/BlogIndexPage.vue'));
+const BlogPostPage = defineAsyncComponent(() => import('@/components/BlogPostPage.vue'));
 
 // Clean-URL router (no '#') with a leading locale slug: '/', '/de', '/fr/privacy',
 // '/pt-br/ideas'. English is the un-prefixed root. Works on static hosts via a
@@ -48,6 +50,8 @@ const isPrivacy = computed(() => rest.value === 'privacy');
 const isIdeas = computed(() => rest.value === 'ideas');
 const isWrapped = computed(() => rest.value === 'wrapped');
 const isChangelog = computed(() => rest.value === 'changelog');
+const isBlogIndex = computed(() => rest.value === 'blog');
+const blogSlug = computed(() => (rest.value.startsWith('blog/') ? rest.value.slice('blog/'.length) : null));
 
 // Expose the current locale-less route so the language switcher can build links
 // that keep the visitor on the same page in another language.
@@ -140,6 +144,8 @@ onBeforeUnmount(() => {
     <IdeaPage v-else-if="isIdeas" />
     <WrappedPage v-else-if="isWrapped" />
     <ChangelogPage v-else-if="isChangelog" />
+    <BlogIndexPage v-else-if="isBlogIndex" />
+    <BlogPostPage v-else-if="blogSlug" :slug="blogSlug" />
 
     <template v-else>
       <a class="skip-link" href="#main">{{ t('a11y.skipToContent') }}</a>

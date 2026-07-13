@@ -10,7 +10,9 @@
     "wrappedTitle": "Browsing Wrapped — TabStyr",
     "wrappedDescription": "Trascina il tuo export di TabStyr e ottieni un Browsing Wrapped splendido e condivisibile — il tuo tempo sul web, calcolato al 100% nel tuo browser.",
     "changelogTitle": "Changelog — TabStyr",
-    "changelogDescription": "Ogni versione di TabStyr, direttamente da GitHub: scopri le novità e le modifiche."
+    "changelogDescription": "Ogni versione di TabStyr, direttamente da GitHub: scopri le novità e le modifiche.",
+    "blogTitle": "Blog — TabStyr",
+    "blogDescription": "Come TabStyr traccia il tempo, perché non ha server e come si confronta con RescueTime e Toggl Track."
   },
   "nav": {
     "features": "Funzioni",
@@ -471,5 +473,15 @@
     "sub": "Ogni versione, direttamente da GitHub.",
     "back": "Indietro",
     "backCta": "Torna alla home"
+  },
+  "blogPage": {
+    "eyebrow": "Blog",
+    "title": "Note su TabStyr",
+    "sub": "Come funziona, perché è costruito così e come si confronta.",
+    "back": "Indietro",
+    "backCta": "Torna alla home",
+    "readMore": "Leggi di più",
+    "backToBlog": "Torna a tutti gli articoli",
+    "notFound": "Questo articolo non esiste."
   }
 }

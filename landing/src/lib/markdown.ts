@@ -1,8 +1,8 @@
-// Minimal markdown → HTML for GitHub release bodies. Input is our own release
-// notes (trusted, authored at release time), not user input — so v-html on the
-// output is fine. Covers only the subset our notes actually use: ##/### headings,
-// -/  - bullets (one level of nesting), **bold**, *italic*/_italic_, `code`,
-// blank-line paragraphs.
+// Minimal markdown → HTML for our own content (GitHub release bodies, blog
+// posts) — trusted, authored by us, not user input, so v-html on the output
+// is fine. Covers only the subset we actually use: ##/### headings, -/  -
+// bullets (one level of nesting), **bold**, *italic*/_italic_, `code`,
+// [text](url) links, blank-line paragraphs.
 
 function renderInline(text: string): string {
   return text
@@ -12,10 +12,16 @@ function renderInline(text: string): string {
     .replace(/`([^`]+)`/g, '<code>$1</code>')
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>') // bold first, so a lone * pair below can't split it
     .replace(/\*([^*]+)\*/g, '<em>$1</em>')
-    .replace(/_([^_]+)_/g, '<em>$1</em>');
+    .replace(/_([^_]+)_/g, '<em>$1</em>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, label, href) => {
+      const external = /^https?:\/\//.test(href);
+      return external
+        ? `<a href="${href}" target="_blank" rel="noopener">${label}</a>`
+        : `<a href="${href}">${label}</a>`;
+    });
 }
 
-export function renderChangelogMarkdown(md: string): string {
+export function renderMarkdown(md: string): string {
   const lines = md.replace(/\r\n/g, '\n').split('\n');
   const out: string[] = [];
   let listDepth = 0; // 0 = no list open, 1 = top-level <ul>, 2 = nested <ul> also open

@@ -10,7 +10,9 @@
     "wrappedTitle": "Rétro de navigation — TabStyr",
     "wrappedDescription": "Déposez votre export TabStyr et obtenez une Rétro de navigation magnifique et partageable — votre temps sur le web, calculé à 100% dans votre navigateur.",
     "changelogTitle": "Journal des modifications — TabStyr",
-    "changelogDescription": "Chaque version de TabStyr, directement depuis GitHub — découvrez les nouveautés et les changements."
+    "changelogDescription": "Chaque version de TabStyr, directement depuis GitHub — découvrez les nouveautés et les changements.",
+    "blogTitle": "Blog — TabStyr",
+    "blogDescription": "Comment TabStyr suit le temps, pourquoi il n'a pas de serveurs, et comment il se compare à RescueTime et Toggl Track."
   },
   "nav": {
     "features": "Fonctionnalités",
@@ -471,5 +473,15 @@
     "sub": "Chaque version, directement depuis GitHub.",
     "back": "Retour",
     "backCta": "Retour à l'accueil"
+  },
+  "blogPage": {
+    "eyebrow": "Blog",
+    "title": "Notes sur TabStyr",
+    "sub": "Comment ça marche, pourquoi c'est conçu ainsi, et comment ça se compare.",
+    "back": "Retour",
+    "backCta": "Retour à l'accueil",
+    "readMore": "Lire la suite",
+    "backToBlog": "Retour à tous les articles",
+    "notFound": "Cet article n'existe pas."
   }
 }

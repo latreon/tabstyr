@@ -8,6 +8,7 @@ const { t } = useI18n();
 const year = 2026;
 const ideasHref = computed(() => localizedPath(locale.value, 'ideas'));
 const changelogHref = computed(() => localizedPath(locale.value, 'changelog'));
+const blogHref = computed(() => localizedPath(locale.value, 'blog'));
 </script>
 
 <template>
@@ -25,6 +26,7 @@ const changelogHref = computed(() => localizedPath(locale.value, 'changelog'));
           <a href="#showcase">{{ t('nav.dashboard') }}</a>
           <a href="#privacy">{{ t('nav.privacy') }}</a>
           <a href="#faq">{{ t('nav.faq') }}</a>
+          <a :href="blogHref">{{ t('blogPage.eyebrow') }}</a>
           <a :href="changelogHref">{{ t('changelogPage.eyebrow') }}</a>
           <a :href="LINKS.github" target="_blank" rel="noopener">GitHub</a>
         </div>
