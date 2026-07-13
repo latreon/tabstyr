@@ -11,7 +11,8 @@ breakdowns, and gentle stale-tab nudges. Every byte stays on your device.
 
 [Features](#features) · [Privacy](#privacy) · [Browser support](#browser-support) ·
 [Install](#install) · [How metrics work](#how-the-metrics-work) ·
-[Scope & limitations](#scope--limitations) · [Development](#development)
+[Scope & limitations](#scope--limitations) · [Development](#development) ·
+[Changelog](CHANGELOG.md)
 
 <br/>
 
@@ -310,6 +311,7 @@ npm run zip              # Chromium store-ready zip
 npm run zip:firefox      # Firefox store-ready zip
 node scripts/make-promo.mjs   # regenerate promo images
 npm run promo:video           # regenerate the demo video (docs/store/promo/)
+npm run changelog:fetch && npm run changelog:md   # refresh CHANGELOG.md after a release
 ```
 
 ## Testing

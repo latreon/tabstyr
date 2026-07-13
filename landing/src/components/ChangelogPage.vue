@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import RingLogo from './RingLogo.vue';
+import LangSwitch from './LangSwitch.vue';
 import { localizedPath, locale, useI18n } from '@/i18n';
 import { renderMarkdown } from '@/lib/markdown';
 import releases from '@/data/changelog.json';
@@ -24,7 +25,10 @@ const entries = computed(() =>
     <header class="bar">
       <div class="container bar-inner">
         <a :href="home" class="brand"><RingLogo :size="24" /> <span>TabStyr</span></a>
-        <a :href="home" class="back">{{ t('changelogPage.back') }}</a>
+        <div class="bar-right">
+          <LangSwitch />
+          <a :href="home" class="back">{{ t('changelogPage.back') }}</a>
+        </div>
       </div>
     </header>
 
@@ -64,9 +68,10 @@ const entries = computed(() =>
 }
 .bar-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
 .brand { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 700; font-size: 18px; }
+.bar-right { display: flex; align-items: center; gap: 20px; }
 .back { font-size: 14px; font-weight: 500; color: var(--text-2); transition: color 160ms ease; }
 .back:hover { color: var(--text); }
-.body { position: relative; z-index: 1; padding-top: 72px; padding-bottom: 96px; max-width: 720px; }
+.body { position: relative; z-index: 1; padding-top: 72px; padding-bottom: 96px; }
 .title { font-size: clamp(2.2rem, 1.6rem + 3vw, 3.4rem); font-weight: 700; margin-top: 14px; }
 .sub { color: var(--text-2); margin: 12px 0 40px; }
 
