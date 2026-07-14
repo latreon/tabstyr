@@ -255,6 +255,96 @@ h2.label {
   box-shadow: var(--tile-shadow);
 }
 
+/* ─── Buttons ───────────────────────────────────────────────────────
+   Shared button system mirroring the landing page: a filled gradient
+   primary that lifts and glows on hover, a bordered ghost secondary,
+   and warn/negative danger variants. Sizing stays compact for the
+   dense dashboard — landing's geometry (12px radius, gradient fill,
+   soft glow, hover lift) is what carries across. Reduced-motion is
+   handled globally above (transitions collapse to ~0ms). */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 220ms ease,
+    background 200ms ease, border-color 200ms ease, filter 200ms ease;
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn svg { width: 16px; height: 16px; }
+
+/* Primary — filled gradient with a soft accent glow, brightening and
+   lifting on hover (the landing page's signature CTA treatment). */
+.btn-primary {
+  /* Vivid accent fill, shared with segmented controls and switches so every
+     filled accent control reads as one system. White text clears AA. */
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  font-weight: 700;
+  box-shadow: 0 4px 16px var(--accent-muted);
+}
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.06) saturate(1.05);
+  box-shadow: 0 8px 26px var(--accent-muted);
+  transform: translateY(-1px);
+}
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0) scale(0.985);
+}
+
+/* Ghost — bordered secondary; border and label pick up the accent on hover. */
+.btn-ghost {
+  background: var(--card-strong);
+  color: var(--text-2);
+  border-color: var(--border);
+}
+.btn-ghost:hover:not(:disabled) {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Danger (soft) — bordered warn tint, e.g. the "Wipe data" trigger. */
+.btn-danger {
+  background: transparent;
+  color: var(--warn);
+  border-color: var(--warn);
+}
+.btn-danger:hover:not(:disabled) {
+  background: var(--warn-bg);
+  border-color: var(--warn);
+}
+
+/* Danger (solid) — the final destructive confirm inside a modal. */
+.btn-danger-solid {
+  background: var(--negative);
+  color: var(--on-accent);
+}
+.btn-danger-solid:hover:not(:disabled) { filter: brightness(1.06); }
+
+/* Compact modifier for dense rows (add-rule, export actions, toolbars). */
+.btn-sm {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+/* Full-width within its container. */
+.btn-block { width: 100%; }
+
 /* Instant, styled hover/focus tooltip. Add data-tip="text" to any element.
    Shows below + centered by default; .tip-above flips it up, .tip-right anchors
    it to the element's right edge (so right-aligned controls don't clip). */

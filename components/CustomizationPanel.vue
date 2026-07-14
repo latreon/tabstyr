@@ -210,7 +210,7 @@ async function removeRule(pattern: string) {
             :aria-label="t('settings.customCategories')"
             maxlength="24"
           />
-          <button type="submit" class="rule-add-btn primary" :disabled="!newCatName.trim()">{{ t('settings.add') }}</button>
+          <button type="submit" class="btn btn-primary btn-sm" :disabled="!newCatName.trim()">{{ t('settings.add') }}</button>
         </div>
       </form>
       <p v-if="catError" class="rule-error" role="alert">{{ catError }}</p>
@@ -251,7 +251,7 @@ async function removeRule(pattern: string) {
             :label="t('settings.categoryForRuleAria')"
             @update:model-value="newCategory = $event as CategoryId"
           />
-          <button type="submit" class="rule-add-btn primary" :disabled="!newPattern.trim()">{{ t('settings.add') }}</button>
+          <button type="submit" class="btn btn-primary btn-sm" :disabled="!newPattern.trim()">{{ t('settings.add') }}</button>
         </div>
       </form>
       <p v-if="ruleError" class="rule-error" role="alert">{{ ruleError }}</p>
@@ -288,7 +288,9 @@ async function removeRule(pattern: string) {
 .field-label {
   color: var(--text-2);
 }
-button {
+/* Base styling for raw (non-.btn) buttons only — the shared .btn system in
+   theme.css owns everything with a .btn class. */
+button:not(.btn) {
   border: none;
   border-radius: var(--radius-sm);
   padding: 7px 14px;
@@ -432,35 +434,8 @@ button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
-.rule-add-btn {
-  height: 34px;
-  box-sizing: border-box;
-  padding: 0 16px;
-  background: var(--card-strong);
-  color: var(--text-2);
-  border: 1px solid var(--border);
-}
-.rule-add-btn:hover:not(:disabled) {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.rule-add-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-/* Primary CTA — same filled-gradient treatment as "Download encrypted" in
-   Settings, so the one action that actually saves something reads as such. */
-.rule-add-btn.primary {
-  background: var(--accent-grad-strong);
-  color: var(--on-accent);
-  border-color: transparent;
-  margin-left: auto;
-}
-.rule-add-btn.primary:hover:not(:disabled) {
-  filter: brightness(1.08);
-  border-color: transparent;
-  color: var(--on-accent);
-}
+/* Primary "Add" CTA is right-aligned within its form row. */
+.composer-row .btn-primary { margin-left: auto; }
 .rule-error {
   margin: 0;
   font-size: var(--text-xs);

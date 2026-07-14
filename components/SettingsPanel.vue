@@ -474,19 +474,19 @@ async function confirmWipe() {
     </div>
     <p class="field-hint">{{ t('settings.focusTargetHint') }}</p>
     <div class="actions">
-      <button type="button" class="intro-link" @click="replayOnboarding">{{ t('settings.showIntro') }}</button>
-      <button class="wipe" @click="showWipeModal = true">{{ t('settings.wipe') }}</button>
+      <button type="button" class="btn btn-ghost btn-sm" @click="replayOnboarding">{{ t('settings.showIntro') }}</button>
+      <button class="btn btn-danger btn-sm" @click="showWipeModal = true">{{ t('settings.wipe') }}</button>
     </div>
 
     <div class="export">
       <span class="field-label">{{ t('settings.backupRestore') }}</span>
       <p class="rules-hint">{{ t('settings.backupNote') }}</p>
       <div class="export-btns">
-        <button class="export-json" :disabled="exporting" @click="exportData()">{{ t('settings.exportJson') }}</button>
+        <button class="btn btn-ghost btn-sm btn-block" :disabled="exporting" @click="exportData()">{{ t('settings.exportJson') }}</button>
         <div class="export-btns-row">
-          <button :disabled="exporting" :aria-expanded="showEncrypt" @click="showEncrypt = !showEncrypt">{{ t('settings.encrypted') }}</button>
-          <button :disabled="exporting" @click="pickRestoreFile">{{ t('settings.restore') }}</button>
-          <button :disabled="exporting" @click="pickCsvFile">{{ t('settings.importCsv') }}</button>
+          <button class="btn btn-ghost btn-sm" :disabled="exporting" :aria-expanded="showEncrypt" @click="showEncrypt = !showEncrypt">{{ t('settings.encrypted') }}</button>
+          <button class="btn btn-ghost btn-sm" :disabled="exporting" @click="pickRestoreFile">{{ t('settings.restore') }}</button>
+          <button class="btn btn-ghost btn-sm" :disabled="exporting" @click="pickCsvFile">{{ t('settings.importCsv') }}</button>
         </div>
       </div>
       <p class="rules-hint">{{ t('settings.importCsvHint') }}</p>
@@ -498,7 +498,7 @@ async function confirmWipe() {
         <input v-model="encPass" type="password" class="rule-input" :placeholder="t('settings.passphrase')" :aria-label="t('settings.passphrase')" autocomplete="new-password" />
         <input v-model="encPass2" type="password" class="rule-input" :placeholder="t('settings.confirmPassphrase')" :aria-label="t('settings.confirmPassphrase')" autocomplete="new-password" />
         <div class="enc-actions">
-          <button type="submit" class="rule-add-btn primary" :disabled="exporting">{{ t('settings.downloadEncrypted') }}</button>
+          <button type="submit" class="btn btn-primary btn-sm" :disabled="exporting">{{ t('settings.downloadEncrypted') }}</button>
           <button type="button" class="cancel-link" @click="showEncrypt = false">{{ t('settings.cancel') }}</button>
         </div>
         <p v-if="encError" class="rule-error" role="alert">{{ encError }}</p>
@@ -508,7 +508,7 @@ async function confirmWipe() {
         <p class="rules-hint">{{ t('settings.restoreEncryptedPrompt') }}</p>
         <input v-model="restorePass" type="password" class="rule-input" :placeholder="t('settings.passphrase')" :aria-label="t('settings.passphrase')" autocomplete="off" />
         <div class="enc-actions">
-          <button type="submit" class="rule-add-btn">{{ t('settings.decrypt') }}</button>
+          <button type="submit" class="btn btn-ghost btn-sm">{{ t('settings.decrypt') }}</button>
           <button type="button" class="cancel-link" @click="cancelRestore">{{ t('settings.cancel') }}</button>
         </div>
         <p v-if="restoreError" class="rule-error" role="alert">{{ restoreError }}</p>
@@ -528,11 +528,11 @@ async function confirmWipe() {
         }) }}</p>
         <p class="modal-hint">{{ t('settings.mergeHint') }}</p>
         <div class="modal-actions">
-          <button ref="restoreCancelBtn" class="cancel" :disabled="restoring" @click="cancelRestore">{{ t('settings.cancel') }}</button>
-          <button class="merge" :disabled="restoring" @click="confirmMerge">
+          <button ref="restoreCancelBtn" class="btn btn-ghost btn-sm" :disabled="restoring" @click="cancelRestore">{{ t('settings.cancel') }}</button>
+          <button class="btn btn-primary btn-sm" :disabled="restoring" @click="confirmMerge">
             {{ restoring ? t('settings.restoring') : t('settings.mergeData') }}
           </button>
-          <button class="danger" :disabled="restoring" @click="confirmRestore">
+          <button class="btn btn-danger-solid btn-sm" :disabled="restoring" @click="confirmRestore">
             {{ restoring ? t('settings.restoring') : t('settings.replaceData') }}
           </button>
         </div>
@@ -547,8 +547,8 @@ async function confirmWipe() {
         <h3 class="modal-title">{{ t('settings.wipeTitle') }}</h3>
         <p class="modal-body">{{ t('settings.wipeBody') }}</p>
         <div class="modal-actions">
-          <button ref="cancelBtn" class="cancel" :disabled="wiping" @click="showWipeModal = false">{{ t('settings.cancel') }}</button>
-          <button class="danger" :disabled="wiping" @click="confirmWipe">
+          <button ref="cancelBtn" class="btn btn-ghost btn-sm" :disabled="wiping" @click="showWipeModal = false">{{ t('settings.cancel') }}</button>
+          <button class="btn btn-danger-solid btn-sm" :disabled="wiping" @click="confirmWipe">
             {{ wiping ? t('settings.wiping') : t('settings.deleteEverything') }}
           </button>
         </div>
@@ -603,7 +603,11 @@ async function confirmWipe() {
   justify-content: space-between;
   margin-top: var(--sp-1);
 }
-button {
+/* Base styling for raw buttons only. Excludes .btn (shared system in
+   theme.css) and .toggle (the ToggleSwitch child's root <button>, which Vue
+   scoped styles otherwise bleed onto — this rule would tie on specificity and
+   override the switch's own pill radius). */
+button:not(.btn):not(.toggle) {
   border: none;
   border-radius: var(--radius-sm);
   padding: 7px 14px;
@@ -615,26 +619,6 @@ button {
 button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-}
-.intro-link {
-  background: transparent;
-  color: var(--text-3);
-  border: 1px solid var(--border);
-  transition: border-color 150ms ease, color 150ms ease;
-}
-.intro-link:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.wipe {
-  background: transparent;
-  color: var(--warn);
-  border: 1px solid var(--warn-border);
-  transition: background 150ms ease, border-color 150ms ease;
-}
-.wipe:hover {
-  background: var(--warn-bg);
-  border-color: var(--warn);
 }
 .rules-hint {
   margin: 0;
@@ -657,19 +641,6 @@ button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
-.rule-add-btn {
-  background: var(--card-strong);
-  color: var(--text-2);
-  border: 1px solid var(--border);
-}
-.rule-add-btn:hover:not(:disabled) {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.rule-add-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
 .rule-error {
   margin: 0;
   font-size: var(--text-xs);
@@ -688,55 +659,16 @@ button:focus-visible {
   flex-direction: column;
   gap: var(--sp-2);
 }
-.export-btns button {
-  /* Transparent, bordered look — matches the "Show intro again" button. */
-  box-sizing: border-box;
-  height: 36px;
-  padding: 0 14px;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--text-2);
-  border: 1px solid var(--border);
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap; /* wrap the row, never break a label mid-word */
-}
 /* Export JSON sits full-width on top; the actions wrap onto the row below. */
-.export-json {
-  width: 100%;
-}
 .export-btns-row {
   display: flex;
   flex-wrap: wrap;
   gap: var(--sp-2);
 }
-.export-btns-row button {
+/* Row actions share width and wrap on narrow layouts (look comes from .btn). */
+.export-btns-row .btn {
   flex: 1 1 auto;
   min-width: 104px;
-}
-.export-btns button:hover:not(:disabled) {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.export-btns button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-.export-btns button:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-/* Download-encrypted: filled primary so the actual download action stands out. */
-.rule-add-btn.primary {
-  background: var(--accent-grad-strong);
-  color: var(--on-accent);
-  border-color: transparent;
-}
-.rule-add-btn.primary:hover:not(:disabled) {
-  filter: brightness(1.08);
-  border-color: transparent;
-  color: var(--on-accent);
 }
 .sr-only {
   position: absolute;
@@ -812,33 +744,6 @@ button:focus-visible {
   display: flex;
   justify-content: flex-end;
   gap: var(--sp-2);
-}
-.cancel {
-  background: var(--card-strong);
-  border: 1px solid var(--border);
-  color: var(--text-2);
-}
-.danger {
-  background: var(--negative);
-  color: var(--on-accent);
-}
-.merge {
-  background: var(--accent-grad-strong);
-  color: var(--on-accent);
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: var(--sp-2) 14px;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-}
-.merge:hover:not(:disabled) { filter: brightness(1.08); }
-.merge:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.danger:disabled,
-.cancel:disabled,
-.merge:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
 .modal-hint {
   margin: -8px 0 var(--sp-4);

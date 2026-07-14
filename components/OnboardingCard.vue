@@ -86,8 +86,8 @@ onUnmounted(() => {
       </ul>
 
       <div class="actions">
-        <button v-if="currentStep > 0" type="button" class="back" @click="back">{{ t('onboarding.back') }}</button>
-        <button ref="ctaBtn" class="cta" @click="next">{{ isLastStep ? t('onboarding.gotIt') : t('onboarding.next') }}</button>
+        <button v-if="currentStep > 0" type="button" class="btn btn-ghost" @click="back">{{ t('onboarding.back') }}</button>
+        <button ref="ctaBtn" class="btn btn-primary" @click="next">{{ isLastStep ? t('onboarding.gotIt') : t('onboarding.next') }}</button>
       </div>
     </section>
   </div>
@@ -227,30 +227,4 @@ onUnmounted(() => {
   justify-content: flex-end;
   gap: 10px;
 }
-.back {
-  background: transparent;
-  color: var(--text-2);
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  padding: 10px 18px;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-}
-.back:hover { border-color: var(--accent); color: var(--accent); }
-.back:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.cta {
-  background: var(--accent-grad-strong);
-  color: var(--on-accent);
-  border: none;
-  border-radius: 9px;
-  padding: 10px 22px;
-  font-size: var(--text-sm);
-  font-weight: 700;
-  cursor: pointer;
-  font-family: inherit;
-}
-.cta:hover { filter: brightness(1.06); }
-.cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 </style>

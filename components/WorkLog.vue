@@ -116,9 +116,9 @@ async function exportPng() {
         <button class="nav" :disabled="!canPrev" :aria-label="t('worklog.prevDay')" @click="step(-1)">‹</button>
         <DatePicker v-model="selected" :min="minDate" :max="today" />
         <button class="nav" :disabled="!canNext" :aria-label="t('worklog.nextDay')" @click="step(1)">›</button>
-        <button class="copy" :disabled="!log.total" @click="copy">{{ copied ? t('worklog.copied') : t('worklog.copy') }}</button>
-        <button class="copy" :disabled="!log.total" @click="exportCsv">{{ t('worklog.csv') }}</button>
-        <button class="copy" :disabled="!log.total || exporting" @click="exportPng">{{ t('worklog.png') }}</button>
+        <button class="btn btn-ghost btn-sm" :disabled="!log.total" @click="copy">{{ copied ? t('worklog.copied') : t('worklog.copy') }}</button>
+        <button class="btn btn-ghost btn-sm" :disabled="!log.total" @click="exportCsv">{{ t('worklog.csv') }}</button>
+        <button class="btn btn-ghost btn-sm" :disabled="!log.total || exporting" @click="exportPng">{{ t('worklog.png') }}</button>
       </div>
     </div>
 
@@ -202,32 +202,7 @@ async function exportPng() {
   font-family: inherit;
   color-scheme: light dark;
 }
-.copy {
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  height: 34px;
-  margin-left: var(--sp-1);
-  border: 1px solid var(--border);
-  background: var(--card-strong);
-  color: var(--text-2);
-  border-radius: var(--radius-sm);
-  padding: 0 var(--sp-4);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-}
-.copy:hover:not(:disabled) {
-  border-color: var(--accent);
-  color: var(--text);
-}
-.copy:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
 .nav:focus-visible,
-.copy:focus-visible,
 .date:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;

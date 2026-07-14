@@ -12,45 +12,45 @@ describe('OnboardingCard', () => {
     expect(w.get('[role="dialog"]').attributes('aria-modal')).toBe('true');
     expect(w.text()).toContain('Welcome to TabStyr');
     expect(w.text()).toContain("You're all set");
-    expect(w.find('.back').exists()).toBe(false); // no Back button on the first step
-    expect(w.get('.cta').text()).toBe('Next'); // not "Got it" yet
+    expect(w.find('.btn-ghost').exists()).toBe(false); // no Back button on the first step
+    expect(w.get('.btn-primary').text()).toBe('Next'); // not "Got it" yet
     expect(w.find('.legend').exists()).toBe(false); // legend only shows on the last step
     w.unmount();
   });
 
   test('"Next" advances through all 3 steps, then the CTA becomes "Got it" with the legend visible', async () => {
     const w = mountCard();
-    await w.get('.cta').trigger('click'); // step 1 -> 2
+    await w.get('.btn-primary').trigger('click'); // step 1 -> 2
     expect(w.text()).toContain('Just browse normally');
-    expect(w.get('.back')).toBeTruthy();
-    expect(w.get('.cta').text()).toBe('Next');
+    expect(w.get('.btn-ghost')).toBeTruthy();
+    expect(w.get('.btn-primary').text()).toBe('Next');
     expect(w.emitted('dismiss')).toBeUndefined();
 
-    await w.get('.cta').trigger('click'); // step 2 -> 3
+    await w.get('.btn-primary').trigger('click'); // step 2 -> 3
     expect(w.text()).toContain('Check back tomorrow');
-    expect(w.get('.cta').text()).toBe('Got it');
+    expect(w.get('.btn-primary').text()).toBe('Got it');
     // 8 categories incl. Finance render in the legend, only on the final step
     expect(w.findAll('.legend li')).toHaveLength(8);
     expect(w.emitted('dismiss')).toBeUndefined();
 
-    await w.get('.cta').trigger('click'); // final step's CTA dismisses
+    await w.get('.btn-primary').trigger('click'); // final step's CTA dismisses
     expect(w.emitted('dismiss')).toHaveLength(1);
     w.unmount();
   });
 
   test('"Back" returns to the previous step without dismissing', async () => {
     const w = mountCard();
-    await w.get('.cta').trigger('click'); // -> step 2
-    await w.get('.back').trigger('click'); // -> step 1
+    await w.get('.btn-primary').trigger('click'); // -> step 2
+    await w.get('.btn-ghost').trigger('click'); // -> step 1
     expect(w.text()).toContain("You're all set");
-    expect(w.find('.back').exists()).toBe(false);
+    expect(w.find('.btn-ghost').exists()).toBe(false);
     expect(w.emitted('dismiss')).toBeUndefined();
     w.unmount();
   });
 
   test('Escape and backdrop click abandon the tour immediately from any step', async () => {
     const w1 = mountCard();
-    await w1.get('.cta').trigger('click'); // now on step 2, mid-tour
+    await w1.get('.btn-primary').trigger('click'); // now on step 2, mid-tour
     await w1.get('.backdrop').trigger('keydown', { key: 'Escape' });
     expect(w1.emitted('dismiss')).toHaveLength(1);
     w1.unmount();

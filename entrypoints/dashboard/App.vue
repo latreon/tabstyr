@@ -169,7 +169,7 @@ onMounted(async () => {
     </div>
     <div v-else-if="s.loadError.value" class="load-error" role="alert">
       <p class="label">{{ t('common.loadError') }}</p>
-      <button type="button" class="retry-btn" @click="s.load()">{{ t('common.retry') }}</button>
+      <button type="button" class="btn btn-primary btn-sm" @click="s.load()">{{ t('common.retry') }}</button>
     </div>
     <template v-else>
       <p v-if="s.storageWarning.value" class="storage-warn" role="alert">{{ t('common.storageFull') }}</p>
@@ -312,19 +312,6 @@ onMounted(async () => {
   align-items: flex-start;
   gap: 12px;
 }
-.retry-btn {
-  height: 32px;
-  padding: 0 16px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--card-strong);
-  color: var(--text);
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-}
-.retry-btn:hover { border-color: var(--accent); }
-.retry-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .storage-warn {
   margin-bottom: 16px;
   padding: 12px 16px;
@@ -439,7 +426,7 @@ onMounted(async () => {
   padding: 5px 12px;
   border-radius: 8px;
   border: none;
-  background: var(--accent-grad-strong);
+  background: var(--accent-gradient);
   color: var(--on-accent);
   font: inherit;
   font-size: 12px;

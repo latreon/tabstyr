@@ -24,20 +24,20 @@ const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>();
   height: 24px; /* WCAG 2.2 (2.5.8) minimum target height */
   border: 1px solid var(--border);
   background: var(--bar-track);
-  border-radius: var(--radius-pill);
+  border-radius: 16px;
   padding: 0;
   cursor: pointer;
   transition: background 160ms ease, border-color 160ms ease;
   flex: none;
 }
 .toggle.on {
-  background: var(--accent-grad-strong);
+  background: var(--accent-gradient);
   border-color: transparent;
 }
 .toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .knob {
   position: absolute;
-  top: 2px;
+  top: 2.5px;
   left: 2px;
   width: 18px;
   height: 18px;
