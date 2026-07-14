@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { CATEGORIES, CATEGORY_META } from '@/lib/categories';
 import { useFocusTrap } from '@/composables/useFocusTrap';
@@ -13,7 +13,30 @@ const ctaBtn = ref<HTMLButtonElement | null>(null);
 
 useFocusTrap(panel);
 
-// Dismiss persists (onboarded flag), so any close path means "never show again".
+// A real 3-step tour — install (tracking is already on) → use it for a day
+// (nothing to configure) → check the dashboard (where the payoff shows up).
+// Each step is its own icon/title/body; only the CTA advances — Escape and a
+// backdrop click always abandon the tour outright from any step (see close()).
+const STEPS = [
+  { icon: 'clock', title: 'step1Title', body: 'step1Body' },
+  { icon: 'shield', title: 'step2Title', body: 'step2Body' },
+  { icon: 'tag', title: 'step3Title', body: 'step3Body' },
+] as const;
+const TOTAL_STEPS = STEPS.length;
+const currentStep = ref(0);
+const isLastStep = computed(() => currentStep.value === TOTAL_STEPS - 1);
+const step = computed(() => STEPS[currentStep.value]);
+
+function next() {
+  if (isLastStep.value) close();
+  else currentStep.value += 1;
+}
+function back() {
+  if (currentStep.value > 0) currentStep.value -= 1;
+}
+
+// Dismiss persists (onboarded flag), so any close path means "never show again" —
+// Escape and a backdrop click abandon the tour from any step, same as before.
 function close() {
   emit('dismiss');
 }
@@ -38,39 +61,24 @@ onUnmounted(() => {
       <button class="close" :aria-label="t('onboarding.close')" @click="close">✕</button>
 
       <h2 id="onboard-title" class="title">{{ t('onboarding.title') }}</h2>
-      <p class="lede">{{ t('onboarding.lede') }}</p>
 
-      <div class="points">
-        <div class="point">
-          <span class="ico" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3.5 2" /></svg>
-          </span>
-          <div>
-            <h3>{{ t('onboarding.trackTitle') }}</h3>
-            <p>{{ t('onboarding.trackBody') }}</p>
-          </div>
-        </div>
-        <div class="point">
-          <span class="ico" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4-3 7-7 8.5-4-1.5-7-4.5-7-8.5V6z" /><path d="M9 12l2 2 4-4.5" /></svg>
-          </span>
-          <div>
-            <h3>{{ t('onboarding.privateTitle') }}</h3>
-            <p>{{ t('onboarding.privateBody') }}</p>
-          </div>
-        </div>
-        <div class="point">
-          <span class="ico" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0l-7-7A2 2 0 0 1 3 12.2V5a2 2 0 0 1 2-2h7.2a2 2 0 0 1 1.4.6l7 7a2 2 0 0 1 0 2.8z" /><circle cx="7.6" cy="7.6" r="1.4" /></svg>
-          </span>
-          <div>
-            <h3>{{ t('onboarding.categorizedTitle') }}</h3>
-            <p>{{ t('onboarding.categorizedBody') }}</p>
-          </div>
+      <ol class="steps-nav" :aria-label="t('onboarding.stepLabel', { n: currentStep + 1, total: TOTAL_STEPS })">
+        <li v-for="i in TOTAL_STEPS" :key="i" :class="{ active: i - 1 === currentStep, done: i - 1 < currentStep }" />
+      </ol>
+
+      <div class="point" role="group" :aria-label="t('onboarding.stepLabel', { n: currentStep + 1, total: TOTAL_STEPS })">
+        <span class="ico" aria-hidden="true">
+          <svg v-if="step.icon === 'clock'" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3.5 2" /></svg>
+          <svg v-else-if="step.icon === 'shield'" viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4-3 7-7 8.5-4-1.5-7-4.5-7-8.5V6z" /><path d="M9 12l2 2 4-4.5" /></svg>
+          <svg v-else viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0l-7-7A2 2 0 0 1 3 12.2V5a2 2 0 0 1 2-2h7.2a2 2 0 0 1 1.4.6l7 7a2 2 0 0 1 0 2.8z" /><circle cx="7.6" cy="7.6" r="1.4" /></svg>
+        </span>
+        <div>
+          <h3>{{ t(`onboarding.${step.title}`) }}</h3>
+          <p>{{ t(`onboarding.${step.body}`) }}</p>
         </div>
       </div>
 
-      <ul class="legend" :aria-label="t('onboarding.legendAria')">
+      <ul v-if="isLastStep" class="legend" :aria-label="t('onboarding.legendAria')">
         <li v-for="l in legend" :key="l.category">
           <span class="dot" :style="{ background: l.color }" aria-hidden="true" />
           {{ t(`categories.${l.category}`) }}
@@ -78,7 +86,8 @@ onUnmounted(() => {
       </ul>
 
       <div class="actions">
-        <button ref="ctaBtn" class="cta" @click="close">{{ t('onboarding.gotIt') }}</button>
+        <button v-if="currentStep > 0" type="button" class="btn btn-ghost" @click="back">{{ t('onboarding.back') }}</button>
+        <button ref="ctaBtn" class="btn btn-primary" @click="next">{{ isLastStep ? t('onboarding.gotIt') : t('onboarding.next') }}</button>
       </div>
     </section>
   </div>
@@ -100,7 +109,7 @@ onUnmounted(() => {
 }
 .modal {
   position: relative;
-  width: min(560px, 100%);
+  width: min(480px, 100%);
   /* Stay within the viewport and scroll internally on short screens, while
      remaining centered both ways via the flex backdrop. */
   max-height: calc(100vh - 32px);
@@ -135,26 +144,32 @@ onUnmounted(() => {
 .close:hover { color: var(--text); border-color: var(--accent); }
 .close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .title {
-  margin: 0 0 var(--sp-1);
+  margin: 0 0 14px;
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.4px;
 }
-.lede {
-  margin: 0 0 20px;
-  font-size: var(--text-sm);
-  color: var(--text-2);
-}
-.points {
+.steps-nav {
   display: flex;
-  flex-direction: column;
-  gap: var(--sp-4);
-  margin-bottom: 20px;
+  gap: 6px;
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
 }
+.steps-nav li {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--divider);
+}
+.steps-nav li.done { background: var(--accent); }
+.steps-nav li.active { background: var(--accent-gradient); }
 .point {
   display: flex;
   gap: 13px;
   align-items: flex-start;
+  min-height: 108px;
+  margin-bottom: 20px;
 }
 .ico {
   flex: none;
@@ -175,14 +190,14 @@ onUnmounted(() => {
   stroke-linejoin: round;
 }
 .point h3 {
-  margin: 0 0 3px;
-  font-size: 14px;
+  margin: 0 0 5px;
+  font-size: 16px;
   font-weight: 700;
 }
 .point p {
   margin: 0;
-  font-size: 12.5px;
-  line-height: 1.5;
+  font-size: 13px;
+  line-height: 1.55;
   color: var(--text-3);
 }
 .legend {
@@ -210,18 +225,6 @@ onUnmounted(() => {
 .actions {
   display: flex;
   justify-content: flex-end;
+  gap: 10px;
 }
-.cta {
-  background: var(--accent-grad-strong);
-  color: var(--on-accent);
-  border: none;
-  border-radius: 9px;
-  padding: 10px 22px;
-  font-size: var(--text-sm);
-  font-weight: 700;
-  cursor: pointer;
-  font-family: inherit;
-}
-.cta:hover { filter: brightness(1.06); }
-.cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 </style>

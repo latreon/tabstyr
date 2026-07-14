@@ -298,6 +298,8 @@
     "backupNote": "Les sauvegardes JSON incluent les titres des onglets ouverts. Chiffrez la sauvegarde si les titres peuvent être sensibles.",
     "notifications": "Rappels d'onglets inactifs",
     "notificationsHint": "Une notification par jour lorsque des onglets restent inactifs au-delà du seuil.",
+    "sessionAlert": "Alerte de session continue (min)",
+    "sessionAlertHint": "Un rappel discret après ce nombre de minutes d'affilée sur un site de catégorie distrayante (0 = désactivé). Les sites productifs et neutres ne sont jamais interrompus.",
     "showIntro": "Revoir l'introduction",
     "introShown": "L'introduction s'affichera sur le tableau de bord",
     "restoreInvalid": "Ce fichier n'est pas une sauvegarde TabStyr valide.",
@@ -328,14 +330,16 @@
   },
   "onboarding": {
     "title": "Bienvenue dans TabStyr",
-    "lede": "Un aperçu discret de l'usage réel du temps passé dans votre navigateur. Voici l'essentiel :",
-    "trackTitle": "Ce qu'il suit",
-    "trackBody": "Le temps actif au premier plan sur chaque site — l'onglet que vous regardez réellement. L'audio en arrière-plan est compté séparément.",
-    "privateTitle": "100% privé",
-    "privateBody": "Tout reste dans ce navigateur. Aucun compte, aucun serveur, aucun appel réseau. Exportez ou effacez vos données à tout moment.",
-    "categorizedTitle": "Catégorisé automatiquement",
-    "categorizedBody": "Les sites sont triés dans les catégories ci-dessous — les points colorés du tableau de bord les utilisent. Reclassez n'importe quel site, ou ajoutez vos propres règles dans les Paramètres.",
+    "stepLabel": "Étape {n} sur {total}",
+    "step1Title": "Tout est prêt",
+    "step1Body": "TabStyr enregistre déjà le temps actif au premier plan sur chaque site — sans configuration. Tout reste sur cet appareil : aucun compte, aucun serveur, aucun appel réseau.",
+    "step2Title": "Naviguez normalement",
+    "step2Body": "Il n'y a rien à faire pour l'instant. Cliquez sur l'icône de la barre d'outils à tout moment pour un aperçu rapide de l'activité du jour.",
+    "step3Title": "Revenez demain",
+    "step3Body": "Revenez après une journée de navigation pour voir les tendances, votre carte de chaleur d'activité et votre % de concentration. Les sites sont catégorisés automatiquement ci-dessous — reclassez-en n'importe lequel, ou ajoutez vos propres règles dans les Paramètres.",
     "legendAria": "Légende des couleurs de catégorie",
+    "back": "Retour",
+    "next": "Suivant",
     "gotIt": "Compris",
     "close": "Fermer"
   },
@@ -350,7 +354,8 @@
   },
   "notification": {
     "stale": "{count} onglets inactifs depuis plus de {days} jours",
-    "budget": "Budget quotidien atteint : {category}"
+    "budget": "Budget quotidien atteint : {category}",
+    "sessionAlert": "Vous êtes sur {domain} depuis {minutes}+ min"
   },
   "productivity": {
     "productive": "Productif",

@@ -298,6 +298,8 @@
     "backupNote": "JSON-Backups enthalten die Titel offener Tabs. Verschlüssle das Backup, wenn Titel sensibel sein können.",
     "notifications": "Erinnerungen an alte Tabs",
     "notificationsHint": "Eine tägliche Benachrichtigung, wenn Tabs länger als die Schwelle unberührt bleiben.",
+    "sessionAlert": "Dauer-Sitzungshinweis (Min.)",
+    "sessionAlertHint": "Ein sanfter Hinweis nach so vielen Minuten am Stück auf einer ablenkenden Website (0 = aus). Produktive und neutrale Seiten werden nie unterbrochen.",
     "showIntro": "Einführung erneut anzeigen",
     "introShown": "Einführung wird im Dashboard angezeigt",
     "restoreInvalid": "Diese Datei ist kein gültiges TabStyr-Backup.",
@@ -328,14 +330,16 @@
   },
   "onboarding": {
     "title": "Willkommen bei TabStyr",
-    "lede": "Ein ruhiges Bild davon, wohin deine Browser-Zeit wirklich geht. Hier das Wesentliche:",
-    "trackTitle": "Was erfasst wird",
-    "trackBody": "Aktive Vordergrundzeit auf jeder Seite — der Tab, den du tatsächlich ansiehst. Hintergrund-Audio wird separat gezählt.",
-    "privateTitle": "100% privat",
-    "privateBody": "Alles bleibt in diesem Browser. Kein Konto, keine Server, keine Netzwerkaufrufe. Exportiere oder lösche deine Daten jederzeit.",
-    "categorizedTitle": "Automatisch kategorisiert",
-    "categorizedBody": "Seiten werden in die untenstehenden Kategorien einsortiert — die farbigen Punkte im gesamten Dashboard verwenden diese. Stufe jede Seite neu ein oder füge eigene Regeln in den Einstellungen hinzu.",
+    "stepLabel": "Schritt {n} von {total}",
+    "step1Title": "Alles startklar",
+    "step1Body": "TabStyr erfasst bereits die aktive Vordergrundzeit auf jeder Seite — ohne Einrichtung. Alles bleibt auf diesem Gerät: kein Konto, keine Server, keine Netzwerkaufrufe.",
+    "step2Title": "Einfach normal weiter browsen",
+    "step2Body": "Gerade gibt es nichts zu tun. Klicke jederzeit auf das Symbol in der Symbolleiste für einen kurzen Blick auf die heutige Aktivität.",
+    "step3Title": "Morgen wieder vorbeischauen",
+    "step3Body": "Komm nach einem Tag Browsen zurück, um Trends, deine Aktivitäts-Heatmap und den Fokus-% zu sehen. Seiten werden unten automatisch kategorisiert — stufe sie neu ein oder füge in den Einstellungen eigene Regeln hinzu.",
     "legendAria": "Legende der Kategoriefarben",
+    "back": "Zurück",
+    "next": "Weiter",
     "gotIt": "Verstanden",
     "close": "Schließen"
   },
@@ -350,7 +354,8 @@
   },
   "notification": {
     "stale": "{count} Tabs seit über {days} Tagen unberührt",
-    "budget": "Tagesbudget erreicht: {category}"
+    "budget": "Tagesbudget erreicht: {category}",
+    "sessionAlert": "Du bist seit {minutes}+ Min. auf {domain}"
   },
   "productivity": {
     "productive": "Produktiv",

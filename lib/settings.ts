@@ -19,6 +19,7 @@ const MAX_OVERRIDES = 5_000;
 const MAX_DOMAIN_LEN = 253;
 const MAX_CUSTOM_CATEGORIES = 20;
 const MAX_CAT_NAME_LEN = 24;
+const MAX_SESSION_ALERT_MINUTES = 180;
 const HEX_COLOR = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -36,6 +37,9 @@ export const DEFAULT_SETTINGS: Settings = {
   categoryBudgets: {},
   onboarded: false,
   notificationsEnabled: true,
+  // 30 min: long enough to not nag over a quick check, short enough to catch a
+  // doomscroll before it eats an hour. 0 = off.
+  sessionAlertMinutes: 30,
   language: 'auto',
 };
 
@@ -167,6 +171,7 @@ function coerce(raw: unknown): Partial<Settings> {
     categoryBudgets: sanitizeBudgets(r.categoryBudgets, isValid),
     ...(typeof r.onboarded === 'boolean' && { onboarded: r.onboarded }),
     ...(typeof r.notificationsEnabled === 'boolean' && { notificationsEnabled: r.notificationsEnabled }),
+    ...(typeof r.sessionAlertMinutes === 'number' && { sessionAlertMinutes: clamp(Math.round(r.sessionAlertMinutes), 0, MAX_SESSION_ALERT_MINUTES) }),
     ...(typeof r.language === 'string' && { language: r.language.slice(0, 20) }),
   };
 }

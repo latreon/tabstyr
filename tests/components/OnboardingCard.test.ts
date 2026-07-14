@@ -7,30 +7,65 @@ import OnboardingCard from '@/components/OnboardingCard.vue';
 const mountCard = () => mount(OnboardingCard, { attachTo: document.body, global: { stubs: { teleport: true } } });
 
 describe('OnboardingCard', () => {
-  test('renders a modal dialog with title and category legend', () => {
+  test('renders a modal dialog starting on step 1 of 3, with no legend yet', () => {
     const w = mountCard();
     expect(w.get('[role="dialog"]').attributes('aria-modal')).toBe('true');
     expect(w.text()).toContain('Welcome to TabStyr');
-    // 8 categories incl. Finance render in the legend
-    expect(w.findAll('.legend li')).toHaveLength(8);
+    expect(w.text()).toContain("You're all set");
+    expect(w.find('.btn-ghost').exists()).toBe(false); // no Back button on the first step
+    expect(w.get('.btn-primary').text()).toBe('Next'); // not "Got it" yet
+    expect(w.find('.legend').exists()).toBe(false); // legend only shows on the last step
     w.unmount();
   });
 
-  test('"Got it", Escape, and backdrop click each emit dismiss', async () => {
+  test('"Next" advances through all 3 steps, then the CTA becomes "Got it" with the legend visible', async () => {
+    const w = mountCard();
+    await w.get('.btn-primary').trigger('click'); // step 1 -> 2
+    expect(w.text()).toContain('Just browse normally');
+    expect(w.get('.btn-ghost')).toBeTruthy();
+    expect(w.get('.btn-primary').text()).toBe('Next');
+    expect(w.emitted('dismiss')).toBeUndefined();
+
+    await w.get('.btn-primary').trigger('click'); // step 2 -> 3
+    expect(w.text()).toContain('Check back tomorrow');
+    expect(w.get('.btn-primary').text()).toBe('Got it');
+    // 8 categories incl. Finance render in the legend, only on the final step
+    expect(w.findAll('.legend li')).toHaveLength(8);
+    expect(w.emitted('dismiss')).toBeUndefined();
+
+    await w.get('.btn-primary').trigger('click'); // final step's CTA dismisses
+    expect(w.emitted('dismiss')).toHaveLength(1);
+    w.unmount();
+  });
+
+  test('"Back" returns to the previous step without dismissing', async () => {
+    const w = mountCard();
+    await w.get('.btn-primary').trigger('click'); // -> step 2
+    await w.get('.btn-ghost').trigger('click'); // -> step 1
+    expect(w.text()).toContain("You're all set");
+    expect(w.find('.btn-ghost').exists()).toBe(false);
+    expect(w.emitted('dismiss')).toBeUndefined();
+    w.unmount();
+  });
+
+  test('Escape and backdrop click abandon the tour immediately from any step', async () => {
     const w1 = mountCard();
-    await w1.get('.cta').trigger('click');
+    await w1.get('.btn-primary').trigger('click'); // now on step 2, mid-tour
+    await w1.get('.backdrop').trigger('keydown', { key: 'Escape' });
     expect(w1.emitted('dismiss')).toHaveLength(1);
     w1.unmount();
 
     const w2 = mountCard();
-    await w2.get('.backdrop').trigger('keydown', { key: 'Escape' });
+    await w2.get('.backdrop').trigger('click'); // self-click on backdrop, still step 1
     expect(w2.emitted('dismiss')).toHaveLength(1);
     w2.unmount();
+  });
 
-    const w3 = mountCard();
-    await w3.get('.backdrop').trigger('click'); // self-click on backdrop
-    expect(w3.emitted('dismiss')).toHaveLength(1);
-    w3.unmount();
+  test('the close (✕) button dismisses immediately from any step', async () => {
+    const w = mountCard();
+    await w.get('.close').trigger('click');
+    expect(w.emitted('dismiss')).toHaveLength(1);
+    w.unmount();
   });
 
   test('clicking inside the panel does not dismiss', async () => {

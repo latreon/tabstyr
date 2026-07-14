@@ -127,7 +127,7 @@ function hideTip() {
   font-family: inherit;
 }
 .toggle button.active {
-  background: var(--accent-grad-strong);
+  background: var(--accent-gradient);
   color: var(--on-accent);
   border-color: transparent;
   font-weight: 700;

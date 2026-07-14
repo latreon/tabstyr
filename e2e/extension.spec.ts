@@ -49,16 +49,19 @@ test('dashboard renders bento tiles', async ({ context, extensionId }) => {
 // mount and let it pop in *after* this returned, leaving its backdrop to
 // intercept later clicks. Wait for it to actually show up first.
 async function dismissOnboarding(page: import('@playwright/test').Page) {
-  const got = page.getByRole('button', { name: 'Got it' });
+  const dialog = page.getByRole('dialog');
   try {
-    await got.waitFor({ state: 'visible', timeout: 5_000 });
+    await dialog.waitFor({ state: 'visible', timeout: 5_000 });
   } catch {
     return; // never showed (e.g. already onboarded) — nothing to dismiss
   }
-  await got.click();
+  // Escape abandons the tour from any of its 3 steps (same as the ✕ button or a
+  // backdrop click) — simpler than walking Next through every step just to reach
+  // the final "Got it".
+  await page.keyboard.press('Escape');
   // Wait for the card (and its backdrop) to leave the DOM so a following click
   // or visibility check doesn't race the dismissal transition.
-  await got.waitFor({ state: 'detached' });
+  await dialog.waitFor({ state: 'detached' });
 }
 
 // Playwright-launched Chromium doesn't treat a programmatically opened tab as the

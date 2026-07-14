@@ -91,6 +91,15 @@ export interface Settings {
   onboarded: boolean;
   /** Whether the once-a-day stale-tab reminder notification is shown. */
   notificationsEnabled: boolean;
+  /**
+   * Minutes of CONTINUOUS time on one distracting-category site before a "you've
+   * been on {domain} for a while" nudge fires. 0 disables it. Gated on
+   * `notificationsEnabled` and only fires for the 'distracting' productivity
+   * class — never on productive/neutral sites (that's the opposite of what a
+   * "you're doomscrolling" nudge is for). Resets whenever the continuously-
+   * focused domain changes, so it can fire again on a later, separate visit.
+   */
+  sessionAlertMinutes: number;
   /** UI language: 'auto' (follow the browser) or a supported locale code. */
   language: string;
 }

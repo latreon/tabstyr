@@ -162,6 +162,21 @@ describe('settings', () => {
     expect((await getSettings()).notificationsEnabled).toBe(true); // default
   });
 
+  test('sessionAlertMinutes defaults to 30 and is clamped to 0–180', async () => {
+    expect((await getSettings()).sessionAlertMinutes).toBe(30);
+    await fakeBrowser.storage.local.set({ settings: { sessionAlertMinutes: -5 } });
+    invalidateSettings();
+    expect((await getSettings()).sessionAlertMinutes).toBe(0);
+    await fakeBrowser.storage.local.set({ settings: { sessionAlertMinutes: 999 } });
+    invalidateSettings();
+    expect((await getSettings()).sessionAlertMinutes).toBe(180);
+  });
+
+  test('sessionAlertMinutes of 0 (off) round-trips unchanged', async () => {
+    await saveSettings({ sessionAlertMinutes: 0 });
+    expect((await getSettings()).sessionAlertMinutes).toBe(0);
+  });
+
   test('invalid theme value is ignored, default wins', async () => {
     await fakeBrowser.storage.local.set({ settings: { theme: 'neon' } });
     expect((await getSettings()).theme).toBe('system');

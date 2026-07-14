@@ -19,8 +19,8 @@ function rate() {
     <p id="review-prompt-title" class="title">{{ t('reviewPrompt.title') }}</p>
     <p class="body">{{ t('reviewPrompt.body') }}</p>
     <div class="actions">
-      <button class="dismiss" @click="emit('dismiss')">{{ t('reviewPrompt.dismiss') }}</button>
-      <button class="rate" @click="rate">{{ t('reviewPrompt.rate') }}</button>
+      <button class="btn btn-ghost btn-sm" @click="emit('dismiss')">{{ t('reviewPrompt.dismiss') }}</button>
+      <button class="btn btn-primary btn-sm" @click="rate">{{ t('reviewPrompt.rate') }}</button>
     </div>
   </div>
 </template>
@@ -69,27 +69,4 @@ function rate() {
   justify-content: flex-end;
   gap: 8px;
 }
-.dismiss,
-.rate {
-  border-radius: 8px;
-  padding: 7px 12px;
-  font-size: 12.5px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-}
-.dismiss {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-2);
-}
-.dismiss:hover { color: var(--text); border-color: var(--accent); }
-.rate {
-  background: var(--accent-grad-strong);
-  border: none;
-  color: var(--on-accent);
-}
-.rate:hover { filter: brightness(1.06); }
-.dismiss:focus-visible,
-.rate:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 </style>
