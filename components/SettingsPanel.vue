@@ -600,6 +600,8 @@ async function confirmWipe() {
 }
 .actions {
   display: flex;
+  flex-wrap: wrap; /* long i18n labels wrap to a second row instead of overflowing */
+  gap: var(--sp-2);
   justify-content: space-between;
   margin-top: var(--sp-1);
 }
