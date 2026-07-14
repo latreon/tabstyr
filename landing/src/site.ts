@@ -7,7 +7,7 @@ export const SITE_URL = 'https://tabstyr.com';
 export const STORE_LIVE: Record<'chrome' | 'edge' | 'firefox', boolean> = {
   chrome: true,
   edge: false,
-  firefox: false,
+  firefox: true,
 };
 export const ANY_STORE_LIVE = Object.values(STORE_LIVE).some(Boolean);
 
@@ -16,7 +16,7 @@ export const ANY_STORE_LIVE = Object.values(STORE_LIVE).some(Boolean);
 export const LINKS = {
   chrome: 'https://chromewebstore.google.com/detail/tabstyr/mgckngagefippkemgmmccfaaljmgllpa',
   edge: 'https://microsoftedge.microsoft.com/addons', // ← replace with Edge listing
-  firefox: 'https://addons.mozilla.org/firefox/', // ← replace with AMO listing
+  firefox: 'https://addons.mozilla.org/en-US/firefox/addon/tabstyr/',
   // In-app routes (clean URLs, handled by the history router in App.vue).
   privacy: import.meta.env.BASE_URL + 'privacy',
   ideas: import.meta.env.BASE_URL + 'ideas',

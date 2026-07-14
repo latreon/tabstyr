@@ -20,9 +20,7 @@ breakdowns, and gentle stale-tab nudges. Every byte stays on your device.
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 ![Version](./.github/badges/version.svg)
 ![Data: 100% local](https://img.shields.io/badge/data-100%25%20local-3fb27f)
-<!-- Buy me a coffee — hidden until the account is set up; re-enable:
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-support-ffdd00?logo=buymeacoffee&logoColor=black)](https://www.buymeacoffee.com/latreon)
--->
+[![Support on Polar](https://img.shields.io/badge/Support-Polar-0062ff?logo=polar&logoColor=white)](https://buy.polar.sh/polar_cl_RkZPHoSH8zAQndHySXwKoDhLRykeX8BuMANlE3FoBSo)
 
 <br/>
 
@@ -326,17 +324,15 @@ npm run changelog:fetch && npm run changelog:md   # refresh CHANGELOG.md after a
 npm run build && npm run e2e
 ```
 
-<!-- Support — hidden until the Buy Me a Coffee account is set up; re-enable this section.
 ## Support
 
-TabStyr is free and open source. If it saves you time, a coffee keeps it caffeinated:
+TabStyr is free and open source. If it saves you time, a tip keeps it going:
 
-<a href="https://www.buymeacoffee.com/latreon">
-  <img src="https://img.shields.io/badge/Buy_Me_a_Coffee-Support_the_project-ffdd00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy Me a Coffee" />
+<a href="https://buy.polar.sh/polar_cl_RkZPHoSH8zAQndHySXwKoDhLRykeX8BuMANlE3FoBSo">
+  <img src="https://img.shields.io/badge/Support-Polar-0062ff?style=for-the-badge&logo=polar&logoColor=white" alt="Support on Polar" />
 </a>
 
 Entirely optional — stars and bug reports help just as much.
--->
 
 ## Contributing
 
