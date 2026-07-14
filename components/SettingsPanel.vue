@@ -9,6 +9,7 @@ import { useFocusTrap } from '@/composables/useFocusTrap';
 import { SUPPORTED_LOCALES, resolveLocale } from '@/lib/i18n';
 import * as repo from '@/lib/db/repo';
 import { downloadFile, toJsonBackup } from '@/lib/export';
+import { buildExportRows, exportRowsToCsv, exportRowsToJson } from '@/lib/export-data';
 import { encryptToEnvelope, isEncryptedEnvelope, decryptFromEnvelope, MIN_PASSPHRASE } from '@/lib/crypto';
 import { parseBackup, restoreBackup, MAX_BACKUP_BYTES, type ParsedBackup } from '@/lib/restore';
 import { mergeBackup, mergeSettingsMaps } from '@/lib/merge';
@@ -154,6 +155,48 @@ async function exportData() {
     showToast(t('settings.exportFailed'));
   } finally {
     exporting.value = false;
+  }
+}
+
+// --- Data export (CSV/JSON for spreadsheet analysis; not a restore format) ---
+const exportingData = ref(false);
+
+async function buildDataExportRows() {
+  const [dailyStats, monthlyStats, settings] = await Promise.all([
+    repo.getAllDailyStats(),
+    repo.getAllMonthlyStats(),
+    getSettings(),
+  ]);
+  return buildExportRows(dailyStats, monthlyStats, settings);
+}
+
+async function exportDataCsv() {
+  if (exportingData.value) return;
+  exportingData.value = true;
+  try {
+    const rows = await buildDataExportRows();
+    downloadFile(`tabstyr-data-${dateKey(Date.now())}.csv`, exportRowsToCsv(rows), 'text/csv');
+    showToast(t('settings.exportedDataCsv'));
+  } catch (e) {
+    console.error('[settings] csv data export failed', e);
+    showToast(t('settings.exportFailed'));
+  } finally {
+    exportingData.value = false;
+  }
+}
+
+async function exportDataJson() {
+  if (exportingData.value) return;
+  exportingData.value = true;
+  try {
+    const rows = await buildDataExportRows();
+    downloadFile(`tabstyr-data-${dateKey(Date.now())}.json`, exportRowsToJson(rows, Date.now()), 'application/json');
+    showToast(t('settings.exportedDataJson'));
+  } catch (e) {
+    console.error('[settings] json data export failed', e);
+    showToast(t('settings.exportFailed'));
+  } finally {
+    exportingData.value = false;
   }
 }
 
@@ -506,6 +549,17 @@ async function confirmWipe() {
         <p v-if="restoreError" class="rule-error" role="alert">{{ restoreError }}</p>
       </form>
       <p v-else-if="restoreError" class="rule-error" role="alert">{{ restoreError }}</p>
+    </div>
+
+    <div class="export">
+      <span class="field-label">{{ t('settings.dataExport') }}</span>
+      <p class="rules-hint">{{ t('settings.dataExportHint') }}</p>
+      <div class="export-btns">
+        <div class="export-btns-row">
+          <button :disabled="exportingData" @click="exportDataCsv()">{{ t('settings.exportCsv') }}</button>
+          <button :disabled="exportingData" @click="exportDataJson()">{{ t('settings.exportDataJson') }}</button>
+        </div>
+      </div>
     </div>
 
     <!-- Restore confirmation (destructive) -->
