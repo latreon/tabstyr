@@ -108,4 +108,10 @@ export interface Settings {
    * excluded domain never starts a session or gets a tabMeta row at all.
    */
   excludedDomains: string[];
+  /**
+   * Manual kill switch, independent of idle detection. While true, no tab
+   * anywhere starts a session, gets a tabMeta row, or counts background audio
+   * — the same treatment an excluded domain gets, just applied to everything.
+   */
+  trackingPaused: boolean;
 }

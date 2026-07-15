@@ -66,7 +66,9 @@
     "dashboard": "Dashboard",
     "loadError": "Impossibile caricare le statistiche — prova a riaprire il popup.",
     "topSitesAria": "Siti principali di oggi",
-    "openAria": "Apri {domain} — {time} oggi"
+    "openAria": "Apri {domain} — {time} oggi",
+    "pauseTracking": "Metti in pausa il monitoraggio",
+    "resumeTracking": "Riprendi il monitoraggio"
   },
   "hero": {
     "todayActive": "Oggi · attivo",
@@ -228,6 +230,8 @@
     "language": "Lingua",
     "staleDays": "Obsoleta dopo (giorni)",
     "idleSeconds": "Timeout di inattività (secondi)",
+    "pauseTracking": "Metti in pausa il monitoraggio",
+    "pauseTrackingHint": "Interrompe il monitoraggio ovunque finché non lo disattivi di nuovo. Indipendente dal timeout di inattività: qui nulla viene rilevato automaticamente, resta in pausa finché non lo riattivi.",
     "countAudio": "Conta audio in background",
     "save": "Salva",
     "wipe": "Cancella tutti i dati",

@@ -66,7 +66,9 @@
     "dashboard": "Painel",
     "loadError": "Não foi possível carregar as estatísticas — tente reabrir o popup.",
     "topSitesAria": "Principais sites de hoje",
-    "openAria": "Abrir {domain} — {time} hoje"
+    "openAria": "Abrir {domain} — {time} hoje",
+    "pauseTracking": "Pausar rastreamento",
+    "resumeTracking": "Retomar rastreamento"
   },
   "hero": {
     "todayActive": "Hoje · ativo",
@@ -228,6 +230,8 @@
     "language": "Idioma",
     "staleDays": "Obsoleta após (dias)",
     "idleSeconds": "Tempo ocioso (segundos)",
+    "pauseTracking": "Pausar rastreamento",
+    "pauseTrackingHint": "Interrompe o rastreamento em todos os lugares até você desativar isso novamente. Independente do tempo limite de inatividade — nada é detectado automaticamente aqui, permanece pausado até você reverter.",
     "countAudio": "Contar áudio em segundo plano",
     "save": "Salvar",
     "wipe": "Apagar todos os dados",

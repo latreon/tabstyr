@@ -43,6 +43,7 @@ export const DEFAULT_SETTINGS: Settings = {
   sessionAlertMinutes: 30,
   language: 'auto',
   excludedDomains: [],
+  trackingPaused: false,
 };
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
@@ -176,6 +177,7 @@ function coerce(raw: unknown): Partial<Settings> {
     ...(typeof r.sessionAlertMinutes === 'number' && { sessionAlertMinutes: clamp(Math.round(r.sessionAlertMinutes), 0, MAX_SESSION_ALERT_MINUTES) }),
     ...(typeof r.language === 'string' && { language: r.language.slice(0, 20) }),
     excludedDomains: sanitizeExcludedDomains(r.excludedDomains),
+    ...(typeof r.trackingPaused === 'boolean' && { trackingPaused: r.trackingPaused }),
   };
 }
 

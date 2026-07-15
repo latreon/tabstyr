@@ -269,6 +269,22 @@ describe('settings', () => {
     });
   });
 
+  describe('trackingPaused', () => {
+    test('defaults to false', async () => {
+      expect((await getSettings()).trackingPaused).toBe(false);
+    });
+
+    test('round-trips true', async () => {
+      await saveSettings({ trackingPaused: true });
+      expect((await getSettings()).trackingPaused).toBe(true);
+    });
+
+    test('a non-boolean stored value falls back to the default', async () => {
+      await fakeBrowser.storage.local.set({ settings: { trackingPaused: 'yes' } });
+      expect((await getSettings()).trackingPaused).toBe(false);
+    });
+  });
+
   describe('custom categories', () => {
     const CAT = { name: 'Learning', color: '#123abc', productivity: 'productive' as const };
 

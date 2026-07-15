@@ -66,7 +66,9 @@
     "dashboard": "ダッシュボード",
     "loadError": "統計を読み込めませんでした — ポップアップを開き直してください。",
     "topSitesAria": "今日のトップサイト",
-    "openAria": "{domain}を開く — 今日{time}"
+    "openAria": "{domain}を開く — 今日{time}",
+    "pauseTracking": "トラッキングを一時停止",
+    "resumeTracking": "トラッキングを再開"
   },
   "hero": {
     "todayActive": "今日 · アクティブ",
@@ -228,6 +230,8 @@
     "language": "言語",
     "staleDays": "古いと見なすまで（日数）",
     "idleSeconds": "アイドルタイムアウト（秒）",
+    "pauseTracking": "トラッキングを一時停止",
+    "pauseTrackingHint": "オフに戻すまで、どこでも記録を止めます。アイドルタイムアウトとは独立していて、ここでは自動検出は行われず、切り替えるまで一時停止したままです。",
     "countAudio": "バックグラウンド音声をカウント",
     "save": "保存",
     "wipe": "すべてのデータを消去",

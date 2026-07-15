@@ -66,7 +66,9 @@
     "dashboard": "Tableau de bord",
     "loadError": "Impossible de charger les statistiques — essayez de rouvrir la fenêtre.",
     "topSitesAria": "Sites les plus visités aujourd'hui",
-    "openAria": "Ouvrir {domain} — {time} aujourd'hui"
+    "openAria": "Ouvrir {domain} — {time} aujourd'hui",
+    "pauseTracking": "Mettre le suivi en pause",
+    "resumeTracking": "Reprendre le suivi"
   },
   "hero": {
     "todayActive": "Aujourd'hui · actif",
@@ -228,6 +230,8 @@
     "language": "Langue",
     "staleDays": "Inactif après (jours)",
     "idleSeconds": "Délai d'inactivité (secondes)",
+    "pauseTracking": "Mettre le suivi en pause",
+    "pauseTrackingHint": "Arrête le suivi partout jusqu'à ce que vous le désactiviez à nouveau. Indépendant du délai d'inactivité : rien n'est détecté automatiquement ici, ça reste en pause jusqu'à ce que vous le changiez.",
     "countAudio": "Compter l'audio en arrière-plan",
     "save": "Enregistrer",
     "wipe": "Effacer toutes les données",

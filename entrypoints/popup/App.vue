@@ -5,7 +5,7 @@ import { browser } from 'wxt/browser';
 import { useLocale } from '@/composables/useLocale';
 import { getAllTabMeta, getStatsRange } from '@/lib/db/repo';
 import { findStale } from '@/lib/tracker/stale';
-import { getSettings } from '@/lib/settings';
+import { getSettings, saveSettings } from '@/lib/settings';
 import { addDays, dateKey, formatDuration } from '@/lib/time';
 import { isWebDomain, displayDomain } from '@/lib/domain';
 import { activeSeconds as active } from '@/lib/metrics';
@@ -25,6 +25,7 @@ const tabCount = ref(0);
 const staleCount = ref(0);
 const loading = ref(true);
 const loadError = ref(false);
+const trackingPaused = ref(false);
 
 const deltaPct = computed(() => {
   if (!weeklyAvgSeconds.value || weeklyActiveDays.value < 3) return null;
@@ -73,6 +74,7 @@ async function load() {
       Date.now(),
       settings.staleDays,
     ).length;
+    trackingPaused.value = settings.trackingPaused;
   } catch (e) {
     console.error('[popup] load failed', e);
     loadError.value = true;
@@ -89,6 +91,20 @@ function openDashboard(hash = '') {
 function openCoffee() {
   void browser.tabs.create({ url: COFFEE_URL });
 }
+
+// Immediate, unlike the debounced save in Settings — this is a quick-access
+// action, not a preference being dialed in, so it should feel instant.
+async function togglePause() {
+  const next = !trackingPaused.value;
+  trackingPaused.value = next; // optimistic — this popup is about to close anyway
+  try {
+    await saveSettings({ trackingPaused: next });
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
+  } catch (e) {
+    console.error('[popup] pause toggle failed', e);
+    trackingPaused.value = !next;
+  }
+}
 </script>
 
 <template>
@@ -100,6 +116,23 @@ function openCoffee() {
         {{ t('popup.tabs', { count: tabCount }) }}
         <template v-if="staleCount"> · <span class="stale-count">{{ t('popup.stale', { count: staleCount }) }}</span></template>
       </span>
+      <button
+        class="pause-toggle tip-right"
+        :class="{ active: trackingPaused }"
+        :aria-label="t(trackingPaused ? 'popup.resumeTracking' : 'popup.pauseTracking')"
+        :data-tip="t(trackingPaused ? 'popup.resumeTracking' : 'popup.pauseTracking')"
+        @click="togglePause"
+      >
+        <!-- Play: resume (Lucide) -->
+        <svg v-if="trackingPaused" class="ti-fill" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 3v18l15-9L6 3Z" />
+        </svg>
+        <!-- Pause (Lucide) -->
+        <svg v-else class="ti-fill" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="6" y="4" width="4" height="16" rx="1" />
+          <rect x="14" y="4" width="4" height="16" rx="1" />
+        </svg>
+      </button>
       <ThemeToggle />
     </header>
 
@@ -203,6 +236,31 @@ function openCoffee() {
   margin-left: auto;
   font-size: var(--text-xs);
   color: var(--text-3);
+}
+.pause-toggle {
+  background: var(--card-strong);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
+}
+.pause-toggle .ti-fill {
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+}
+.pause-toggle:hover { border-color: var(--accent); color: var(--text); }
+.pause-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pause-toggle.active {
+  background: var(--warn-bg);
+  border-color: var(--warn-border);
+  color: var(--warn);
 }
 .stale-count {
   color: var(--warn);
