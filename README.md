@@ -197,8 +197,10 @@ differ. Full matrix and per-browser publish steps:
 
 ### From a store
 
-Coming soon to the Chrome Web Store, Edge Add-ons, Firefox AMO, and the Mac App
-Store (Safari).
+- **Chrome, Edge, Brave, Opera, Vivaldi, Arc:** [Chrome Web Store](https://chromewebstore.google.com/detail/tabstyr/mgckngagefippkemgmmccfaaljmgllpa) — live
+- **Firefox:** [AMO listing](https://addons.mozilla.org/en-US/firefox/addon/tabstyr/) — live
+- **Edge Add-ons:** coming soon (Chromium build above works in Edge today via Developer mode)
+- **Safari (Mac App Store):** not yet submitted — build and load it yourself via Xcode (see below)
 
 ### Unpacked (from source)
 
