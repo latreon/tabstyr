@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { fakeBrowser } from 'wxt/testing';
 import { resetDBConnection } from '@/lib/db/db';
 import * as repo from '@/lib/db/repo';
-import { saveSettings } from '@/lib/settings';
+import { invalidateSettings, saveSettings } from '@/lib/settings';
 import background from '@/entrypoints/background';
 
 const DAY_MS = 86_400_000;
@@ -51,6 +51,7 @@ beforeEach(() => {
   globalThis.indexedDB = new IDBFactory(); // fresh DB per test
   resetDBConnection();
   fakeBrowser.reset();
+  invalidateSettings();
   stubUninstallUrl();
   stubIdleApi();
   stubOnReplaced();
@@ -211,6 +212,24 @@ describe('background: tab tracking wiring', () => {
     const sessions = await repo.getAllSessions();
     const totalMs = sessions.reduce((sum, s) => sum + (s.end - s.start), 0);
     expect(totalMs).toBeGreaterThanOrEqual(4 * 60_000);
+  });
+
+  test('activating a tab on an excluded domain records no tabMeta and starts no session', async () => {
+    const start = Date.parse('2026-07-15T10:00:00Z');
+    const now = vi.spyOn(Date, 'now').mockReturnValue(start);
+    focusWindow(0);
+    await saveSettings({ excludedDomains: ['example.com'] });
+
+    background.main();
+    const tab = await fakeBrowser.tabs.create({ url: 'https://example.com/' });
+    await fakeBrowser.tabs.onActivated.trigger({ tabId: tab.id!, windowId: tab.windowId! });
+
+    now.mockReturnValue(start + 5 * 60_000);
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'heartbeat', scheduledTime: Date.now() });
+    await new Promise((r) => setTimeout(r, 20));
+
+    expect(await repo.getAllSessions()).toEqual([]);
+    expect(await repo.getTabMeta(tab.id!)).toBeUndefined();
   });
 
   test('activating a tab in a background (non-focused) window records its metadata but starts no session', async () => {

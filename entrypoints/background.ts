@@ -12,6 +12,7 @@ import * as repo from '@/lib/db/repo';
 import { isQuotaError } from '@/lib/db/errors';
 import { addDays, dateKey } from '@/lib/time';
 import { domainOf, isWebDomain, pageOf } from '@/lib/domain';
+import { isExcludedDomain } from '@/lib/excluded-domains';
 import { UNINSTALL_FEEDBACK_URL } from '@/lib/links';
 import { recordInstallDate } from '@/lib/review-prompt';
 import type { ClosedSession, EngineState, Session } from '@/lib/types';
@@ -220,7 +221,9 @@ export default defineBackground(() => {
     if (!settings.audioEnabled) return eng.syncAudio([], now);
     const audibleTabs = await browser.tabs.query({ audible: true });
     const audible = audibleTabs.flatMap((t) =>
-      t.id && t.url && !t.incognito ? [{ tabId: t.id, url: t.url }] : [],
+      t.id && t.url && !t.incognito && !isExcludedDomain(domainOf(t.url), settings.excludedDomains)
+        ? [{ tabId: t.id, url: t.url }]
+        : [],
     );
     return eng.syncAudio(audible, now);
   }
@@ -234,9 +237,13 @@ export default defineBackground(() => {
     if (!tab?.id) return;
     // Never persist anything about private windows.
     if (tab.incognito) return;
+    const domain = domainOf(tab.url ?? '');
     // Only record metadata for real web pages — internal pages aren't "sites" and
-    // shouldn't appear in the tab list or stale tracking.
-    if (!isWebDomain(domainOf(tab.url ?? ''))) return;
+    // shouldn't appear in the tab list or stale tracking. Same for a domain the
+    // user excluded: it must be as invisible as an internal page.
+    if (!isWebDomain(domain)) return;
+    const settings = await getSettings();
+    if (isExcludedDomain(domain, settings.excludedDomains)) return;
     const existing = await repo.getTabMeta(tab.id);
     await repo.upsertTabMeta({
       tabId: tab.id,
@@ -383,7 +390,9 @@ export default defineBackground(() => {
       await persist(eng, []);
       return;
     }
-    const closed = eng.handleFocus(tabId, tab.url, now, !!tab.audible);
+    const settings = await getSettings();
+    const excluded = isExcludedDomain(domainOf(tab.url), settings.excludedDomains);
+    const closed = eng.handleFocus(tabId, tab.url, now, !!tab.audible, excluded);
     closed.push(...(await syncAudioSessions(eng, now)));
     await touchTab(tabId, now, tab);
     await persist(eng, closed);
@@ -409,7 +418,9 @@ export default defineBackground(() => {
       await persist(eng, closed);
       return;
     }
-    const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible);
+    const settings = await getSettings();
+    const excluded = isExcludedDomain(domainOf(tab.url), settings.excludedDomains);
+    const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible, excluded);
     closed.push(...(await syncAudioSessions(eng, now)));
     await touchTab(tab.id, now);
     await persist(eng, closed);
@@ -423,7 +434,9 @@ export default defineBackground(() => {
     if (state === 'active') {
       const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
       if (!tab?.id || !tab.url || tab.incognito) return;
-      const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible);
+      const settings = await getSettings();
+      const excluded = isExcludedDomain(domainOf(tab.url), settings.excludedDomains);
+      const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible, excluded);
       closed.push(...(await syncAudioSessions(eng, now))); // resume audio after idle
       await touchTab(tab.id, now);
       await persist(eng, closed);
@@ -443,6 +456,8 @@ export default defineBackground(() => {
     const now = Date.now();
     const closed: ClosedSession[] = [];
     if (changeInfo.url) {
+      const settings = await getSettings();
+      const excluded = isExcludedDomain(domainOf(changeInfo.url), settings.excludedDomains);
       const focusedTabId = eng.getState().focused?.tabId;
       // `tab.active` alone is per-window — require the genuinely focused window so
       // a background window's active tab can't hijack the focused session.
@@ -452,9 +467,9 @@ export default defineBackground(() => {
         // to a real web page. The engine isn't tracking it yet, and no onActivated
         // will fire for an in-tab navigation — so start the session here. Without
         // this, "open browser → type a URL → read it" records zero time.
-        closed.push(...eng.handleFocus(tabId, changeInfo.url, now, !!tab.audible));
+        closed.push(...eng.handleFocus(tabId, changeInfo.url, now, !!tab.audible, excluded));
       } else {
-        closed.push(...eng.handleUrlChange(tabId, changeInfo.url, now));
+        closed.push(...eng.handleUrlChange(tabId, changeInfo.url, now, excluded));
       }
       if (tab.active) await touchTab(tabId, now, tab);
     }

@@ -245,6 +245,30 @@ describe('settings', () => {
     expect((await getSettings()).language).toBe('ja');
   });
 
+  describe('excludedDomains', () => {
+    test('defaults to an empty list', async () => {
+      expect((await getSettings()).excludedDomains).toEqual([]);
+    });
+
+    test('a saved list round-trips, normalized', async () => {
+      await saveSettings({ excludedDomains: [' Reddit.com ', 'x.com'] });
+      expect((await getSettings()).excludedDomains).toEqual(['reddit.com', 'x.com']);
+    });
+
+    test('non-array stored value falls back to the default', async () => {
+      await fakeBrowser.storage.local.set({ settings: { excludedDomains: 'reddit.com' } });
+      expect((await getSettings()).excludedDomains).toEqual([]);
+    });
+
+    test('drops blank and duplicate entries and caps the list at 200', async () => {
+      const many = Array.from({ length: 250 }, (_, i) => `site${i}.com`);
+      await fakeBrowser.storage.local.set({ settings: { excludedDomains: ['', ...many, ...many] } });
+      const stored = (await getSettings()).excludedDomains;
+      expect(stored).toHaveLength(200);
+      expect(stored).not.toContain('');
+    });
+  });
+
   describe('custom categories', () => {
     const CAT = { name: 'Learning', color: '#123abc', productivity: 'productive' as const };
 

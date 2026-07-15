@@ -102,4 +102,10 @@ export interface Settings {
   sessionAlertMinutes: number;
   /** UI language: 'auto' (follow the browser) or a supported locale code. */
   language: string;
+  /**
+   * Domains excluded from tracking entirely (label-boundary match — an entry for
+   * "reddit.com" also matches "old.reddit.com"). Unlike category overrides, an
+   * excluded domain never starts a session or gets a tabMeta row at all.
+   */
+  excludedDomains: string[];
 }
