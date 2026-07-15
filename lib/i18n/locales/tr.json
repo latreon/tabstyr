@@ -296,6 +296,7 @@
     "languageAuto": "Otomatik",
     "idleHint": "Fare veya klavye girişi olmadan bu süre geçince izleme duraklatılır. Kaydırmadan okuyorsanız artırın.",
     "backupNote": "JSON yedekleri açık sekme başlıklarını içerir. Başlıklar hassas olabiliyorsa yedeği şifreleyin.",
+    "uninstallHint": "TabStyr'i kaldırmak burada saklanan tüm verileri siler — tarayıcılar uzantı verilerini saklamaz. Yeniden yükleyebileceğinizi veya cihaz değiştirebileceğinizi düşünüyorsanız yukarıdan bir yedek dışa aktarın.",
     "notifications": "Durağan sekme hatırlatıcıları",
     "notificationsHint": "Sekmeler eşik süresini aşarak dokunulmadan kaldığında günde bir bildirim.",
     "sessionAlert": "Kesintisiz oturum uyarısı (dk)",

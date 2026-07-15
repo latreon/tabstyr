@@ -296,6 +296,7 @@
     "languageAuto": "Automático",
     "idleHint": "O rastreamento pausa após esse tempo sem mouse ou teclado. Aumente se você lê sem rolar.",
     "backupNote": "Os backups JSON incluem os títulos das abas abertas. Criptografe o backup se os títulos puderem ser sensíveis.",
+    "uninstallHint": "Desinstalar o TabStyr apaga todos os dados armazenados aqui — os navegadores não mantêm os dados de extensões. Exporte um backup acima caso você possa reinstalar ou trocar de dispositivo.",
     "notifications": "Lembretes de abas inativas",
     "notificationsHint": "Uma notificação por dia quando há abas sem uso além do limite.",
     "sessionAlert": "Alerta de sessão contínua (min)",

@@ -296,6 +296,7 @@
     "languageAuto": "Automático",
     "idleHint": "El seguimiento se pausa tras este tiempo sin actividad de ratón o teclado. Auméntalo si lees sin desplazarte.",
     "backupNote": "Las copias JSON incluyen los títulos de las pestañas abiertas. Cifra la copia si los títulos pueden ser sensibles.",
+    "uninstallHint": "Si desinstalas TabStyr, se eliminan todos los datos guardados aquí: los navegadores no conservan los datos de las extensiones. Exporta una copia de seguridad arriba si podrías reinstalarla o cambiar de dispositivo.",
     "notifications": "Recordatorios de pestañas inactivas",
     "notificationsHint": "Una notificación al día cuando hay pestañas sin tocar más allá del umbral.",
     "sessionAlert": "Alerta de sesión continua (min)",

@@ -296,6 +296,7 @@
     "languageAuto": "Automatisch",
     "idleHint": "Die Erfassung pausiert nach dieser Zeit ohne Maus- oder Tastatureingabe. Erhöhe den Wert, wenn du ohne Scrollen liest.",
     "backupNote": "JSON-Backups enthalten die Titel offener Tabs. Verschlüssle das Backup, wenn Titel sensibel sein können.",
+    "uninstallHint": "Uninstallierst du TabStyr, werden alle hier gespeicherten Daten gelöscht – Browser bewahren Erweiterungsdaten nicht auf. Exportiere oben ein Backup, falls du die Erweiterung neu installieren oder das Gerät wechseln könntest.",
     "notifications": "Erinnerungen an alte Tabs",
     "notificationsHint": "Eine tägliche Benachrichtigung, wenn Tabs länger als die Schwelle unberührt bleiben.",
     "sessionAlert": "Dauer-Sitzungshinweis (Min.)",

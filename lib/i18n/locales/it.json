@@ -296,6 +296,7 @@
     "languageAuto": "Automatico",
     "idleHint": "Il monitoraggio si interrompe dopo questo tempo senza mouse o tastiera. Aumentalo se leggi senza scorrere.",
     "backupNote": "I backup JSON includono i titoli delle schede aperte. Cifra il backup se i titoli possono essere sensibili.",
+    "uninstallHint": "Disinstallare TabStyr elimina tutti i dati salvati qui: i browser non conservano i dati delle estensioni. Esporta un backup sopra se potresti reinstallarla o cambiare dispositivo.",
     "notifications": "Promemoria schede inattive",
     "notificationsHint": "Una notifica al giorno quando le schede restano inutilizzate oltre la soglia.",
     "sessionAlert": "Avviso sessione continua (min)",

@@ -296,6 +296,7 @@
     "languageAuto": "Automatic",
     "idleHint": "Tracking pauses after this long without mouse or keyboard input. Raise it if you read without scrolling.",
     "backupNote": "JSON backups include open-tab titles. Encrypt the backup if titles may be sensitive.",
+    "uninstallHint": "Uninstalling TabStyr deletes everything stored here — browsers don't keep extension data around. Export a backup above if you might reinstall or switch devices.",
     "notifications": "Stale-tab reminders",
     "notificationsHint": "A once-a-day notification when tabs sit untouched past the stale threshold.",
     "sessionAlert": "Continuous-session alert (min)",

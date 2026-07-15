@@ -296,6 +296,7 @@
     "languageAuto": "自动",
     "idleHint": "在此时长内没有鼠标或键盘输入时将暂停计时。如果阅读时不滚动，请调高此值。",
     "backupNote": "JSON 备份包含打开标签页的标题。如果标题可能涉及隐私，请加密备份。",
+    "uninstallHint": "卸载 TabStyr 会删除此处存储的所有数据——浏览器不会保留扩展程序的数据。如果你可能重新安装或更换设备，请先在上方导出备份。",
     "notifications": "陈旧标签页提醒",
     "notificationsHint": "当标签页超过陈旧阈值未使用时，每天提醒一次。",
     "sessionAlert": "连续会话提醒（分钟）",

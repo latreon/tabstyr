@@ -524,6 +524,7 @@ async function confirmWipe() {
     <div class="export">
       <span class="field-label">{{ t('settings.backupRestore') }}</span>
       <p class="rules-hint">{{ t('settings.backupNote') }}</p>
+      <p class="rules-hint">{{ t('settings.uninstallHint') }}</p>
       <div class="export-btns">
         <button class="btn btn-ghost btn-sm btn-block" :disabled="exporting" @click="exportData()">{{ t('settings.exportJson') }}</button>
         <div class="export-btns-row">
