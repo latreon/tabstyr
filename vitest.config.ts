@@ -9,6 +9,9 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     setupFiles: ['tests/setup.ts'],
-    exclude: ['e2e/**', 'node_modules/**'],
+    // landing/ is a separate npm package with its own vitest.config.ts (its
+    // own aliases: @ → landing/src, @ext → the extension's shared lib/) and
+    // its own `npm test` — running it from here would fail to resolve those.
+    exclude: ['e2e/**', 'node_modules/**', 'landing/**'],
   },
 });

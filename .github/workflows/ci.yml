@@ -46,7 +46,7 @@ jobs:
       - run: xvfb-run -a npm run e2e
 
   landing:
-    name: Landing site build (prerendered)
+    name: Landing site test · build (prerendered)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -59,6 +59,7 @@ jobs:
           cache: npm
           cache-dependency-path: landing/package-lock.json
       - run: npm ci || (sleep 5 && npm ci) || (sleep 15 && npm ci)
+      - run: npm test
       # The build's prerender step launches Chromium (scripts/prerender.mjs) —
       # needs the browser binary + OS deps present, same as the extension's e2e job.
       - run: npx playwright install --with-deps chromium
