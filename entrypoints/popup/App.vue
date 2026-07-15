@@ -8,6 +8,7 @@ import { findStale } from '@/lib/tracker/stale';
 import { getSettings, saveSettings } from '@/lib/settings';
 import { addDays, dateKey, formatDuration } from '@/lib/time';
 import { isWebDomain, displayDomain } from '@/lib/domain';
+import { resolveDomain } from '@/lib/domain-aliases';
 import { activeSeconds as active } from '@/lib/metrics';
 import { openDomain } from '@/lib/navigate';
 import { COFFEE_URL } from '@/lib/support';
@@ -59,7 +60,8 @@ async function load() {
       : 0;
     const byDomain = new Map<string, number>();
     for (const s of webToday) {
-      byDomain.set(s.domain, (byDomain.get(s.domain) ?? 0) + active(s));
+      const domain = resolveDomain(s.domain, settings.domainAliases);
+      byDomain.set(domain, (byDomain.get(domain) ?? 0) + active(s));
     }
     topDomains.value = [...byDomain.entries()]
       .map(([domain, seconds]) => ({ domain, seconds }))

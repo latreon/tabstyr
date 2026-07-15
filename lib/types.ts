@@ -114,4 +114,12 @@ export interface Settings {
    * — the same treatment an excluded domain gets, just applied to everything.
    */
   trackingPaused: boolean;
+  /**
+   * Source domain → canonical domain, e.g. { "mail.google.com": "google.com" }.
+   * A DISPLAY-TIME fold applied when reading stats/sessions (see
+   * lib/domain-aliases.ts) — stored rows always keep their real observed
+   * domain; every aggregate view (top sites, category/focus math, trends,
+   * work log, domain detail) shows the canonical one instead.
+   */
+  domainAliases: Record<string, string>;
 }
