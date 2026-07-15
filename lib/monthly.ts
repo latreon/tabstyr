@@ -5,6 +5,14 @@ export function monthOf(date: string): string {
   return date.slice(0, 7);
 }
 
+/** The 'YYYY-MM' bucket `months` calendar months before the one containing `now`. */
+export function monthKeyBefore(now: number, months: number): string {
+  const d = new Date(now);
+  d.setDate(1); // pin to the 1st first so setMonth can't roll over on a short month
+  d.setMonth(d.getMonth() - months);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
 /**
  * Aggregate daily per-domain rows into per-domain monthly totals. Pure: used at
  * prune time to archive days leaving the 90-day raw window, and reusable anywhere

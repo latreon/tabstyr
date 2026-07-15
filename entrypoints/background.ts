@@ -14,6 +14,7 @@ import { exceededBudgets, shouldNotifyBudget } from '@/lib/budgets';
 import * as repo from '@/lib/db/repo';
 import { isQuotaError } from '@/lib/db/errors';
 import { addDays, dateKey } from '@/lib/time';
+import { monthKeyBefore } from '@/lib/monthly';
 import { toJsonBackup } from '@/lib/export';
 import { domainOf, isWebDomain, pageOf } from '@/lib/domain';
 import { isExcludedDomain } from '@/lib/excluded-domains';
@@ -25,6 +26,11 @@ import type { ClosedSession, EngineState, Session } from '@/lib/types';
 const actionApi = browser.action ?? (browser as unknown as { browserAction: typeof browser.action }).browserAction;
 
 const RETENTION_DAYS = 90;
+// The monthly rollup archive has no other retention (unlike sessions/daily
+// stats' 90-day window), so it's capped separately — 5 years of monthly-level
+// history per domain is far more range than the dashboard's trend views ever
+// show, while still bounding otherwise-unbounded growth for a long-term user.
+const MAX_MONTHLY_RETENTION_MONTHS = 60;
 const DAY_MS = 86_400_000;
 // Stale-tab staleness is a days-granularity threshold, so the badge doesn't need a
 // full tabMeta scan + tabs.query every heartbeat minute. Refresh it on real
@@ -168,7 +174,7 @@ export default defineBackground(() => {
       if (!isQuotaError(e)) throw e;
       const now = Date.now();
       try {
-        await repo.pruneBefore(addDays(dateKey(now), -RETENTION_DAYS), now - RETENTION_DAYS * DAY_MS);
+        await repo.pruneBefore(addDays(dateKey(now), -RETENTION_DAYS), now - RETENTION_DAYS * DAY_MS, monthKeyBefore(now, MAX_MONTHLY_RETENTION_MONTHS));
         await repo.commitSessions(sessions, deltas);
         await clearStorageWarning();
         return;
@@ -398,7 +404,7 @@ export default defineBackground(() => {
     // Before pruning — an export that's about to become due should still see
     // today's data; pruning only ever drops rows already past the 90-day window.
     await runAutoExportIfDue(now);
-    await repo.pruneBefore(addDays(today, -RETENTION_DAYS), now - RETENTION_DAYS * DAY_MS);
+    await repo.pruneBefore(addDays(today, -RETENTION_DAYS), now - RETENTION_DAYS * DAY_MS, monthKeyBefore(now, MAX_MONTHLY_RETENTION_MONTHS));
 
     const [settings, metas, tabs] = await Promise.all([
       getSettings(),

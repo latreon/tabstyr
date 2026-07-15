@@ -178,8 +178,13 @@ export async function replaceAllTabMeta(metas: TabMeta[]): Promise<void> {
  * by (month, domain). ALL of it runs in ONE transaction, so the archive-then-delete
  * is atomic AND idempotent: a re-run finds those daily rows already gone and can't
  * double-count them into the archive.
+ *
+ * The monthly archive itself is also capped by `monthlyCutoff` ('YYYY-MM') — unlike
+ * sessions/dailyDomainStats it has no other retention, so left alone it would grow
+ * forever with (months × distinct domains ever visited). This bounds the months
+ * dimension the same way the 90-day window bounds the raw stores.
  */
-export async function pruneBefore(cutoffDate: string, cutoffTs: number): Promise<void> {
+export async function pruneBefore(cutoffDate: string, cutoffTs: number, monthlyCutoff: string): Promise<void> {
   const db = await getDB();
   const tx = db.transaction(['sessions', 'dailyDomainStats', 'monthlyDomainStats'], 'readwrite');
   let cur = await tx.objectStore('sessions').index('by-start').openCursor(IDBKeyRange.upperBound(cutoffTs, true));
@@ -211,6 +216,14 @@ export async function pruneBefore(cutoffDate: string, cutoffTs: number): Promise
         ? { ...existing, seconds: existing.seconds + acc.seconds, audioSeconds: existing.audioSeconds + acc.audioSeconds }
         : acc,
     );
+  }
+  // Cap the archive itself — rows keyed [month, domain], so bounding the primary
+  // key's first component drops everything older than the cutoff month directly,
+  // no separate index needed (same pattern as the sessions cursor above).
+  let mcur = await monthlyStore.openCursor(IDBKeyRange.upperBound([monthlyCutoff, ''], true));
+  while (mcur) {
+    await mcur.delete();
+    mcur = await mcur.continue();
   }
   await tx.done;
 }

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { monthOf, rollupMonthly, mergeMonthly, combineMonthlyTotals } from '@/lib/monthly';
+import { monthOf, monthKeyBefore, rollupMonthly, mergeMonthly, combineMonthlyTotals } from '@/lib/monthly';
 import type { DailyStat, MonthlyStat } from '@/lib/types';
 
 const daily = (p: Partial<DailyStat>): DailyStat => ({ date: '2026-03-01', domain: 'a.com', seconds: 60, audioSeconds: 0, ...p });
@@ -8,6 +8,30 @@ const monthly = (p: Partial<MonthlyStat>): MonthlyStat => ({ month: '2026-03', d
 describe('monthOf', () => {
   test('takes the YYYY-MM prefix of a date key', () => {
     expect(monthOf('2026-03-14')).toBe('2026-03');
+  });
+});
+
+describe('monthKeyBefore', () => {
+  // monthKeyBefore reads local getters (getFullYear/getMonth), so build inputs
+  // with the local-time constructor too — a UTC timestamp could land on a
+  // different local calendar day/month depending on the runner's timezone.
+  test('subtracts whole calendar months', () => {
+    expect(monthKeyBefore(new Date(2026, 5, 15).getTime(), 1)).toBe('2026-05'); // June -> May
+    expect(monthKeyBefore(new Date(2026, 5, 15).getTime(), 12)).toBe('2025-06');
+    expect(monthKeyBefore(new Date(2026, 5, 15).getTime(), 60)).toBe('2021-06');
+  });
+
+  test('does not roll over across a short month (pinned to the 1st first)', () => {
+    // Mar 31 minus 1 month must land in February, not roll into March again.
+    expect(monthKeyBefore(new Date(2026, 2, 31).getTime(), 1)).toBe('2026-02');
+  });
+
+  test('crosses a year boundary', () => {
+    expect(monthKeyBefore(new Date(2026, 1, 10).getTime(), 3)).toBe('2025-11');
+  });
+
+  test('0 months returns the current month', () => {
+    expect(monthKeyBefore(new Date(2026, 5, 15).getTime(), 0)).toBe('2026-06');
   });
 });
 
