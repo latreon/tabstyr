@@ -42,10 +42,22 @@ Safari ignores `idle`, `notifications`, and `favicon` — the code degrades safe
 - [ ] Core tracking + dashboard + export work; no console errors at background startup.
 - [ ] Confirm `storage.session` (Safari 16.4+) and MV3 service-worker behave.
 - [ ] Test on a real build before submission.
+- [ ] App Store Connect metadata has the 1024×1024 icon (`docs/store/safari/icon-1024.png`)
+      and at least one screenshot (`docs/store/screenshots/safari/{1280x800,2560x1600}/`).
 
 ## Store submission
 
-- [ ] Screenshots regenerated (`npm run e2e` writes them to `e2e/__screenshots__/`).
+- [ ] Screenshots regenerated (`npm run e2e` writes them to `e2e/__screenshots__/`;
+      copy the `dashboard-{light,dark}.png` full-page captures into
+      `docs/store/screenshots/` before running the slicer scripts below).
+- [ ] Chrome screenshots sliced (`node scripts/make-store-shots.mjs` → `docs/store/screenshots/chrome/`, 1280×800).
+- [ ] Firefox AMO + Safari/App Store Connect screenshots sliced
+      (`node scripts/make-store-shots-other.mjs` → `docs/store/screenshots/firefox/`
+      at 1280×800, and `docs/store/screenshots/safari/{1280x800,2560x1600}/`).
+      AMO doesn't enforce a strict size; App Store Connect accepts either Safari size directly.
+- [ ] Safari/App Store Connect 1024×1024 opaque marketing icon current
+      (`node scripts/make-icons.mjs` → `docs/store/safari/icon-1024.png` — regenerate
+      whenever `assets/icon.svg` changes).
 - [ ] Promo images generated (`node scripts/make-promo.mjs`).
 - [ ] Listing copy from `docs/store/listing.md`.
 - [ ] Privacy policy (`docs/store/privacy-policy.md`) hosted and linked.
