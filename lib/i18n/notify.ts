@@ -78,6 +78,129 @@ const CATEGORY_LABELS: Record<string, Record<string, string>> = {
   'zh-CN': { Work: '工作', Dev: '开发', Finance: '财务', Social: '社交', Media: '媒体', News: '新闻', Shopping: '购物', Other: '其他' },
 };
 
+// Context-menu item titles + their confirmation notifications (commands.mjs /
+// background.ts context-menu wiring). Same rationale as above: inline only what
+// the service worker needs rather than importing the full vue-i18n catalogs.
+// Keep in sync with each locale's `settings.pauseTracking` / `popup.resumeTracking`
+// / `settings.removeExcludedAria` (menu titles deliberately reuse that wording).
+const MENU_EXCLUDE_ON: Record<string, string> = {
+  en: 'Exclude {domain} from TabStyr',
+  es: 'Excluir {domain} de TabStyr',
+  de: '{domain} von TabStyr ausschließen',
+  fr: 'Exclure {domain} de TabStyr',
+  it: 'Escludi {domain} da TabStyr',
+  'pt-BR': 'Excluir {domain} do TabStyr',
+  ru: 'Исключить {domain} из TabStyr',
+  tr: '{domain} alanını TabStyr’dan hariç tut',
+  ja: '{domain} を TabStyr から除外',
+  ko: '{domain}을(를) TabStyr에서 제외',
+  'zh-CN': '从 TabStyr 中排除 {domain}',
+};
+const MENU_EXCLUDE_OFF: Record<string, string> = {
+  en: 'Stop excluding {domain}',
+  es: 'Dejar de excluir {domain}',
+  de: 'Ausschluss von {domain} aufheben',
+  fr: 'Ne plus exclure {domain}',
+  it: "Rimuovi l'esclusione di {domain}",
+  'pt-BR': 'Parar de excluir {domain}',
+  ru: 'Прекратить исключать {domain}',
+  tr: '{domain} hariç tutmayı durdur',
+  ja: '{domain} の除外を解除',
+  ko: '{domain} 제외 해제',
+  'zh-CN': '取消排除 {domain}',
+};
+const MENU_PAUSE_ON: Record<string, string> = {
+  en: 'Pause tracking',
+  es: 'Pausar seguimiento',
+  de: 'Tracking pausieren',
+  fr: 'Mettre le suivi en pause',
+  it: 'Metti in pausa il monitoraggio',
+  'pt-BR': 'Pausar rastreamento',
+  ru: 'Приостановить отслеживание',
+  tr: 'İzlemeyi duraklat',
+  ja: 'トラッキングを一時停止',
+  ko: '추적 일시 중지',
+  'zh-CN': '暂停跟踪',
+};
+const MENU_PAUSE_OFF: Record<string, string> = {
+  en: 'Resume tracking',
+  es: 'Reanudar seguimiento',
+  de: 'Tracking fortsetzen',
+  fr: 'Reprendre le suivi',
+  it: 'Riprendi il monitoraggio',
+  'pt-BR': 'Retomar rastreamento',
+  ru: 'Возобновить отслеживание',
+  tr: 'İzlemeyi sürdür',
+  ja: 'トラッキングを再開',
+  ko: '추적 재개',
+  'zh-CN': '恢复跟踪',
+};
+const MENU_DASHBOARD: Record<string, string> = {
+  en: 'Open TabStyr dashboard',
+  es: 'Abrir panel de TabStyr',
+  de: 'TabStyr-Dashboard öffnen',
+  fr: 'Ouvrir le tableau de bord TabStyr',
+  it: 'Apri la dashboard di TabStyr',
+  'pt-BR': 'Abrir painel do TabStyr',
+  ru: 'Открыть панель TabStyr',
+  tr: 'TabStyr panosunu aç',
+  ja: 'TabStyr ダッシュボードを開く',
+  ko: 'TabStyr 대시보드 열기',
+  'zh-CN': '打开 TabStyr 仪表盘',
+};
+const NOTIF_EXCLUDED: Record<string, string> = {
+  en: '{domain} is now excluded from tracking',
+  es: '{domain} ahora está excluido del seguimiento',
+  de: '{domain} ist jetzt von der Erfassung ausgeschlossen',
+  fr: '{domain} est désormais exclu du suivi',
+  it: '{domain} ora è escluso dal monitoraggio',
+  'pt-BR': '{domain} agora está excluído do rastreamento',
+  ru: '{domain} теперь исключён из отслеживания',
+  tr: '{domain} artık izlemeden hariç tutuluyor',
+  ja: '{domain} は計測から除外されました',
+  ko: '{domain}이(가) 추적에서 제외되었습니다',
+  'zh-CN': '{domain} 现已从跟踪中排除',
+};
+const NOTIF_UNEXCLUDED: Record<string, string> = {
+  en: '{domain} is being tracked again',
+  es: '{domain} se está rastreando de nuevo',
+  de: '{domain} wird wieder erfasst',
+  fr: '{domain} est de nouveau suivi',
+  it: '{domain} è di nuovo monitorato',
+  'pt-BR': '{domain} está sendo rastreado novamente',
+  ru: '{domain} снова отслеживается',
+  tr: '{domain} yeniden izleniyor',
+  ja: '{domain} の計測を再開しました',
+  ko: '{domain} 추적을 다시 시작합니다',
+  'zh-CN': '{domain} 已重新开始跟踪',
+};
+const NOTIF_PAUSED: Record<string, string> = {
+  en: 'Tracking paused',
+  es: 'Seguimiento en pausa',
+  de: 'Tracking pausiert',
+  fr: 'Suivi en pause',
+  it: 'Monitoraggio in pausa',
+  'pt-BR': 'Rastreamento pausado',
+  ru: 'Отслеживание приостановлено',
+  tr: 'İzleme duraklatıldı',
+  ja: 'トラッキングを一時停止しました',
+  ko: '추적이 일시 중지되었습니다',
+  'zh-CN': '已暂停跟踪',
+};
+const NOTIF_RESUMED: Record<string, string> = {
+  en: 'Tracking resumed',
+  es: 'Seguimiento reanudado',
+  de: 'Tracking fortgesetzt',
+  fr: 'Suivi repris',
+  it: 'Monitoraggio ripreso',
+  'pt-BR': 'Rastreamento retomado',
+  ru: 'Отслеживание возобновлено',
+  tr: 'İzleme sürdürülüyor',
+  ja: 'トラッキングを再開しました',
+  ko: '추적이 재개되었습니다',
+  'zh-CN': '已恢复跟踪',
+};
+
 const CODES = Object.keys(STALE);
 
 function resolve(pref: string | undefined): string {
@@ -115,4 +238,37 @@ export function budgetNotification(languagePref: string | undefined, category: s
 /** Localized continuous-session nudge, e.g. "You've been on reddit.com for 30+ min". */
 export function sessionAlertNotification(languagePref: string | undefined, domain: string, minutes: number): string {
   return interpolate(SESSION_ALERT[resolve(languagePref)] ?? SESSION_ALERT.en, { domain, minutes });
+}
+
+/** Context-menu title for the exclude/un-exclude toggle, reflecting current state. */
+export function menuExcludeTitle(languagePref: string | undefined, domain: string, excluded: boolean): string {
+  const lang = resolve(languagePref);
+  const table = excluded ? MENU_EXCLUDE_OFF : MENU_EXCLUDE_ON;
+  return interpolate(table[lang] ?? table.en, { domain });
+}
+
+/** Context-menu title for the pause/resume toggle, reflecting current state. */
+export function menuPauseTitle(languagePref: string | undefined, paused: boolean): string {
+  const lang = resolve(languagePref);
+  const table = paused ? MENU_PAUSE_OFF : MENU_PAUSE_ON;
+  return table[lang] ?? table.en;
+}
+
+/** Context-menu title for the "open dashboard" item. */
+export function menuDashboardTitle(languagePref: string | undefined): string {
+  return MENU_DASHBOARD[resolve(languagePref)] ?? MENU_DASHBOARD.en;
+}
+
+/** Confirmation notification after toggling a site's excluded state from the menu. */
+export function excludeToggleNotification(languagePref: string | undefined, domain: string, nowExcluded: boolean): string {
+  const lang = resolve(languagePref);
+  const table = nowExcluded ? NOTIF_EXCLUDED : NOTIF_UNEXCLUDED;
+  return interpolate(table[lang] ?? table.en, { domain });
+}
+
+/** Confirmation notification after toggling pause from the menu or a keyboard shortcut. */
+export function pauseToggleNotification(languagePref: string | undefined, nowPaused: boolean): string {
+  const lang = resolve(languagePref);
+  const table = nowPaused ? NOTIF_PAUSED : NOTIF_RESUMED;
+  return table[lang] ?? table.en;
 }

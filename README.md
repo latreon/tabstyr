@@ -57,10 +57,19 @@ network requests. Your data lives in your browser's database and never leaves it
 ### Tracking
 - **Active-time tracking** per tab and per domain, second-by-second.
 - **Idle-aware** — pauses when you step away (configurable timeout).
+- **Manual pause** — a toolbar toggle, keyboard shortcut, or right-click menu
+  item to stop tracking on demand, independent of idle detection.
 - **Audio-aware** — background audio (music/video in another tab) is tracked and
   reported separately, never inflating your active total.
 - **Restart-safe** — per-tab totals use a stable identifier, so they survive the
   browser reassigning tab IDs after a restart.
+- **Excluded sites** — stop tracking specific domains entirely (no session, no
+  entry anywhere), from Settings or the right-click menu.
+- **Domain aliases** — fold fragmented subdomains or regional TLDs
+  (`mail.google.com`, `amazon.co.uk`) into one canonical site across every view.
+- **Keyboard shortcuts & right-click menu** — open the dashboard, toggle pause,
+  or exclude the current site without opening the popup
+  (rebindable at `chrome://extensions/shortcuts` or your browser's equivalent).
 
 ### Dashboard
 - **Today** — active time with a sparkline and a vs-weekly-average delta.
@@ -177,6 +186,7 @@ as an overlay (no new tab, no page navigation).
 | `alarms` | Periodic checkpoints + the once-daily maintenance task |
 | `notifications` | Optional, at-most-once-per-day stale-tab reminder |
 | `webNavigation` | Detect in-page (SPA) route changes on the active tab so time is credited to the right page |
+| `contextMenus` | Right-click menu: exclude the current site, pause/resume, open the dashboard |
 | `favicon` (Chromium only) | Show site icons in lists |
 
 No host permissions are requested — the extension cannot access page contents.
