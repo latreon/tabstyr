@@ -306,6 +306,38 @@ describe('settings', () => {
     });
   });
 
+  describe('autoExportDays', () => {
+    test('defaults to 0 (off)', async () => {
+      expect((await getSettings()).autoExportDays).toBe(0);
+    });
+
+    test('a saved interval round-trips', async () => {
+      await saveSettings({ autoExportDays: 7 });
+      expect((await getSettings()).autoExportDays).toBe(7);
+    });
+
+    test('0 stays off (not clamped up to the minimum)', async () => {
+      await saveSettings({ autoExportDays: 30 });
+      await saveSettings({ autoExportDays: 0 });
+      expect((await getSettings()).autoExportDays).toBe(0);
+    });
+
+    test('a negative value is treated as off', async () => {
+      await fakeBrowser.storage.local.set({ settings: { autoExportDays: -5 } });
+      expect((await getSettings()).autoExportDays).toBe(0);
+    });
+
+    test('an out-of-range positive value is clamped to 365', async () => {
+      await fakeBrowser.storage.local.set({ settings: { autoExportDays: 9999 } });
+      expect((await getSettings()).autoExportDays).toBe(365);
+    });
+
+    test('a non-number stored value falls back to the default', async () => {
+      await fakeBrowser.storage.local.set({ settings: { autoExportDays: 'weekly' } });
+      expect((await getSettings()).autoExportDays).toBe(0);
+    });
+  });
+
   describe('custom categories', () => {
     const CAT = { name: 'Learning', color: '#123abc', productivity: 'productive' as const };
 

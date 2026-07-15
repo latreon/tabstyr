@@ -14,6 +14,7 @@ import { exceededBudgets, shouldNotifyBudget } from '@/lib/budgets';
 import * as repo from '@/lib/db/repo';
 import { isQuotaError } from '@/lib/db/errors';
 import { addDays, dateKey } from '@/lib/time';
+import { toJsonBackup } from '@/lib/export';
 import { domainOf, isWebDomain, pageOf } from '@/lib/domain';
 import { isExcludedDomain } from '@/lib/excluded-domains';
 import { UNINSTALL_FEEDBACK_URL } from '@/lib/links';
@@ -354,8 +355,49 @@ export default defineBackground(() => {
     await browser.storage.local.set({ sessionAlertState: fire ? { ...state, notified: true } : state });
   }
 
+  // Optional (off by default) scheduled backup: saves a JSON file to the
+  // browser's normal downloads location on the same cadence as the manual
+  // "Export JSON" button produces, via the `downloads` API since the service
+  // worker has no page/DOM to drive a click-triggered <a download> like
+  // lib/export.ts's downloadFile does. Absent on platforms without `downloads`
+  // (degrades to a no-op, same as idle/notifications elsewhere in this file).
+  async function runAutoExportIfDue(now: number): Promise<void> {
+    if (!browser.downloads) return;
+    const settings = await getSettings();
+    if (settings.autoExportDays <= 0) return;
+    const { autoExportState } = await browser.storage.local.get('autoExportState');
+    const lastExportAt = (autoExportState as { lastExportAt?: number } | undefined)?.lastExportAt ?? 0;
+    if (now - lastExportAt < settings.autoExportDays * DAY_MS) return;
+    try {
+      const [dailyStats, monthlyStats, sessions, tabMeta] = await Promise.all([
+        repo.getAllDailyStats(),
+        repo.getAllMonthlyStats(),
+        repo.getAllSessions(),
+        repo.getAllTabMeta(),
+      ]);
+      const json = toJsonBackup({ dailyStats, monthlyStats, sessions, tabMeta, settings }, now);
+      // URL.createObjectURL doesn't exist in an MV3 service worker (confirmed:
+      // it's simply absent, not just quota-limited) — a data: URL is the one
+      // reliable way to hand file content to downloads.download() from here.
+      // btoa() only accepts Latin1, so encode via TextEncoder first — a naive
+      // btoa(json) would throw/corrupt on any non-Latin1 character (accents,
+      // CJK, emoji — all realistic in a page title in the backup).
+      const bytes = new TextEncoder().encode(json);
+      let binary = '';
+      for (const b of bytes) binary += String.fromCharCode(b);
+      const url = `data:application/json;base64,${btoa(binary)}`;
+      await browser.downloads.download({ url, filename: `tabstyr-backup-${dateKey(now)}.json`, saveAs: false });
+      await browser.storage.local.set({ autoExportState: { lastExportAt: now } });
+    } catch (e) {
+      console.error('[tab-time] auto-export failed', e);
+    }
+  }
+
   async function runDailyMaintenance(now: number): Promise<void> {
     const today = dateKey(now);
+    // Before pruning — an export that's about to become due should still see
+    // today's data; pruning only ever drops rows already past the 90-day window.
+    await runAutoExportIfDue(now);
     await repo.pruneBefore(addDays(today, -RETENTION_DAYS), now - RETENTION_DAYS * DAY_MS);
 
     const [settings, metas, tabs] = await Promise.all([

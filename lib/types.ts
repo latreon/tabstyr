@@ -122,4 +122,12 @@ export interface Settings {
    * work log, domain detail) shows the canonical one instead.
    */
   domainAliases: Record<string, string>;
+  /**
+   * Days between automatic backup exports (a JSON file saved to the browser's
+   * downloads location, same format as the manual "Export JSON" button).
+   * 0 = off (default — nothing is saved without you asking). Checked once a
+   * day alongside the other daily maintenance; the last-exported timestamp is
+   * tracked separately in storage.local (internal state, not a preference).
+   */
+  autoExportDays: number;
 }

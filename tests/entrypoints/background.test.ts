@@ -203,6 +203,67 @@ describe('background: daily maintenance', () => {
   });
 });
 
+describe('background: scheduled export', () => {
+  test('does nothing when autoExportDays is 0 (the default)', async () => {
+    const download = vi.spyOn(fakeBrowser.downloads, 'download').mockResolvedValue(1);
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(download).not.toHaveBeenCalled();
+  });
+
+  test('downloads a backup on the first due daily check', async () => {
+    await saveSettings({ autoExportDays: 7 });
+    const download = vi.spyOn(fakeBrowser.downloads, 'download').mockResolvedValue(1);
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
+    await vi.waitFor(() => expect(download).toHaveBeenCalledTimes(1));
+
+    const [opts] = download.mock.calls[0];
+    expect(opts.filename).toMatch(/^tabstyr-backup-\d{4}-\d{2}-\d{2}\.json$/);
+    expect(opts.url).toMatch(/^data:application\/json;base64,/);
+    expect(opts.saveAs).toBe(false);
+
+    const { autoExportState } = await fakeBrowser.storage.local.get('autoExportState');
+    expect((autoExportState as { lastExportAt: number }).lastExportAt).toBeGreaterThan(0);
+  });
+
+  test('does not re-download before the interval has elapsed', async () => {
+    await saveSettings({ autoExportDays: 7 });
+    await fakeBrowser.storage.local.set({ autoExportState: { lastExportAt: Date.now() - 2 * DAY_MS } });
+    const download = vi.spyOn(fakeBrowser.downloads, 'download').mockResolvedValue(1);
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(download).not.toHaveBeenCalled();
+  });
+
+  test('downloads again once the interval has elapsed', async () => {
+    await saveSettings({ autoExportDays: 7 });
+    await fakeBrowser.storage.local.set({ autoExportState: { lastExportAt: Date.now() - 8 * DAY_MS } });
+    const download = vi.spyOn(fakeBrowser.downloads, 'download').mockResolvedValue(1);
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
+    await vi.waitFor(() => expect(download).toHaveBeenCalledTimes(1));
+  });
+
+  test('the exported backup contains the actual stored data', async () => {
+    await saveSettings({ autoExportDays: 1 });
+    await repo.upsertTabMeta({ tabId: 1, key: 'k1', url: 'https://a.com', title: 'A', lastActiveAt: Date.now(), createdAt: Date.now() });
+    const download = vi.spyOn(fakeBrowser.downloads, 'download').mockResolvedValue(1);
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
+    await vi.waitFor(() => expect(download).toHaveBeenCalledTimes(1));
+
+    const [opts] = download.mock.calls[0];
+    const base64 = opts.url.slice('data:application/json;base64,'.length);
+    const parsed = JSON.parse(Buffer.from(base64, 'base64').toString('utf8'));
+    expect(parsed.app).toBe('tabstyr');
+    expect(parsed.tabMeta).toHaveLength(1);
+    expect(parsed.tabMeta[0].url).toBe('https://a.com');
+  });
+});
+
 describe('background: onMessage', () => {
   test('wipe-data from the extension itself clears all stored data', async () => {
     await repo.upsertTabMeta({ tabId: 1, key: 'k1', url: 'https://a.com', title: 'A', lastActiveAt: Date.now(), createdAt: Date.now() });

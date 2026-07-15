@@ -35,6 +35,9 @@ export default defineConfig({
         // toggle pause, open the dashboard. No host permissions needed — items are
         // static/state-driven, never read page content.
         'contextMenus',
+        // Optional scheduled backup export (off by default) saves a JSON file to
+        // the browser's normal downloads location — no server, no upload.
+        'downloads',
         // `favicon` exists only on Chromium. Firefox & Safari fall back to the
         // letter-chip in FaviconChip.vue, so requesting it there would be invalid.
         ...(chromium ? ['favicon'] : []),

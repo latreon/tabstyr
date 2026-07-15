@@ -99,6 +99,8 @@ network requests. Your data lives in your browser's database and never leaves it
 
 ### Data
 - **Export** — full JSON backup, or CSV (daily totals or raw session log).
+- **Scheduled backup** — optionally save a JSON backup to your downloads
+  automatically (weekly / every 2 weeks / monthly). Off by default.
 - **Encrypted backup** — optional passphrase-protected export (AES-256-GCM,
   PBKDF2-SHA-256), all in-browser via the Web Crypto API.
 - **Restore / import** — load a JSON or encrypted backup on this or another device.
@@ -187,6 +189,7 @@ as an overlay (no new tab, no page navigation).
 | `notifications` | Optional, at-most-once-per-day stale-tab reminder |
 | `webNavigation` | Detect in-page (SPA) route changes on the active tab so time is credited to the right page |
 | `contextMenus` | Right-click menu: exclude the current site, pause/resume, open the dashboard |
+| `downloads` | Optional scheduled backup export (off by default) — saves a JSON file locally, no upload |
 | `favicon` (Chromium only) | Show site icons in lists |
 
 No host permissions are requested — the extension cannot access page contents.

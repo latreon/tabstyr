@@ -46,6 +46,15 @@ const idleSeconds = ref(180);
 const audioEnabled = ref(true);
 const notificationsEnabled = ref(true);
 const trackingPaused = ref(false);
+// SelectBox works over string values; converted to/from the numeric setting
+// (days, 0 = off) at the read/write boundary.
+const autoExportDays = ref('0');
+const AUTO_EXPORT_OPTIONS = computed(() => [
+  { value: '0', label: t('settings.autoExportOff') },
+  { value: '7', label: t('settings.autoExportWeekly') },
+  { value: '14', label: t('settings.autoExportBiweekly') },
+  { value: '30', label: t('settings.autoExportMonthly') },
+]);
 const sessionAlertMinutes = ref(30);
 const focusTarget = ref(50);
 const themeChoice = ref<'light' | 'dark'>('light');
@@ -73,6 +82,7 @@ onMounted(async () => {
   audioEnabled.value = s.audioEnabled;
   notificationsEnabled.value = s.notificationsEnabled;
   trackingPaused.value = s.trackingPaused;
+  autoExportDays.value = String(s.autoExportDays);
   sessionAlertMinutes.value = s.sessionAlertMinutes;
   // If still on the implicit "system" default, show the resolved theme in the picker.
   themeChoice.value = s.theme === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : s.theme;
@@ -107,6 +117,7 @@ async function persistSettings() {
       audioEnabled: audioEnabled.value,
       notificationsEnabled: notificationsEnabled.value,
       trackingPaused: trackingPaused.value,
+      autoExportDays: Number(autoExportDays.value),
       sessionAlertMinutes: sessionAlertMinutes.value,
       focusTarget: focusTarget.value,
     });
@@ -119,7 +130,7 @@ async function persistSettings() {
   }
 }
 
-watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, trackingPaused, sessionAlertMinutes, focusTarget], () => {
+watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, trackingPaused, autoExportDays, sessionAlertMinutes, focusTarget], () => {
   if (!loaded.value) return;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(persistSettings, 400);
@@ -533,6 +544,16 @@ async function confirmWipe() {
       <span class="field-label">{{ t('settings.backupRestore') }}</span>
       <p class="rules-hint">{{ t('settings.backupNote') }}</p>
       <p class="rules-hint">{{ t('settings.uninstallHint') }}</p>
+      <div class="field">
+        <span class="field-label">{{ t('settings.autoExport') }}</span>
+        <SelectBox
+          :model-value="autoExportDays"
+          :options="AUTO_EXPORT_OPTIONS"
+          :label="t('settings.autoExport')"
+          @update:model-value="autoExportDays = $event"
+        />
+      </div>
+      <p class="rules-hint">{{ t('settings.autoExportHint') }}</p>
       <div class="export-btns">
         <button class="btn btn-ghost btn-sm btn-block" :disabled="exporting" @click="exportData()">{{ t('settings.exportJson') }}</button>
         <div class="export-btns-row">

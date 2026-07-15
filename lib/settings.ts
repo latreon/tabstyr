@@ -46,6 +46,7 @@ export const DEFAULT_SETTINGS: Settings = {
   excludedDomains: [],
   trackingPaused: false,
   domainAliases: {},
+  autoExportDays: 0,
 };
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
@@ -181,6 +182,7 @@ function coerce(raw: unknown): Partial<Settings> {
     excludedDomains: sanitizeExcludedDomains(r.excludedDomains),
     ...(typeof r.trackingPaused === 'boolean' && { trackingPaused: r.trackingPaused }),
     domainAliases: sanitizeDomainAliases(r.domainAliases),
+    ...(typeof r.autoExportDays === 'number' && { autoExportDays: r.autoExportDays <= 0 ? 0 : clamp(Math.round(r.autoExportDays), 1, 365) }),
   };
 }
 
