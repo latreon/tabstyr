@@ -311,6 +311,13 @@
     "notificationsHint": "Una notifica al giorno quando le schede restano inutilizzate oltre la soglia.",
     "sessionAlert": "Avviso sessione continua (min)",
     "sessionAlertHint": "Un promemoria gentile dopo questi minuti consecutivi su un sito di categoria distraente (0 = disattivato). I siti produttivi e neutri non vengono mai interrotti.",
+    "emailSummary": "Riepilogo via email",
+    "emailSummaryHint": "Non viene inviato nulla automaticamente e nulla lascia questo dispositivo. Quando è il momento, una notifica apre una bozza precompilata nel tuo client di posta — la rivedi e la invii tu stesso.",
+    "emailSummaryFrequency": "Frequenza del riepilogo",
+    "emailSummaryDaily": "Giornaliero",
+    "emailSummaryWeekly": "Settimanale",
+    "emailSummaryAddress": "Destinatario (opzionale)",
+    "emailSummaryAddressPlaceholder": "you@example.com",
     "showIntro": "Rivedi l'introduzione",
     "introShown": "L'introduzione apparirà nella dashboard",
     "restoreInvalid": "Questo file non è un backup TabStyr valido.",
@@ -360,7 +367,10 @@
   "notification": {
     "stale": "{count} schede non toccate da {days}+ giorni",
     "budget": "Budget giornaliero raggiunto: {category}",
-    "sessionAlert": "Sei su {domain} da {minutes}+ min"
+    "sessionAlert": "Sei su {domain} da {minutes}+ min",
+    "emailSummary": "Il tuo riepilogo {frequency} è pronto — clicca per aprire una bozza email",
+    "emailSummaryDaily": "giornaliero",
+    "emailSummaryWeekly": "settimanale"
   },
   "productivity": {
     "productive": "Produttivo",

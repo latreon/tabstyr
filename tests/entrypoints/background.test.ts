@@ -5,6 +5,7 @@ import { fakeBrowser } from 'wxt/testing';
 import { resetDBConnection } from '@/lib/db/db';
 import * as repo from '@/lib/db/repo';
 import { getSettings, invalidateSettings, saveSettings } from '@/lib/settings';
+import { addDays, dateKey } from '@/lib/time';
 import background from '@/entrypoints/background';
 
 const DAY_MS = 86_400_000;
@@ -261,6 +262,116 @@ describe('background: scheduled export', () => {
     expect(parsed.app).toBe('tabstyr');
     expect(parsed.tabMeta).toHaveLength(1);
     expect(parsed.tabMeta[0].url).toBe('https://a.com');
+  });
+});
+
+describe('background: email summary', () => {
+  test('does nothing when disabled (the default)', async () => {
+    await repo.applyDailyStats([{ date: dateKey(Date.now()), domain: 'github.com', seconds: 3600, audioSeconds: 0 }]);
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(Object.keys(await fakeBrowser.notifications.getAll())).not.toContain('tab-time-email-summary');
+  });
+
+  test('notifies on the first due daily check once enabled, and stores the date range', async () => {
+    await saveSettings({ emailSummaryEnabled: true, emailSummaryFrequency: 'daily' });
+    const today = dateKey(Date.now());
+    await repo.applyDailyStats([{ date: today, domain: 'github.com', seconds: 3600, audioSeconds: 0 }]);
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
+
+    await vi.waitFor(async () => {
+      expect(Object.keys(await fakeBrowser.notifications.getAll())).toContain('tab-time-email-summary');
+    });
+    const { emailSummaryState } = await fakeBrowser.storage.local.get('emailSummaryState');
+    expect((emailSummaryState as { from: string; to: string; frequency: string }).from).toBe(today);
+    expect((emailSummaryState as { from: string; to: string; frequency: string }).to).toBe(today);
+    expect((emailSummaryState as { from: string; to: string; frequency: string }).frequency).toBe('daily');
+  });
+
+  test('a weekly summary spans the trailing 7 days', async () => {
+    await saveSettings({ emailSummaryEnabled: true, emailSummaryFrequency: 'weekly' });
+    const today = dateKey(Date.now());
+    await repo.applyDailyStats([{ date: today, domain: 'github.com', seconds: 3600, audioSeconds: 0 }]);
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
+
+    await vi.waitFor(async () => {
+      const { emailSummaryState } = await fakeBrowser.storage.local.get('emailSummaryState');
+      expect((emailSummaryState as { from: string })?.from).toBe(addDays(today, -6));
+    });
+  });
+
+  test('skips (and does not mark as sent) when there is nothing tracked in the window', async () => {
+    await saveSettings({ emailSummaryEnabled: true, emailSummaryFrequency: 'daily' });
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(Object.keys(await fakeBrowser.notifications.getAll())).not.toContain('tab-time-email-summary');
+    expect((await fakeBrowser.storage.local.get('emailSummaryState')).emailSummaryState).toBeUndefined();
+  });
+
+  test('does not re-notify before the interval has elapsed', async () => {
+    await saveSettings({ emailSummaryEnabled: true, emailSummaryFrequency: 'weekly' });
+    await fakeBrowser.storage.local.set({ emailSummaryState: { lastSentAt: Date.now() - 2 * DAY_MS } });
+    await repo.applyDailyStats([{ date: dateKey(Date.now()), domain: 'github.com', seconds: 3600, audioSeconds: 0 }]);
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(Object.keys(await fakeBrowser.notifications.getAll())).not.toContain('tab-time-email-summary');
+  });
+
+  test('respects notificationsEnabled: off suppresses the summary nudge too', async () => {
+    await saveSettings({ emailSummaryEnabled: true, emailSummaryFrequency: 'daily', notificationsEnabled: false });
+    await repo.applyDailyStats([{ date: dateKey(Date.now()), domain: 'github.com', seconds: 3600, audioSeconds: 0 }]);
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(Object.keys(await fakeBrowser.notifications.getAll())).not.toContain('tab-time-email-summary');
+  });
+
+  test('clicking the notification opens a mailto: draft tab addressed per settings', async () => {
+    await saveSettings({ emailSummaryEnabled: true, emailSummaryFrequency: 'daily', emailSummaryAddress: 'me@example.com' });
+    const today = dateKey(Date.now());
+    await repo.applyDailyStats([{ date: today, domain: 'github.com', seconds: 3600, audioSeconds: 0 }]);
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
+    await vi.waitFor(async () => {
+      expect(Object.keys(await fakeBrowser.notifications.getAll())).toContain('tab-time-email-summary');
+    });
+
+    await fakeBrowser.notifications.onClicked.trigger('tab-time-email-summary');
+    await vi.waitFor(async () => {
+      const tabs = await fakeBrowser.tabs.query({});
+      expect(tabs.some((t) => t.url?.startsWith('mailto:me%40example.com?subject='))).toBe(true);
+    });
+  });
+
+  test('the draft body reports ACTIVE time, not raw stored seconds (background audio excluded)', async () => {
+    await saveSettings({ emailSummaryEnabled: true, emailSummaryFrequency: 'daily' });
+    const today = dateKey(Date.now());
+    // 1h stored, half of it background audio → 30m active. If the draft body
+    // showed "1h 0m" instead, the notify path skipped the activeSeconds()
+    // subtraction that every other report view applies.
+    await repo.applyDailyStats([{ date: today, domain: 'github.com', seconds: 3600, audioSeconds: 1800 }]);
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
+    await vi.waitFor(async () => {
+      expect(Object.keys(await fakeBrowser.notifications.getAll())).toContain('tab-time-email-summary');
+    });
+
+    await fakeBrowser.notifications.onClicked.trigger('tab-time-email-summary');
+    let url = '';
+    await vi.waitFor(async () => {
+      const tabs = await fakeBrowser.tabs.query({});
+      const draft = tabs.find((t) => t.url?.startsWith('mailto:'));
+      expect(draft?.url).toBeTruthy();
+      url = draft!.url!;
+    });
+    const body = decodeURIComponent(url.split('&body=')[1]);
+    expect(body).toContain('Total active time: 30m');
+    expect(body).not.toContain('1h 0m');
   });
 });
 

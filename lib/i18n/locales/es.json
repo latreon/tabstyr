@@ -311,6 +311,13 @@
     "notificationsHint": "Una notificación al día cuando hay pestañas sin tocar más allá del umbral.",
     "sessionAlert": "Alerta de sesión continua (min)",
     "sessionAlertHint": "Un aviso suave tras este número de minutos seguidos en un sitio de categoría distractora (0 = desactivado). Los sitios productivos y neutros nunca se interrumpen.",
+    "emailSummary": "Resumen por correo",
+    "emailSummaryHint": "No se envía nada automáticamente ni sale de este dispositivo. Cuando corresponda, una notificación abre un borrador prellenado en tu propio cliente de correo — tú lo revisas y lo envías.",
+    "emailSummaryFrequency": "Frecuencia del resumen",
+    "emailSummaryDaily": "Diario",
+    "emailSummaryWeekly": "Semanal",
+    "emailSummaryAddress": "Destinatario (opcional)",
+    "emailSummaryAddressPlaceholder": "you@example.com",
     "showIntro": "Mostrar la introducción otra vez",
     "introShown": "La introducción se mostrará en el panel",
     "restoreInvalid": "Ese archivo no es una copia de seguridad válida de TabStyr.",
@@ -360,7 +367,10 @@
   "notification": {
     "stale": "{count} pestañas sin tocar durante más de {days} días",
     "budget": "Presupuesto diario alcanzado: {category}",
-    "sessionAlert": "Llevas {minutes}+ min en {domain}"
+    "sessionAlert": "Llevas {minutes}+ min en {domain}",
+    "emailSummary": "Tu resumen {frequency} está listo — haz clic para abrir un borrador de correo",
+    "emailSummaryDaily": "diario",
+    "emailSummaryWeekly": "semanal"
   },
   "productivity": {
     "productive": "Productivo",

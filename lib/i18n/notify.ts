@@ -61,6 +61,35 @@ const SESSION_ALERT: Record<string, string> = {
   'zh-CN': '你已在 {domain} 停留 {minutes}+ 分钟',
 };
 
+// Keep in sync with each locale's `notification.emailSummary`.
+const EMAIL_SUMMARY: Record<string, string> = {
+  en: 'Your {frequency} summary is ready — click to open a draft email',
+  es: 'Tu resumen {frequency} está listo — haz clic para abrir un borrador de correo',
+  de: 'Deine {frequency} Zusammenfassung ist fertig — klicken, um einen E-Mail-Entwurf zu öffnen',
+  fr: 'Votre résumé {frequency} est prêt — cliquez pour ouvrir un brouillon d’e-mail',
+  it: 'Il tuo riepilogo {frequency} è pronto — clicca per aprire una bozza email',
+  'pt-BR': 'Seu resumo {frequency} está pronto — clique para abrir um rascunho de e-mail',
+  ru: 'Ваша {frequency} сводка готова — нажмите, чтобы открыть черновик письма',
+  tr: '{frequency} özetiniz hazır — bir e-posta taslağı açmak için tıklayın',
+  ja: '{frequency}サマリーの準備ができました — クリックしてメールの下書きを開く',
+  ko: '{frequency} 요약이 준비되었습니다 — 클릭하여 이메일 초안 열기',
+  'zh-CN': '你的{frequency}摘要已就绪 — 点击打开邮件草稿',
+};
+// Keep in sync with each locale's `notification.emailSummaryDaily` / `emailSummaryWeekly`.
+const FREQUENCY_LABELS: Record<string, { daily: string; weekly: string }> = {
+  en: { daily: 'daily', weekly: 'weekly' },
+  es: { daily: 'diario', weekly: 'semanal' },
+  de: { daily: 'tägliche', weekly: 'wöchentliche' },
+  fr: { daily: 'quotidien', weekly: 'hebdomadaire' },
+  it: { daily: 'giornaliero', weekly: 'settimanale' },
+  'pt-BR': { daily: 'diário', weekly: 'semanal' },
+  ru: { daily: 'ежедневная', weekly: 'еженедельная' },
+  tr: { daily: 'günlük', weekly: 'haftalık' },
+  ja: { daily: '日次', weekly: '週次' },
+  ko: { daily: '일간', weekly: '주간' },
+  'zh-CN': { daily: '每日', weekly: '每周' },
+};
+
 // Localized category names for the SW (which has no vue-i18n). Small, single-word
 // strings — same rationale as STALE/STORAGE_FULL: inline rather than bundle the
 // full catalogs. Keep in sync with each locale's `categories.*`.
@@ -185,6 +214,13 @@ export function budgetNotification(languagePref: string | undefined, category: s
 /** Localized continuous-session nudge, e.g. "You've been on reddit.com for 30+ min". */
 export function sessionAlertNotification(languagePref: string | undefined, domain: string, minutes: number): string {
   return interpolate(SESSION_ALERT[resolve(languagePref)] ?? SESSION_ALERT.en, { domain, minutes });
+}
+
+/** Localized "your summary is ready" nudge for the given frequency. */
+export function emailSummaryNotification(languagePref: string | undefined, frequency: 'daily' | 'weekly'): string {
+  const lang = resolve(languagePref);
+  const label = FREQUENCY_LABELS[lang]?.[frequency] ?? FREQUENCY_LABELS.en[frequency];
+  return interpolate(EMAIL_SUMMARY[lang] ?? EMAIL_SUMMARY.en, { frequency: label });
 }
 
 /** Context-menu title for the pause/resume toggle, reflecting current state. */

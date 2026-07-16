@@ -311,6 +311,13 @@
     "notificationsHint": "Eine tägliche Benachrichtigung, wenn Tabs länger als die Schwelle unberührt bleiben.",
     "sessionAlert": "Dauer-Sitzungshinweis (Min.)",
     "sessionAlertHint": "Ein sanfter Hinweis nach so vielen Minuten am Stück auf einer ablenkenden Website (0 = aus). Produktive und neutrale Seiten werden nie unterbrochen.",
+    "emailSummary": "E-Mail-Zusammenfassung",
+    "emailSummaryHint": "Nichts wird automatisch gesendet oder verlässt dieses Gerät. Wenn es fällig ist, öffnet eine Benachrichtigung einen vorausgefüllten Entwurf in deinem eigenen E-Mail-Programm — du prüfst und sendest ihn selbst.",
+    "emailSummaryFrequency": "Häufigkeit der Zusammenfassung",
+    "emailSummaryDaily": "Täglich",
+    "emailSummaryWeekly": "Wöchentlich",
+    "emailSummaryAddress": "Empfänger (optional)",
+    "emailSummaryAddressPlaceholder": "you@example.com",
     "showIntro": "Einführung erneut anzeigen",
     "introShown": "Einführung wird im Dashboard angezeigt",
     "restoreInvalid": "Diese Datei ist kein gültiges TabStyr-Backup.",
@@ -360,7 +367,10 @@
   "notification": {
     "stale": "{count} Tabs seit über {days} Tagen unberührt",
     "budget": "Tagesbudget erreicht: {category}",
-    "sessionAlert": "Du bist seit {minutes}+ Min. auf {domain}"
+    "sessionAlert": "Du bist seit {minutes}+ Min. auf {domain}",
+    "emailSummary": "Deine {frequency} Zusammenfassung ist fertig — klicken, um einen E-Mail-Entwurf zu öffnen",
+    "emailSummaryDaily": "tägliche",
+    "emailSummaryWeekly": "wöchentliche"
   },
   "productivity": {
     "productive": "Produktiv",

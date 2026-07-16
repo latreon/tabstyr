@@ -115,4 +115,21 @@ export interface Settings {
    * tracked separately in storage.local (internal state, not a preference).
    */
   autoExportDays: number;
+  /**
+   * Local-only "email summary" nudge. When enabled, the once-a-day maintenance
+   * check builds a report over the chosen window and fires a notification;
+   * clicking it opens a `mailto:` draft (pre-filled subject/body) in the
+   * user's OWN mail client. No data is ever transmitted by TabStyr itself —
+   * this only shapes a link, exactly like the existing CSV/JSON exports.
+   */
+  emailSummaryEnabled: boolean;
+  /** Report window for the draft: today only, or the trailing 7 days. */
+  emailSummaryFrequency: 'daily' | 'weekly';
+  /**
+   * Optional pre-filled `to=` recipient for the mailto: draft (typically the
+   * user's own address, so the "summary" is a self-addressed reminder).
+   * '' leaves the recipient blank for the user to fill in. Never sent
+   * anywhere by TabStyr — it only appears in the local mailto: link.
+   */
+  emailSummaryAddress: string;
 }

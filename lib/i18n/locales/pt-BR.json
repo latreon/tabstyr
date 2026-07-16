@@ -311,6 +311,13 @@
     "notificationsHint": "Uma notificação por dia quando há abas sem uso além do limite.",
     "sessionAlert": "Alerta de sessão contínua (min)",
     "sessionAlertHint": "Um lembrete gentil após esses minutos seguidos em um site de categoria distraidora (0 = desativado). Sites produtivos e neutros nunca são interrompidos.",
+    "emailSummary": "Resumo por e-mail",
+    "emailSummaryHint": "Nada é enviado automaticamente nem sai deste dispositivo. Quando chegar a hora, uma notificação abre um rascunho pré-preenchido no seu próprio cliente de e-mail — você revisa e envia.",
+    "emailSummaryFrequency": "Frequência do resumo",
+    "emailSummaryDaily": "Diário",
+    "emailSummaryWeekly": "Semanal",
+    "emailSummaryAddress": "Destinatário (opcional)",
+    "emailSummaryAddressPlaceholder": "you@example.com",
     "showIntro": "Ver introdução novamente",
     "introShown": "A introdução aparecerá no painel",
     "restoreInvalid": "Esse arquivo não é um backup válido do TabStyr.",
@@ -360,7 +367,10 @@
   "notification": {
     "stale": "{count} abas sem uso por {days}+ dias",
     "budget": "Limite diário atingido: {category}",
-    "sessionAlert": "Você está em {domain} há {minutes}+ min"
+    "sessionAlert": "Você está em {domain} há {minutes}+ min",
+    "emailSummary": "Seu resumo {frequency} está pronto — clique para abrir um rascunho de e-mail",
+    "emailSummaryDaily": "diário",
+    "emailSummaryWeekly": "semanal"
   },
   "productivity": {
     "productive": "Produtivo",

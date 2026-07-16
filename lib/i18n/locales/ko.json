@@ -311,6 +311,13 @@
     "notificationsHint": "탭이 기준일을 넘겨 방치되면 하루에 한 번 알림을 보냅니다.",
     "sessionAlert": "연속 세션 알림(분)",
     "sessionAlertHint": "주의 분산 카테고리 사이트에서 이만큼 연속으로 머무르면 부드러운 알림을 보냅니다(0 = 끄기). 생산적이거나 중립적인 사이트는 절대 방해하지 않습니다.",
+    "emailSummary": "이메일 요약",
+    "emailSummaryHint": "아무것도 자동으로 전송되거나 이 기기를 벗어나지 않습니다. 시점이 되면 알림이 표시되고, 클릭하면 사용자의 메일 클라이언트에서 미리 작성된 초안이 열립니다 — 직접 검토하고 보내세요.",
+    "emailSummaryFrequency": "요약 빈도",
+    "emailSummaryDaily": "일간",
+    "emailSummaryWeekly": "주간",
+    "emailSummaryAddress": "수신자(선택 사항)",
+    "emailSummaryAddressPlaceholder": "you@example.com",
     "showIntro": "소개 다시 보기",
     "introShown": "대시보드에 소개가 표시됩니다",
     "restoreInvalid": "유효한 TabStyr 백업 파일이 아닙니다.",
@@ -360,7 +367,10 @@
   "notification": {
     "stale": "{count}개 탭이 {days}일 이상 사용되지 않음",
     "budget": "오늘 예산 도달: {category}",
-    "sessionAlert": "{domain}에서 {minutes}분 이상 머물렀습니다"
+    "sessionAlert": "{domain}에서 {minutes}분 이상 머물렀습니다",
+    "emailSummary": "{frequency} 요약이 준비되었습니다 — 클릭하여 이메일 초안 열기",
+    "emailSummaryDaily": "일간",
+    "emailSummaryWeekly": "주간"
   },
   "productivity": {
     "productive": "생산적",
