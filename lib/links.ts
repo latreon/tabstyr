@@ -18,3 +18,7 @@ export const UNINSTALL_FEEDBACK_URL = `${SITE_URL}/ideas?src=uninstall`;
 // "Write a review" tab instead of the general listing page.
 export const CHROME_STORE_REVIEW_URL =
   'https://chromewebstore.google.com/detail/tabstyr/mgckngagefippkemgmmccfaaljmgllpa/reviews';
+
+// Full release notes, hosted on the marketing site (ChangelogPage.vue) rather
+// than duplicated inside the extension bundle.
+export const CHANGELOG_URL = `${SITE_URL}/changelog`;
