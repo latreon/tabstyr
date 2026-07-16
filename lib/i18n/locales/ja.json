@@ -333,6 +333,13 @@
     "notificationsHint": "タブがしきい値を超えて放置されたときに1日1回通知します。",
     "sessionAlert": "連続セッション通知（分）",
     "sessionAlertHint": "気が散るカテゴリーのサイトをこの分数連続で見ていると、そっと通知します（0で無効）。生産的・中立のサイトが中断されることはありません。",
+    "emailSummary": "メールサマリー",
+    "emailSummaryHint": "何も自動送信されず、このデバイスの外に出ることもありません。タイミングが来ると通知が表示され、クリックするとお使いのメールクライアントで下書きが開きます — 内容を確認してから自分で送信してください。",
+    "emailSummaryFrequency": "サマリーの頻度",
+    "emailSummaryDaily": "毎日",
+    "emailSummaryWeekly": "毎週",
+    "emailSummaryAddress": "宛先（任意）",
+    "emailSummaryAddressPlaceholder": "you@example.com",
     "showIntro": "イントロをもう一度表示",
     "introShown": "ダッシュボードにイントロを表示します",
     "restoreInvalid": "このファイルは有効な TabStyr バックアップではありません。",
@@ -388,7 +395,10 @@
   "notification": {
     "stale": "{count} 個のタブが {days} 日以上未使用です",
     "budget": "本日の上限に到達: {category}",
-    "sessionAlert": "{domain} を {minutes} 分以上見ています"
+    "sessionAlert": "{domain} を {minutes} 分以上見ています",
+    "emailSummary": "{frequency}サマリーの準備ができました — クリックしてメールの下書きを開く",
+    "emailSummaryDaily": "日次",
+    "emailSummaryWeekly": "週次"
   },
   "productivity": {
     "productive": "生産的",

@@ -57,6 +57,13 @@ const AUTO_EXPORT_OPTIONS = computed(() => [
 ]);
 const sessionAlertMinutes = ref(30);
 const focusTarget = ref(50);
+const emailSummaryEnabled = ref(false);
+const emailSummaryFrequency = ref<'daily' | 'weekly'>('weekly');
+const emailSummaryAddress = ref('');
+const EMAIL_SUMMARY_FREQUENCY_OPTIONS = computed(() => [
+  { value: 'daily', label: t('settings.emailSummaryDaily') },
+  { value: 'weekly', label: t('settings.emailSummaryWeekly') },
+]);
 const themeChoice = ref<'light' | 'dark'>('light');
 // Gate auto-save until the initial values are loaded, so seeding the refs in
 // onMounted doesn't immediately persist defaults over stored settings.
@@ -84,6 +91,9 @@ onMounted(async () => {
   trackingPaused.value = s.trackingPaused;
   autoExportDays.value = String(s.autoExportDays);
   sessionAlertMinutes.value = s.sessionAlertMinutes;
+  emailSummaryEnabled.value = s.emailSummaryEnabled;
+  emailSummaryFrequency.value = s.emailSummaryFrequency;
+  emailSummaryAddress.value = s.emailSummaryAddress;
   // If still on the implicit "system" default, show the resolved theme in the picker.
   themeChoice.value = s.theme === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : s.theme;
   focusTarget.value = s.focusTarget;
@@ -120,6 +130,9 @@ async function persistSettings() {
       autoExportDays: Number(autoExportDays.value),
       sessionAlertMinutes: sessionAlertMinutes.value,
       focusTarget: focusTarget.value,
+      emailSummaryEnabled: emailSummaryEnabled.value,
+      emailSummaryFrequency: emailSummaryFrequency.value,
+      emailSummaryAddress: emailSummaryAddress.value,
     });
     await browser.runtime.sendMessage({ type: 'settings-changed' });
     emit('changed'); // refresh the dashboard so the focus goal reflects immediately
@@ -130,7 +143,7 @@ async function persistSettings() {
   }
 }
 
-watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, trackingPaused, autoExportDays, sessionAlertMinutes, focusTarget], () => {
+watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, trackingPaused, autoExportDays, sessionAlertMinutes, focusTarget, emailSummaryEnabled, emailSummaryFrequency, emailSummaryAddress], () => {
   if (!loaded.value) return;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(persistSettings, 400);
@@ -530,6 +543,33 @@ async function confirmWipe() {
       <NumberStepper v-model="sessionAlertMinutes" :min="0" :max="180" :step="5" :label="t('settings.sessionAlert')" />
     </div>
     <p class="field-hint">{{ t('settings.sessionAlertHint') }}</p>
+    <div class="field check">
+      <span class="field-label">{{ t('settings.emailSummary') }}</span>
+      <ToggleSwitch v-model="emailSummaryEnabled" :label="t('settings.emailSummary')" />
+    </div>
+    <p class="field-hint">{{ t('settings.emailSummaryHint') }}</p>
+    <template v-if="emailSummaryEnabled">
+      <div class="field">
+        <span class="field-label">{{ t('settings.emailSummaryFrequency') }}</span>
+        <SelectBox
+          :model-value="emailSummaryFrequency"
+          :options="EMAIL_SUMMARY_FREQUENCY_OPTIONS"
+          :label="t('settings.emailSummaryFrequency')"
+          @update:model-value="emailSummaryFrequency = $event as 'daily' | 'weekly'"
+        />
+      </div>
+      <div class="field">
+        <span class="field-label">{{ t('settings.emailSummaryAddress') }}</span>
+        <input
+          v-model="emailSummaryAddress"
+          type="email"
+          class="rule-input email-input"
+          :placeholder="t('settings.emailSummaryAddressPlaceholder')"
+          :aria-label="t('settings.emailSummaryAddress')"
+          autocomplete="email"
+        />
+      </div>
+    </template>
     <div class="field">
       <span class="field-label">{{ t('settings.focusTarget') }}</span>
       <NumberStepper v-model="focusTarget" :min="10" :max="90" :step="5" :label="t('settings.focusTarget')" />
@@ -726,6 +766,9 @@ button:focus-visible {
 .rule-input:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+.email-input {
+  flex: 0 1 190px;
 }
 .rule-error {
   margin: 0;

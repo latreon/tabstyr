@@ -333,6 +333,13 @@
     "notificationsHint": "Une notification par jour lorsque des onglets restent inactifs au-delà du seuil.",
     "sessionAlert": "Alerte de session continue (min)",
     "sessionAlertHint": "Un rappel discret après ce nombre de minutes d'affilée sur un site de catégorie distrayante (0 = désactivé). Les sites productifs et neutres ne sont jamais interrompus.",
+    "emailSummary": "Résumé par e-mail",
+    "emailSummaryHint": "Rien n'est envoyé automatiquement et rien ne quitte cet appareil. Le moment venu, une notification ouvre un brouillon pré-rempli dans votre propre client de messagerie — vous le relisez et l'envoyez vous-même.",
+    "emailSummaryFrequency": "Fréquence du résumé",
+    "emailSummaryDaily": "Quotidien",
+    "emailSummaryWeekly": "Hebdomadaire",
+    "emailSummaryAddress": "Destinataire (facultatif)",
+    "emailSummaryAddressPlaceholder": "you@example.com",
     "showIntro": "Revoir l'introduction",
     "introShown": "L'introduction s'affichera sur le tableau de bord",
     "restoreInvalid": "Ce fichier n'est pas une sauvegarde TabStyr valide.",
@@ -388,7 +395,10 @@
   "notification": {
     "stale": "{count} onglets inactifs depuis plus de {days} jours",
     "budget": "Budget quotidien atteint : {category}",
-    "sessionAlert": "Vous êtes sur {domain} depuis {minutes}+ min"
+    "sessionAlert": "Vous êtes sur {domain} depuis {minutes}+ min",
+    "emailSummary": "Votre résumé {frequency} est prêt — cliquez pour ouvrir un brouillon d'e-mail",
+    "emailSummaryDaily": "quotidien",
+    "emailSummaryWeekly": "hebdomadaire"
   },
   "productivity": {
     "productive": "Productif",

@@ -333,6 +333,13 @@
     "notificationsHint": "Раз в день уведомляет о вкладках, которые не трогали дольше порога.",
     "sessionAlert": "Оповещение о непрерывной сессии (мин)",
     "sessionAlertHint": "Мягкое напоминание после стольки минут подряд на отвлекающем сайте (0 = выключено). Продуктивные и нейтральные сайты никогда не прерываются.",
+    "emailSummary": "Сводка по почте",
+    "emailSummaryHint": "Ничего не отправляется автоматически и не покидает это устройство. Когда придёт время, уведомление откроет заранее заполненный черновик в вашем почтовом клиенте — вы сами его проверите и отправите.",
+    "emailSummaryFrequency": "Периодичность сводки",
+    "emailSummaryDaily": "Ежедневно",
+    "emailSummaryWeekly": "Еженедельно",
+    "emailSummaryAddress": "Получатель (необязательно)",
+    "emailSummaryAddressPlaceholder": "you@example.com",
     "showIntro": "Показать введение снова",
     "introShown": "Введение появится на панели",
     "restoreInvalid": "Этот файл не является корректной резервной копией TabStyr.",
@@ -388,7 +395,10 @@
   "notification": {
     "stale": "{count} вкладок не открывались {days}+ дней",
     "budget": "Дневной лимит достигнут: {category}",
-    "sessionAlert": "Вы на {domain} уже {minutes}+ мин"
+    "sessionAlert": "Вы на {domain} уже {minutes}+ мин",
+    "emailSummary": "Ваша {frequency} сводка готова — нажмите, чтобы открыть черновик письма",
+    "emailSummaryDaily": "ежедневная",
+    "emailSummaryWeekly": "еженедельная"
   },
   "productivity": {
     "productive": "Продуктивно",

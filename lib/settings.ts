@@ -23,6 +23,7 @@ const MAX_CUSTOM_CATEGORIES = 20;
 const MAX_CAT_NAME_LEN = 24;
 const MAX_SESSION_ALERT_MINUTES = 180;
 const HEX_COLOR = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
+const MAX_EMAIL_LEN = 320; // RFC 5321 max mailbox length
 
 export const DEFAULT_SETTINGS: Settings = {
   staleDays: 3,
@@ -47,6 +48,9 @@ export const DEFAULT_SETTINGS: Settings = {
   trackingPaused: false,
   domainAliases: {},
   autoExportDays: 0,
+  emailSummaryEnabled: false,
+  emailSummaryFrequency: 'weekly',
+  emailSummaryAddress: '',
 };
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
@@ -156,6 +160,19 @@ function sanitizeBudgets(
   return out;
 }
 
+// Loose, non-RFC validation is intentional: this is only ever used to pre-fill a
+// local mailto: link the user reviews before sending (never transmitted by
+// TabStyr itself), so the bar is "not garbage" rather than full RFC 5322. Strip
+// control characters (would otherwise land verbatim in a `mailto:` URL) and
+// require a plausible `x@y.z` shape; anything else falls back to '' (blank
+// recipient — the user picks one in their mail client).
+const PLAUSIBLE_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function sanitizeEmailAddress(raw: unknown): string {
+  if (typeof raw !== 'string') return '';
+  const trimmed = raw.replace(/[\x00-\x1f\x7f]/g, '').trim().slice(0, MAX_EMAIL_LEN);
+  return PLAUSIBLE_EMAIL.test(trimmed) ? trimmed : '';
+}
+
 function coerce(raw: unknown): Partial<Settings> {
   if (!raw || typeof raw !== 'object') return {};
   const r = raw as Record<string, unknown>;
@@ -183,6 +200,9 @@ function coerce(raw: unknown): Partial<Settings> {
     ...(typeof r.trackingPaused === 'boolean' && { trackingPaused: r.trackingPaused }),
     domainAliases: sanitizeDomainAliases(r.domainAliases),
     ...(typeof r.autoExportDays === 'number' && { autoExportDays: r.autoExportDays <= 0 ? 0 : clamp(Math.round(r.autoExportDays), 1, 365) }),
+    ...(typeof r.emailSummaryEnabled === 'boolean' && { emailSummaryEnabled: r.emailSummaryEnabled }),
+    ...((r.emailSummaryFrequency === 'daily' || r.emailSummaryFrequency === 'weekly') && { emailSummaryFrequency: r.emailSummaryFrequency }),
+    ...(typeof r.emailSummaryAddress === 'string' && { emailSummaryAddress: sanitizeEmailAddress(r.emailSummaryAddress) }),
   };
 }
 
