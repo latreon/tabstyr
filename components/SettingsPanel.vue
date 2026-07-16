@@ -16,6 +16,7 @@ import { mergeBackup, mergeSettingsMaps } from '@/lib/merge';
 import { parseCsvImport } from '@/lib/import-csv';
 import { dateKey } from '@/lib/time';
 import { getDateLocale } from '@/lib/locale';
+import { CHANGELOG_URL } from '@/lib/links';
 import type { Settings, ThemeSetting } from '@/lib/types';
 import SelectBox from '@/components/ui/SelectBox.vue';
 import ToggleSwitch from '@/components/ui/ToggleSwitch.vue';
@@ -58,6 +59,15 @@ const AUTO_EXPORT_OPTIONS = computed(() => [
 const sessionAlertMinutes = ref(30);
 const focusTarget = ref(50);
 const themeChoice = ref<'light' | 'dark'>('light');
+const appVersion = browser.runtime.getManifest().version;
+// Read the LIVE bindings (not the manifest defaults) so a user who rebound a
+// shortcut at chrome://extensions/shortcuts sees their actual key combo here.
+const SHORTCUT_LABELS: Record<string, string> = {
+  _execute_action: 'shortcutOpenPopup',
+  'open-dashboard': 'shortcutOpenDashboard',
+  'toggle-pause': 'shortcutTogglePause',
+};
+const shortcuts = ref<Array<{ name: string; labelKey: string; shortcut: string }>>([]);
 // Gate auto-save until the initial values are loaded, so seeding the refs in
 // onMounted doesn't immediately persist defaults over stored settings.
 const loaded = ref(false);
@@ -88,7 +98,17 @@ onMounted(async () => {
   themeChoice.value = s.theme === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : s.theme;
   focusTarget.value = s.focusTarget;
   loaded.value = true;
+  // browser.commands is absent on some platforms (e.g. Safari) — degrade to an
+  // empty list rather than throwing, same as notifications/idle elsewhere here.
+  const commands = (await browser.commands?.getAll?.()) ?? [];
+  shortcuts.value = commands
+    .filter((c) => c.name && SHORTCUT_LABELS[c.name])
+    .map((c) => ({ name: c.name!, labelKey: SHORTCUT_LABELS[c.name!], shortcut: c.shortcut ?? '' }));
 });
+
+function openChangelog() {
+  void browser.tabs.create({ url: CHANGELOG_URL });
+}
 
 // Keep the picker in sync if the theme is changed elsewhere (header toggle).
 watch(theme.setting, (next) => {
@@ -541,6 +561,19 @@ async function confirmWipe() {
     </div>
 
     <div class="export">
+      <span class="field-label">{{ t('settings.about') }}</span>
+      <p class="rules-hint">{{ t('settings.version', { version: appVersion }) }}</p>
+      <button type="button" class="btn btn-ghost btn-sm btn-block" @click="openChangelog">{{ t('settings.whatsNew') }}</button>
+      <ul v-if="shortcuts.length" class="shortcut-list">
+        <li v-for="s in shortcuts" :key="s.name">
+          <span>{{ t(`settings.${s.labelKey}`) }}</span>
+          <kbd v-if="s.shortcut">{{ s.shortcut }}</kbd>
+          <span v-else class="shortcut-unset">{{ t('settings.shortcutUnset') }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="export">
       <span class="field-label">{{ t('settings.backupRestore') }}</span>
       <p class="rules-hint">{{ t('settings.backupNote') }}</p>
       <p class="rules-hint">{{ t('settings.uninstallHint') }}</p>
@@ -744,6 +777,37 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
+}
+.shortcut-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.shortcut-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--text-xs);
+  color: var(--text-2);
+  gap: var(--sp-2);
+}
+.shortcut-list kbd {
+  font-family: inherit;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text);
+  background: var(--card-strong);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+.shortcut-unset {
+  color: var(--text-3);
+  font-style: italic;
 }
 /* Export JSON sits full-width on top; the actions wrap onto the row below. */
 .export-btns-row {

@@ -6,6 +6,7 @@ import { advanceSessionAlertState, shouldNotifySessionAlert, type SessionAlertSt
 import {
   staleNotification, storageFullNotification, budgetNotification, sessionAlertNotification,
   menuExcludeTitle, menuPauseTitle, menuDashboardTitle, excludeToggleNotification, pauseToggleNotification,
+  focusTimerNotification,
 } from '@/lib/i18n/notify';
 import { getSettings, invalidateSettings, saveSettings } from '@/lib/settings';
 import { categorize, categoryProductivityOf, groupByCategory } from '@/lib/categories';
@@ -361,6 +362,24 @@ export default defineBackground(() => {
     await browser.storage.local.set({ sessionAlertState: fire ? { ...state, notified: true } : state });
   }
 
+  // Fires when a popup-started focus timer's one-shot alarm goes off (see the
+  // 'focus-timer' alarm branch below). The popup itself may be long closed by
+  // then — alarms are extension-global, not tied to the context that created
+  // them — so completion always has to be handled here, not in the popup.
+  async function completeFocusTimer(): Promise<void> {
+    const { focusTimer } = await browser.storage.local.get('focusTimer');
+    await browser.storage.local.remove('focusTimer');
+    const settings = await getSettings();
+    if (!settings.notificationsEnabled || !browser.notifications) return;
+    const durationMin = (focusTimer as { durationMin?: number } | undefined)?.durationMin ?? 0;
+    await browser.notifications.create('tab-time-focus-timer', {
+      type: 'basic',
+      iconUrl: browser.runtime.getURL('/icon/128.png'),
+      title: 'TabStyr',
+      message: focusTimerNotification(settings.language, durationMin),
+    });
+  }
+
   // Optional (off by default) scheduled backup: saves a JSON file to the
   // browser's normal downloads location on the same cadence as the manual
   // "Export JSON" button produces, via the `downloads` API since the service
@@ -650,6 +669,8 @@ export default defineBackground(() => {
       }
     } else if (alarm.name === 'daily') {
       await runDailyMaintenance(now);
+    } else if (alarm.name === 'focus-timer') {
+      await completeFocusTimer();
     }
   }));
 
@@ -663,6 +684,12 @@ export default defineBackground(() => {
     if (details.reason === 'install') {
       void browser.tabs.create({ url: browser.runtime.getURL('/dashboard.html') });
       void recordInstallDate(Date.now());
+      // A first-time install has nothing to compare against — seed the "seen"
+      // version now so the popup's What's New banner (gated on a version
+      // mismatch) never shows to a user who just installed. Left untouched on
+      // 'update': the popup detects the mismatch against the new manifest
+      // version, shows the banner once, and updates this itself.
+      void browser.storage.local.set({ whatsNewVersion: browser.runtime.getManifest().version });
     }
   });
 
@@ -683,9 +710,10 @@ export default defineBackground(() => {
   }));
 
   browser.notifications?.onClicked?.addListener((notificationId) => {
-    // The budget nudge and the continuous-session nudge both open the dashboard to
-    // the focus section; stale/other open the stale-tab manager (the historical default).
-    const hash = notificationId === 'tab-time-budget' || notificationId === 'tab-time-session' ? '#focus' : '#stale';
+    // The budget nudge, the continuous-session nudge, and the focus-timer
+    // completion all open the dashboard to the focus section; stale/other
+    // open the stale-tab manager (the historical default).
+    const hash = notificationId === 'tab-time-budget' || notificationId === 'tab-time-session' || notificationId === 'tab-time-focus-timer' ? '#focus' : '#stale';
     void browser.tabs.create({ url: browser.runtime.getURL(`/dashboard.html${hash}`) });
   });
 

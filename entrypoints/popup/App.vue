@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { browser } from 'wxt/browser';
 import { useLocale } from '@/composables/useLocale';
@@ -12,9 +12,12 @@ import { resolveDomain } from '@/lib/domain-aliases';
 import { activeSeconds as active } from '@/lib/metrics';
 import { openDomain } from '@/lib/navigate';
 import { COFFEE_URL } from '@/lib/support';
+import { CHANGELOG_URL } from '@/lib/links';
+import { formatCountdown, remainingMs, startFocusTimer, type FocusTimerState } from '@/lib/focus-timer';
 import FaviconChip from '@/components/FaviconChip.vue';
 import RingLogo from '@/components/RingLogo.vue';
 import ThemeToggle from '@/components/ThemeToggle.vue';
+import SelectBox from '@/components/ui/SelectBox.vue';
 
 const { t } = useI18n();
 const locale = useLocale();
@@ -27,6 +30,19 @@ const staleCount = ref(0);
 const loading = ref(true);
 const loadError = ref(false);
 const trackingPaused = ref(false);
+const showWhatsNew = ref(false);
+const currentVersion = browser.runtime.getManifest().version;
+
+const FOCUS_TIMER_ALARM = 'focus-timer';
+const focusTimer = ref<FocusTimerState | null>(null);
+const focusRemaining = ref(0);
+const focusDuration = ref('25');
+const FOCUS_DURATION_OPTIONS = computed(() => [
+  { value: '25', label: t('popup.focusMinutes', { minutes: 25 }) },
+  { value: '45', label: t('popup.focusMinutes', { minutes: 45 }) },
+  { value: '60', label: t('popup.focusMinutes', { minutes: 60 }) },
+]);
+let focusTickTimer: ReturnType<typeof setInterval> | undefined;
 
 const deltaPct = computed(() => {
   if (!weeklyAvgSeconds.value || weeklyActiveDays.value < 3) return null;
@@ -77,6 +93,18 @@ async function load() {
       settings.staleDays,
     ).length;
     trackingPaused.value = settings.trackingPaused;
+    // Shown once per version bump: background.ts seeds this on fresh install
+    // (so a new user never sees it), and leaves it at the OLD version on
+    // 'update' — a mismatch here means an update the user hasn't acknowledged.
+    // An existing install from BEFORE this feature shipped has no stored value
+    // at all; baseline it silently rather than showing a banner for however
+    // many past updates it missed — tracking starts clean from here on.
+    const { whatsNewVersion } = await browser.storage.local.get('whatsNewVersion');
+    if (whatsNewVersion === undefined) {
+      await browser.storage.local.set({ whatsNewVersion: currentVersion });
+    } else {
+      showWhatsNew.value = whatsNewVersion !== currentVersion;
+    }
   } catch (e) {
     console.error('[popup] load failed', e);
     loadError.value = true;
@@ -87,11 +115,48 @@ async function load() {
 
 onMounted(load);
 
+// Independent of load(): a focus timer's state lives in storage.local (so it
+// survives the popup closing) and its completion notification is fired by
+// background.ts's alarm handler, not here — this only reflects/controls it.
+function tickFocusTimer() {
+  focusRemaining.value = remainingMs(focusTimer.value, Date.now());
+  if (focusTimer.value && focusRemaining.value <= 0) focusTimer.value = null; // completed while popup was open
+}
+onMounted(async () => {
+  const { focusTimer: stored } = await browser.storage.local.get('focusTimer');
+  focusTimer.value = (stored as FocusTimerState | undefined) ?? null;
+  tickFocusTimer();
+  focusTickTimer = setInterval(tickFocusTimer, 1000);
+});
+onBeforeUnmount(() => clearInterval(focusTickTimer));
+
+async function startFocus() {
+  const state = startFocusTimer(Number(focusDuration.value), Date.now());
+  focusTimer.value = state;
+  tickFocusTimer();
+  await browser.storage.local.set({ focusTimer: state });
+  await browser.alarms.create(FOCUS_TIMER_ALARM, { when: state.endsAt });
+}
+async function cancelFocus() {
+  focusTimer.value = null;
+  await browser.storage.local.remove('focusTimer');
+  await browser.alarms.clear(FOCUS_TIMER_ALARM);
+}
+
 function openDashboard(hash = '') {
   void browser.tabs.create({ url: browser.runtime.getURL(`/dashboard.html${hash}`) });
 }
 function openCoffee() {
   void browser.tabs.create({ url: COFFEE_URL });
+}
+
+async function dismissWhatsNew() {
+  showWhatsNew.value = false;
+  await browser.storage.local.set({ whatsNewVersion: currentVersion });
+}
+function openWhatsNew() {
+  void browser.tabs.create({ url: CHANGELOG_URL });
+  void dismissWhatsNew();
 }
 
 // Immediate, unlike the debounced save in Settings — this is a quick-access
@@ -138,6 +203,13 @@ async function togglePause() {
       <ThemeToggle />
     </header>
 
+    <div v-if="showWhatsNew" class="whats-new" role="status">
+      <button type="button" class="whats-new-body" @click="openWhatsNew">
+        {{ t('popup.whatsNew', { version: currentVersion }) }}
+      </button>
+      <button type="button" class="whats-new-close" :aria-label="t('common.dismiss')" @click="dismissWhatsNew">✕</button>
+    </div>
+
     <div v-if="loading" class="skeleton" role="status" aria-busy="true" :aria-label="t('common.loading')">
       <div class="sk sk-hero" aria-hidden="true" />
       <div class="sk sk-row" v-for="i in 3" :key="i" aria-hidden="true" />
@@ -173,6 +245,23 @@ async function togglePause() {
       </ul>
       <p v-else class="label empty">{{ t('popup.noActivityToday') }}</p>
 
+      <div class="focus-timer">
+        <template v-if="focusTimer && focusRemaining > 0">
+          <span class="focus-count">{{ formatCountdown(focusRemaining) }}</span>
+          <span class="focus-label label">{{ t('popup.focusRunning') }}</span>
+          <button type="button" class="focus-cancel" @click="cancelFocus">{{ t('popup.focusCancel') }}</button>
+        </template>
+        <template v-else>
+          <SelectBox
+            :model-value="focusDuration"
+            :options="FOCUS_DURATION_OPTIONS"
+            :label="t('popup.focusDuration')"
+            @update:model-value="focusDuration = $event"
+          />
+          <button type="button" class="focus-start" @click="startFocus">{{ t('popup.focusStart') }}</button>
+        </template>
+      </div>
+
       <footer class="actions">
         <button class="cta" @click="openDashboard()">{{ t('popup.dashboard') }}</button>
         <button v-if="staleCount" class="stale-btn" @click="openDashboard('#stale')">{{ t('popup.stale', { count: staleCount }) }}</button>
@@ -195,6 +284,43 @@ async function togglePause() {
   gap: var(--sp-3);
   overflow: hidden;
 }
+.whats-new {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-muted);
+  border: 1px solid color-mix(in oklab, var(--accent) 40%, var(--border));
+  border-radius: var(--radius-sm);
+  padding: 2px;
+}
+.whats-new-body {
+  all: unset;
+  flex: 1;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+.whats-new-body:hover { background: var(--row-hover); }
+.whats-new-body:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.whats-new-close {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--text-3);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+.whats-new-close:hover { color: var(--text); background: var(--row-hover); }
+.whats-new-close:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .load-error {
   display: flex;
   flex-direction: column;
@@ -334,6 +460,42 @@ async function togglePause() {
   border-radius: 2px;
   background: var(--accent-gradient);
 }
+.focus-timer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card-strong);
+}
+.focus-count {
+  font-size: var(--text-lg);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.focus-label {
+  flex: 1;
+}
+.focus-start,
+.focus-cancel {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.focus-start:hover,
+.focus-cancel:hover { border-color: var(--accent); }
+.focus-start:focus-visible,
+.focus-cancel:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .actions {
   position: relative;
   display: flex;

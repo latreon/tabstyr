@@ -15,6 +15,20 @@ const STALE: Record<string, string> = {
   ko: '{count}개 탭이 {days}일 이상 사용되지 않음',
   'zh-CN': '{count} 个标签页已 {days} 天以上未使用',
 };
+// Keep in sync with each locale's `notification.focusTimerDone`.
+const FOCUS_TIMER_DONE: Record<string, string> = {
+  en: 'Your {minutes}-minute focus session is done',
+  es: 'Tu sesión de enfoque de {minutes} minutos ha terminado',
+  de: 'Deine {minutes}-minütige Fokus-Sitzung ist beendet',
+  fr: 'Votre session de concentration de {minutes} minutes est terminée',
+  it: 'La tua sessione di concentrazione da {minutes} minuti è terminata',
+  'pt-BR': 'Sua sessão de foco de {minutes} minutos terminou',
+  ru: 'Ваша {minutes}-минутная сессия фокусировки завершена',
+  tr: '{minutes} dakikalık odaklanma seansınız tamamlandı',
+  ja: '{minutes}分のフォーカスセッションが終了しました',
+  ko: '{minutes}분 집중 세션이 끝났습니다',
+  'zh-CN': '你的 {minutes} 分钟专注时段已结束',
+};
 // Keep in sync with each locale's `notification.storageFull`.
 const STORAGE_FULL: Record<string, string> = {
   en: 'Storage is full — tracking paused. Open TabStyr to export a backup, then clear old data.',
@@ -218,6 +232,11 @@ function interpolate(template: string, params: Record<string, string | number>):
 /** Localized stale-tab notification message for a stored language preference. */
 export function staleNotification(languagePref: string | undefined, count: number, days: number): string {
   return interpolate(STALE[resolve(languagePref)] ?? STALE.en, { count, days });
+}
+
+/** Localized "focus session done" notification. */
+export function focusTimerNotification(languagePref: string | undefined, minutes: number): string {
+  return interpolate(FOCUS_TIMER_DONE[resolve(languagePref)] ?? FOCUS_TIMER_DONE.en, { minutes });
 }
 
 /** Localized "storage full" notification message for a stored language preference. */

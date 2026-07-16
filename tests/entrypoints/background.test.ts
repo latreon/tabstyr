@@ -18,6 +18,12 @@ function stubUninstallUrl() {
   return vi.spyOn(fakeBrowser.runtime, 'setUninstallURL').mockResolvedValue();
 }
 
+// Same gap again: fake-browser never implemented `runtime.getManifest`. Only
+// `version` is read anywhere in background.ts (the What's New baseline).
+function stubManifest(version = '1.9.0') {
+  return vi.spyOn(fakeBrowser.runtime, 'getManifest').mockReturnValue({ version } as never);
+}
+
 // Same gap as setUninstallURL above: fake-browser has an `idle` namespace but
 // never implemented `onStateChanged.addListener`, so registering it throws.
 // None of these tests drive idle events, so a no-op listener is enough.
@@ -86,6 +92,7 @@ beforeEach(() => {
   fakeBrowser.reset();
   invalidateSettings();
   stubUninstallUrl();
+  stubManifest();
   stubIdleApi();
   stubOnReplaced();
   commandsAndMenus = stubCommandsAndMenus();
@@ -124,6 +131,24 @@ describe('background: lifecycle', () => {
     background.main();
     expect(fakeBrowser.runtime.setUninstallURL).toHaveBeenCalledWith('https://tabstyr.com/ideas?src=uninstall');
   });
+
+  test('a fresh install baselines whatsNewVersion so the popup never shows a "what\'s new" banner to a brand-new user', async () => {
+    background.main();
+    await fakeBrowser.runtime.onInstalled.trigger({ reason: 'install', temporary: false });
+    await vi.waitFor(async () => {
+      const { whatsNewVersion } = await fakeBrowser.storage.local.get('whatsNewVersion');
+      expect(whatsNewVersion).toBe('1.9.0');
+    });
+  });
+
+  test('an update leaves whatsNewVersion untouched, so the popup can detect the mismatch', async () => {
+    await fakeBrowser.storage.local.set({ whatsNewVersion: '1.8.0' });
+    background.main();
+    await fakeBrowser.runtime.onInstalled.trigger({ reason: 'update', temporary: false });
+    await new Promise((r) => setTimeout(r, 20));
+    const { whatsNewVersion } = await fakeBrowser.storage.local.get('whatsNewVersion');
+    expect(whatsNewVersion).toBe('1.8.0');
+  });
 });
 
 describe('background: alarms', () => {
@@ -143,6 +168,49 @@ describe('background: alarms', () => {
 
     background.main(); // simulates the service worker being woken again
     await vi.waitFor(async () => expect((await fakeBrowser.alarms.getAll()).length).toBe(2));
+  });
+});
+
+describe('background: focus timer', () => {
+  test('firing the one-shot alarm notifies and clears the stored state', async () => {
+    await saveSettings({ notificationsEnabled: true });
+    await fakeBrowser.storage.local.set({ focusTimer: { endsAt: Date.now(), durationMin: 25 } });
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'focus-timer', scheduledTime: Date.now() });
+
+    await vi.waitFor(async () => {
+      expect(Object.keys(await fakeBrowser.notifications.getAll())).toContain('tab-time-focus-timer');
+    });
+    expect((await fakeBrowser.storage.local.get('focusTimer')).focusTimer).toBeUndefined();
+  });
+
+  test('does not notify when notifications are disabled', async () => {
+    await saveSettings({ notificationsEnabled: false });
+    await fakeBrowser.storage.local.set({ focusTimer: { endsAt: Date.now(), durationMin: 25 } });
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'focus-timer', scheduledTime: Date.now() });
+
+    await new Promise((r) => setTimeout(r, 20));
+    expect(Object.keys(await fakeBrowser.notifications.getAll())).not.toContain('tab-time-focus-timer');
+    // Still cleared even with the notification suppressed — a stale focusTimer
+    // shouldn't linger in storage just because notifications happen to be off.
+    expect((await fakeBrowser.storage.local.get('focusTimer')).focusTimer).toBeUndefined();
+  });
+
+  test('clicking the completion notification opens the dashboard to the focus section', async () => {
+    await saveSettings({ notificationsEnabled: true });
+    await fakeBrowser.storage.local.set({ focusTimer: { endsAt: Date.now(), durationMin: 25 } });
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'focus-timer', scheduledTime: Date.now() });
+    await vi.waitFor(async () => {
+      expect(Object.keys(await fakeBrowser.notifications.getAll())).toContain('tab-time-focus-timer');
+    });
+
+    await fakeBrowser.notifications.onClicked.trigger('tab-time-focus-timer');
+    await vi.waitFor(async () => {
+      const tabs = await fakeBrowser.tabs.query({});
+      expect(tabs.some((t) => t.url?.includes('/dashboard.html#focus'))).toBe(true);
+    });
   });
 });
 
