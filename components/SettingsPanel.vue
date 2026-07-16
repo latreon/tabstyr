@@ -14,9 +14,10 @@ import { encryptToEnvelope, isEncryptedEnvelope, decryptFromEnvelope, MIN_PASSPH
 import { parseBackup, restoreBackup, MAX_BACKUP_BYTES, type ParsedBackup } from '@/lib/restore';
 import { mergeBackup, mergeSettingsMaps } from '@/lib/merge';
 import { parseCsvImport } from '@/lib/import-csv';
-import { dateKey } from '@/lib/time';
+import { dateKey, longDateLabel } from '@/lib/time';
 import { getDateLocale } from '@/lib/locale';
 import { CHANGELOG_URL } from '@/lib/links';
+import { activateLicense, clearLicense, getActiveLicense, type LicenseClaims } from '@/lib/license';
 import type { Settings, ThemeSetting } from '@/lib/types';
 import SelectBox from '@/components/ui/SelectBox.vue';
 import ToggleSwitch from '@/components/ui/ToggleSwitch.vue';
@@ -68,6 +69,11 @@ const SHORTCUT_LABELS: Record<string, string> = {
   'toggle-pause': 'shortcutTogglePause',
 };
 const shortcuts = ref<Array<{ name: string; labelKey: string; shortcut: string }>>([]);
+const proLicense = ref<LicenseClaims | null>(null);
+const proExpiryLabel = computed(() => proLicense.value ? longDateLabel(dateKey(proLicense.value.expiresAt)) : '');
+const licenseInput = ref('');
+const licenseError = ref('');
+const activatingLicense = ref(false);
 // Gate auto-save until the initial values are loaded, so seeding the refs in
 // onMounted doesn't immediately persist defaults over stored settings.
 const loaded = ref(false);
@@ -104,10 +110,35 @@ onMounted(async () => {
   shortcuts.value = commands
     .filter((c) => c.name && SHORTCUT_LABELS[c.name])
     .map((c) => ({ name: c.name!, labelKey: SHORTCUT_LABELS[c.name!], shortcut: c.shortcut ?? '' }));
+  proLicense.value = await getActiveLicense();
 });
 
 function openChangelog() {
   void browser.tabs.create({ url: CHANGELOG_URL });
+}
+
+async function activatePro() {
+  const token = licenseInput.value.trim();
+  if (!token || activatingLicense.value) return;
+  licenseError.value = '';
+  activatingLicense.value = true;
+  try {
+    proLicense.value = await activateLicense(token);
+    licenseInput.value = '';
+    showToast(t('settings.proActivated'));
+  } catch {
+    // activateLicense's own error message is deliberately generic and English-only
+    // (never reveals which check failed) — route through i18n for display instead.
+    licenseError.value = t('settings.proInvalidKey');
+  } finally {
+    activatingLicense.value = false;
+  }
+}
+
+async function removePro() {
+  await clearLicense();
+  proLicense.value = null;
+  showToast(t('settings.proRemoved'));
 }
 
 // Keep the picker in sync if the theme is changed elsewhere (header toggle).
@@ -561,6 +592,33 @@ async function confirmWipe() {
     </div>
 
     <div class="export">
+      <span class="field-label">{{ t('settings.pro') }}</span>
+      <template v-if="proLicense">
+        <p class="rules-hint pro-active">{{ t('settings.proActive', { date: proExpiryLabel }) }}</p>
+        <button type="button" class="btn btn-ghost btn-sm" @click="removePro">{{ t('settings.proRemove') }}</button>
+      </template>
+      <template v-else>
+        <p class="rules-hint">{{ t('settings.proHint') }}</p>
+        <div class="license-row">
+          <input
+            v-model="licenseInput"
+            type="text"
+            class="rule-input"
+            :placeholder="t('settings.proPlaceholder')"
+            :aria-label="t('settings.proLabel')"
+            autocomplete="off"
+            spellcheck="false"
+            @keydown.enter="activatePro"
+          />
+          <button type="button" class="btn btn-primary btn-sm" :disabled="activatingLicense" @click="activatePro">
+            {{ activatingLicense ? t('settings.proActivating') : t('settings.proActivate') }}
+          </button>
+        </div>
+        <p v-if="licenseError" class="rule-error" role="alert">{{ licenseError }}</p>
+      </template>
+    </div>
+
+    <div class="export">
       <span class="field-label">{{ t('settings.about') }}</span>
       <p class="rules-hint">{{ t('settings.version', { version: appVersion }) }}</p>
       <button type="button" class="btn btn-ghost btn-sm btn-block" @click="openChangelog">{{ t('settings.whatsNew') }}</button>
@@ -808,6 +866,14 @@ button:focus-visible {
 .shortcut-unset {
   color: var(--text-3);
   font-style: italic;
+}
+.license-row {
+  display: flex;
+  gap: var(--sp-2);
+}
+.pro-active {
+  color: var(--positive);
+  font-weight: 600;
 }
 /* Export JSON sits full-width on top; the actions wrap onto the row below. */
 .export-btns-row {
