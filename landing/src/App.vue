@@ -51,6 +51,11 @@ const isIdeas = computed(() => rest.value === 'ideas');
 const isWrapped = computed(() => rest.value === 'wrapped');
 const isChangelog = computed(() => rest.value === 'changelog');
 const isBlogIndex = computed(() => rest.value === 'blog');
+// Clean marketing alias: '/vs-rescuetime' renders the full comparison article
+// (same content as the /blog/ post). applyHead() canonicalizes it to the blog
+// URL so the two paths don't split as duplicate content in search.
+const VS_SLUG = 'tabstyr-vs-rescuetime-vs-toggl';
+const isVs = computed(() => rest.value === 'vs-rescuetime');
 const blogSlug = computed(() => (rest.value.startsWith('blog/') ? rest.value.slice('blog/'.length) : null));
 
 // Expose the current locale-less route so the language switcher can build links
@@ -145,6 +150,7 @@ onBeforeUnmount(() => {
     <WrappedPage v-else-if="isWrapped" />
     <ChangelogPage v-else-if="isChangelog" />
     <BlogIndexPage v-else-if="isBlogIndex" />
+    <BlogPostPage v-else-if="isVs" :slug="VS_SLUG" />
     <BlogPostPage v-else-if="blogSlug" :slug="blogSlug" />
 
     <template v-else>

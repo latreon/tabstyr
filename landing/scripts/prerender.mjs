@@ -24,7 +24,7 @@ const PORT = 5099;
 
 const LOCALE_SLUGS = ['', 'es', 'de', 'fr', 'it', 'pt-br', 'ru', 'tr', 'ja', 'ko', 'zh-cn'];
 const PAGES = [
-  '', 'privacy', 'ideas', 'wrapped', 'changelog', 'blog',
+  '', 'privacy', 'ideas', 'wrapped', 'changelog', 'blog', 'vs-rescuetime',
   'blog/how-tabstyr-counts-active-time',
   'blog/why-tabstyr-has-no-servers',
   'blog/tabstyr-vs-rescuetime-vs-toggl',
@@ -64,10 +64,19 @@ function startServer() {
   });
 }
 
+// Write each route as a FLAT `<route>.html` file (not `<route>/index.html`).
+// Netlify's pretty-URL serving maps `/privacy` → `/privacy.html` with a 200,
+// whereas a `/privacy/index.html` forces a 301 from `/privacy` → `/privacy/`.
+// Flat files keep every prerendered route resolving directly at its clean URL.
+// The home route ('') stays as dist/index.html.
 function writeRoute(routePath, html) {
-  const outDir = routePath ? join(DIST, routePath) : DIST;
-  mkdirSync(outDir, { recursive: true });
-  writeFileSync(join(outDir, 'index.html'), html);
+  if (!routePath) {
+    writeFileSync(join(DIST, 'index.html'), html);
+    return;
+  }
+  const outFile = join(DIST, `${routePath}.html`);
+  mkdirSync(dirname(outFile), { recursive: true });
+  writeFileSync(outFile, html);
 }
 
 async function main() {

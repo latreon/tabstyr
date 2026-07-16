@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import RingLogo from './RingLogo.vue';
+import NewsletterSignup from './NewsletterSignup.vue';
 import { LINKS, AUTHOR, STORE_LIVE } from '@/site';
 import { localizedPath, locale, useI18n } from '@/i18n';
 
@@ -17,6 +18,7 @@ const blogHref = computed(() => localizedPath(locale.value, 'blog'));
       <div class="brand-col">
         <a href="#top" class="brand"><RingLogo :size="22" /> <span>TabStyr</span></a>
         <p class="tag">{{ t('footer.tag') }}</p>
+        <NewsletterSignup class="news-block" />
       </div>
 
       <nav class="cols" aria-label="Footer">
@@ -60,6 +62,7 @@ const blogHref = computed(() => localizedPath(locale.value, 'blog'));
 .inner { display: grid; grid-template-columns: 1.4fr 2fr; gap: 40px; }
 .brand { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 700; font-size: 18px; }
 .tag { color: var(--text-3); margin: 14px 0 0; font-size: 14px; max-width: 240px; }
+.news-block { margin-top: 28px; }
 .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .col { display: flex; flex-direction: column; gap: 10px; }
 .col .head { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); margin-bottom: 4px; }
