@@ -151,7 +151,11 @@ function upsertLink(rel: string, href: string, hreflang?: string): HTMLLinkEleme
 /** Sync <html lang>, title, description, canonical and hreflang alternates to the
  * active locale + current route. `rest` is the un-prefixed route ('', 'privacy', 'ideas'). */
 export function applyHead(rest: string): void {
-  const isBlog = rest === 'blog' || rest.startsWith('blog/');
+  // '/vs-rescuetime' is a clean alias for the comparison blog post — it renders
+  // that article, so treat it like a blog page for title/description and point
+  // its canonical at the real post URL (below) to avoid duplicate content.
+  const isVs = rest === 'vs-rescuetime';
+  const isBlog = rest === 'blog' || rest.startsWith('blog/') || isVs;
   const titleKey =
     rest === 'privacy' ? 'meta.privacyTitle'
     : rest === 'ideas' ? 'meta.ideasTitle'
@@ -175,7 +179,10 @@ export function applyHead(rest: string): void {
   upsertMeta('meta[property="og:description"]', { property: 'og:description', content: t('meta.ogDescription') });
 
   // localizedPath already starts with BASE ('/'), so SITE_URL (no trailing slash) + it = absolute.
-  const abs = (code: string): string => SITE_URL + localizedPath(code, rest);
+  // The /vs-rescuetime alias canonicalizes to the underlying blog post so the two
+  // paths consolidate into one indexable URL instead of competing as duplicates.
+  const canonicalRest = isVs ? 'blog/tabstyr-vs-rescuetime-vs-toggl' : rest;
+  const abs = (code: string): string => SITE_URL + localizedPath(code, canonicalRest);
   upsertLink('canonical', abs(locale.value));
   upsertMeta('meta[property="og:url"]', { property: 'og:url', content: abs(locale.value) });
 

@@ -1,4 +1,13 @@
 {
+  "newsletter": {
+    "title": "Get updates",
+    "sub": "New features and store launches — a short note now and then. No spam, unsubscribe anytime.",
+    "placeholder": "you@example.com",
+    "button": "Subscribe",
+    "sending": "Subscribing…",
+    "done": "You're in — we'll email you when there's news.",
+    "error": "Something went wrong. Please try again."
+  },
   "meta": {
     "title": "TabStyr — Private browser time tracking",
     "description": "See where your browser time really goes — active time per site, trends, heatmaps, focus, and stale-tab nudges. 100% local. 0 bytes leave your device.",
