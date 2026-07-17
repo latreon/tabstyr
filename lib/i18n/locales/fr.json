@@ -331,13 +331,7 @@
     "importCsvHint": "Importez des données d'un autre outil : un CSV avec des colonnes date, site et temps (ex. un export RescueTime). Le temps importé est affiché comme une estimation et n'écrase jamais les jours mesurés.",
     "imported": "{count} entrées importées (estimées).",
     "importEmpty": "Aucune ligne exploitable dans ce CSV.",
-    "importInvalid": "Impossible de lire ce CSV — colonnes date, site et temps requises.",
-    "dataExport": "Exporter les données",
-    "dataExportHint": "Chaque jour suivi, aplati en une ligne par site avec sa catégorie et sa productivité — pour Excel, Google Sheets ou tout autre outil d'analyse. Lecture seule : contrairement aux sauvegardes JSON, cet export ne peut pas être restauré.",
-    "exportCsv": "Exporter en CSV",
-    "exportDataJson": "Exporter en JSON (données)",
-    "exportedDataCsv": "Données exportées en CSV",
-    "exportedDataJson": "Données exportées en JSON"
+    "importInvalid": "Impossible de lire ce CSV — colonnes date, site et temps requises."
   },
   "onboarding": {
     "title": "Bienvenue dans TabStyr",

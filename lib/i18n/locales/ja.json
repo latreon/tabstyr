@@ -331,13 +331,7 @@
     "importCsvHint": "他のトラッカーのデータを取り込みます。日付・サイト・時間の列を持つCSV（例：RescueTimeのエクスポート）。取り込んだ時間は推定として表示され、計測済みの日を上書きしません。",
     "imported": "{count} 件をインポートしました（推定）。",
     "importEmpty": "このCSVに使える行が見つかりませんでした。",
-    "importInvalid": "このCSVを読み取れませんでした — 日付・サイト・時間の列が必要です。",
-    "dataExport": "データをエクスポート",
-    "dataExportHint": "記録された全ての日を、サイトごとに1行、カテゴリーと生産性の情報を付けて書き出します — Excel、Google スプレッドシート、その他の分析ツール向け。読み取り専用: JSONバックアップと異なり、これは復元できません。",
-    "exportCsv": "CSVをエクスポート",
-    "exportDataJson": "JSONをエクスポート（データ）",
-    "exportedDataCsv": "データをCSVでエクスポートしました",
-    "exportedDataJson": "データをJSONでエクスポートしました"
+    "importInvalid": "このCSVを読み取れませんでした — 日付・サイト・時間の列が必要です。"
   },
   "onboarding": {
     "title": "TabStyrへようこそ",

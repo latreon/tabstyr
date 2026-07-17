@@ -331,13 +331,7 @@
     "importCsvHint": "Carga datos de otro medidor: un CSV con columnas de fecha, sitio y tiempo (p. ej. una exportación de RescueTime). El tiempo importado se muestra como estimación y nunca sobrescribe días medidos.",
     "imported": "{count} entradas importadas (estimadas).",
     "importEmpty": "No se encontraron filas utilizables en ese CSV.",
-    "importInvalid": "No se pudo leer ese CSV: necesita columnas de fecha, sitio y tiempo.",
-    "dataExport": "Exportar datos",
-    "dataExportHint": "Cada día registrado, en una fila por sitio con su categoría y productividad — para Excel, Google Sheets o cualquier herramienta de análisis. Solo lectura: a diferencia de las copias de seguridad JSON, esto no se puede restaurar.",
-    "exportCsv": "Exportar CSV",
-    "exportDataJson": "Exportar JSON (datos)",
-    "exportedDataCsv": "Datos exportados como CSV",
-    "exportedDataJson": "Datos exportados como JSON"
+    "importInvalid": "No se pudo leer ese CSV: necesita columnas de fecha, sitio y tiempo."
   },
   "onboarding": {
     "title": "Te damos la bienvenida a TabStyr",
