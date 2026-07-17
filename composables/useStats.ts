@@ -115,6 +115,7 @@ export function useStats() {
   const categoryBudgets = computed<Partial<Record<CategoryId, number>>>(
     () => settings.value?.categoryBudgets ?? {},
   );
+  const excludedDomains = computed<string[]>(() => settings.value?.excludedDomains ?? []);
   // Show the first-run intro only once settings have loaded and it isn't dismissed.
   const showOnboarding = computed(() => !!settings.value && !settings.value.onboarded);
 
@@ -374,7 +375,7 @@ export function useStats() {
     stats, activeStats, tabRows, staleTabs, staleTabItems, openTabsList, openTabCount, settings, heatmap, recentSessions,
     loading, loadError, storageWarning, todayKey,
     todaySeconds, todayAudioSeconds, weeklyAvgSeconds, weeklyActiveDays,
-    todayByDomain, todayByCategory, productivity, insights, overrides, categoryRules, customCategories, categoryProductivity, focusTarget, categoryBudgets, showOnboarding,
+    todayByDomain, todayByCategory, productivity, insights, overrides, categoryRules, customCategories, categoryProductivity, focusTarget, categoryBudgets, excludedDomains, showOnboarding,
     load, closeTab, closeTabs, snoozeTab, setCategoryOverride, setCategoryProductivity, setCustomProductivity, setCategoryBudget, addCategoryRule, removeCategoryRule, dismissOnboarding,
   };
 }
