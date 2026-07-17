@@ -331,7 +331,13 @@
     "importCsvHint": "从其他追踪器导入数据：包含日期、站点和时间列的 CSV（如 RescueTime 导出）。导入的时间显示为估算值，绝不会覆盖已测量的日期。",
     "imported": "已导入 {count} 条（估算）。",
     "importEmpty": "该 CSV 中未找到可用行。",
-    "importInvalid": "无法读取该 CSV — 需要日期、站点和时间列。"
+    "importInvalid": "无法读取该 CSV — 需要日期、站点和时间列。",
+    "dataExport": "导出数据",
+    "dataExportHint": "将每个已记录的日期按站点展开为一行，附带分类和生产力信息 — 适用于 Excel、Google 表格或任何分析工具。只读：与 JSON 备份不同，此文件无法用于恢复。",
+    "exportCsv": "导出 CSV",
+    "exportDataJson": "导出 JSON（数据）",
+    "exportedDataCsv": "已导出 CSV 数据",
+    "exportedDataJson": "已导出 JSON 数据"
   },
   "onboarding": {
     "title": "欢迎使用 TabStyr",

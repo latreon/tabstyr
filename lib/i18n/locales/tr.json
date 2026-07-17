@@ -331,7 +331,13 @@
     "importCsvHint": "Başka bir izleyiciden veri alın: tarih, site ve süre sütunları olan bir CSV (ör. RescueTime dışa aktarımı). İçe aktarılan süre tahmini olarak gösterilir ve ölçülen günlerin üzerine asla yazmaz.",
     "imported": "{count} kayıt içe aktarıldı (tahmini).",
     "importEmpty": "Bu CSV’de kullanılabilir satır bulunamadı.",
-    "importInvalid": "CSV okunamadı — tarih, site ve süre sütunları gerekir."
+    "importInvalid": "CSV okunamadı — tarih, site ve süre sütunları gerekir.",
+    "dataExport": "Verileri dışa aktar",
+    "dataExportHint": "İzlenen her gün, kategorisi ve verimliliğiyle birlikte site başına bir satıra dönüştürülür — Excel, Google E-Tablolar veya herhangi bir analiz aracı için. Salt okunur: JSON yedeklerinin aksine bu geri yüklenemez.",
+    "exportCsv": "CSV olarak dışa aktar",
+    "exportDataJson": "JSON olarak dışa aktar (veri)",
+    "exportedDataCsv": "Veriler CSV olarak dışa aktarıldı",
+    "exportedDataJson": "Veriler JSON olarak dışa aktarıldı"
   },
   "onboarding": {
     "title": "TabStyr'a hoş geldiniz",
