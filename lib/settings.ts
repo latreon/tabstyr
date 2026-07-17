@@ -10,7 +10,6 @@ import {
   type CustomCategory,
   type Productivity,
 } from './categories';
-import { sanitizeExcludedDomains } from './excluded-domains';
 import type { Settings } from './types';
 
 // Guardrails so a corrupt or hostile stored value can't bloat memory or break the UI.
@@ -42,7 +41,6 @@ export const DEFAULT_SETTINGS: Settings = {
   // doomscroll before it eats an hour. 0 = off.
   sessionAlertMinutes: 30,
   language: 'auto',
-  excludedDomains: [],
   trackingPaused: false,
   autoExportDays: 0,
 };
@@ -177,7 +175,6 @@ function coerce(raw: unknown): Partial<Settings> {
     ...(typeof r.notificationsEnabled === 'boolean' && { notificationsEnabled: r.notificationsEnabled }),
     ...(typeof r.sessionAlertMinutes === 'number' && { sessionAlertMinutes: clamp(Math.round(r.sessionAlertMinutes), 0, MAX_SESSION_ALERT_MINUTES) }),
     ...(typeof r.language === 'string' && { language: r.language.slice(0, 20) }),
-    excludedDomains: sanitizeExcludedDomains(r.excludedDomains),
     ...(typeof r.trackingPaused === 'boolean' && { trackingPaused: r.trackingPaused }),
     ...(typeof r.autoExportDays === 'number' && { autoExportDays: r.autoExportDays <= 0 ? 0 : clamp(Math.round(r.autoExportDays), 1, 365) }),
   };
