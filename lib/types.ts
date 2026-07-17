@@ -115,6 +115,14 @@ export interface Settings {
    */
   trackingPaused: boolean;
   /**
+   * Source domain → canonical domain, e.g. { "mail.google.com": "google.com" }.
+   * A DISPLAY-TIME fold applied when reading stats/sessions (see
+   * lib/domain-aliases.ts) — stored rows always keep their real observed
+   * domain; every aggregate view (top sites, category/focus math, trends,
+   * work log, domain detail) shows the canonical one instead.
+   */
+  domainAliases: Record<string, string>;
+  /**
    * Days between automatic backup exports (a JSON file saved to the browser's
    * downloads location, same format as the manual "Export JSON" button).
    * 0 = off (default — nothing is saved without you asking). Checked once a
