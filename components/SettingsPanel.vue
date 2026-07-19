@@ -500,33 +500,6 @@ async function confirmWipe() {
       <NumberStepper v-model="sessionAlertMinutes" :min="0" :max="180" :step="5" :label="t('settings.sessionAlert')" />
     </div>
     <p class="field-hint">{{ t('settings.sessionAlertHint') }}</p>
-    <div class="field check">
-      <span class="field-label">{{ t('settings.emailSummary') }}</span>
-      <ToggleSwitch v-model="emailSummaryEnabled" :label="t('settings.emailSummary')" />
-    </div>
-    <p class="field-hint">{{ t('settings.emailSummaryHint') }}</p>
-    <template v-if="emailSummaryEnabled">
-      <div class="field">
-        <span class="field-label">{{ t('settings.emailSummaryFrequency') }}</span>
-        <SelectBox
-          :model-value="emailSummaryFrequency"
-          :options="EMAIL_SUMMARY_FREQUENCY_OPTIONS"
-          :label="t('settings.emailSummaryFrequency')"
-          @update:model-value="emailSummaryFrequency = $event as 'daily' | 'weekly'"
-        />
-      </div>
-      <div class="field">
-        <span class="field-label">{{ t('settings.emailSummaryAddress') }}</span>
-        <input
-          v-model="emailSummaryAddress"
-          type="email"
-          class="rule-input email-input"
-          :placeholder="t('settings.emailSummaryAddressPlaceholder')"
-          :aria-label="t('settings.emailSummaryAddress')"
-          autocomplete="email"
-        />
-      </div>
-    </template>
     <div class="field">
       <span class="field-label">{{ t('settings.focusTarget') }}</span>
       <NumberStepper v-model="focusTarget" :min="10" :max="90" :step="5" :label="t('settings.focusTarget')" />
@@ -535,6 +508,42 @@ async function confirmWipe() {
     <div class="actions">
       <button type="button" class="btn btn-ghost btn-sm" @click="replayOnboarding">{{ t('settings.showIntro') }}</button>
       <button class="btn btn-danger btn-sm" @click="showWipeModal = true">{{ t('settings.wipe') }}</button>
+    </div>
+
+    <!-- Email summary: its own card rather than another inline field, so the
+         mailto-draft nudge (a distinct feature, not a bare preference) reads
+         as one unit — icon, toggle, and its conditional sub-fields together. -->
+    <div class="feature-card">
+      <div class="feature-card-head">
+        <span class="feature-icon" aria-hidden="true">✉️</span>
+        <div class="feature-card-title">
+          <span class="field-label">{{ t('settings.emailSummary') }}</span>
+          <p class="field-hint">{{ t('settings.emailSummaryHint') }}</p>
+        </div>
+        <ToggleSwitch v-model="emailSummaryEnabled" :label="t('settings.emailSummary')" class="feature-card-toggle" />
+      </div>
+      <template v-if="emailSummaryEnabled">
+        <div class="field">
+          <span class="field-label">{{ t('settings.emailSummaryFrequency') }}</span>
+          <SelectBox
+            :model-value="emailSummaryFrequency"
+            :options="EMAIL_SUMMARY_FREQUENCY_OPTIONS"
+            :label="t('settings.emailSummaryFrequency')"
+            @update:model-value="emailSummaryFrequency = $event as 'daily' | 'weekly'"
+          />
+        </div>
+        <div class="field">
+          <span class="field-label">{{ t('settings.emailSummaryAddress') }}</span>
+          <input
+            v-model="emailSummaryAddress"
+            type="email"
+            class="rule-input email-input"
+            :placeholder="t('settings.emailSummaryAddressPlaceholder')"
+            :aria-label="t('settings.emailSummaryAddress')"
+            autocomplete="email"
+          />
+        </div>
+      </template>
     </div>
 
     <div class="export">
@@ -715,6 +724,49 @@ button:focus-visible {
 }
 .email-input {
   flex: 0 1 190px;
+}
+.feature-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+  padding: var(--sp-3);
+  background: var(--card-strong);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.feature-card .field {
+  min-height: 0;
+}
+.feature-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+}
+.feature-icon {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklab, var(--accent) 16%, var(--card));
+  font-size: 15px;
+}
+.feature-card-title {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.feature-card-title .field-hint {
+  margin: 0;
+}
+.feature-card-toggle {
+  flex: none;
+  margin-left: auto;
 }
 .rule-error {
   margin: 0;
