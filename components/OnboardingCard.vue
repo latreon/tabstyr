@@ -7,9 +7,10 @@ import { useFocusTrap } from '@/composables/useFocusTrap';
 const emit = defineEmits<{ dismiss: [] }>();
 const { t } = useI18n();
 
-const legend = CATEGORIES.map((c) => ({ category: c, color: CATEGORY_META[c].color }));
+// Shopping is a real built-in category (used for actual site classification);
+// it's just not shown in this intro legend, which only previews the common ones.
+const legend = CATEGORIES.filter((c) => c !== 'Shopping').map((c) => ({ category: c, color: CATEGORY_META[c].color }));
 const panel = ref<HTMLElement | null>(null);
-const ctaBtn = ref<HTMLButtonElement | null>(null);
 
 useFocusTrap(panel);
 
@@ -46,7 +47,9 @@ function onKey(e: KeyboardEvent) {
 onMounted(() => {
   document.addEventListener('keydown', onKey);
   document.body.style.overflow = 'hidden';
-  ctaBtn.value?.focus();
+  // Move focus into the dialog for a11y without visibly ringing an actionable
+  // control — focus the (non-interactive) panel itself, not the CTA button.
+  panel.value?.focus();
 });
 onUnmounted(() => {
   document.removeEventListener('keydown', onKey);
@@ -57,7 +60,7 @@ onUnmounted(() => {
 <template>
   <Teleport to="body">
   <div class="backdrop" @click.self="close">
-    <section ref="panel" class="modal" role="dialog" aria-modal="true" aria-labelledby="onboard-title">
+    <section ref="panel" class="modal" role="dialog" aria-modal="true" aria-labelledby="onboard-title" tabindex="-1">
       <button class="close" :aria-label="t('onboarding.close')" @click="close">✕</button>
 
       <h2 id="onboard-title" class="title">{{ t('onboarding.title') }}</h2>
@@ -87,7 +90,7 @@ onUnmounted(() => {
 
       <div class="actions">
         <button v-if="currentStep > 0" type="button" class="btn btn-ghost" @click="back">{{ t('onboarding.back') }}</button>
-        <button ref="ctaBtn" class="btn btn-primary" @click="next">{{ isLastStep ? t('onboarding.gotIt') : t('onboarding.next') }}</button>
+        <button class="btn btn-primary" @click="next">{{ isLastStep ? t('onboarding.gotIt') : t('onboarding.next') }}</button>
       </div>
     </section>
   </div>
@@ -120,6 +123,12 @@ onUnmounted(() => {
   border-radius: 16px;
   box-shadow: var(--shadow-modal);
   padding: 26px 28px;
+}
+/* Focused programmatically on open (for a11y/screen readers), not by the user
+   tabbing — no visible ring on the panel itself. */
+.modal:focus,
+.modal:focus-visible {
+  outline: none;
 }
 .modal::before {
   content: '';
