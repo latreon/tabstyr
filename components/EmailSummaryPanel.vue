@@ -85,7 +85,6 @@ watch([enabled, frequency, address], () => {
 <template>
   <div class="tile email-summary-tile">
     <div class="es-header">
-      <span class="tile-icon" aria-hidden="true">✉️</span>
       <div class="tile-head-text">
         <h2 class="label">{{ t('settings.emailSummary') }}</h2>
         <p class="tile-hint">{{ t('settings.emailSummaryHint') }}</p>
@@ -138,18 +137,6 @@ watch([enabled, frequency, address], () => {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-}
-.tile-icon {
-  flex: none;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  background: var(--accent-gradient);
-  box-shadow: 0 4px 14px -6px color-mix(in oklab, var(--accent) 60%, transparent);
-  font-size: 18px;
 }
 .tile-head-text {
   flex: 1;
