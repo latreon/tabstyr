@@ -72,7 +72,7 @@ export function buildReport(
 }
 
 /** Escape one CSV field per RFC 4180 (quote when it contains "," / quote / newline). */
-function csvField(value: string | number): string {
+export function csvField(value: string | number): string {
   const s = String(value);
   return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }

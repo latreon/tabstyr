@@ -103,10 +103,25 @@ export interface Settings {
   /** UI language: 'auto' (follow the browser) or a supported locale code. */
   language: string;
   /**
+   * Domains excluded from tracking entirely (label-boundary match — an entry for
+   * "reddit.com" also matches "old.reddit.com"). Unlike category overrides, an
+   * excluded domain never starts a session or gets a tabMeta row at all.
+   */
+  excludedDomains: string[];
+  /**
    * Manual kill switch, independent of idle detection. While true, no tab
-   * anywhere starts a session, gets a tabMeta row, or counts background audio.
+   * anywhere starts a session, gets a tabMeta row, or counts background audio
+   * — the same treatment an excluded domain gets, just applied to everything.
    */
   trackingPaused: boolean;
+  /**
+   * Source domain → canonical domain, e.g. { "mail.google.com": "google.com" }.
+   * A DISPLAY-TIME fold applied when reading stats/sessions (see
+   * lib/domain-aliases.ts) — stored rows always keep their real observed
+   * domain; every aggregate view (top sites, category/focus math, trends,
+   * work log, domain detail) shows the canonical one instead.
+   */
+  domainAliases: Record<string, string>;
   /**
    * Days between automatic backup exports (a JSON file saved to the browser's
    * downloads location, same format as the manual "Export JSON" button).

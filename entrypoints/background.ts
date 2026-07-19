@@ -5,7 +5,7 @@ import { findStale, rematchTabMeta, shouldNotify } from '@/lib/tracker/stale';
 import { advanceSessionAlertState, shouldNotifySessionAlert, type SessionAlertState } from '@/lib/tracker/session-alert';
 import {
   staleNotification, storageFullNotification, budgetNotification, sessionAlertNotification,
-  menuPauseTitle, menuDashboardTitle, pauseToggleNotification,
+  menuExcludeTitle, menuPauseTitle, menuDashboardTitle, excludeToggleNotification, pauseToggleNotification,
 } from '@/lib/i18n/notify';
 import { getSettings, invalidateSettings, saveSettings } from '@/lib/settings';
 import { categorize, categoryProductivityOf, groupByCategory } from '@/lib/categories';
@@ -17,6 +17,7 @@ import { addDays, dateKey } from '@/lib/time';
 import { monthKeyBefore } from '@/lib/monthly';
 import { toJsonBackup } from '@/lib/export';
 import { domainOf, isWebDomain, pageOf } from '@/lib/domain';
+import { isExcludedDomain } from '@/lib/excluded-domains';
 import { UNINSTALL_FEEDBACK_URL } from '@/lib/links';
 import { recordInstallDate } from '@/lib/review-prompt';
 import type { ClosedSession, EngineState, Session } from '@/lib/types';
@@ -230,7 +231,9 @@ export default defineBackground(() => {
     if (!settings.audioEnabled || settings.trackingPaused) return eng.syncAudio([], now);
     const audibleTabs = await browser.tabs.query({ audible: true });
     const audible = audibleTabs.flatMap((t) =>
-      t.id && t.url && !t.incognito ? [{ tabId: t.id, url: t.url }] : [],
+      t.id && t.url && !t.incognito && !isExcludedDomain(domainOf(t.url), settings.excludedDomains)
+        ? [{ tabId: t.id, url: t.url }]
+        : [],
     );
     return eng.syncAudio(audible, now);
   }
@@ -244,11 +247,13 @@ export default defineBackground(() => {
     if (!tab?.id) return;
     // Never persist anything about private windows.
     if (tab.incognito) return;
+    const domain = domainOf(tab.url ?? '');
     // Only record metadata for real web pages — internal pages aren't "sites" and
-    // shouldn't appear in the tab list or stale tracking.
-    if (!isWebDomain(domainOf(tab.url ?? ''))) return;
+    // shouldn't appear in the tab list or stale tracking. Same for a domain the
+    // user excluded: it must be as invisible as an internal page.
+    if (!isWebDomain(domain)) return;
     const settings = await getSettings();
-    if (settings.trackingPaused) return;
+    if (settings.trackingPaused || isExcludedDomain(domain, settings.excludedDomains)) return;
     const existing = await repo.getTabMeta(tab.id);
     await repo.upsertTabMeta({
       tabId: tab.id,
@@ -445,7 +450,8 @@ export default defineBackground(() => {
       return;
     }
     const settings = await getSettings();
-    const closed = eng.handleFocus(tabId, tab.url, now, !!tab.audible, settings.trackingPaused);
+    const excluded = settings.trackingPaused || isExcludedDomain(domainOf(tab.url), settings.excludedDomains);
+    const closed = eng.handleFocus(tabId, tab.url, now, !!tab.audible, excluded);
     closed.push(...(await syncAudioSessions(eng, now)));
     await touchTab(tabId, now, tab);
     await persist(eng, closed);
@@ -472,7 +478,8 @@ export default defineBackground(() => {
       return;
     }
     const settings = await getSettings();
-    const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible, settings.trackingPaused);
+    const excluded = settings.trackingPaused || isExcludedDomain(domainOf(tab.url), settings.excludedDomains);
+    const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible, excluded);
     closed.push(...(await syncAudioSessions(eng, now)));
     await touchTab(tab.id, now);
     await persist(eng, closed);
@@ -487,7 +494,8 @@ export default defineBackground(() => {
       const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
       if (!tab?.id || !tab.url || tab.incognito) return;
       const settings = await getSettings();
-      const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible, settings.trackingPaused);
+      const excluded = settings.trackingPaused || isExcludedDomain(domainOf(tab.url), settings.excludedDomains);
+      const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible, excluded);
       closed.push(...(await syncAudioSessions(eng, now))); // resume audio after idle
       await touchTab(tab.id, now);
       await persist(eng, closed);
@@ -507,6 +515,8 @@ export default defineBackground(() => {
     const now = Date.now();
     const closed: ClosedSession[] = [];
     if (changeInfo.url) {
+      const settings = await getSettings();
+      const excluded = settings.trackingPaused || isExcludedDomain(domainOf(changeInfo.url), settings.excludedDomains);
       const focusedTabId = eng.getState().focused?.tabId;
       // `tab.active` alone is per-window — require the genuinely focused window so
       // a background window's active tab can't hijack the focused session.
@@ -516,9 +526,9 @@ export default defineBackground(() => {
         // to a real web page. The engine isn't tracking it yet, and no onActivated
         // will fire for an in-tab navigation — so start the session here. Without
         // this, "open browser → type a URL → read it" records zero time.
-        closed.push(...eng.handleFocus(tabId, changeInfo.url, now, !!tab.audible));
+        closed.push(...eng.handleFocus(tabId, changeInfo.url, now, !!tab.audible, excluded));
       } else {
-        closed.push(...eng.handleUrlChange(tabId, changeInfo.url, now));
+        closed.push(...eng.handleUrlChange(tabId, changeInfo.url, now, excluded));
       }
       if (tab.active) await touchTab(tabId, now, tab);
     }
@@ -719,7 +729,8 @@ export default defineBackground(() => {
       // already tracking this exact tab+page (handleFocus's same-tab guard).
       const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
       if (tab?.id && tab.url && !tab.incognito) {
-        closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible);
+        const excluded = isExcludedDomain(domainOf(tab.url), settings.excludedDomains);
+        closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible, excluded);
         await touchTab(tab.id, now, tab);
       }
     }
@@ -752,6 +763,7 @@ export default defineBackground(() => {
 
   // --- keyboard shortcuts + context menu ---
 
+  const MENU_EXCLUDE = 'tabstyr-exclude-site';
   const MENU_PAUSE = 'tabstyr-toggle-pause';
   const MENU_DASHBOARD = 'tabstyr-open-dashboard';
 
@@ -787,6 +799,27 @@ export default defineBackground(() => {
     }
   }
 
+  // Shared by the context-menu item: exclude/un-exclude whichever domain the
+  // click applies to (the right-clicked page, or the active tab for the
+  // toolbar-icon menu), confirmed with a notification for the same reason as above.
+  async function toggleExcludeFromMenu(domain: string): Promise<void> {
+    const settings = await getSettings();
+    const nowExcluded = !isExcludedDomain(domain, settings.excludedDomains);
+    const next = nowExcluded
+      ? [...settings.excludedDomains, domain]
+      : settings.excludedDomains.filter((d) => d !== domain);
+    await saveSettings({ excludedDomains: next });
+    await applySettingsChanged(); // stops/lets the current session react immediately
+    if (browser.notifications) {
+      await browser.notifications.create('tabstyr-exclude-toggled', {
+        type: 'basic',
+        iconUrl: browser.runtime.getURL('/icon/128.png'),
+        title: 'TabStyr',
+        message: excludeToggleNotification(settings.language, domain, nowExcluded),
+      });
+    }
+  }
+
   browser.commands?.onCommand?.addListener(guard(async (command) => {
     if (command === 'open-dashboard') {
       await openOrFocusDashboard();
@@ -801,6 +834,11 @@ export default defineBackground(() => {
     if (!browser.contextMenus) return;
     await browser.contextMenus.removeAll();
     const settings = await getSettings();
+    browser.contextMenus.create({
+      id: MENU_EXCLUDE,
+      title: menuExcludeTitle(settings.language, '…', false),
+      contexts: ['page', 'action'],
+    });
     browser.contextMenus.create({
       id: MENU_PAUSE,
       title: menuPauseTitle(settings.language, settings.trackingPaused),
@@ -825,20 +863,43 @@ export default defineBackground(() => {
       })
     | undefined;
 
-  // Keep the pause title reflecting the CURRENT state right before the menu is
-  // shown. Chromium-only API — Firefox/Safari just keep whatever title
-  // setupContextMenus last set (still correct, just not live).
-  chromiumMenus?.onShown?.addListener(guard(async () => {
+  // Keep the exclude/pause titles reflecting the CURRENT tab + state right
+  // before the menu is shown. Chromium-only API — Firefox/Safari just keep
+  // whatever title setupContextMenus last set (still correct, just not live).
+  chromiumMenus?.onShown?.addListener(guard(async (_info, tab) => {
     const settings = await getSettings();
-    await browser.contextMenus!.update(MENU_PAUSE, { title: menuPauseTitle(settings.language, settings.trackingPaused) }).catch(() => {});
+    const updates: Promise<unknown>[] = [
+      browser.contextMenus!.update(MENU_PAUSE, { title: menuPauseTitle(settings.language, settings.trackingPaused) }).catch(() => {}),
+    ];
+    if (tab?.url) {
+      const domain = domainOf(tab.url);
+      if (isWebDomain(domain)) {
+        const excluded = isExcludedDomain(domain, settings.excludedDomains);
+        updates.push(
+          browser.contextMenus!.update(MENU_EXCLUDE, {
+            title: menuExcludeTitle(settings.language, domain, excluded),
+            visible: true,
+          }).catch(() => {}),
+        );
+      } else {
+        // Internal page (chrome://, newtab, …) — nothing meaningful to exclude.
+        updates.push(browser.contextMenus!.update(MENU_EXCLUDE, { visible: false }).catch(() => {}));
+      }
+    }
+    await Promise.all(updates);
     chromiumMenus?.refresh?.();
   }));
 
-  browser.contextMenus?.onClicked?.addListener(guard(async (info) => {
+  browser.contextMenus?.onClicked?.addListener(guard(async (info, tab) => {
     if (info.menuItemId === MENU_DASHBOARD) {
       await openOrFocusDashboard();
     } else if (info.menuItemId === MENU_PAUSE) {
       await togglePauseFromShortcut();
+    } else if (info.menuItemId === MENU_EXCLUDE) {
+      const url = info.pageUrl ?? tab?.url;
+      if (!url) return;
+      const domain = domainOf(url);
+      if (isWebDomain(domain)) await toggleExcludeFromMenu(domain);
     }
   }));
 });
