@@ -21,6 +21,7 @@ import WorkLog from '@/components/WorkLog.vue';
 import DomainDetail from '@/components/DomainDetail.vue';
 import TabTable from '@/components/TabTable.vue';
 import SettingsPanel from '@/components/SettingsPanel.vue';
+import EmailSummaryPanel from '@/components/EmailSummaryPanel.vue';
 import CustomizationPanel from '@/components/CustomizationPanel.vue';
 import OnboardingCard from '@/components/OnboardingCard.vue';
 import ReviewPrompt from '@/components/ReviewPrompt.vue';
@@ -215,6 +216,7 @@ onMounted(async () => {
       <!-- row: 2 + 1 — Open tabs by time beside Settings -->
       <TabTable :rows="s.tabRows.value" />
       <SettingsPanel @changed="() => s.load({ silent: true })" />
+      <EmailSummaryPanel @changed="() => s.load({ silent: true })" />
       <CustomizationPanel :custom="s.customCategories.value" :category-rules="s.categoryRules.value" @changed="() => s.load({ silent: true })" />
       </section>
     </template>

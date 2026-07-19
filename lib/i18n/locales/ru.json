@@ -317,7 +317,7 @@
     "emailSummaryDaily": "Ежедневно",
     "emailSummaryWeekly": "Еженедельно",
     "emailSummaryAddress": "Получатель (необязательно)",
-    "emailSummaryAddressPlaceholder": "you@example.com",
+    "emailSummaryAddressPlaceholder": "you\\@example.com",
     "showIntro": "Показать введение снова",
     "introShown": "Введение появится на панели",
     "restoreInvalid": "Этот файл не является корректной резервной копией TabStyr.",

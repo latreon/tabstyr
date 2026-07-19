@@ -317,7 +317,7 @@
     "emailSummaryDaily": "毎日",
     "emailSummaryWeekly": "毎週",
     "emailSummaryAddress": "宛先（任意）",
-    "emailSummaryAddressPlaceholder": "you@example.com",
+    "emailSummaryAddressPlaceholder": "you\\@example.com",
     "showIntro": "イントロをもう一度表示",
     "introShown": "ダッシュボードにイントロを表示します",
     "restoreInvalid": "このファイルは有効な TabStyr バックアップではありません。",

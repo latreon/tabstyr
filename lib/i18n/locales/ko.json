@@ -317,7 +317,7 @@
     "emailSummaryDaily": "일간",
     "emailSummaryWeekly": "주간",
     "emailSummaryAddress": "수신자(선택 사항)",
-    "emailSummaryAddressPlaceholder": "you@example.com",
+    "emailSummaryAddressPlaceholder": "you\\@example.com",
     "showIntro": "소개 다시 보기",
     "introShown": "대시보드에 소개가 표시됩니다",
     "restoreInvalid": "유효한 TabStyr 백업 파일이 아닙니다.",

@@ -317,7 +317,7 @@
     "emailSummaryDaily": "Günlük",
     "emailSummaryWeekly": "Haftalık",
     "emailSummaryAddress": "Alıcı (isteğe bağlı)",
-    "emailSummaryAddressPlaceholder": "you@example.com",
+    "emailSummaryAddressPlaceholder": "you\\@example.com",
     "showIntro": "Tanıtımı tekrar göster",
     "introShown": "Tanıtım panoda gösterilecek",
     "restoreInvalid": "Bu dosya geçerli bir TabStyr yedeği değil.",

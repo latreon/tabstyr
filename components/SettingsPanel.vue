@@ -56,13 +56,6 @@ const AUTO_EXPORT_OPTIONS = computed(() => [
 ]);
 const sessionAlertMinutes = ref(30);
 const focusTarget = ref(50);
-const emailSummaryEnabled = ref(false);
-const emailSummaryFrequency = ref<'daily' | 'weekly'>('weekly');
-const emailSummaryAddress = ref('');
-const EMAIL_SUMMARY_FREQUENCY_OPTIONS = computed(() => [
-  { value: 'daily', label: t('settings.emailSummaryDaily') },
-  { value: 'weekly', label: t('settings.emailSummaryWeekly') },
-]);
 const themeChoice = ref<'light' | 'dark'>('light');
 // Gate auto-save until the initial values are loaded, so seeding the refs in
 // onMounted doesn't immediately persist defaults over stored settings.
@@ -90,9 +83,6 @@ onMounted(async () => {
   trackingPaused.value = s.trackingPaused;
   autoExportDays.value = String(s.autoExportDays);
   sessionAlertMinutes.value = s.sessionAlertMinutes;
-  emailSummaryEnabled.value = s.emailSummaryEnabled;
-  emailSummaryFrequency.value = s.emailSummaryFrequency;
-  emailSummaryAddress.value = s.emailSummaryAddress;
   // If still on the implicit "system" default, show the resolved theme in the picker.
   themeChoice.value = s.theme === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : s.theme;
   focusTarget.value = s.focusTarget;
@@ -129,9 +119,6 @@ async function persistSettings() {
       autoExportDays: Number(autoExportDays.value),
       sessionAlertMinutes: sessionAlertMinutes.value,
       focusTarget: focusTarget.value,
-      emailSummaryEnabled: emailSummaryEnabled.value,
-      emailSummaryFrequency: emailSummaryFrequency.value,
-      emailSummaryAddress: emailSummaryAddress.value,
     });
     await browser.runtime.sendMessage({ type: 'settings-changed' });
     emit('changed'); // refresh the dashboard so the focus goal reflects immediately
@@ -142,7 +129,7 @@ async function persistSettings() {
   }
 }
 
-watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, trackingPaused, autoExportDays, sessionAlertMinutes, focusTarget, emailSummaryEnabled, emailSummaryFrequency, emailSummaryAddress], () => {
+watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, trackingPaused, autoExportDays, sessionAlertMinutes, focusTarget], () => {
   if (!loaded.value) return;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(persistSettings, 400);
@@ -510,42 +497,6 @@ async function confirmWipe() {
       <button class="btn btn-danger btn-sm" @click="showWipeModal = true">{{ t('settings.wipe') }}</button>
     </div>
 
-    <!-- Email summary: its own card rather than another inline field, so the
-         mailto-draft nudge (a distinct feature, not a bare preference) reads
-         as one unit — icon, toggle, and its conditional sub-fields together. -->
-    <div class="feature-card">
-      <div class="feature-card-head">
-        <span class="feature-icon" aria-hidden="true">✉️</span>
-        <div class="feature-card-title">
-          <span class="field-label">{{ t('settings.emailSummary') }}</span>
-          <p class="field-hint">{{ t('settings.emailSummaryHint') }}</p>
-        </div>
-        <ToggleSwitch v-model="emailSummaryEnabled" :label="t('settings.emailSummary')" class="feature-card-toggle" />
-      </div>
-      <template v-if="emailSummaryEnabled">
-        <div class="field">
-          <span class="field-label">{{ t('settings.emailSummaryFrequency') }}</span>
-          <SelectBox
-            :model-value="emailSummaryFrequency"
-            :options="EMAIL_SUMMARY_FREQUENCY_OPTIONS"
-            :label="t('settings.emailSummaryFrequency')"
-            @update:model-value="emailSummaryFrequency = $event as 'daily' | 'weekly'"
-          />
-        </div>
-        <div class="field">
-          <span class="field-label">{{ t('settings.emailSummaryAddress') }}</span>
-          <input
-            v-model="emailSummaryAddress"
-            type="email"
-            class="rule-input email-input"
-            :placeholder="t('settings.emailSummaryAddressPlaceholder')"
-            :aria-label="t('settings.emailSummaryAddress')"
-            autocomplete="email"
-          />
-        </div>
-      </template>
-    </div>
-
     <div class="export">
       <span class="field-label">{{ t('settings.backupRestore') }}</span>
       <p class="rules-hint">{{ t('settings.backupNote') }}</p>
@@ -721,52 +672,6 @@ button:focus-visible {
 .rule-input:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-}
-.email-input {
-  flex: 0 1 190px;
-}
-.feature-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-  margin-top: var(--sp-2);
-  padding: var(--sp-3);
-  background: var(--card-strong);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-}
-.feature-card .field {
-  min-height: 0;
-}
-.feature-card-head {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-2);
-}
-.feature-icon {
-  flex: none;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-  background: color-mix(in oklab, var(--accent) 16%, var(--card));
-  font-size: 15px;
-}
-.feature-card-title {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.feature-card-title .field-hint {
-  margin: 0;
-}
-.feature-card-toggle {
-  flex: none;
-  margin-left: auto;
 }
 .rule-error {
   margin: 0;

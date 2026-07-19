@@ -317,7 +317,7 @@
     "emailSummaryDaily": "每日",
     "emailSummaryWeekly": "每周",
     "emailSummaryAddress": "收件人（可选）",
-    "emailSummaryAddressPlaceholder": "you@example.com",
+    "emailSummaryAddressPlaceholder": "you\\@example.com",
     "showIntro": "再次显示介绍",
     "introShown": "介绍将在仪表盘中显示",
     "restoreInvalid": "该文件不是有效的 TabStyr 备份。",

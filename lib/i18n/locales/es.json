@@ -317,7 +317,7 @@
     "emailSummaryDaily": "Diario",
     "emailSummaryWeekly": "Semanal",
     "emailSummaryAddress": "Destinatario (opcional)",
-    "emailSummaryAddressPlaceholder": "you@example.com",
+    "emailSummaryAddressPlaceholder": "you\\@example.com",
     "showIntro": "Mostrar la introducción otra vez",
     "introShown": "La introducción se mostrará en el panel",
     "restoreInvalid": "Ese archivo no es una copia de seguridad válida de TabStyr.",
