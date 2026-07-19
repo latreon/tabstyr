@@ -6,11 +6,14 @@ import { advanceSessionAlertState, shouldNotifySessionAlert, type SessionAlertSt
 import {
   staleNotification, storageFullNotification, budgetNotification, sessionAlertNotification,
   menuExcludeTitle, menuPauseTitle, menuDashboardTitle, excludeToggleNotification, pauseToggleNotification,
+  emailSummaryNotification,
 } from '@/lib/i18n/notify';
 import { getSettings, invalidateSettings, saveSettings } from '@/lib/settings';
 import { categorize, categoryProductivityOf, groupByCategory } from '@/lib/categories';
 import { activeSeconds } from '@/lib/metrics';
 import { exceededBudgets, shouldNotifyBudget } from '@/lib/budgets';
+import { buildReport } from '@/lib/report';
+import { summaryMailto } from '@/lib/email-summary';
 import * as repo from '@/lib/db/repo';
 import { isQuotaError } from '@/lib/db/errors';
 import { addDays, dateKey } from '@/lib/time';
@@ -361,6 +364,58 @@ export default defineBackground(() => {
     await browser.storage.local.set({ sessionAlertState: fire ? { ...state, notified: true } : state });
   }
 
+  // Local-only "email summary" nudge: on the same cadence as other daily
+  // maintenance, build a report over the chosen window and — if there's
+  // anything to show — fire a notification. Clicking it opens a mailto: draft
+  // (openEmailSummaryDraft, wired into onClicked below); nothing here ever
+  // makes a network call. Interval-gated the same way runAutoExportIfDue is,
+  // rather than day-of-week-gated, so "weekly" means "every 7 days" regardless
+  // of when the feature was turned on.
+  async function checkEmailSummary(now: number): Promise<void> {
+    const settings = await getSettings();
+    if (!settings.emailSummaryEnabled || !settings.notificationsEnabled || !browser.notifications) return;
+    const { emailSummaryState } = await browser.storage.local.get('emailSummaryState');
+    const lastSentAt = (emailSummaryState as { lastSentAt?: number } | undefined)?.lastSentAt ?? 0;
+    const intervalMs = (settings.emailSummaryFrequency === 'weekly' ? 7 : 1) * DAY_MS;
+    if (now - lastSentAt < intervalMs) return;
+    const today = dateKey(now);
+    const from = settings.emailSummaryFrequency === 'weekly' ? addDays(today, -6) : today;
+    const stats = await repo.getStatsRange(from, today);
+    // Stored seconds include background-audio time; subtract it here (the single
+    // subtraction point, same as checkBudgets above) so the draft matches every
+    // other active-time view (dashboard, CSV/JSON export) instead of over-counting
+    // a tab that was just playing audio unfocused.
+    const active = stats.map((s) => ({ ...s, seconds: activeSeconds(s) }));
+    const report = buildReport(active, from, today, settings.categoryOverrides, settings.categoryRules);
+    // Nothing tracked in the window — skip rather than offer an empty draft.
+    // Deliberately doesn't advance lastSentAt, so it's re-checked (and can
+    // fire) on the next daily tick once there's real activity.
+    if (report.totalSeconds <= 0) return;
+    await browser.notifications.create('tab-time-email-summary', {
+      type: 'basic',
+      iconUrl: browser.runtime.getURL('/icon/128.png'),
+      title: 'TabStyr',
+      message: emailSummaryNotification(settings.language, settings.emailSummaryFrequency),
+    });
+    await browser.storage.local.set({
+      emailSummaryState: { lastSentAt: now, from, to: today, frequency: settings.emailSummaryFrequency },
+    });
+  }
+
+  // Opens the mailto: draft for the most recently fired email-summary
+  // notification. Recomputes the report at click time (from the stored date
+  // range) rather than stashing rendered text, so storage.local never holds a
+  // copy of the report body.
+  async function openEmailSummaryDraft(): Promise<void> {
+    const { emailSummaryState } = await browser.storage.local.get('emailSummaryState');
+    const state = emailSummaryState as { from: string; to: string; frequency: 'daily' | 'weekly' } | undefined;
+    if (!state) return;
+    const [settings, stats] = await Promise.all([getSettings(), repo.getStatsRange(state.from, state.to)]);
+    const active = stats.map((s) => ({ ...s, seconds: activeSeconds(s) }));
+    const report = buildReport(active, state.from, state.to, settings.categoryOverrides, settings.categoryRules);
+    await browser.tabs.create({ url: summaryMailto(report, state.frequency, settings.emailSummaryAddress) });
+  }
+
   // Optional (off by default) scheduled backup: saves a JSON file to the
   // browser's normal downloads location on the same cadence as the manual
   // "Export JSON" button produces, via the `downloads` API since the service
@@ -429,6 +484,7 @@ export default defineBackground(() => {
         notifyState: { lastDate: today, ids: stale.map((m) => m.tabId) },
       });
     }
+    await checkEmailSummary(now);
     await updateBadge();
   }
 
@@ -683,6 +739,10 @@ export default defineBackground(() => {
   }));
 
   browser.notifications?.onClicked?.addListener((notificationId) => {
+    if (notificationId === 'tab-time-email-summary') {
+      void openEmailSummaryDraft();
+      return;
+    }
     // The budget nudge and the continuous-session nudge both open the dashboard to
     // the focus section; stale/other open the stale-tab manager (the historical default).
     const hash = notificationId === 'tab-time-budget' || notificationId === 'tab-time-session' ? '#focus' : '#stale';
@@ -753,7 +813,7 @@ export default defineBackground(() => {
     } else if (msg?.type === 'wipe-data') {
       await repo.wipeAll();
       await sessionStore.remove('engineState');
-      await browser.storage.local.remove(['notifyState', 'keyMigrationV2', 'budgetNotifyState', 'sessionAlertState']);
+      await browser.storage.local.remove(['notifyState', 'keyMigrationV2', 'budgetNotifyState', 'sessionAlertState', 'emailSummaryState']);
       enginePromise = null;
       await updateBadge();
     }

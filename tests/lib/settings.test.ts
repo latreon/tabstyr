@@ -402,4 +402,42 @@ describe('settings', () => {
       expect(s.categoryRules).toEqual([]);
     });
   });
+
+  describe('emailSummary settings', () => {
+    test('defaults to disabled, weekly, no recipient', async () => {
+      const s = await getSettings();
+      expect(s.emailSummaryEnabled).toBe(false);
+      expect(s.emailSummaryFrequency).toBe('weekly');
+      expect(s.emailSummaryAddress).toBe('');
+    });
+
+    test('round-trips enabled/frequency/address', async () => {
+      await saveSettings({ emailSummaryEnabled: true, emailSummaryFrequency: 'daily', emailSummaryAddress: 'me@example.com' });
+      const s = await getSettings();
+      expect(s.emailSummaryEnabled).toBe(true);
+      expect(s.emailSummaryFrequency).toBe('daily');
+      expect(s.emailSummaryAddress).toBe('me@example.com');
+    });
+
+    test('an invalid frequency value is dropped, keeping the default', async () => {
+      await fakeBrowser.storage.local.set({ settings: { emailSummaryFrequency: 'monthly' } });
+      invalidateSettings();
+      expect((await getSettings()).emailSummaryFrequency).toBe('weekly');
+    });
+
+    test('a value with no @ falls back to blank', async () => {
+      await saveSettings({ emailSummaryAddress: 'not-an-email' });
+      expect((await getSettings()).emailSummaryAddress).toBe('');
+    });
+
+    test('embedded control characters are stripped before validation', async () => {
+      await saveSettings({ emailSummaryAddress: 'me\n@example.com' });
+      expect((await getSettings()).emailSummaryAddress).toBe('me@example.com');
+    });
+
+    test('a well-formed address is trimmed and kept', async () => {
+      await saveSettings({ emailSummaryAddress: '  me@example.com  ' });
+      expect((await getSettings()).emailSummaryAddress).toBe('me@example.com');
+    });
+  });
 });

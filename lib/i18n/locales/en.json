@@ -333,6 +333,13 @@
     "notificationsHint": "A once-a-day notification when tabs sit untouched past the stale threshold.",
     "sessionAlert": "Continuous-session alert (min)",
     "sessionAlertHint": "A gentle nudge after this many minutes straight on one distracting-category site (0 = off). Productive and neutral sites are never interrupted.",
+    "emailSummary": "Email summary",
+    "emailSummaryHint": "Nothing is sent automatically or leaves this device. When due, a notification opens a pre-filled draft in your own mail client — you review and send it yourself.",
+    "emailSummaryFrequency": "Summary frequency",
+    "emailSummaryDaily": "Daily",
+    "emailSummaryWeekly": "Weekly",
+    "emailSummaryAddress": "Recipient (optional)",
+    "emailSummaryAddressPlaceholder": "you@example.com",
     "showIntro": "Show intro again",
     "introShown": "Intro will show on the dashboard",
     "restoreInvalid": "That file isn't a valid TabStyr backup.",
@@ -388,7 +395,10 @@
   "notification": {
     "stale": "{count} tabs untouched for {days}+ days",
     "budget": "Daily budget reached: {category}",
-    "sessionAlert": "You've been on {domain} for {minutes}+ min"
+    "sessionAlert": "You've been on {domain} for {minutes}+ min",
+    "emailSummary": "Your {frequency} summary is ready — click to open a draft email",
+    "emailSummaryDaily": "daily",
+    "emailSummaryWeekly": "weekly"
   },
   "productivity": {
     "productive": "Productive",

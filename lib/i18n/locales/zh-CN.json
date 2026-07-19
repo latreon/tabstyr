@@ -333,6 +333,13 @@
     "notificationsHint": "当标签页超过陈旧阈值未使用时，每天提醒一次。",
     "sessionAlert": "连续会话提醒（分钟）",
     "sessionAlertHint": "在分心类网站上连续停留达到此分钟数后，发出温和提醒（0 = 关闭）。生产型和中性网站永远不会被打断。",
+    "emailSummary": "邮件摘要",
+    "emailSummaryHint": "不会自动发送任何内容，也不会离开此设备。到时会弹出通知，点击后会在你自己的邮件客户端中打开一份预填好的草稿——由你自己查看并发送。",
+    "emailSummaryFrequency": "摘要频率",
+    "emailSummaryDaily": "每日",
+    "emailSummaryWeekly": "每周",
+    "emailSummaryAddress": "收件人（可选）",
+    "emailSummaryAddressPlaceholder": "you@example.com",
     "showIntro": "再次显示介绍",
     "introShown": "介绍将在仪表盘中显示",
     "restoreInvalid": "该文件不是有效的 TabStyr 备份。",
@@ -388,7 +395,10 @@
   "notification": {
     "stale": "{count} 个标签页已 {days} 天以上未使用",
     "budget": "已达每日预算：{category}",
-    "sessionAlert": "你已在 {domain} 停留 {minutes}+ 分钟"
+    "sessionAlert": "你已在 {domain} 停留 {minutes}+ 分钟",
+    "emailSummary": "你的{frequency}摘要已就绪 — 点击打开邮件草稿",
+    "emailSummaryDaily": "每日",
+    "emailSummaryWeekly": "每周"
   },
   "productivity": {
     "productive": "高效",

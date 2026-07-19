@@ -333,6 +333,13 @@
     "notificationsHint": "Sekmeler eşik süresini aşarak dokunulmadan kaldığında günde bir bildirim.",
     "sessionAlert": "Kesintisiz oturum uyarısı (dk)",
     "sessionAlertHint": "Dikkat dağıtıcı kategorideki bir sitede bu kadar dakika kesintisiz kaldığınızda nazik bir hatırlatma (0 = kapalı). Üretken ve nötr siteler asla kesintiye uğratılmaz.",
+    "emailSummary": "E-posta özeti",
+    "emailSummaryHint": "Hiçbir şey otomatik olarak gönderilmez veya bu cihazdan çıkmaz. Zamanı geldiğinde bir bildirim, kendi e-posta istemcinizde önceden doldurulmuş bir taslak açar — inceleyip kendiniz gönderirsiniz.",
+    "emailSummaryFrequency": "Özet sıklığı",
+    "emailSummaryDaily": "Günlük",
+    "emailSummaryWeekly": "Haftalık",
+    "emailSummaryAddress": "Alıcı (isteğe bağlı)",
+    "emailSummaryAddressPlaceholder": "you@example.com",
     "showIntro": "Tanıtımı tekrar göster",
     "introShown": "Tanıtım panoda gösterilecek",
     "restoreInvalid": "Bu dosya geçerli bir TabStyr yedeği değil.",
@@ -388,7 +395,10 @@
   "notification": {
     "stale": "{count} sekme {days}+ gündür kullanılmadı",
     "budget": "Günlük bütçe doldu: {category}",
-    "sessionAlert": "{domain} üzerinde {minutes}+ dk’dır bulunuyorsunuz"
+    "sessionAlert": "{domain} üzerinde {minutes}+ dk’dır bulunuyorsunuz",
+    "emailSummary": "{frequency} özetiniz hazır — bir e-posta taslağı açmak için tıklayın",
+    "emailSummaryDaily": "günlük",
+    "emailSummaryWeekly": "haftalık"
   },
   "productivity": {
     "productive": "Üretken",
