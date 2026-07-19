@@ -84,36 +84,40 @@ watch([enabled, frequency, address], () => {
 
 <template>
   <div class="tile email-summary-tile">
-    <div class="tile-head">
-      <span class="tile-icon" aria-hidden="true">✉️</span>
-      <div class="tile-head-text">
-        <h2 class="label">{{ t('settings.emailSummary') }}</h2>
-        <p class="tile-hint">{{ t('settings.emailSummaryHint') }}</p>
+    <div class="es-row">
+      <div class="tile-head">
+        <span class="tile-icon" aria-hidden="true">✉️</span>
+        <div class="tile-head-text">
+          <h2 class="label">{{ t('settings.emailSummary') }}</h2>
+          <p class="tile-hint">{{ t('settings.emailSummaryHint') }}</p>
+        </div>
       </div>
-      <ToggleSwitch v-model="enabled" :label="t('settings.emailSummary')" class="tile-toggle" />
+      <div class="es-controls">
+        <template v-if="enabled">
+          <div class="field-inline">
+            <span class="field-label">{{ t('settings.emailSummaryFrequency') }}</span>
+            <SelectBox
+              :model-value="frequency"
+              :options="FREQUENCY_OPTIONS"
+              :label="t('settings.emailSummaryFrequency')"
+              @update:model-value="frequency = $event as 'daily' | 'weekly'"
+            />
+          </div>
+          <div class="field-inline">
+            <span class="field-label">{{ t('settings.emailSummaryAddress') }}</span>
+            <input
+              v-model="address"
+              type="email"
+              class="rule-input email-input"
+              :placeholder="t('settings.emailSummaryAddressPlaceholder')"
+              :aria-label="t('settings.emailSummaryAddress')"
+              autocomplete="email"
+            />
+          </div>
+        </template>
+        <ToggleSwitch v-model="enabled" :label="t('settings.emailSummary')" class="tile-toggle" />
+      </div>
     </div>
-    <template v-if="enabled">
-      <div class="field">
-        <span class="field-label">{{ t('settings.emailSummaryFrequency') }}</span>
-        <SelectBox
-          :model-value="frequency"
-          :options="FREQUENCY_OPTIONS"
-          :label="t('settings.emailSummaryFrequency')"
-          @update:model-value="frequency = $event as 'daily' | 'weekly'"
-        />
-      </div>
-      <div class="field">
-        <span class="field-label">{{ t('settings.emailSummaryAddress') }}</span>
-        <input
-          v-model="address"
-          type="email"
-          class="rule-input email-input"
-          :placeholder="t('settings.emailSummaryAddressPlaceholder')"
-          :aria-label="t('settings.emailSummaryAddress')"
-          autocomplete="email"
-        />
-      </div>
-    </template>
 
     <!-- Live region is always present so screen readers announce text swaps. -->
     <div class="toast-host" role="status" aria-live="polite">
@@ -127,16 +131,37 @@ watch([enabled, frequency, address], () => {
 <style scoped>
 .email-summary-tile {
   position: relative;
+  grid-column: 1 / -1;
   padding: var(--sp-4);
   display: flex;
   flex-direction: column;
   gap: 10px;
-  align-self: start;
+}
+.es-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
 }
 .tile-head {
   display: flex;
   align-items: flex-start;
   gap: var(--sp-2);
+  flex: 1 1 260px;
+  min-width: 0;
+}
+.es-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+.field-inline {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--text-sm);
 }
 .tile-icon {
   flex: none;
@@ -164,16 +189,6 @@ watch([enabled, frequency, address], () => {
 }
 .tile-toggle {
   flex: none;
-  margin-left: auto;
-}
-.field {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: var(--text-sm);
-  gap: 10px;
-  min-height: 32px;
-  flex-wrap: wrap;
 }
 .field-label {
   color: var(--text-2);
