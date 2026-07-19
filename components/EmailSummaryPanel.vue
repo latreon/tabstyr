@@ -84,39 +84,36 @@ watch([enabled, frequency, address], () => {
 
 <template>
   <div class="tile email-summary-tile">
-    <div class="es-row">
-      <div class="tile-head">
-        <span class="tile-icon" aria-hidden="true">✉️</span>
-        <div class="tile-head-text">
-          <h2 class="label">{{ t('settings.emailSummary') }}</h2>
-          <p class="tile-hint">{{ t('settings.emailSummaryHint') }}</p>
-        </div>
+    <div class="es-header">
+      <span class="tile-icon" aria-hidden="true">✉️</span>
+      <div class="tile-head-text">
+        <h2 class="label">{{ t('settings.emailSummary') }}</h2>
+        <p class="tile-hint">{{ t('settings.emailSummaryHint') }}</p>
       </div>
-      <div class="es-controls">
-        <template v-if="enabled">
-          <div class="field-inline">
-            <span class="field-label">{{ t('settings.emailSummaryFrequency') }}</span>
-            <SelectBox
-              :model-value="frequency"
-              :options="FREQUENCY_OPTIONS"
-              :label="t('settings.emailSummaryFrequency')"
-              @update:model-value="frequency = $event as 'daily' | 'weekly'"
-            />
-          </div>
-          <div class="field-inline">
-            <span class="field-label">{{ t('settings.emailSummaryAddress') }}</span>
-            <input
-              v-model="address"
-              type="email"
-              class="rule-input email-input"
-              :placeholder="t('settings.emailSummaryAddressPlaceholder')"
-              :aria-label="t('settings.emailSummaryAddress')"
-              autocomplete="email"
-            />
-          </div>
-        </template>
-        <ToggleSwitch v-model="enabled" :label="t('settings.emailSummary')" class="tile-toggle" />
-      </div>
+      <ToggleSwitch v-model="enabled" :label="t('settings.emailSummary')" class="tile-toggle" />
+    </div>
+
+    <div v-if="enabled" class="es-fields">
+      <label class="es-field">
+        <span class="es-field-label">{{ t('settings.emailSummaryFrequency') }}</span>
+        <SelectBox
+          :model-value="frequency"
+          :options="FREQUENCY_OPTIONS"
+          :label="t('settings.emailSummaryFrequency')"
+          @update:model-value="frequency = $event as 'daily' | 'weekly'"
+        />
+      </label>
+      <label class="es-field es-field-address">
+        <span class="es-field-label">{{ t('settings.emailSummaryAddress') }}</span>
+        <input
+          v-model="address"
+          type="email"
+          class="rule-input"
+          :placeholder="t('settings.emailSummaryAddressPlaceholder')"
+          :aria-label="t('settings.emailSummaryAddress')"
+          autocomplete="email"
+        />
+      </label>
     </div>
 
     <!-- Live region is always present so screen readers announce text swaps. -->
@@ -132,75 +129,81 @@ watch([enabled, frequency, address], () => {
 .email-summary-tile {
   position: relative;
   grid-column: 1 / -1;
-  padding: var(--sp-4);
+  padding: var(--sp-4) 20px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--sp-3);
 }
-.es-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-4);
-  flex-wrap: wrap;
-}
-.tile-head {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-2);
-  flex: 1 1 260px;
-  min-width: 0;
-}
-.es-controls {
+.es-header {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  flex-wrap: wrap;
-}
-.field-inline {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  font-size: var(--text-sm);
 }
 .tile-icon {
   flex: none;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-sm);
-  background: color-mix(in oklab, var(--accent) 16%, var(--card));
-  font-size: 15px;
+  border-radius: 12px;
+  background: var(--accent-gradient);
+  box-shadow: 0 4px 14px -6px color-mix(in oklab, var(--accent) 60%, transparent);
+  font-size: 18px;
 }
 .tile-head-text {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
+}
+.tile-head-text .label {
+  margin: 0;
 }
 .tile-hint {
   margin: 0;
+  max-width: 62ch;
   font-size: var(--text-xs);
-  line-height: 1.45;
+  line-height: 1.5;
   color: var(--text-3);
 }
 .tile-toggle {
   flex: none;
+  align-self: flex-start;
+  margin-top: 2px;
 }
-.field-label {
+.es-fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--sp-4);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--divider);
+}
+.es-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 0 1 200px;
+  min-width: 160px;
+}
+.es-field-address {
+  flex-basis: 280px;
+}
+.es-field-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
   color: var(--text-2);
 }
 .rule-input {
-  flex: 1;
-  min-width: 0;
+  height: 34px;
+  box-sizing: border-box;
   border: 1px solid var(--border);
   background: var(--card-strong);
   color: var(--text);
   border-radius: var(--radius-sm);
-  padding: 6px 10px;
+  padding: 0 10px;
   font-size: var(--text-sm);
   font-family: inherit;
 }
@@ -208,8 +211,9 @@ watch([enabled, frequency, address], () => {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
-.email-input {
-  flex: 0 1 220px;
+.es-field :deep(.selectbox .trigger) {
+  height: 34px;
+  box-sizing: border-box;
 }
 
 /* Toast */
