@@ -29,9 +29,8 @@ describe('OnboardingCard', () => {
     await w.get('.btn-primary').trigger('click'); // step 2 -> 3
     expect(w.text()).toContain('Check back tomorrow');
     expect(w.get('.btn-primary').text()).toBe('Got it');
-    // 7 categories render in the legend (Shopping omitted from this preview), only on the final step
-    expect(w.findAll('.legend li')).toHaveLength(7);
-    expect(w.text()).not.toContain('Shopping');
+    // 8 categories incl. Finance render in the legend, only on the final step
+    expect(w.findAll('.legend li')).toHaveLength(8);
     expect(w.emitted('dismiss')).toBeUndefined();
 
     await w.get('.btn-primary').trigger('click'); // final step's CTA dismisses
