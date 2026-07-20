@@ -359,7 +359,8 @@
     "exportCsv": "CSVをエクスポート",
     "exportDataJson": "JSONをエクスポート（データ）",
     "exportedDataCsv": "データをCSVでエクスポートしました",
-    "exportedDataJson": "データをJSONでエクスポートしました"
+    "exportedDataJson": "データをJSONでエクスポートしました",
+    "nothingToExport": "エクスポートするデータがまだありません"
   },
   "onboarding": {
     "title": "TabStyrへようこそ",

@@ -192,6 +192,10 @@ async function exportDataCsv() {
   exportingData.value = true;
   try {
     const rows = await buildDataExportRows();
+    if (rows.length === 0) {
+      showToast(t('settings.nothingToExport'));
+      return;
+    }
     downloadCsv(`tabstyr-data-${dateKey(Date.now())}.csv`, exportRowsToCsv(rows));
     showToast(t('settings.exportedDataCsv'));
   } catch (e) {
@@ -207,6 +211,10 @@ async function exportDataJson() {
   exportingData.value = true;
   try {
     const rows = await buildDataExportRows();
+    if (rows.length === 0) {
+      showToast(t('settings.nothingToExport'));
+      return;
+    }
     downloadFile(`tabstyr-data-${dateKey(Date.now())}.json`, exportRowsToJson(rows, Date.now()), 'application/json');
     showToast(t('settings.exportedDataJson'));
   } catch (e) {

@@ -359,7 +359,8 @@
     "exportCsv": "导出 CSV",
     "exportDataJson": "导出 JSON（数据）",
     "exportedDataCsv": "已导出 CSV 数据",
-    "exportedDataJson": "已导出 JSON 数据"
+    "exportedDataJson": "已导出 JSON 数据",
+    "nothingToExport": "暂无可导出的数据"
   },
   "onboarding": {
     "title": "欢迎使用 TabStyr",
