@@ -1,8 +1,8 @@
 [
   {
-    "body": "TabStyr 2.0.0 — a hardening pass on data export.\n\n## Highlights\n\n### Data export\n- **CSV formula-injection guard** — a text cell starting with `=`, `+`, `-`, `@`, tab, or carriage return is now prefixed with a single quote so a crafted category name can't execute as a formula when the exported file is opened in Excel or Google Sheets. Numeric columns are left untouched so they stay machine-parseable.\n- **UTF-8 BOM on CSV downloads** — exported CSVs now carry a byte-order mark so Excel decodes non-ASCII domains and category names as UTF-8 instead of the OS legacy codepage.\n- **Empty-export feedback** — exporting with no tracked activity now shows a \"nothing to export yet\" toast instead of silently downloading a header-only CSV or an empty JSON file.\n",
+    "body": "TabStyr 2.0.0 — a hardening pass on data export.\n\n## Highlights\n\n### Data export\n- **CSV formula-injection guard** — a text cell starting with `=`, `+`, `-`, `@`, tab, or carriage return is now prefixed with a single quote so a crafted category name can't execute as a formula when the exported file is opened in Excel or Google Sheets. Numeric columns are left untouched so they stay machine-parseable.\n- **UTF-8 BOM on CSV downloads** — exported CSVs now carry a byte-order mark so Excel decodes non-ASCII domains and category names as UTF-8 instead of the OS legacy codepage.\n- **Empty-export feedback** — exporting with no tracked activity now shows a \"nothing to export yet\" toast instead of silently downloading a header-only CSV or an empty JSON file.\n\n_See the commit history for the full list of smaller fixes._",
     "name": "TabStyr v2.0.0",
-    "publishedAt": "2026-07-20T00:00:00Z",
+    "publishedAt": "2026-07-20T13:00:01Z",
     "tag": "v2.0.0"
   },
   {
