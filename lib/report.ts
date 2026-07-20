@@ -71,10 +71,24 @@ export function buildReport(
   return { from, to, days: daySpan(from, to), totalSeconds, categories, domains };
 }
 
-/** Escape one CSV field per RFC 4180 (quote when it contains "," / quote / newline). */
+/** Format seconds as H:MM. Shared by every CSV/report serializer. */
+export function hm(secs: number): string {
+  const m = Math.round(secs / 60);
+  return `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`;
+}
+
+/**
+ * Escape one CSV field per RFC 4180 (quote when it contains "," / quote / newline)
+ * AND neutralize spreadsheet formula injection: a TEXT cell starting with = + - @
+ * TAB or CR is executed as a formula by Excel/Sheets, so a hostile value (e.g. a
+ * user-authored category name) could run on open in a shared file. Prefix such a
+ * value with a single quote so it renders as literal text. Numbers are never
+ * treated as formulas — leave them untouched so the numeric columns stay parseable.
+ */
 export function csvField(value: string | number): string {
   const s = String(value);
-  return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  const guarded = typeof value === 'string' && /^[=+\-@\t\r]/.test(s) ? `'${s}` : s;
+  return /[",\n\r]/.test(guarded) ? `"${guarded.replace(/"/g, '""')}"` : guarded;
 }
 
 /**
@@ -83,10 +97,6 @@ export function csvField(value: string | number): string {
  * numeric column stays machine-parseable.
  */
 export function reportCsv(report: ReportData): string {
-  const hm = (secs: number) => {
-    const m = Math.round(secs / 60);
-    return `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`;
-  };
   const rows = [['domain', 'category', 'active_seconds', 'active_hm'].join(',')];
   for (const d of report.domains) {
     rows.push([csvField(d.domain), csvField(d.category), d.seconds, hm(d.seconds)].join(','));

@@ -50,3 +50,14 @@ export function downloadBlob(filename: string, blob: Blob): void {
 export function downloadFile(filename: string, content: string, mime: string): void {
   downloadBlob(filename, new Blob([content], { type: mime }));
 }
+
+// Excel decodes a CSV without a byte-order mark as the OS legacy codepage, so
+// non-ASCII domains/category names render as mojibake. A leading UTF-8 BOM forces
+// UTF-8. Kept out of the pure CSV builders (their output stays byte-exact for
+// tests and re-use) — the BOM belongs to the download, not the data.
+const UTF8_BOM = "\uFEFF";
+
+/** Download a string as a UTF-8 CSV, BOM-prefixed so Excel reads non-ASCII correctly. */
+export function downloadCsv(filename: string, csv: string): void {
+  downloadFile(filename, UTF8_BOM + csv, 'text/csv;charset=utf-8');
+}

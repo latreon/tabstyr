@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { buildWorkLog, workLogText } from '@/lib/worklog';
 import { buildReport, reportCsv } from '@/lib/report';
 import { renderReportCard, canvasToImageBlob, REPORT_MAX_ROWS, type ReportCardContent } from '@/lib/report-card';
-import { downloadBlob, downloadFile } from '@/lib/export';
+import { downloadBlob, downloadCsv } from '@/lib/export';
 import { allCategoryIds, categoryColor, categoryLabel, type CategoryId, type CategoryRule, type CustomCategory } from '@/lib/categories';
 import { addDays, dateKey, formatDuration, longDateLabel } from '@/lib/time';
 import { displayDomain } from '@/lib/domain';
@@ -66,7 +66,7 @@ const report = computed(() =>
 );
 
 function exportCsv() {
-  downloadFile(`tabstyr-report-${selected.value}.csv`, reportCsv(report.value), 'text/csv');
+  downloadCsv(`tabstyr-report-${selected.value}.csv`, reportCsv(report.value));
 }
 
 async function exportPng() {
