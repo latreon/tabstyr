@@ -359,7 +359,8 @@
     "exportCsv": "CSV olarak dışa aktar",
     "exportDataJson": "JSON olarak dışa aktar (veri)",
     "exportedDataCsv": "Veriler CSV olarak dışa aktarıldı",
-    "exportedDataJson": "Veriler JSON olarak dışa aktarıldı"
+    "exportedDataJson": "Veriler JSON olarak dışa aktarıldı",
+    "nothingToExport": "Henüz dışa aktarılacak veri yok"
   },
   "onboarding": {
     "title": "TabStyr'a hoş geldiniz",

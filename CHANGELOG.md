@@ -2,6 +2,15 @@
 
 All notable changes to TabStyr. Generated from [GitHub Releases](https://github.com/latreon/tabstyr/releases) — the release page is the source of truth; run `npm run changelog:fetch && node scripts/generate-changelog.mjs` to refresh this file after a new release.
 
+## v2.0.0 — 2026-07-20
+
+TabStyr 2.0.0 — a hardening pass on data export.
+
+### Data export
+- **CSV formula-injection guard** — a text cell starting with `=`, `+`, `-`, `@`, tab, or carriage return is now prefixed with a single quote so a crafted category name can't execute as a formula when the exported file is opened in Excel or Google Sheets. Numeric columns are left untouched so they stay machine-parseable.
+- **UTF-8 BOM on CSV downloads** — exported CSVs now carry a byte-order mark so Excel decodes non-ASCII domains and category names as UTF-8 instead of the OS legacy codepage.
+- **Empty-export feedback** — exporting with no tracked activity now shows a "nothing to export yet" toast instead of silently downloading a header-only CSV or an empty JSON file.
+
 ## v1.9.0 — 2026-07-13
 
 TabStyr 1.9.0 — an audit-driven correctness, privacy, and accessibility pass across the extension and website, plus a review-prompt/uninstall-feedback loop and a real `/blog`.

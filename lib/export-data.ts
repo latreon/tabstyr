@@ -1,7 +1,7 @@
 import { isWebDomain } from './domain';
 import { activeSeconds } from './metrics';
 import { categoryProductivityOf, makeCategorizer, type Productivity } from './categories';
-import { csvField } from './report';
+import { csvField, hm } from './report';
 import type { DailyStat, MonthlyStat, Settings } from './types';
 
 // Flat, spreadsheet-ready export of all tracked activity — one row per
@@ -20,11 +20,6 @@ export interface ExportRow {
   activeSeconds: number; // foreground time (audio already excluded)
   activeHm: string; // H:MM, derived from activeSeconds
   audioSeconds: number; // background-audio time, tracked separately
-}
-
-function hm(secs: number): string {
-  const m = Math.round(secs / 60);
-  return `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`;
 }
 
 type CategorySettings = Pick<Settings, 'categoryOverrides' | 'categoryRules' | 'categoryProductivity' | 'customCategories'>;

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { buildReport, reportCsv } from '@/lib/report';
+import { buildReport, csvField, hm, reportCsv } from '@/lib/report';
 import type { DailyStat } from '@/lib/types';
 
 const stat = (date: string, domain: string, seconds: number, audioSeconds = 0): DailyStat => ({
@@ -78,5 +78,36 @@ describe('reportCsv', () => {
     });
     expect(csv).toContain('"a,b.com"');
     void r;
+  });
+});
+
+describe('csvField', () => {
+  test('neutralizes formula injection in text cells starting with = + - @ tab or cr', () => {
+    // Excel/Sheets would execute these as formulas on open; a leading quote makes them literal.
+    expect(csvField('=HYPERLINK("http://evil")')).toBe('"\'=HYPERLINK(""http://evil"")"'); // also RFC-quoted (contains ")
+    expect(csvField('+1')).toBe("'+1");
+    expect(csvField('-cmd')).toBe("'-cmd");
+    expect(csvField('@SUM(A1)')).toBe("'@SUM(A1)");
+    expect(csvField('\ttab')).toBe("'\ttab");
+  });
+
+  test('leaves numbers untouched so numeric columns stay parseable', () => {
+    // -5 as a number must NOT get a leading quote (would corrupt the value); only string cells are guarded.
+    expect(csvField(-5)).toBe('-5');
+    expect(csvField(3660)).toBe('3660');
+  });
+
+  test('leaves ordinary text and safe leading chars alone', () => {
+    expect(csvField('github.com')).toBe('github.com');
+    expect(csvField('TOTAL')).toBe('TOTAL');
+  });
+});
+
+describe('hm', () => {
+  test('formats seconds as H:MM, rounding to the nearest minute', () => {
+    expect(hm(0)).toBe('0:00');
+    expect(hm(600)).toBe('0:10');
+    expect(hm(3660)).toBe('1:01');
+    expect(hm(59)).toBe('0:01'); // 59s rounds up to 1 min
   });
 });

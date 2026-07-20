@@ -64,6 +64,35 @@ async function dismissOnboarding(page: import('@playwright/test').Page) {
   await dialog.waitFor({ state: 'detached' });
 }
 
+// Write a single day of activity straight into the extension's IndexedDB so an
+// export has something to emit. The data export short-circuits with a toast (no
+// download) when zero rows survive, so the export tests must seed first. Assumes
+// the dashboard has already created the DB + stores (it runs on page load).
+async function seedOneDay(page: import('@playwright/test').Page) {
+  await page.evaluate(async () => {
+    const db: IDBDatabase = await new Promise((res, rej) => {
+      const r = indexedDB.open('tab-time');
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+    if (!db.objectStoreNames.contains('dailyDomainStats')) {
+      db.close();
+      throw new Error('dailyDomainStats store missing — dashboard did not initialize the DB');
+    }
+    const t = new Date();
+    t.setHours(0, 0, 0, 0);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const date = `${t.getFullYear()}-${pad(t.getMonth() + 1)}-${pad(t.getDate())}`;
+    await new Promise<void>((res, rej) => {
+      const tx = db.transaction('dailyDomainStats', 'readwrite');
+      tx.oncomplete = () => res();
+      tx.onerror = () => rej(tx.error);
+      tx.objectStore('dailyDomainStats').put({ date, domain: 'github.com', seconds: 600, audioSeconds: 0 });
+    });
+    db.close();
+  });
+}
+
 // Playwright-launched Chromium doesn't treat a programmatically opened tab as the
 // focused window until it's explicitly brought to front, and the focus-gated
 // tracker also needs the service worker already warm (a cold-start focus event is
@@ -115,6 +144,7 @@ test('data export CSV button downloads a spreadsheet-ready file', async ({ conte
   const page = await context.newPage();
   await page.goto(`chrome-extension://${extensionId}/dashboard.html`);
   await dismissOnboarding(page);
+  await seedOneDay(page); // export short-circuits with a toast when there are no rows
   const [download] = await Promise.all([
     page.waitForEvent('download'),
     page.getByRole('button', { name: 'Export CSV', exact: true }).click(),
@@ -124,7 +154,8 @@ test('data export CSV button downloads a spreadsheet-ready file', async ({ conte
   const chunks: Buffer[] = [];
   for await (const chunk of stream) chunks.push(chunk as Buffer);
   const csv = Buffer.concat(chunks).toString('utf8');
-  expect(csv.split('\r\n')[0]).toBe('period,granularity,domain,category,productivity,active_seconds,active_hm,audio_seconds');
+  expect(csv.charCodeAt(0)).toBe(0xfeff); // UTF-8 BOM so Excel decodes non-ASCII correctly
+  expect(csv.replace(/^\uFEFF/, '').split('\r\n')[0]).toBe('period,granularity,domain,category,productivity,active_seconds,active_hm,audio_seconds');
 });
 
 test('theme toggle flips data-theme', async ({ context, extensionId }) => {

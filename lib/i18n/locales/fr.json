@@ -359,7 +359,8 @@
     "exportCsv": "Exporter en CSV",
     "exportDataJson": "Exporter en JSON (données)",
     "exportedDataCsv": "Données exportées en CSV",
-    "exportedDataJson": "Données exportées en JSON"
+    "exportedDataJson": "Données exportées en JSON",
+    "nothingToExport": "Rien à exporter pour l'instant"
   },
   "onboarding": {
     "title": "Bienvenue dans TabStyr",

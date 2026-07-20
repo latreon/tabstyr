@@ -8,7 +8,7 @@ import { useLocale } from '@/composables/useLocale';
 import { useFocusTrap } from '@/composables/useFocusTrap';
 import { SUPPORTED_LOCALES, resolveLocale } from '@/lib/i18n';
 import * as repo from '@/lib/db/repo';
-import { downloadFile, toJsonBackup } from '@/lib/export';
+import { downloadCsv, downloadFile, toJsonBackup } from '@/lib/export';
 import { buildExportRows, exportRowsToCsv, exportRowsToJson } from '@/lib/export-data';
 import { encryptToEnvelope, isEncryptedEnvelope, decryptFromEnvelope, MIN_PASSPHRASE } from '@/lib/crypto';
 import { parseBackup, restoreBackup, MAX_BACKUP_BYTES, type ParsedBackup } from '@/lib/restore';
@@ -192,7 +192,11 @@ async function exportDataCsv() {
   exportingData.value = true;
   try {
     const rows = await buildDataExportRows();
-    downloadFile(`tabstyr-data-${dateKey(Date.now())}.csv`, exportRowsToCsv(rows), 'text/csv');
+    if (rows.length === 0) {
+      showToast(t('settings.nothingToExport'));
+      return;
+    }
+    downloadCsv(`tabstyr-data-${dateKey(Date.now())}.csv`, exportRowsToCsv(rows));
     showToast(t('settings.exportedDataCsv'));
   } catch (e) {
     console.error('[settings] csv data export failed', e);
@@ -207,6 +211,10 @@ async function exportDataJson() {
   exportingData.value = true;
   try {
     const rows = await buildDataExportRows();
+    if (rows.length === 0) {
+      showToast(t('settings.nothingToExport'));
+      return;
+    }
     downloadFile(`tabstyr-data-${dateKey(Date.now())}.json`, exportRowsToJson(rows, Date.now()), 'application/json');
     showToast(t('settings.exportedDataJson'));
   } catch (e) {
