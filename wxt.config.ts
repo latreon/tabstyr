@@ -12,6 +12,9 @@ export default defineConfig({
       'landing/dist/**',
       'e2e/__screenshots__/**',
       'docs/store/**',
+      // Playwright test artifacts (traces, screenshots) — gitignored, but wxt zip
+      // doesn't consult .gitignore, so they leak into the source zip otherwise.
+      'test-results/**',
     ],
   },
   // data_collection_permissions is declared in the manifest below (value 'none'),
