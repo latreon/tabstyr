@@ -353,14 +353,7 @@
     "importCsvHint": "Daten aus einem anderen Tracker laden: eine CSV mit Datum-, Website- und Zeitspalten (z. B. ein RescueTime-Export). Importierte Zeit wird als Schätzung angezeigt und überschreibt gemessene Tage nie.",
     "imported": "{count} Einträge importiert (geschätzt).",
     "importEmpty": "Keine verwertbaren Zeilen in dieser CSV gefunden.",
-    "importInvalid": "CSV konnte nicht gelesen werden – Datum-, Website- und Zeitspalten nötig.",
-    "dataExport": "Daten exportieren",
-    "dataExportHint": "Jeder erfasste Tag, aufgeschlüsselt in eine Zeile pro Website mit Kategorie und Produktivität – für Excel, Google Sheets oder andere Analysetools. Nur lesend: anders als JSON-Backups lässt sich das nicht wiederherstellen.",
-    "exportCsv": "CSV exportieren",
-    "exportDataJson": "JSON exportieren (Daten)",
-    "exportedDataCsv": "Daten als CSV exportiert",
-    "exportedDataJson": "Daten als JSON exportiert",
-    "nothingToExport": "Noch nichts zu exportieren"
+    "importInvalid": "CSV konnte nicht gelesen werden – Datum-, Website- und Zeitspalten nötig."
   },
   "onboarding": {
     "title": "Willkommen bei TabStyr",

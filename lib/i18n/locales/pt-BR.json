@@ -353,14 +353,7 @@
     "importCsvHint": "Importe dados de outro rastreador: um CSV com colunas de data, site e tempo (ex.: uma exportação do RescueTime). O tempo importado aparece como estimativa e nunca sobrescreve dias medidos.",
     "imported": "{count} entradas importadas (estimadas).",
     "importEmpty": "Nenhuma linha utilizável nesse CSV.",
-    "importInvalid": "Não foi possível ler o CSV — precisa de colunas de data, site e tempo.",
-    "dataExport": "Exportar dados",
-    "dataExportHint": "Cada dia rastreado, em uma linha por site com sua categoria e produtividade — para Excel, Google Sheets ou qualquer ferramenta de análise. Somente leitura: diferente dos backups JSON, isso não pode ser restaurado.",
-    "exportCsv": "Exportar CSV",
-    "exportDataJson": "Exportar JSON (dados)",
-    "exportedDataCsv": "Dados exportados como CSV",
-    "exportedDataJson": "Dados exportados como JSON",
-    "nothingToExport": "Nada para exportar ainda"
+    "importInvalid": "Não foi possível ler o CSV — precisa de colunas de data, site e tempo."
   },
   "onboarding": {
     "title": "Bem-vindo ao TabStyr",

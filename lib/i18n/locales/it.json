@@ -353,14 +353,7 @@
     "importCsvHint": "Carica dati da un altro tracker: un CSV con colonne data, sito e tempo (es. un export di RescueTime). Il tempo importato è mostrato come stima e non sovrascrive mai i giorni misurati.",
     "imported": "{count} voci importate (stimate).",
     "importEmpty": "Nessuna riga utilizzabile in quel CSV.",
-    "importInvalid": "Impossibile leggere il CSV — servono colonne data, sito e tempo.",
-    "dataExport": "Esporta dati",
-    "dataExportHint": "Ogni giorno tracciato, in una riga per sito con categoria e produttività — per Excel, Google Sheets o altri strumenti di analisi. Sola lettura: a differenza dei backup JSON, non può essere ripristinato.",
-    "exportCsv": "Esporta CSV",
-    "exportDataJson": "Esporta JSON (dati)",
-    "exportedDataCsv": "Dati esportati come CSV",
-    "exportedDataJson": "Dati esportati come JSON",
-    "nothingToExport": "Niente da esportare ancora"
+    "importInvalid": "Impossibile leggere il CSV — servono colonne data, sito e tempo."
   },
   "onboarding": {
     "title": "Benvenuto in TabStyr",
