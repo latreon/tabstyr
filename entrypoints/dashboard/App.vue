@@ -215,7 +215,7 @@ onMounted(async () => {
       <!-- row: 2 + 1 — Open tabs by time beside Settings -->
       <TabTable :rows="s.tabRows.value" />
       <SettingsPanel @changed="() => s.load({ silent: true })" />
-      <CustomizationPanel :custom="s.customCategories.value" :category-rules="s.categoryRules.value" :excluded-domains="s.excludedDomains.value" :domain-aliases="s.domainAliases.value" @changed="() => s.load({ silent: true })" />
+      <CustomizationPanel :custom="s.customCategories.value" :category-rules="s.categoryRules.value" @changed="() => s.load({ silent: true })" />
       </section>
     </template>
   </main>

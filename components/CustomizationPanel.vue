@@ -25,8 +25,6 @@ const emit = defineEmits<{ changed: [] }>();
 const props = defineProps<{
   custom?: CustomCategory[];
   categoryRules?: CategoryRule[];
-  excludedDomains?: string[];
-  domainAliases?: Record<string, string>;
 }>();
 
 // Semantic tint per productivity bucket — same palette the rest of the app
@@ -47,18 +45,6 @@ const rules = ref<CategoryRule[]>([]);
 const newPattern = ref('');
 const newCategory = ref<CategoryId>('Work');
 const ruleError = ref('');
-
-// Domains excluded from tracking entirely (never a session, never a tabMeta row).
-const excludedDomains = ref<string[]>([]);
-const newExcluded = ref('');
-const excludeError = ref('');
-
-// Source domain → canonical domain, folded together in every aggregate view.
-const domainAliases = ref<Record<string, string>>({});
-const aliasEntries = computed(() => Object.entries(domainAliases.value).sort(([a], [b]) => a.localeCompare(b)));
-const newAliasSource = ref('');
-const newAliasTarget = ref('');
-const aliasError = ref('');
 
 // New custom-category form. No productivity picker here — custom categories
 // default to neutral (doesn't move Focus %); nothing else in the app lets you
@@ -81,8 +67,6 @@ async function refresh() {
   const s = await getSettings();
   rules.value = s.categoryRules;
   customCategories.value = s.customCategories;
-  excludedDomains.value = s.excludedDomains;
-  domainAliases.value = s.domainAliases;
 }
 
 // Backup restore/merge (in SettingsPanel) can change rules/categories without
@@ -96,8 +80,6 @@ function onSettingsChanged(msg: unknown) {
 // Mirror parent props into the local lists whenever they change (same-page sync).
 watch(() => props.custom, (v) => { if (v) customCategories.value = v; }, { immediate: true });
 watch(() => props.categoryRules, (v) => { if (v) rules.value = v; }, { immediate: true });
-watch(() => props.excludedDomains, (v) => { if (v) excludedDomains.value = v; }, { immediate: true });
-watch(() => props.domainAliases, (v) => { if (v) domainAliases.value = v; }, { immediate: true });
 
 onMounted(() => {
   void refresh();
@@ -191,90 +173,6 @@ async function removeRule(pattern: string) {
     showToast(t('settings.ruleRemoveFailed'));
   }
 }
-
-async function addExcludedDomain() {
-  const domain = newExcluded.value.trim().toLowerCase();
-  excludeError.value = '';
-  if (!domain) return;
-  if (excludedDomains.value.includes(domain)) {
-    excludeError.value = t('settings.excludeExists');
-    return;
-  }
-  const next = [...excludedDomains.value, domain];
-  try {
-    const saved = await saveSettings({ excludedDomains: next });
-    excludedDomains.value = saved.excludedDomains;
-    newExcluded.value = '';
-    // The background worker gates tracking on this list every event — it must
-    // pick up the change immediately, not wait for its settings cache to expire.
-    await browser.runtime.sendMessage({ type: 'settings-changed' });
-    emit('changed');
-    showToast(t('settings.excludeAdded'));
-  } catch (e) {
-    console.error('[customization] add excluded domain failed', e);
-    showToast(t('settings.excludeAddFailed'));
-  }
-}
-
-async function removeExcludedDomain(domain: string) {
-  const next = excludedDomains.value.filter((d) => d !== domain);
-  try {
-    const saved = await saveSettings({ excludedDomains: next });
-    excludedDomains.value = saved.excludedDomains;
-    excludeError.value = '';
-    await browser.runtime.sendMessage({ type: 'settings-changed' });
-    emit('changed');
-  } catch (e) {
-    console.error('[customization] remove excluded domain failed', e);
-    showToast(t('settings.excludeRemoveFailed'));
-  }
-}
-
-async function addDomainAlias() {
-  const source = newAliasSource.value.trim().toLowerCase();
-  const target = newAliasTarget.value.trim().toLowerCase();
-  aliasError.value = '';
-  if (!source || !target) return;
-  if (source === target) {
-    aliasError.value = t('settings.aliasSameDomain');
-    return;
-  }
-  if (source in domainAliases.value) {
-    aliasError.value = t('settings.aliasExists');
-    return;
-  }
-  const next = { ...domainAliases.value, [source]: target };
-  try {
-    const saved = await saveSettings({ domainAliases: next });
-    domainAliases.value = saved.domainAliases;
-    newAliasSource.value = '';
-    newAliasTarget.value = '';
-    // Every dashboard tile reads settings.domainAliases live via useStats, but
-    // broadcast anyway so any OTHER open extension page (e.g. the popup) picks
-    // it up too, matching every other settings write in this panel.
-    await browser.runtime.sendMessage({ type: 'settings-changed' });
-    emit('changed');
-    showToast(t('settings.aliasAdded'));
-  } catch (e) {
-    console.error('[customization] add domain alias failed', e);
-    showToast(t('settings.aliasAddFailed'));
-  }
-}
-
-async function removeDomainAlias(source: string) {
-  const next = { ...domainAliases.value };
-  delete next[source];
-  try {
-    const saved = await saveSettings({ domainAliases: next });
-    domainAliases.value = saved.domainAliases;
-    aliasError.value = '';
-    await browser.runtime.sendMessage({ type: 'settings-changed' });
-    emit('changed');
-  } catch (e) {
-    console.error('[customization] remove domain alias failed', e);
-    showToast(t('settings.aliasRemoveFailed'));
-  }
-}
 </script>
 
 <template>
@@ -358,77 +256,6 @@ async function removeDomainAlias(source: string) {
       </form>
       <p v-if="ruleError" class="rule-error" role="alert">{{ ruleError }}</p>
     </div>
-
-    <div class="rules exclude-rules">
-      <div class="section-head">
-        <span class="field-label">{{ t('settings.excludedDomains') }}</span>
-        <p class="rules-hint">{{ t('settings.excludedDomainsHint') }}</p>
-      </div>
-
-      <ul v-if="excludedDomains.length" class="rule-list">
-        <li v-for="d in excludedDomains" :key="d" class="rule">
-          <code class="rule-pattern">{{ d }}</code>
-          <button class="row-del" :aria-label="t('settings.removeExcludedAria', { domain: d })" @click="removeExcludedDomain(d)">✕</button>
-        </li>
-      </ul>
-      <p v-else class="empty-hint">{{ t('settings.noExcludedDomains') }}</p>
-
-      <form class="composer" @submit.prevent="addExcludedDomain">
-        <div class="composer-row">
-          <input
-            v-model="newExcluded"
-            class="rule-input"
-            type="text"
-            :placeholder="t('settings.excludedDomainPlaceholder')"
-            :aria-label="t('settings.excludedDomains')"
-            maxlength="253"
-          />
-          <button type="submit" class="btn btn-primary btn-sm" :disabled="!newExcluded.trim()">{{ t('settings.add') }}</button>
-        </div>
-      </form>
-      <p v-if="excludeError" class="rule-error" role="alert">{{ excludeError }}</p>
-    </div>
-
-    <div class="rules exclude-rules">
-      <div class="section-head">
-        <span class="field-label">{{ t('settings.domainAliases') }}</span>
-        <p class="rules-hint">{{ t('settings.domainAliasesHint') }}</p>
-      </div>
-
-      <ul v-if="aliasEntries.length" class="rule-list">
-        <li v-for="[source, target] in aliasEntries" :key="source" class="rule">
-          <code class="rule-pattern">{{ source }}</code>
-          <span class="rule-arrow" aria-hidden="true">→</span>
-          <code class="rule-pattern">{{ target }}</code>
-          <button class="row-del" :aria-label="t('settings.removeAliasAria', { domain: source })" @click="removeDomainAlias(source)">✕</button>
-        </li>
-      </ul>
-      <p v-else class="empty-hint">{{ t('settings.noDomainAliases') }}</p>
-
-      <form class="composer" @submit.prevent="addDomainAlias">
-        <div class="composer-row">
-          <input
-            v-model="newAliasSource"
-            class="rule-input"
-            type="text"
-            :placeholder="t('settings.aliasSourcePlaceholder')"
-            :aria-label="t('settings.aliasSourceAria')"
-            maxlength="253"
-          />
-          <span class="rule-arrow" aria-hidden="true">→</span>
-          <input
-            v-model="newAliasTarget"
-            class="rule-input"
-            type="text"
-            :placeholder="t('settings.aliasTargetPlaceholder')"
-            :aria-label="t('settings.aliasTargetAria')"
-            maxlength="253"
-          />
-          <button type="submit" class="btn btn-primary btn-sm" :disabled="!newAliasSource.trim() || !newAliasTarget.trim()">{{ t('settings.add') }}</button>
-        </div>
-      </form>
-      <p v-if="aliasError" class="rule-error" role="alert">{{ aliasError }}</p>
-    </div>
     </div>
 
     <!-- Live region is always present so screen readers announce text swaps. -->
@@ -501,16 +328,6 @@ button:focus-visible {
     padding-top: var(--sp-3);
     border-top: 1px solid var(--divider);
   }
-}
-/* Third section: spans both columns below the pair above instead of sitting
-   beside them, so its left-divider (meant for a 2-up row) doesn't apply. */
-.exclude-rules {
-  grid-column: 1 / -1;
-  padding-left: 0;
-  border-left: none;
-  margin-top: var(--sp-2);
-  padding-top: var(--sp-3);
-  border-top: 1px solid var(--divider);
 }
 .rules-hint {
   margin: 2px 0 0;

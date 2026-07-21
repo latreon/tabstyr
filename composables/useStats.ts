@@ -11,7 +11,6 @@ import { activeSeconds } from '@/lib/metrics';
 import { summarizeProductivity } from '@/lib/productivity';
 import { buildComparison } from '@/lib/comparison';
 import { buildInsights, type Insight } from '@/lib/insights';
-import { resolveDailyStats, resolveDomain, resolveSessions } from '@/lib/domain-aliases';
 import type { DailyStat, Session, Settings, TabMeta } from '@/lib/types';
 
 const RETENTION_MS = 90 * 86_400_000;
@@ -57,9 +56,7 @@ export function useStats() {
   // GC churn) for no benefit — the array is only ever reassigned wholesale in
   // load() and read (never mutated in place), so shallow reactivity is sufficient
   // and reassignment still triggers dependent computeds in DomainDetail.
-  // Raw (un-aliased) sessions; `recentSessions` below is the resolved view every
-  // consumer actually reads, kept live against alias changes without a reload.
-  const rawSessions = shallowRef<Session[]>([]); // last 90 days, for per-domain detail
+  const recentSessions = shallowRef<Session[]>([]); // last 90 days, for per-domain detail
   const loading = ref(true);
   const loadError = ref(false);
   // Set by the background worker when a write hit the storage quota. Surfaced as a
@@ -68,26 +65,16 @@ export function useStats() {
 
   const todayKey = ref(dateKey(Date.now()));
 
-  const domainAliases = computed<Record<string, string>>(() => settings.value?.domainAliases ?? {});
-
   // The primary metric across the app is ACTIVE FOREGROUND time on real web pages:
   //   active = seconds − audioSeconds   (stored `seconds` includes background audio)
   // and we drop internal pages (chrome://, newtab, …). This keeps the headline ≤
   // wall-clock and makes every total equal the sum of the sites actually shown.
-  // `audioSeconds` is preserved so audio can be surfaced separately. Domain
-  // aliases are resolved + merged here too, so every consumer below (top sites,
-  // category/focus math, trends, work log, domain detail) sees one row per
-  // (date, canonical domain) without needing its own resolve step.
-  const activeStats = computed<DailyStat[]>(() => {
-    const withActive = stats.value
+  // `audioSeconds` is preserved so audio can be surfaced separately.
+  const activeStats = computed<DailyStat[]>(() =>
+    stats.value
       .filter((s) => isWebDomain(s.domain))
-      .map((s) => ({ ...s, seconds: activeSeconds(s) }));
-    return resolveDailyStats(withActive, domainAliases.value);
-  });
-
-  // Resolved view of the raw sessions — kept live against alias changes without
-  // requiring a full data reload (see rawSessions above).
-  const recentSessions = computed<Session[]>(() => resolveSessions(rawSessions.value, domainAliases.value));
+      .map((s) => ({ ...s, seconds: activeSeconds(s) })),
+  );
 
   const todayStats = computed(() => activeStats.value.filter((s) => s.date === todayKey.value));
   const todaySeconds = computed(() => todayStats.value.reduce((sum, s) => sum + s.seconds, 0));
@@ -128,7 +115,6 @@ export function useStats() {
   const categoryBudgets = computed<Partial<Record<CategoryId, number>>>(
     () => settings.value?.categoryBudgets ?? {},
   );
-  const excludedDomains = computed<string[]>(() => settings.value?.excludedDomains ?? []);
   // Show the first-run intro only once settings have loaded and it isn't dismissed.
   const showOnboarding = computed(() => !!settings.value && !settings.value.onboarded);
 
@@ -166,11 +152,8 @@ export function useStats() {
 
     const byDomain = new Map<string, TabMeta[]>();
     for (const m of openMetas.value) {
-      const rawDomain = domainOf(m.url);
-      if (!isWebDomain(rawDomain)) continue;
-      // Resolved so a tab open on an aliased domain (e.g. mail.google.com) counts
-      // toward — and can be jumped to from — its canonical row (google.com).
-      const domain = resolveDomain(rawDomain, domainAliases.value);
+      const domain = domainOf(m.url);
+      if (!isWebDomain(domain)) continue;
       const arr = byDomain.get(domain);
       if (arr) arr.push(m);
       else byDomain.set(domain, [m]);
@@ -247,19 +230,6 @@ export function useStats() {
     settings.value = await saveSettings({
       categoryRules: categoryRules.value.filter((r) => r.pattern !== pattern),
     });
-  }
-
-  async function addDomainAlias(source: string, target: string): Promise<void> {
-    const s = source.trim().toLowerCase();
-    const t = target.trim().toLowerCase();
-    if (!s || !t || s === t) return;
-    settings.value = await saveSettings({ domainAliases: { ...domainAliases.value, [s]: t } });
-  }
-
-  async function removeDomainAlias(source: string): Promise<void> {
-    const next = { ...domainAliases.value };
-    delete next[source];
-    settings.value = await saveSettings({ domainAliases: next });
   }
 
   async function dismissOnboarding(): Promise<void> {
@@ -358,7 +328,7 @@ export function useStats() {
       // FOREGROUND web sessions only (no background audio, no internal pages) to
       // match the active-time metric everywhere else.
       const foreground = loadedSessions.filter((sx) => !sx.audio && isWebDomain(sx.domain));
-      rawSessions.value = foreground;
+      recentSessions.value = foreground;
       // Heatmap covers a ROLLING last-7-days window ending right now: from midnight
       // of (today − 6 days) to the present moment. That's 7 distinct weekdays, so
       // each maps to exactly one grid row — no piling every past Friday into "Friday"
@@ -404,7 +374,7 @@ export function useStats() {
     stats, activeStats, tabRows, staleTabs, staleTabItems, openTabsList, openTabCount, settings, heatmap, recentSessions,
     loading, loadError, storageWarning, todayKey,
     todaySeconds, todayAudioSeconds, weeklyAvgSeconds, weeklyActiveDays,
-    todayByDomain, todayByCategory, productivity, insights, overrides, categoryRules, customCategories, categoryProductivity, focusTarget, categoryBudgets, excludedDomains, domainAliases, showOnboarding,
-    load, closeTab, closeTabs, snoozeTab, setCategoryOverride, setCategoryProductivity, setCustomProductivity, setCategoryBudget, addCategoryRule, removeCategoryRule, addDomainAlias, removeDomainAlias, dismissOnboarding,
+    todayByDomain, todayByCategory, productivity, insights, overrides, categoryRules, customCategories, categoryProductivity, focusTarget, categoryBudgets, showOnboarding,
+    load, closeTab, closeTabs, snoozeTab, setCategoryOverride, setCategoryProductivity, setCustomProductivity, setCategoryBudget, addCategoryRule, removeCategoryRule, dismissOnboarding,
   };
 }

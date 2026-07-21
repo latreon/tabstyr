@@ -245,67 +245,6 @@ describe('settings', () => {
     expect((await getSettings()).language).toBe('ja');
   });
 
-  describe('excludedDomains', () => {
-    test('defaults to an empty list', async () => {
-      expect((await getSettings()).excludedDomains).toEqual([]);
-    });
-
-    test('a saved list round-trips, normalized', async () => {
-      await saveSettings({ excludedDomains: [' Reddit.com ', 'x.com'] });
-      expect((await getSettings()).excludedDomains).toEqual(['reddit.com', 'x.com']);
-    });
-
-    test('non-array stored value falls back to the default', async () => {
-      await fakeBrowser.storage.local.set({ settings: { excludedDomains: 'reddit.com' } });
-      expect((await getSettings()).excludedDomains).toEqual([]);
-    });
-
-    test('drops blank and duplicate entries and caps the list at 200', async () => {
-      const many = Array.from({ length: 250 }, (_, i) => `site${i}.com`);
-      await fakeBrowser.storage.local.set({ settings: { excludedDomains: ['', ...many, ...many] } });
-      const stored = (await getSettings()).excludedDomains;
-      expect(stored).toHaveLength(200);
-      expect(stored).not.toContain('');
-    });
-  });
-
-  describe('trackingPaused', () => {
-    test('defaults to false', async () => {
-      expect((await getSettings()).trackingPaused).toBe(false);
-    });
-
-    test('round-trips true', async () => {
-      await saveSettings({ trackingPaused: true });
-      expect((await getSettings()).trackingPaused).toBe(true);
-    });
-
-    test('a non-boolean stored value falls back to the default', async () => {
-      await fakeBrowser.storage.local.set({ settings: { trackingPaused: 'yes' } });
-      expect((await getSettings()).trackingPaused).toBe(false);
-    });
-  });
-
-  describe('domainAliases', () => {
-    test('defaults to an empty object', async () => {
-      expect((await getSettings()).domainAliases).toEqual({});
-    });
-
-    test('a saved alias round-trips, normalized', async () => {
-      await saveSettings({ domainAliases: { ' Mail.Google.com ': ' Google.COM ' } });
-      expect((await getSettings()).domainAliases).toEqual({ 'mail.google.com': 'google.com' });
-    });
-
-    test('non-object stored value falls back to the default', async () => {
-      await fakeBrowser.storage.local.set({ settings: { domainAliases: 'nope' } });
-      expect((await getSettings()).domainAliases).toEqual({});
-    });
-
-    test('an entry aliasing a domain to itself is dropped', async () => {
-      await saveSettings({ domainAliases: { 'a.com': 'a.com', 'b.com': 'c.com' } });
-      expect((await getSettings()).domainAliases).toEqual({ 'b.com': 'c.com' });
-    });
-  });
-
   describe('autoExportDays', () => {
     test('defaults to 0 (off)', async () => {
       expect((await getSettings()).autoExportDays).toBe(0);
