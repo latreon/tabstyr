@@ -78,76 +78,6 @@ const CATEGORY_LABELS: Record<string, Record<string, string>> = {
   'zh-CN': { Work: '工作', Dev: '开发', Finance: '财务', Social: '社交', Media: '媒体', News: '新闻', Shopping: '购物', Other: '其他' },
 };
 
-// Context-menu item titles + their confirmation notifications (commands.mjs /
-// background.ts context-menu wiring). Same rationale as above: inline only what
-// the service worker needs rather than importing the full vue-i18n catalogs.
-// Keep in sync with each locale's `settings.pauseTracking` / `popup.resumeTracking`.
-const MENU_PAUSE_ON: Record<string, string> = {
-  en: 'Pause tracking',
-  es: 'Pausar seguimiento',
-  de: 'Tracking pausieren',
-  fr: 'Mettre le suivi en pause',
-  it: 'Metti in pausa il monitoraggio',
-  'pt-BR': 'Pausar rastreamento',
-  ru: 'Приостановить отслеживание',
-  tr: 'İzlemeyi duraklat',
-  ja: 'トラッキングを一時停止',
-  ko: '추적 일시 중지',
-  'zh-CN': '暂停跟踪',
-};
-const MENU_PAUSE_OFF: Record<string, string> = {
-  en: 'Resume tracking',
-  es: 'Reanudar seguimiento',
-  de: 'Tracking fortsetzen',
-  fr: 'Reprendre le suivi',
-  it: 'Riprendi il monitoraggio',
-  'pt-BR': 'Retomar rastreamento',
-  ru: 'Возобновить отслеживание',
-  tr: 'İzlemeyi sürdür',
-  ja: 'トラッキングを再開',
-  ko: '추적 재개',
-  'zh-CN': '恢复跟踪',
-};
-const MENU_DASHBOARD: Record<string, string> = {
-  en: 'Open TabStyr dashboard',
-  es: 'Abrir panel de TabStyr',
-  de: 'TabStyr-Dashboard öffnen',
-  fr: 'Ouvrir le tableau de bord TabStyr',
-  it: 'Apri la dashboard di TabStyr',
-  'pt-BR': 'Abrir painel do TabStyr',
-  ru: 'Открыть панель TabStyr',
-  tr: 'TabStyr panosunu aç',
-  ja: 'TabStyr ダッシュボードを開く',
-  ko: 'TabStyr 대시보드 열기',
-  'zh-CN': '打开 TabStyr 仪表盘',
-};
-const NOTIF_PAUSED: Record<string, string> = {
-  en: 'Tracking paused',
-  es: 'Seguimiento en pausa',
-  de: 'Tracking pausiert',
-  fr: 'Suivi en pause',
-  it: 'Monitoraggio in pausa',
-  'pt-BR': 'Rastreamento pausado',
-  ru: 'Отслеживание приостановлено',
-  tr: 'İzleme duraklatıldı',
-  ja: 'トラッキングを一時停止しました',
-  ko: '추적이 일시 중지되었습니다',
-  'zh-CN': '已暂停跟踪',
-};
-const NOTIF_RESUMED: Record<string, string> = {
-  en: 'Tracking resumed',
-  es: 'Seguimiento reanudado',
-  de: 'Tracking fortgesetzt',
-  fr: 'Suivi repris',
-  it: 'Monitoraggio ripreso',
-  'pt-BR': 'Rastreamento retomado',
-  ru: 'Отслеживание возобновлено',
-  tr: 'İzleme sürdürülüyor',
-  ja: 'トラッキングを再開しました',
-  ko: '추적이 재개되었습니다',
-  'zh-CN': '已恢复跟踪',
-};
-
 const CODES = Object.keys(STALE);
 
 function resolve(pref: string | undefined): string {
@@ -185,23 +115,4 @@ export function budgetNotification(languagePref: string | undefined, category: s
 /** Localized continuous-session nudge, e.g. "You've been on reddit.com for 30+ min". */
 export function sessionAlertNotification(languagePref: string | undefined, domain: string, minutes: number): string {
   return interpolate(SESSION_ALERT[resolve(languagePref)] ?? SESSION_ALERT.en, { domain, minutes });
-}
-
-/** Context-menu title for the pause/resume toggle, reflecting current state. */
-export function menuPauseTitle(languagePref: string | undefined, paused: boolean): string {
-  const lang = resolve(languagePref);
-  const table = paused ? MENU_PAUSE_OFF : MENU_PAUSE_ON;
-  return table[lang] ?? table.en;
-}
-
-/** Context-menu title for the "open dashboard" item. */
-export function menuDashboardTitle(languagePref: string | undefined): string {
-  return MENU_DASHBOARD[resolve(languagePref)] ?? MENU_DASHBOARD.en;
-}
-
-/** Confirmation notification after toggling pause from the menu or a keyboard shortcut. */
-export function pauseToggleNotification(languagePref: string | undefined, nowPaused: boolean): string {
-  const lang = resolve(languagePref);
-  const table = nowPaused ? NOTIF_PAUSED : NOTIF_RESUMED;
-  return table[lang] ?? table.en;
 }

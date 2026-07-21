@@ -3,11 +3,8 @@ import { TrackerEngine } from '@/lib/tracker/engine';
 import { rollup } from '@/lib/tracker/aggregate';
 import { findStale, rematchTabMeta, shouldNotify } from '@/lib/tracker/stale';
 import { advanceSessionAlertState, shouldNotifySessionAlert, type SessionAlertState } from '@/lib/tracker/session-alert';
-import {
-  staleNotification, storageFullNotification, budgetNotification, sessionAlertNotification,
-  menuPauseTitle, menuDashboardTitle, pauseToggleNotification,
-} from '@/lib/i18n/notify';
-import { getSettings, invalidateSettings, saveSettings } from '@/lib/settings';
+import { staleNotification, storageFullNotification, budgetNotification, sessionAlertNotification } from '@/lib/i18n/notify';
+import { getSettings, invalidateSettings } from '@/lib/settings';
 import { categorize, categoryProductivityOf, groupByCategory } from '@/lib/categories';
 import { activeSeconds } from '@/lib/metrics';
 import { exceededBudgets, shouldNotifyBudget } from '@/lib/budgets';
@@ -698,37 +695,6 @@ export default defineBackground(() => {
       });
   });
 
-  // Shared by the onMessage 'settings-changed' handler AND the command/context-menu
-  // pause toggle (which mutate settings directly and need the exact same
-  // immediate-effect logic, not just a cache invalidation).
-  async function applySettingsChanged(): Promise<void> {
-    invalidateSettings(); // the dashboard just wrote new settings — drop stale cache
-    const settings = await getSettings();
-    browser.idle?.setDetectionInterval?.(settings.idleSeconds);
-    const eng = await getEngine();
-    const now = Date.now();
-    let closed: ClosedSession[] = [];
-    if (settings.trackingPaused) {
-      // Stop counting the instant the user pauses, rather than waiting for a
-      // tab switch or the next heartbeat to notice.
-      closed = eng.handleBlur(now);
-    } else {
-      // Resuming: re-focus whatever tab is actually active right now so
-      // un-pausing while staying on the same tab starts counting immediately
-      // instead of waiting for the next tab switch. A no-op if the engine was
-      // already tracking this exact tab+page (handleFocus's same-tab guard).
-      const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
-      if (tab?.id && tab.url && !tab.incognito) {
-        closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible);
-        await touchTab(tab.id, now, tab);
-      }
-    }
-    // Apply audio on/off immediately rather than waiting for the next heartbeat.
-    closed.push(...(await syncAudioSessions(eng, now)));
-    await persist(eng, closed);
-    await updateBadge();
-  }
-
   // Adaptation: onMessage listener receives (message: unknown, sender: MessageSender).
   // The async variant (OnMessageListenerAsync) matches this shape and returns Promise<unknown>.
   // We narrow the message type inline instead of declaring the param as { type?: string }.
@@ -738,7 +704,31 @@ export default defineBackground(() => {
     if ((sender as { id?: string })?.id !== browser.runtime.id) return;
     const msg = message as { type?: string } | null | undefined;
     if (msg?.type === 'settings-changed') {
-      await applySettingsChanged();
+      invalidateSettings(); // the dashboard just wrote new settings — drop stale cache
+      const settings = await getSettings();
+      browser.idle?.setDetectionInterval?.(settings.idleSeconds);
+      const eng = await getEngine();
+      const now = Date.now();
+      let closed: ClosedSession[] = [];
+      if (settings.trackingPaused) {
+        // Stop counting the instant the user pauses, rather than waiting for a
+        // tab switch or the next heartbeat to notice.
+        closed = eng.handleBlur(now);
+      } else {
+        // Resuming: re-focus whatever tab is actually active right now so
+        // un-pausing while staying on the same tab starts counting immediately
+        // instead of waiting for the next tab switch. A no-op if the engine was
+        // already tracking this exact tab+page (handleFocus's same-tab guard).
+        const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
+        if (tab?.id && tab.url && !tab.incognito) {
+          closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible, settings.trackingPaused);
+          await touchTab(tab.id, now, tab);
+        }
+      }
+      // Apply audio on/off immediately rather than waiting for the next heartbeat.
+      closed.push(...(await syncAudioSessions(eng, now)));
+      await persist(eng, closed);
+      await updateBadge();
     } else if (msg?.type === 'wipe-data') {
       await repo.wipeAll();
       await sessionStore.remove('engineState');
@@ -749,96 +739,4 @@ export default defineBackground(() => {
   }));
 
   void getSettings().then((s) => browser.idle?.setDetectionInterval?.(s.idleSeconds));
-
-  // --- keyboard shortcuts + context menu ---
-
-  const MENU_PAUSE = 'tabstyr-toggle-pause';
-  const MENU_DASHBOARD = 'tabstyr-open-dashboard';
-
-  // Focus an already-open dashboard tab instead of piling up duplicates when the
-  // shortcut or menu item is used more than once.
-  async function openOrFocusDashboard(hash = ''): Promise<void> {
-    const prefix = browser.runtime.getURL('/dashboard.html');
-    const tabs = await browser.tabs.query({});
-    const existing = tabs.find((t) => t.url?.startsWith(prefix));
-    if (existing?.id) {
-      await browser.tabs.update(existing.id, { active: true, url: `${prefix}${hash}` }).catch(() => {});
-      if (existing.windowId !== undefined) await browser.windows.update(existing.windowId, { focused: true }).catch(() => {});
-    } else {
-      await browser.tabs.create({ url: `${prefix}${hash}` });
-    }
-  }
-
-  // Shared by the keyboard shortcut and the context-menu item: flip the pause
-  // setting, apply it immediately (same path settings-changed uses), and confirm
-  // with a notification since neither entry point has any other visible feedback.
-  async function togglePauseFromShortcut(): Promise<void> {
-    const settings = await getSettings();
-    const next = !settings.trackingPaused;
-    await saveSettings({ trackingPaused: next });
-    await applySettingsChanged();
-    if (browser.notifications) {
-      await browser.notifications.create('tabstyr-pause-toggled', {
-        type: 'basic',
-        iconUrl: browser.runtime.getURL('/icon/128.png'),
-        title: 'TabStyr',
-        message: pauseToggleNotification(settings.language, next),
-      });
-    }
-  }
-
-  browser.commands?.onCommand?.addListener(guard(async (command) => {
-    if (command === 'open-dashboard') {
-      await openOrFocusDashboard();
-    } else if (command === 'toggle-pause') {
-      await togglePauseFromShortcut();
-    }
-  }));
-
-  // (Re-)register every wake — contextMenus.create with a duplicate id throws,
-  // so clear first. Titles are seeded once here and kept live via onShown below.
-  async function setupContextMenus(): Promise<void> {
-    if (!browser.contextMenus) return;
-    await browser.contextMenus.removeAll();
-    const settings = await getSettings();
-    browser.contextMenus.create({
-      id: MENU_PAUSE,
-      title: menuPauseTitle(settings.language, settings.trackingPaused),
-      contexts: ['action'],
-    });
-    browser.contextMenus.create({
-      id: MENU_DASHBOARD,
-      title: menuDashboardTitle(settings.language),
-      contexts: ['action'],
-    });
-  }
-  void setupContextMenus();
-
-  // onShown/refresh are Chromium-only extensions to contextMenus, missing (or
-  // untyped) in the webextension-polyfill types WXT ships and absent on
-  // Firefox/Safari at runtime — narrow-cast once here rather than fighting the
-  // type at every call.
-  const chromiumMenus = browser.contextMenus as
-    | (typeof browser.contextMenus & {
-        onShown?: { addListener: (cb: (info: { menuIds: Array<string | number> }, tab?: { url?: string }) => void) => void };
-        refresh?: () => void;
-      })
-    | undefined;
-
-  // Keep the pause title reflecting the CURRENT state right before the menu is
-  // shown. Chromium-only API — Firefox/Safari just keep whatever title
-  // setupContextMenus last set (still correct, just not live).
-  chromiumMenus?.onShown?.addListener(guard(async () => {
-    const settings = await getSettings();
-    await browser.contextMenus!.update(MENU_PAUSE, { title: menuPauseTitle(settings.language, settings.trackingPaused) }).catch(() => {});
-    chromiumMenus?.refresh?.();
-  }));
-
-  browser.contextMenus?.onClicked?.addListener(guard(async (info) => {
-    if (info.menuItemId === MENU_DASHBOARD) {
-      await openOrFocusDashboard();
-    } else if (info.menuItemId === MENU_PAUSE) {
-      await togglePauseFromShortcut();
-    }
-  }));
 });

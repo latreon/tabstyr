@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { fakeBrowser } from 'wxt/testing';
 import { resetDBConnection } from '@/lib/db/db';
 import * as repo from '@/lib/db/repo';
-import { getSettings, invalidateSettings, saveSettings } from '@/lib/settings';
+import { invalidateSettings, saveSettings } from '@/lib/settings';
 import background from '@/entrypoints/background';
 
 const DAY_MS = 86_400_000;
@@ -32,37 +32,6 @@ function stubOnReplaced() {
   return vi.spyOn(fakeBrowser.tabs.onReplaced, 'addListener').mockImplementation(() => {});
 }
 
-// Same gap again: fake-browser has `commands` and `contextMenus` namespaces but
-// never implemented them, and — unlike alarms/tabs/runtime — doesn't give them
-// a real `.trigger()` helper either. Stub `addListener` to both not throw AND
-// capture the registered callback, so tests can invoke it directly to simulate
-// the shortcut/menu-click firing. `refresh` isn't part of the polyfill types
-// fake-browser mocks at all, so it's already `undefined` and background.ts's
-// optional chain skips it without any stub needed.
-function stubCommandsAndMenus() {
-  let onCommand: ((command: string) => void) | undefined;
-  let onMenuClicked: ((info: { menuItemId: string; pageUrl?: string }, tab?: { url?: string }) => void) | undefined;
-  vi.spyOn(fakeBrowser.commands.onCommand, 'addListener').mockImplementation((cb) => {
-    onCommand = cb as never;
-  });
-  vi.spyOn(fakeBrowser.contextMenus, 'removeAll').mockResolvedValue();
-  const created: Array<{ id: string; title?: string; contexts?: string[] }> = [];
-  vi.spyOn(fakeBrowser.contextMenus, 'create').mockImplementation((opts) => {
-    created.push(opts as never);
-    return (opts as { id: string }).id;
-  });
-  vi.spyOn(fakeBrowser.contextMenus, 'update').mockResolvedValue();
-  vi.spyOn(fakeBrowser.contextMenus.onClicked, 'addListener').mockImplementation((cb) => {
-    onMenuClicked = cb as never;
-  });
-  vi.spyOn(fakeBrowser.contextMenus.onShown, 'addListener').mockImplementation(() => {});
-  return {
-    triggerCommand: (command: string) => onCommand?.(command),
-    triggerMenuClick: (info: { menuItemId: string; pageUrl?: string }, tab?: { url?: string }) => onMenuClicked?.(info, tab),
-    created,
-  };
-}
-
 // isInFocusedWindow() asks `browser.windows.getLastFocused()` for the
 // currently-focused window. fake-browser's window-focus bookkeeping only
 // updates via `windows.create({ focused: true })`, which can't reproduce "this
@@ -78,8 +47,6 @@ function focusWindow(windowId: number) {
   } as never);
 }
 
-let commandsAndMenus: ReturnType<typeof stubCommandsAndMenus>;
-
 beforeEach(() => {
   globalThis.indexedDB = new IDBFactory(); // fresh DB per test
   resetDBConnection();
@@ -88,7 +55,6 @@ beforeEach(() => {
   stubUninstallUrl();
   stubIdleApi();
   stubOnReplaced();
-  commandsAndMenus = stubCommandsAndMenus();
 });
 
 afterEach(() => {
@@ -411,64 +377,6 @@ describe('background: manual pause', () => {
 
     await vi.waitFor(async () => {
       expect((await repo.getAllSessions()).length).toBeGreaterThan(pausedSessions.length);
-    });
-  });
-});
-
-describe('background: commands + context menu', () => {
-  test('registers exactly the two menu items', async () => {
-    background.main();
-    await vi.waitFor(() => {
-      expect(commandsAndMenus.created.map((c) => c.id).sort()).toEqual(
-        ['tabstyr-open-dashboard', 'tabstyr-toggle-pause'].sort(),
-      );
-    });
-  });
-
-  test('the toggle-pause command flips trackingPaused and notifies', async () => {
-    background.main();
-    expect((await getSettings()).trackingPaused).toBe(false);
-
-    await commandsAndMenus.triggerCommand('toggle-pause');
-    await vi.waitFor(async () => expect((await getSettings()).trackingPaused).toBe(true));
-    expect(Object.keys(await fakeBrowser.notifications.getAll())).toContain('tabstyr-pause-toggled');
-
-    await commandsAndMenus.triggerCommand('toggle-pause');
-    await vi.waitFor(async () => expect((await getSettings()).trackingPaused).toBe(false));
-  });
-
-  test('the open-dashboard command opens a dashboard tab, and focuses it (not a duplicate) the second time', async () => {
-    background.main();
-    await commandsAndMenus.triggerCommand('open-dashboard');
-    await new Promise((r) => setTimeout(r, 20));
-    const afterFirst = (await fakeBrowser.tabs.query({})).filter((t) => t.url?.includes('/dashboard.html'));
-    expect(afterFirst).toHaveLength(1);
-
-    // fake-browser's tabs.update() awaits its own onUpdated listeners before
-    // resolving (real browsers don't) — that would deadlock against this
-    // guarded handler's own queue (still pending on THIS call). Stub it: the
-    // behavior under test is "no second tab created", which doesn't depend on
-    // update()'s real event-dispatch semantics.
-    vi.spyOn(fakeBrowser.tabs, 'update').mockResolvedValue(afterFirst[0]);
-
-    await commandsAndMenus.triggerCommand('open-dashboard');
-    await new Promise((r) => setTimeout(r, 20));
-    const afterSecond = (await fakeBrowser.tabs.query({})).filter((t) => t.url?.includes('/dashboard.html'));
-    expect(afterSecond).toHaveLength(1); // focused the existing tab, not a new one
-  });
-
-  test('clicking the pause menu item toggles the same setting as the command', async () => {
-    background.main();
-    await commandsAndMenus.triggerMenuClick({ menuItemId: 'tabstyr-toggle-pause' });
-    await vi.waitFor(async () => expect((await getSettings()).trackingPaused).toBe(true));
-  });
-
-  test('clicking the dashboard menu item opens the dashboard', async () => {
-    background.main();
-    await commandsAndMenus.triggerMenuClick({ menuItemId: 'tabstyr-open-dashboard' });
-    await vi.waitFor(async () => {
-      const tabs = await fakeBrowser.tabs.query({});
-      expect(tabs.some((t) => t.url?.includes('/dashboard.html'))).toBe(true);
     });
   });
 });

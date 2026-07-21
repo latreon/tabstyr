@@ -34,10 +34,6 @@ export default defineConfig({
         // YouTube videos is attributed to the page actually viewed. Local-only: we
         // read the URL of the focused tab's top frame, never page content.
         'webNavigation',
-        // Right-click menu on a page/the toolbar icon: exclude the current site,
-        // toggle pause, open the dashboard. No host permissions needed — items are
-        // static/state-driven, never read page content.
-        'contextMenus',
         // Optional scheduled backup export (off by default) saves a JSON file to
         // the browser's normal downloads location — no server, no upload.
         'downloads',
@@ -46,21 +42,6 @@ export default defineConfig({
         ...(chromium ? ['favicon'] : []),
       ],
       action: { default_title: 'TabStyr' },
-      // Keyboard shortcuts, rebindable at chrome://extensions/shortcuts (or the
-      // equivalent settings page). `_execute_action` is the reserved name that
-      // opens the toolbar popup — declaring it here just supplies a default
-      // key combo instead of leaving it unbound.
-      commands: {
-        _execute_action: { suggested_key: { default: 'Alt+Shift+T' } },
-        'open-dashboard': {
-          suggested_key: { default: 'Alt+Shift+D' },
-          description: 'Open the TabStyr dashboard',
-        },
-        'toggle-pause': {
-          suggested_key: { default: 'Alt+Shift+P' },
-          description: 'Pause or resume tracking',
-        },
-      },
       // Explicit, auditable CSP for extension pages — Chromium MV3 only. Tightens
       // the secure MV3 default: no remote scripts/eval, connect-src 'none' (the
       // extension makes zero network requests), img-src limited to same-origin

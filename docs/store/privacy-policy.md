@@ -50,7 +50,6 @@ of it stays on your device.
 | `alarms` | Periodic checkpoints and the daily maintenance/notification |
 | `notifications` | Optional once-a-day stale-tab reminder |
 | `webNavigation` | Detect in-page (SPA) route changes on the active tab so time is credited to the page you're actually on |
-| `contextMenus` | Right-click menu items: exclude the current site, pause/resume tracking, open the dashboard |
 | `downloads` | Optional scheduled backup export (off by default) — saves a JSON file to your device, never uploaded anywhere |
 | `favicon` (Chromium only) | Show site icons in lists |
 
