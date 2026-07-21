@@ -285,27 +285,6 @@ describe('settings', () => {
     });
   });
 
-  describe('domainAliases', () => {
-    test('defaults to an empty object', async () => {
-      expect((await getSettings()).domainAliases).toEqual({});
-    });
-
-    test('a saved alias round-trips, normalized', async () => {
-      await saveSettings({ domainAliases: { ' Mail.Google.com ': ' Google.COM ' } });
-      expect((await getSettings()).domainAliases).toEqual({ 'mail.google.com': 'google.com' });
-    });
-
-    test('non-object stored value falls back to the default', async () => {
-      await fakeBrowser.storage.local.set({ settings: { domainAliases: 'nope' } });
-      expect((await getSettings()).domainAliases).toEqual({});
-    });
-
-    test('an entry aliasing a domain to itself is dropped', async () => {
-      await saveSettings({ domainAliases: { 'a.com': 'a.com', 'b.com': 'c.com' } });
-      expect((await getSettings()).domainAliases).toEqual({ 'b.com': 'c.com' });
-    });
-  });
-
   describe('autoExportDays', () => {
     test('defaults to 0 (off)', async () => {
       expect((await getSettings()).autoExportDays).toBe(0);

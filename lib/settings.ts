@@ -11,7 +11,6 @@ import {
   type Productivity,
 } from './categories';
 import { sanitizeExcludedDomains } from './excluded-domains';
-import { sanitizeDomainAliases } from './domain-aliases';
 import type { Settings } from './types';
 
 // Guardrails so a corrupt or hostile stored value can't bloat memory or break the UI.
@@ -45,7 +44,6 @@ export const DEFAULT_SETTINGS: Settings = {
   language: 'auto',
   excludedDomains: [],
   trackingPaused: false,
-  domainAliases: {},
   autoExportDays: 0,
 };
 
@@ -181,7 +179,6 @@ function coerce(raw: unknown): Partial<Settings> {
     ...(typeof r.language === 'string' && { language: r.language.slice(0, 20) }),
     excludedDomains: sanitizeExcludedDomains(r.excludedDomains),
     ...(typeof r.trackingPaused === 'boolean' && { trackingPaused: r.trackingPaused }),
-    domainAliases: sanitizeDomainAliases(r.domainAliases),
     ...(typeof r.autoExportDays === 'number' && { autoExportDays: r.autoExportDays <= 0 ? 0 : clamp(Math.round(r.autoExportDays), 1, 365) }),
   };
 }
