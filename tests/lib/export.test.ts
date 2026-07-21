@@ -3,7 +3,7 @@ import { downloadCsv, toJsonBackup } from '@/lib/export';
 import { CATEGORY_PRODUCTIVITY } from '@/lib/categories';
 import type { Settings } from '@/lib/types';
 
-const SETTINGS: Settings = { staleDays: 3, idleSeconds: 60, audioEnabled: true, theme: 'system', customCategories: [], categoryOverrides: {}, categoryRules: [], categoryProductivity: { ...CATEGORY_PRODUCTIVITY }, focusTarget: 50, categoryBudgets: {}, onboarded: false, notificationsEnabled: true, sessionAlertMinutes: 30, language: 'auto', excludedDomains: [], trackingPaused: false, autoExportDays: 0 };
+const SETTINGS: Settings = { staleDays: 3, idleSeconds: 60, audioEnabled: true, theme: 'system', customCategories: [], categoryOverrides: {}, categoryRules: [], categoryProductivity: { ...CATEGORY_PRODUCTIVITY }, focusTarget: 50, categoryBudgets: {}, onboarded: false, notificationsEnabled: true, sessionAlertMinutes: 30, language: 'auto', trackingPaused: false, autoExportDays: 0 };
 
 describe('toJsonBackup', () => {
   test('produces parseable JSON with metadata and all sections', () => {

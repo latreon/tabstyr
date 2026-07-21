@@ -51,7 +51,7 @@ export class TrackerEngine {
     return [{ ...open, end }];
   }
 
-  handleFocus(tabId: number, url: string, now: number, audible = false, excluded = false): ClosedSession[] {
+  handleFocus(tabId: number, url: string, now: number, audible = false, paused = false): ClosedSession[] {
     this.idle = false;
     const page = pageOf(url);
     // Redundant re-focus of the already-focused tab+page — e.g. a cross-window tab
@@ -70,13 +70,12 @@ export class TrackerEngine {
       out.push(...this.closed(bgAudio, now));
       this.audio.delete(tabId);
     }
-    // Only track real web pages the user hasn't excluded — internal pages
-    // (chrome://, newtab, the dashboard) are never counted, and neither is a
-    // domain the user opted out of. Store the normalized page URL (no
-    // query/fragment) so the sub-page breakdown groups cleanly and no secrets
-    // are persisted.
+    // Only track real web pages the user hasn't paused — internal pages
+    // (chrome://, newtab, the dashboard) are never counted. Store the normalized
+    // page URL (no query/fragment) so the sub-page breakdown groups cleanly and
+    // no secrets are persisted.
     const domain = domainOf(url);
-    this.focused = isWebDomain(domain) && !excluded ? { tabId, url: page, domain, start: now, audio: false, audible } : null;
+    this.focused = isWebDomain(domain) && !paused ? { tabId, url: page, domain, start: now, audio: false, audible } : null;
     return out;
   }
 
@@ -208,10 +207,10 @@ export class TrackerEngine {
   // the first URL the tab opened with. Background-AUDIO sessions split on domain
   // only: the sub-page of a music/video tab you're not looking at is noise, and
   // splitting it would multiply rows for no insight.
-  handleUrlChange(tabId: number, url: string, now: number, excluded = false): ClosedSession[] {
+  handleUrlChange(tabId: number, url: string, now: number): ClosedSession[] {
     const out: ClosedSession[] = [];
     const domain = domainOf(url);
-    const web = isWebDomain(domain) && !excluded;
+    const web = isWebDomain(domain);
     const page = pageOf(url);
     if (this.focused?.tabId === tabId && this.focused.url !== page) {
       const wasAudible = this.focused.audible;

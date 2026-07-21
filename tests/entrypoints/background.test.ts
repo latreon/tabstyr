@@ -84,7 +84,7 @@ beforeEach(() => {
   globalThis.indexedDB = new IDBFactory(); // fresh DB per test
   resetDBConnection();
   fakeBrowser.reset();
-  invalidateSettings();
+  invalidateSettings(); // drop settings.ts's in-process cache between tests
   stubUninstallUrl();
   stubIdleApi();
   stubOnReplaced();
@@ -309,24 +309,6 @@ describe('background: tab tracking wiring', () => {
     expect(totalMs).toBeGreaterThanOrEqual(4 * 60_000);
   });
 
-  test('activating a tab on an excluded domain records no tabMeta and starts no session', async () => {
-    const start = Date.parse('2026-07-15T10:00:00Z');
-    const now = vi.spyOn(Date, 'now').mockReturnValue(start);
-    focusWindow(0);
-    await saveSettings({ excludedDomains: ['example.com'] });
-
-    background.main();
-    const tab = await fakeBrowser.tabs.create({ url: 'https://example.com/' });
-    await fakeBrowser.tabs.onActivated.trigger({ tabId: tab.id!, windowId: tab.windowId! });
-
-    now.mockReturnValue(start + 5 * 60_000);
-    await fakeBrowser.alarms.onAlarm.trigger({ name: 'heartbeat', scheduledTime: Date.now() });
-    await new Promise((r) => setTimeout(r, 20));
-
-    expect(await repo.getAllSessions()).toEqual([]);
-    expect(await repo.getTabMeta(tab.id!)).toBeUndefined();
-  });
-
   test('activating a tab in a background (non-focused) window records its metadata but starts no session', async () => {
     const start = Date.parse('2026-07-15T10:00:00Z');
     vi.spyOn(Date, 'now').mockReturnValue(start);
@@ -434,11 +416,11 @@ describe('background: manual pause', () => {
 });
 
 describe('background: commands + context menu', () => {
-  test('registers exactly the three menu items', async () => {
+  test('registers exactly the two menu items', async () => {
     background.main();
     await vi.waitFor(() => {
       expect(commandsAndMenus.created.map((c) => c.id).sort()).toEqual(
-        ['tabstyr-exclude-site', 'tabstyr-open-dashboard', 'tabstyr-toggle-pause'].sort(),
+        ['tabstyr-open-dashboard', 'tabstyr-toggle-pause'].sort(),
       );
     });
   });
@@ -473,25 +455,6 @@ describe('background: commands + context menu', () => {
     await new Promise((r) => setTimeout(r, 20));
     const afterSecond = (await fakeBrowser.tabs.query({})).filter((t) => t.url?.includes('/dashboard.html'));
     expect(afterSecond).toHaveLength(1); // focused the existing tab, not a new one
-  });
-
-  test('clicking the exclude menu item on a site adds it, and clicking again removes it', async () => {
-    background.main();
-    expect((await getSettings()).excludedDomains).toEqual([]);
-
-    await commandsAndMenus.triggerMenuClick({ menuItemId: 'tabstyr-exclude-site', pageUrl: 'https://reddit.com/r/all' });
-    await vi.waitFor(async () => expect((await getSettings()).excludedDomains).toEqual(['reddit.com']));
-    expect(Object.keys(await fakeBrowser.notifications.getAll())).toContain('tabstyr-exclude-toggled');
-
-    await commandsAndMenus.triggerMenuClick({ menuItemId: 'tabstyr-exclude-site', pageUrl: 'https://reddit.com/r/all' });
-    await vi.waitFor(async () => expect((await getSettings()).excludedDomains).toEqual([]));
-  });
-
-  test('the exclude menu item ignores an internal (non-web) page', async () => {
-    background.main();
-    await commandsAndMenus.triggerMenuClick({ menuItemId: 'tabstyr-exclude-site', pageUrl: 'chrome://settings' });
-    await new Promise((r) => setTimeout(r, 20));
-    expect((await getSettings()).excludedDomains).toEqual([]);
   });
 
   test('clicking the pause menu item toggles the same setting as the command', async () => {
