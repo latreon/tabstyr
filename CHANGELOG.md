@@ -4,12 +4,43 @@ All notable changes to TabStyr. Generated from [GitHub Releases](https://github.
 
 ## v2.0.0 — 2026-07-20
 
-TabStyr 2.0.0 — a hardening pass on data export.
+TabStyr 2.0.0 — a big release: data export, more tracking control, a real onboarding tour, a unified UI pass, and store/site groundwork on top of a data-export hardening pass.
 
-### Data export
-- **CSV formula-injection guard** — a text cell starting with `=`, `+`, `-`, `@`, tab, or carriage return is now prefixed with a single quote so a crafted category name can't execute as a formula when the exported file is opened in Excel or Google Sheets. Numeric columns are left untouched so they stay machine-parseable.
-- **UTF-8 BOM on CSV downloads** — exported CSVs now carry a byte-order mark so Excel decodes non-ASCII domains and category names as UTF-8 instead of the OS legacy codepage.
-- **Empty-export feedback** — exporting with no tracked activity now shows a "nothing to export yet" toast instead of silently downloading a header-only CSV or an empty JSON file.
+### Highlights
+
+#### Data export
+- **Export all tracked activity as CSV or JSON** — a flat, spreadsheet-ready dump (one row per day/month × site, stamped with category and productivity) for Excel, Google Sheets, or any analysis tool. Separate from the restorable JSON backup.
+- **CSV formula-injection guard** — a text cell starting with `=`, `+`, `-`, `@`, tab, or carriage return is prefixed with a single quote so a crafted category name can't execute as a formula when the file is opened in Excel or Sheets. Numeric columns stay untouched.
+- **UTF-8 BOM on CSV downloads** — exported CSVs carry a byte-order mark so Excel decodes non-ASCII domains and category names as UTF-8, not the OS legacy codepage.
+- **Empty-export feedback** — exporting with no tracked activity shows a "nothing to export yet" toast instead of silently downloading an empty file.
+- **Optional scheduled backup export** — have a backup written automatically on an interval.
+
+#### Tracking control
+- **Per-site exclude list** — turn tracking off entirely for chosen sites.
+- **Domain aliases** — merge fragmented subdomains so they count as one site in the dashboard.
+- **Manual pause toggle** — pause and resume tracking on demand, independent of idle detection.
+- **Keyboard shortcuts + right-click context menu** — quick access to open the dashboard and pause/resume.
+
+#### Onboarding & UI
+- **Real 3-step onboarding tour** for first run.
+- **Continuous-session notification alert** — a nudge when a single browsing session runs long.
+- **Unified control styling** — buttons, toggles, and segmented controls share one consistent look.
+- **Uninstall warning** — makes clear that uninstalling deletes all local data.
+- Onboarding polish (removed the auto-focus ring, dropped Shopping from the intro legend) and a settings action row that wraps cleanly for long translated labels.
+
+#### Website & stores
+- Landing page: **email signup**, a **/vs-rescuetime** comparison page, and cleaned-up privacy URLs.
+- Generated **Firefox AMO** and **Safari / App Store Connect** store assets.
+- Flipped the **Firefox store link** live and swapped a dead Buy-Me-a-Coffee link for a live Polar support link.
+- Corrected the README install section (Chrome and Firefox are both live).
+
+#### Fixes
+- Capped the monthly rollup archive's retention so the pruned-day archive can't grow unbounded.
+
+#### Under the hood
+- New test coverage: landing-site vitest scaffolding (was zero), an end-to-end service-worker test, and ReviewPrompt component coverage.
+
+_See the commit history for the full list of smaller fixes._
 
 ## v1.9.0 — 2026-07-13
 

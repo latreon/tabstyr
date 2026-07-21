@@ -43,12 +43,19 @@
     "wxt": "^0.20.27"
   },
   "comments": {
-    "overrides": "Force patched versions of transitive build/dev-only deps flagged by Dependabot. None ship in the extension bundle (all pulled by wxt/vite/web-ext-run tooling). shell-quote: critical CVE; tmp: arbitrary write; uuid: advisory; esbuild: dev-server request advisory."
+    "overrides": "Force patched versions of transitive build/dev-only deps flagged by Dependabot. None ship in the extension bundle (all pulled by wxt/vite/web-ext-run tooling). shell-quote: quadratic-DoS in parse(), fixed 1.9.0 (1.8.4 was still vulnerable); tmp: arbitrary write; uuid: advisory; esbuild: dev-server request advisory; adm-zip: DoS via crafted zip (firefox-profile, used by wxt's Firefox dev runner); brace-expansion: DoS via exponential {} expansion, pulled in at two different majors by two different minimatch versions so each is pinned to its own patched line."
   },
   "overrides": {
-    "shell-quote": ">=1.8.4",
+    "shell-quote": ">=1.9.0",
     "tmp": ">=0.2.6",
     "uuid": ">=11.1.1",
-    "esbuild": ">=0.28.1"
+    "esbuild": ">=0.28.1",
+    "adm-zip": ">=0.6.0",
+    "minimatch@3.1.5": {
+      "brace-expansion": ">=1.1.16 <2.0.0"
+    },
+    "minimatch@9.0.9": {
+      "brace-expansion": ">=2.1.2 <3.0.0"
+    }
   }
 }
