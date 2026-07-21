@@ -155,19 +155,6 @@ describe('TrackerEngine boundary safety', () => {
     expect(e.getState().focused).toBeNull();
   });
 
-  test('handleFocus never opens a session while paused', () => {
-    const e = new TrackerEngine();
-    expect(e.handleFocus(1, 'https://reddit.com/r/all', T0, false, true)).toEqual([]);
-    expect(e.getState().focused).toBeNull();
-    // focusing a tracked page then pausing closes the tracked session and starts
-    // none, exactly like navigating to an internal page.
-    e.handleFocus(2, 'https://a.com', T0);
-    const closed = e.handleFocus(3, 'https://reddit.com/r/all', T0 + 60_000, false, true);
-    expect(closed).toHaveLength(1);
-    expect(closed[0].domain).toBe('a.com');
-    expect(e.getState().focused).toBeNull();
-  });
-
   test('caps a long NON-media session at the 30-minute bound (likely sleep)', () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://a.com', T0); // not audible

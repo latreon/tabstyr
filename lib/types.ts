@@ -103,11 +103,6 @@ export interface Settings {
   /** UI language: 'auto' (follow the browser) or a supported locale code. */
   language: string;
   /**
-   * Manual kill switch, independent of idle detection. While true, no tab
-   * anywhere starts a session, gets a tabMeta row, or counts background audio.
-   */
-  trackingPaused: boolean;
-  /**
    * Days between automatic backup exports (a JSON file saved to the browser's
    * downloads location, same format as the manual "Export JSON" button).
    * 0 = off (default — nothing is saved without you asking). Checked once a

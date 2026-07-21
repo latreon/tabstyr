@@ -66,9 +66,7 @@
     "dashboard": "Panel",
     "loadError": "İstatistikler yüklenemedi — açılır pencereyi yeniden açmayı deneyin.",
     "topSitesAria": "Bugünün en çok kullanılan siteleri",
-    "openAria": "{domain} aç — bugün {time}",
-    "pauseTracking": "İzlemeyi duraklat",
-    "resumeTracking": "İzlemeyi sürdür"
+    "openAria": "{domain} aç — bugün {time}"
   },
   "hero": {
     "todayActive": "Bugün · aktif",
@@ -230,8 +228,6 @@
     "language": "Dil",
     "staleDays": "Şu kadar gün sonra eski (gün)",
     "idleSeconds": "Boşta kalma süresi (saniye)",
-    "pauseTracking": "İzlemeyi duraklat",
-    "pauseTrackingHint": "Bunu tekrar kapatana kadar her yerde izlemeyi durdurur. Boşta kalma süresinden bağımsızdır — burada hiçbir şey otomatik algılanmaz, geri çevirene kadar duraklatılmış kalır.",
     "countAudio": "Arka plan sesini say",
     "save": "Kaydet",
     "wipe": "Tüm verileri sil",

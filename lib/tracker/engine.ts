@@ -51,7 +51,7 @@ export class TrackerEngine {
     return [{ ...open, end }];
   }
 
-  handleFocus(tabId: number, url: string, now: number, audible = false, paused = false): ClosedSession[] {
+  handleFocus(tabId: number, url: string, now: number, audible = false): ClosedSession[] {
     this.idle = false;
     const page = pageOf(url);
     // Redundant re-focus of the already-focused tab+page — e.g. a cross-window tab
@@ -70,12 +70,11 @@ export class TrackerEngine {
       out.push(...this.closed(bgAudio, now));
       this.audio.delete(tabId);
     }
-    // Only track real web pages the user hasn't paused — internal pages
-    // (chrome://, newtab, the dashboard) are never counted. Store the normalized
-    // page URL (no query/fragment) so the sub-page breakdown groups cleanly and
-    // no secrets are persisted.
+    // Only track real web pages — internal pages (chrome://, newtab, the dashboard)
+    // are never counted. Store the normalized page URL (no query/fragment) so the
+    // sub-page breakdown groups cleanly and no secrets are persisted.
     const domain = domainOf(url);
-    this.focused = isWebDomain(domain) && !paused ? { tabId, url: page, domain, start: now, audio: false, audible } : null;
+    this.focused = isWebDomain(domain) ? { tabId, url: page, domain, start: now, audio: false, audible } : null;
     return out;
   }
 

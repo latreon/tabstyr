@@ -66,9 +66,7 @@
     "dashboard": "Dashboard",
     "loadError": "Statistiken konnten nicht geladen werden — Popup erneut öffnen.",
     "topSitesAria": "Top-Seiten heute",
-    "openAria": "{domain} öffnen — {time} heute",
-    "pauseTracking": "Tracking pausieren",
-    "resumeTracking": "Tracking fortsetzen"
+    "openAria": "{domain} öffnen — {time} heute"
   },
   "hero": {
     "todayActive": "Heute · aktiv",
@@ -230,8 +228,6 @@
     "language": "Sprache",
     "staleDays": "Veraltet nach (Tagen)",
     "idleSeconds": "Leerlauf-Zeitlimit (Sekunden)",
-    "pauseTracking": "Tracking pausieren",
-    "pauseTrackingHint": "Stoppt die Erfassung überall, bis du dies wieder ausschaltest. Unabhängig vom Leerlauf-Timeout – hier wird nichts automatisch erkannt, es bleibt pausiert, bis du es zurückschaltest.",
     "countAudio": "Hintergrund-Audio zählen",
     "save": "Speichern",
     "wipe": "Alle Daten löschen",

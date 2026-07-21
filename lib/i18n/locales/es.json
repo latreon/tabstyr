@@ -66,9 +66,7 @@
     "dashboard": "Panel",
     "loadError": "No se pudieron cargar las estadísticas: prueba a reabrir la ventana.",
     "topSitesAria": "Sitios principales de hoy",
-    "openAria": "Abrir {domain} — {time} hoy",
-    "pauseTracking": "Pausar seguimiento",
-    "resumeTracking": "Reanudar seguimiento"
+    "openAria": "Abrir {domain} — {time} hoy"
   },
   "hero": {
     "todayActive": "Hoy · activo",
@@ -230,8 +228,6 @@
     "language": "Idioma",
     "staleDays": "Obsoleta tras (días)",
     "idleSeconds": "Tiempo de inactividad (segundos)",
-    "pauseTracking": "Pausar seguimiento",
-    "pauseTrackingHint": "Detiene el seguimiento en todas partes hasta que vuelvas a desactivarlo. Independiente del tiempo de inactividad: aquí nada se detecta automáticamente, permanece pausado hasta que lo cambies de nuevo.",
     "countAudio": "Contar audio en segundo plano",
     "save": "Guardar",
     "wipe": "Borrar todos los datos",

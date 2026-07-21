@@ -66,9 +66,7 @@
     "dashboard": "仪表盘",
     "loadError": "无法加载统计数据 — 请尝试重新打开弹窗。",
     "topSitesAria": "今日热门网站",
-    "openAria": "打开 {domain} — 今日 {time}",
-    "pauseTracking": "暂停跟踪",
-    "resumeTracking": "恢复跟踪"
+    "openAria": "打开 {domain} — 今日 {time}"
   },
   "hero": {
     "todayActive": "今天 · 活跃",
@@ -230,8 +228,6 @@
     "language": "语言",
     "staleDays": "闲置阈值（天）",
     "idleSeconds": "空闲超时（秒）",
-    "pauseTracking": "暂停跟踪",
-    "pauseTrackingHint": "在你再次关闭之前，随处停止跟踪。与空闲超时无关——这里不会自动检测任何内容，在你切换回去之前会一直保持暂停。",
     "countAudio": "统计后台音频",
     "save": "保存",
     "wipe": "清除所有数据",

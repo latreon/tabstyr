@@ -66,9 +66,7 @@
     "dashboard": "Dashboard",
     "loadError": "Could not load stats — try reopening the popup.",
     "topSitesAria": "Top sites today",
-    "openAria": "Open {domain} — {time} today",
-    "pauseTracking": "Pause tracking",
-    "resumeTracking": "Resume tracking"
+    "openAria": "Open {domain} — {time} today"
   },
   "hero": {
     "todayActive": "Today · active",
@@ -230,8 +228,6 @@
     "language": "Language",
     "staleDays": "Stale after (days)",
     "idleSeconds": "Idle timeout (seconds)",
-    "pauseTracking": "Pause tracking",
-    "pauseTrackingHint": "Stop tracking everywhere until you turn this back off. Independent of the idle timeout — nothing is auto-detected here, it stays paused until you flip it back.",
     "countAudio": "Count background audio",
     "save": "Save",
     "wipe": "Wipe all data",

@@ -224,7 +224,7 @@ export default defineBackground(() => {
 
   async function syncAudioSessions(eng: TrackerEngine, now: number): Promise<ClosedSession[]> {
     const settings = await getSettings();
-    if (!settings.audioEnabled || settings.trackingPaused) return eng.syncAudio([], now);
+    if (!settings.audioEnabled) return eng.syncAudio([], now);
     const audibleTabs = await browser.tabs.query({ audible: true });
     const audible = audibleTabs.flatMap((t) =>
       t.id && t.url && !t.incognito ? [{ tabId: t.id, url: t.url }] : [],
@@ -244,8 +244,6 @@ export default defineBackground(() => {
     // Only record metadata for real web pages — internal pages aren't "sites" and
     // shouldn't appear in the tab list or stale tracking.
     if (!isWebDomain(domainOf(tab.url ?? ''))) return;
-    const settings = await getSettings();
-    if (settings.trackingPaused) return;
     const existing = await repo.getTabMeta(tab.id);
     await repo.upsertTabMeta({
       tabId: tab.id,
@@ -281,14 +279,6 @@ export default defineBackground(() => {
     ]);
     const liveIds = new Set(tabs.flatMap((t) => (t.id ? [t.id] : [])));
     const stale = findStale(metas.filter((m) => liveIds.has(m.tabId)), Date.now(), settings.staleDays);
-    // Paused overrides the stale count — it's the more important thing for the
-    // user to notice at a glance, and this is the only always-visible signal
-    // that nothing is being tracked right now.
-    if (settings.trackingPaused) {
-      await actionApi.setBadgeText({ text: '❚❚' });
-      await actionApi.setBadgeBackgroundColor({ color: '#6b7280' });
-      return;
-    }
     await actionApi.setBadgeText({ text: stale.length ? String(stale.length) : '' });
     await actionApi.setBadgeBackgroundColor({ color: '#b0552f' });
   }
@@ -441,8 +431,7 @@ export default defineBackground(() => {
       await persist(eng, []);
       return;
     }
-    const settings = await getSettings();
-    const closed = eng.handleFocus(tabId, tab.url, now, !!tab.audible, settings.trackingPaused);
+    const closed = eng.handleFocus(tabId, tab.url, now, !!tab.audible);
     closed.push(...(await syncAudioSessions(eng, now)));
     await touchTab(tabId, now, tab);
     await persist(eng, closed);
@@ -468,8 +457,7 @@ export default defineBackground(() => {
       await persist(eng, closed);
       return;
     }
-    const settings = await getSettings();
-    const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible, settings.trackingPaused);
+    const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible);
     closed.push(...(await syncAudioSessions(eng, now)));
     await touchTab(tab.id, now);
     await persist(eng, closed);
@@ -483,8 +471,7 @@ export default defineBackground(() => {
     if (state === 'active') {
       const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
       if (!tab?.id || !tab.url || tab.incognito) return;
-      const settings = await getSettings();
-      const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible, settings.trackingPaused);
+      const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible);
       closed.push(...(await syncAudioSessions(eng, now))); // resume audio after idle
       await touchTab(tab.id, now);
       await persist(eng, closed);
@@ -707,27 +694,9 @@ export default defineBackground(() => {
       invalidateSettings(); // the dashboard just wrote new settings — drop stale cache
       const settings = await getSettings();
       browser.idle?.setDetectionInterval?.(settings.idleSeconds);
-      const eng = await getEngine();
-      const now = Date.now();
-      let closed: ClosedSession[] = [];
-      if (settings.trackingPaused) {
-        // Stop counting the instant the user pauses, rather than waiting for a
-        // tab switch or the next heartbeat to notice.
-        closed = eng.handleBlur(now);
-      } else {
-        // Resuming: re-focus whatever tab is actually active right now so
-        // un-pausing while staying on the same tab starts counting immediately
-        // instead of waiting for the next tab switch. A no-op if the engine was
-        // already tracking this exact tab+page (handleFocus's same-tab guard).
-        const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
-        if (tab?.id && tab.url && !tab.incognito) {
-          closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible, settings.trackingPaused);
-          await touchTab(tab.id, now, tab);
-        }
-      }
       // Apply audio on/off immediately rather than waiting for the next heartbeat.
-      closed.push(...(await syncAudioSessions(eng, now)));
-      await persist(eng, closed);
+      const eng = await getEngine();
+      await persist(eng, await syncAudioSessions(eng, Date.now()));
       await updateBadge();
     } else if (msg?.type === 'wipe-data') {
       await repo.wipeAll();

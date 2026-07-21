@@ -44,7 +44,6 @@ const staleDays = ref(3);
 const idleSeconds = ref(180);
 const audioEnabled = ref(true);
 const notificationsEnabled = ref(true);
-const trackingPaused = ref(false);
 // SelectBox works over string values; converted to/from the numeric setting
 // (days, 0 = off) at the read/write boundary.
 const autoExportDays = ref('0');
@@ -80,7 +79,6 @@ onMounted(async () => {
   idleSeconds.value = s.idleSeconds;
   audioEnabled.value = s.audioEnabled;
   notificationsEnabled.value = s.notificationsEnabled;
-  trackingPaused.value = s.trackingPaused;
   autoExportDays.value = String(s.autoExportDays);
   sessionAlertMinutes.value = s.sessionAlertMinutes;
   // If still on the implicit "system" default, show the resolved theme in the picker.
@@ -115,7 +113,6 @@ async function persistSettings() {
       idleSeconds: idleSeconds.value,
       audioEnabled: audioEnabled.value,
       notificationsEnabled: notificationsEnabled.value,
-      trackingPaused: trackingPaused.value,
       autoExportDays: Number(autoExportDays.value),
       sessionAlertMinutes: sessionAlertMinutes.value,
       focusTarget: focusTarget.value,
@@ -129,7 +126,7 @@ async function persistSettings() {
   }
 }
 
-watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, trackingPaused, autoExportDays, sessionAlertMinutes, focusTarget], () => {
+watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, autoExportDays, sessionAlertMinutes, focusTarget], () => {
   if (!loaded.value) return;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(persistSettings, 400);
@@ -468,11 +465,6 @@ async function confirmWipe() {
       <NumberStepper v-model="idleSeconds" :min="15" :max="600" :step="15" :label="t('settings.idleSeconds')" />
     </div>
     <p class="field-hint">{{ t('settings.idleHint') }}</p>
-    <div class="field check">
-      <span class="field-label">{{ t('settings.pauseTracking') }}</span>
-      <ToggleSwitch v-model="trackingPaused" :label="t('settings.pauseTracking')" />
-    </div>
-    <p class="field-hint">{{ t('settings.pauseTrackingHint') }}</p>
     <div class="field check">
       <span class="field-label">{{ t('settings.countAudio') }}</span>
       <ToggleSwitch v-model="audioEnabled" :label="t('settings.countAudio')" />

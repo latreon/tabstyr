@@ -66,9 +66,7 @@
     "dashboard": "대시보드",
     "loadError": "통계를 불러오지 못했습니다 — 팝업을 다시 열어 보세요.",
     "topSitesAria": "오늘의 상위 사이트",
-    "openAria": "{domain} 열기 — 오늘 {time}",
-    "pauseTracking": "추적 일시 중지",
-    "resumeTracking": "추적 재개"
+    "openAria": "{domain} 열기 — 오늘 {time}"
   },
   "hero": {
     "todayActive": "오늘 · 활동",
@@ -230,8 +228,6 @@
     "language": "언어",
     "staleDays": "오래됨 기준 (일)",
     "idleSeconds": "유휴 시간 제한 (초)",
-    "pauseTracking": "추적 일시 중지",
-    "pauseTrackingHint": "다시 끌 때까지 어디서든 추적을 멈춥니다. 유휴 시간 초과와는 별개로, 여기서는 자동 감지가 없으며 다시 전환할 때까지 일시 중지 상태를 유지합니다.",
     "countAudio": "백그라운드 오디오 집계",
     "save": "저장",
     "wipe": "모든 데이터 지우기",
