@@ -2,6 +2,56 @@
 
 All notable changes to TabStyr. Generated from [GitHub Releases](https://github.com/latreon/tabstyr/releases) — the release page is the source of truth; run `npm run changelog:fetch && node scripts/generate-changelog.mjs` to refresh this file after a new release.
 
+## v2.0.2 — 2026-07-25
+
+TabStyr 2.0.2 — a hardening release. A full audit of the extension turned up one critical data-loss bug, three high-severity correctness bugs, and a long tail of smaller issues. All of them are fixed.
+
+#### Critical
+
+- **An imported backup could permanently stop all tracking.** Restore writes sessions with `add()`, which honours an inline `id` and advances IndexedDB's key generator to it — and IndexedDB refuses to generate a key past 2^53. A single crafted or corrupted row therefore restored fine and then made every later write fail, silently, until the user wiped their data. The importer now strips that field.
+
+#### Fixed — wrong numbers
+
+- **Every AWS host counted as Shopping**, not Dev. Because Shopping is neutral by default, a cloud engineer's whole working day was excluded from the Focus % calculation.
+- **Sleeping your machine booked up to 30 minutes of activity you never had.** Time past the session cap means the heartbeat never fired, so it is no longer treated as usage.
+- **Brief visits vanished.** Anything under a second was discarded, losing time whenever you flicked through tabs.
+- **Daily totals drifted.** Rounding happened once a minute and the error accumulated; totals are now exact and rounded only for display.
+- **Site details showed a "0s average" next to a real total** after a CSV import. Visit stats now come from visits alone.
+- **AI assistants, cloud consoles, vendor docs and online courses all counted as nothing.** They now land in Work or Dev. Search engines stay neutral, which is correct.
+- **Wrapped's "longest visit"** measured an unbroken browsing streak across every site instead of time on one site.
+
+#### Fixed — features
+
+- **Daily category budgets can finally be set.** The Focus categories tile now has a per-category minute limit; previously the reminder existed with no way to configure it.
+- **The dashboard refreshes itself** when you come back to the tab, instead of showing whatever was true when you opened it — and stops labelling yesterday as "today".
+- **Stale tabs stay oldest-first**, so the tabs most worth closing are at the top.
+- Reclassifying a site now takes effect for reminders immediately (Firefox kept using the old classification for the rest of the session).
+- Opening the dashboard no longer flashes a spurious "Saved" toast and reload.
+- Exported PNG reports render in the right font and carry the footer they were meant to.
+- The popup no longer lists background-audio-only sites as "0s".
+- CSV import handles ambiguous column headers instead of silently importing nothing.
+
+#### Privacy & security
+
+- **Credential-shaped URL path segments are redacted** before storage. Query strings and fragments were already dropped, but password-reset, invite and share tokens live in the path, and were being saved and included in exports.
+- **Tighter Content Security Policy**: added `default-src 'self'` and `frame-src 'none'`. Without a `default-src`, every directive that wasn't named was unrestricted.
+- "Delete all data" now clears the derived bookkeeping keys too.
+
+#### Accessibility
+
+- Dropdowns announce the highlighted option to screen readers (the wiring pointed outside the control).
+- The review prompt is a labelled region rather than a dialog with no dialog behaviour.
+- Number steppers no longer discard a value you typed but hadn't committed.
+- Stacked dialogs can't unlock each other's page scroll.
+
+#### Under the hood
+
+- Removed seven exported functions with no caller.
+- Test coverage went from unmeasurable to 71.8% (`lib/tracker` 98%, `lib` 83%). Added 9 unit/component test files — including the first cover for the popup, the report canvas, and the data pipeline — plus 7 end-to-end tests over the destructive flows (restore, merge, wipe, CSV import, encrypted export), which had none.
+- Fixed a dashboard end-to-end test that had been silently passing over a dead selector.
+
+**Verified**: 608 unit tests, 20 end-to-end tests, clean typecheck, and Chrome / Firefox / Safari builds.
+
 ## v2.0.1 — 2026-07-25
 
 TabStyr 2.0.1 — a patch release that reverts 5 features shipped in 2.0.0 (feedback-driven rollback) and closes out the remaining dev-dependency vulnerabilities.
