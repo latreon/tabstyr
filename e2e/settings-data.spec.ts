@@ -146,28 +146,35 @@ test('wipe clears everything, and only after confirmation', async ({ context, ex
 });
 
 test('the encrypted export enforces its passphrase rules', async ({ context, extensionId }) => {
+  // The success path derives an AES key with 600k PBKDF2 iterations and reads the
+  // whole dataset first, which is comfortably the slowest thing in this file.
+  test.slow();
   const page = await openDashboard(context, extensionId);
   await page.getByRole('button', { name: 'Encrypted…', exact: true }).click();
   const pass = page.getByLabel('Passphrase', { exact: true });
   const confirm = page.getByLabel('Confirm passphrase');
   const submit = page.getByRole('button', { name: 'Download encrypted' });
+  const error = page.locator('.rule-error');
 
-  // Too short → refused, with a visible reason.
+  // Assert the SPECIFIC message each time, not merely that some error is visible:
+  // the first failure leaves its error on screen, so a "toBeVisible" check for the
+  // second case passed without the second rule ever being evaluated.
   await pass.fill('short');
   await confirm.fill('short');
   await submit.click();
-  await expect(page.locator('.rule-error')).toBeVisible();
+  await expect(error).toHaveText('Use at least 10 characters.');
 
-  // Long enough but mismatched → still refused.
+  // Long enough but mismatched → a different refusal.
   await pass.fill('correct-horse-battery');
   await confirm.fill('correct-horse-batteryX');
   await submit.click();
-  await expect(page.locator('.rule-error')).toBeVisible();
+  await expect(error).toHaveText('Passphrases do not match.');
 
   // Valid and matching → the form closes, meaning the envelope was produced and
-  // handed to the browser. (The download itself is asserted in the unit tests for
-  // lib/crypto; observing it here is flaky from an extension page.)
+  // handed to the browser. (The envelope itself is asserted in the unit tests for
+  // lib/crypto; observing the download is flaky from an extension page.)
   await confirm.fill('correct-horse-battery');
   await submit.click();
-  await expect(submit).toBeHidden({ timeout: 15_000 });
+  await expect(error).toBeHidden();
+  await expect(submit).toBeHidden();
 });
