@@ -2,6 +2,25 @@
 
 All notable changes to TabStyr. Generated from [GitHub Releases](https://github.com/latreon/tabstyr/releases) — the release page is the source of truth; run `npm run changelog:fetch && node scripts/generate-changelog.mjs` to refresh this file after a new release.
 
+## v2.0.1 — 2026-07-25
+
+TabStyr 2.0.1 — a patch release that reverts 5 features shipped in 2.0.0 (feedback-driven rollback) and closes out the remaining dev-dependency vulnerabilities.
+
+#### Reverted from 2.0.0
+- **Bulk CSV/JSON data export** — removed the "Export data" flat dump feature. Kept the CSV formula-injection guard in `lib/export.ts`/`lib/report.ts`, since that's shared infrastructure also used by the daily work-log export.
+- **Domain aliases** — removed the source→canonical domain merge that folded fragmented subdomains into one row.
+- **Per-site exclude list** — removed the "Excluded sites" toggle that turned tracking off entirely for chosen domains.
+- **Keyboard shortcuts + right-click context menu** — removed the three rebindable shortcuts and the context menu (exclude site, pause/resume, open dashboard), along with the `contextMenus` permission.
+- **Manual pause toggle** — removed the `trackingPaused` kill switch (popup button, Settings toggle).
+
+Each revert was verified independently against the full test suite (485–491 tests, depending on stage) with a clean typecheck.
+
+#### Fixes
+- **AMO source zip bloat** — `wxt zip` doesn't consult `.gitignore`, so the gitignored `test-results/` directory (Playwright traces/screenshots) was leaking into the Firefox AMO submission zip, bloating it from ~1.4MB to ~15MB.
+- **Remaining dev-dependency vulnerabilities** — patched `adm-zip` (0.5.17 → 0.6.0, GHSA-xcpc-8h2w-3j85) and `shell-quote` (→ 1.9.0, GHSA-395f-4hp3-45gv); `brace-expansion` (GHSA-3jxr-9vmj-r5cp) pinned per major line since two different `minimatch` versions in the tree pull in two different majors. All four are dev/build-tooling-only — none ship in the extension bundle.
+
+_See the commit history for the full list of smaller fixes._
+
 ## v2.0.0 — 2026-07-20
 
 TabStyr 2.0.0 — a big release: data export, more tracking control, a real onboarding tour, a unified UI pass, and store/site groundwork on top of a data-export hardening pass.
