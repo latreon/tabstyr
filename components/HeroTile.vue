@@ -11,6 +11,8 @@ const props = defineProps<{
   weeklyActiveDays: number;
   todayAudioSeconds: number;
   stats: DailyStat[];
+  /** Shared dashboard clock — see the note on `sparkArea`. */
+  now: number;
 }>();
 
 const { t } = useI18n();
@@ -28,7 +30,10 @@ const deltaPct = computed(() => {
 });
 
 const sparkArea = computed(() => {
-  const points = buildTrend(props.stats, 'day', Date.now());
+  // `now` comes in as a prop for the same reason TrendChart takes one: a bare
+  // Date.now() here is not a reactive dependency, so the sparkline's "today" drifted
+  // out of step with every other tile (which all read the shared dashboard clock).
+  const points = buildTrend(props.stats, 'day', props.now);
   const max = Math.max(1, ...points.map((p) => p.seconds));
   const span = Math.max(1, points.length - 1); // guard against a 1-point trend (0/0 → NaN)
   const coords = points.map(

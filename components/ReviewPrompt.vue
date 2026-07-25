@@ -13,8 +13,12 @@ function rate() {
 
 <template>
   <!-- No backdrop, by design: this floats over the corner rather than gating the
-       page like the onboarding modal, so it can never intercept an unrelated click. -->
-  <div class="review-prompt" role="dialog" aria-labelledby="review-prompt-title">
+       page like the onboarding modal, so it can never intercept an unrelated click.
+       Because of that it is NOT a dialog: role="dialog" without aria-modal, a focus
+       trap or an Escape handler promises modal semantics the component doesn't
+       implement. A labelled complementary region is what it actually is, and it
+       still gets announced and reachable in the landmark list. -->
+  <aside class="review-prompt" aria-labelledby="review-prompt-title">
     <button class="close" :aria-label="t('onboarding.close')" @click="emit('dismiss')">✕</button>
     <p id="review-prompt-title" class="title">{{ t('reviewPrompt.title') }}</p>
     <p class="body">{{ t('reviewPrompt.body') }}</p>
@@ -22,7 +26,7 @@ function rate() {
       <button class="btn btn-ghost btn-sm" @click="emit('dismiss')">{{ t('reviewPrompt.dismiss') }}</button>
       <button class="btn btn-primary btn-sm" @click="rate">{{ t('reviewPrompt.rate') }}</button>
     </div>
-  </div>
+  </aside>
 </template>
 
 <style scoped>

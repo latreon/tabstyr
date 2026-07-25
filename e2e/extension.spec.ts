@@ -285,8 +285,11 @@ test('screenshots for visual review', async ({ context, extensionId }) => {
     await closeModal();
     // Onboarding — replay from Settings (clears `onboarded`); restore it after so
     // the next theme's dashboard capture isn't covered by the first-run card.
-    await dash.locator('.intro-link').scrollIntoViewIfNeeded();
-    await dash.locator('.intro-link').click();
+    // By accessible name, not a class: the button was restyled and the old
+    // `.intro-link` selector silently stopped matching anything.
+    const introBtn = dash.getByRole('button', { name: 'Show intro again' });
+    await introBtn.scrollIntoViewIfNeeded();
+    await introBtn.click();
     await dash.waitForSelector('.backdrop', { state: 'visible' });
     await dash.waitForTimeout(300);
     await shootModal('onboarding');

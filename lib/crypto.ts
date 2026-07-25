@@ -36,10 +36,18 @@ export interface EncryptedEnvelope {
   ciphertext: string; // base64
 }
 
+// Chunked, not byte-at-a-time. A backup can be tens of megabytes, and appending one
+// character per byte to a growing string spent seconds rebuilding intermediate
+// strings and froze the page. 8k keeps each apply() call's argument list well inside
+// the engine's spread limit.
+const B64_CHUNK = 8192;
+
 function toBase64(bytes: Uint8Array): string {
-  let s = '';
-  for (const b of bytes) s += String.fromCharCode(b);
-  return btoa(s);
+  const chunks: string[] = [];
+  for (let i = 0; i < bytes.length; i += B64_CHUNK) {
+    chunks.push(String.fromCharCode(...bytes.subarray(i, i + B64_CHUNK)));
+  }
+  return btoa(chunks.join(''));
 }
 
 function fromBase64(b64: string): Uint8Array {

@@ -29,9 +29,14 @@ const title = computed(() => (isStale.value ? t('tabs.staleTitle') : t('tabs.ope
 const countLabel = computed(() =>
   isStale.value ? t('tabs.countStale', { count: props.items.length }) : t('tabs.count', { count: props.items.length }),
 );
-// Always list alphabetically by title (case-insensitive) regardless of mode.
+// Stale mode is a to-do list, so it keeps the incoming oldest-first order (the
+// tabs most worth closing at the top — see useStats.staleTabItems). Re-sorting it
+// alphabetically, as this used to, threw that ranking away. The plain open-tabs
+// list has no such ranking, so alphabetical by title is the useful order there.
 const sortedItems = computed(() =>
-  [...props.items].sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })),
+  isStale.value
+    ? props.items
+    : [...props.items].sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })),
 );
 const desc = computed(() =>
   isStale.value ? t('tabs.staleDesc', { days: props.staleDays }) : t('tabs.openDesc'),
@@ -52,12 +57,11 @@ function onKey(e: KeyboardEvent) {
 }
 onMounted(() => {
   document.addEventListener('keydown', onKey);
-  document.body.style.overflow = 'hidden';
+  // Scroll lock is ref-counted in useFocusTrap.
   closeBtn.value?.focus();
 });
 onUnmounted(() => {
   document.removeEventListener('keydown', onKey);
-  document.body.style.overflow = '';
 });
 </script>
 

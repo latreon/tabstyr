@@ -43,3 +43,37 @@ describe('NumberStepper', () => {
     expect((input.element as HTMLInputElement).value).toBe('120');
   });
 });
+
+// The field only commits on change/blur, so stepping had to read what the input
+// SHOWS. Reading `modelValue` instead silently discarded a value the user had typed
+// but not yet committed the moment they reached for − or +.
+describe('NumberStepper steps from the typed value', () => {
+  test('+ continues from uncommitted text in the field', async () => {
+    const w = mount(NumberStepper, { props: { modelValue: 10, min: 0, max: 100, step: 5 } });
+    const input = w.get('input');
+    (input.element as HTMLInputElement).value = '40'; // typed, no change event yet
+    await w.findAll('button')[1].trigger('click');
+    expect(w.emitted('update:modelValue')?.at(-1)).toEqual([45]);
+  });
+
+  test('− continues from uncommitted text in the field', async () => {
+    const w = mount(NumberStepper, { props: { modelValue: 10, min: 0, max: 100, step: 5 } });
+    (w.get('input').element as HTMLInputElement).value = '40';
+    await w.findAll('button')[0].trigger('click');
+    expect(w.emitted('update:modelValue')?.at(-1)).toEqual([35]);
+  });
+
+  test('falls back to modelValue when the field is empty or junk', async () => {
+    const w = mount(NumberStepper, { props: { modelValue: 10, min: 0, max: 100, step: 5 } });
+    (w.get('input').element as HTMLInputElement).value = '';
+    await w.findAll('button')[1].trigger('click');
+    expect(w.emitted('update:modelValue')?.at(-1)).toEqual([15]);
+  });
+
+  test('a typed value beyond the bounds is clamped before stepping', async () => {
+    const w = mount(NumberStepper, { props: { modelValue: 10, min: 0, max: 60, step: 5 } });
+    (w.get('input').element as HTMLInputElement).value = '999';
+    await w.findAll('button')[0].trigger('click');
+    expect(w.emitted('update:modelValue')?.at(-1)).toEqual([55]); // clamp(999)=60, then −5
+  });
+});

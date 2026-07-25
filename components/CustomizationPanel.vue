@@ -47,9 +47,10 @@ const newCategory = ref<CategoryId>('Work');
 const ruleError = ref('');
 
 // New custom-category form. No productivity picker here — custom categories
-// default to neutral (doesn't move Focus %); nothing else in the app lets you
-// reclassify a custom category's productivity later, so keeping this out of
-// the form removes a control most people never need to touch.
+// default to neutral (doesn't move Focus %), and the "Focus categories" tile is
+// where productivity (and the daily budget) is set for built-ins and customs
+// alike, so duplicating that control in the create form would only add a decision
+// most people don't need to make up front.
 const NEW_CATEGORY_PRODUCTIVITY: Productivity = 'neutral';
 const newCatName = ref('');
 const newCatColor = ref('#6366f1');

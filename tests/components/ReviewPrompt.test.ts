@@ -10,7 +10,10 @@ afterEach(() => {
 describe('ReviewPrompt', () => {
   test('renders the title, body, and both action buttons', () => {
     const w = mount(ReviewPrompt);
-    expect(w.find('[role="dialog"]').exists()).toBe(true);
+    // A labelled complementary region, not a dialog — it has no backdrop, focus
+    // trap or Escape handling, so it must not claim modal semantics.
+    expect(w.find('aside[aria-labelledby="review-prompt-title"]').exists()).toBe(true);
+    expect(w.find('[role="dialog"]').exists()).toBe(false);
     expect(w.get('.title').text().length).toBeGreaterThan(0);
     expect(w.get('.body').text().length).toBeGreaterThan(0);
     const actionLabels = w.findAll('.actions button').map((b) => b.text());

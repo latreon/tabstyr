@@ -93,3 +93,38 @@ describe('SelectBox', () => {
     });
   });
 });
+
+// The listbox is a SIBLING of the trigger, so aria-activedescendant alone pointed
+// outside the trigger's subtree and screen readers announced nothing while arrowing.
+// aria-owns is what re-parents it; both it and aria-controls must only reference the
+// list while the list actually exists.
+describe('SelectBox active-option wiring', () => {
+  test('closed: no dangling aria references', () => {
+    const trigger = makeWrapper().get('.trigger');
+    expect(trigger.attributes('aria-owns')).toBeUndefined();
+    expect(trigger.attributes('aria-controls')).toBeUndefined();
+    expect(trigger.attributes('aria-activedescendant')).toBeUndefined();
+  });
+
+  test('open: aria-owns adopts the listbox and activedescendant names a real option', async () => {
+    const w = makeWrapper('a');
+    await w.get('.trigger').trigger('click');
+    const trigger = w.get('.trigger');
+    const listId = w.get('[role="listbox"]').attributes('id');
+    expect(trigger.attributes('aria-owns')).toBe(listId);
+    expect(trigger.attributes('aria-controls')).toBe(listId);
+    const activeId = trigger.attributes('aria-activedescendant');
+    expect(w.find(`#${activeId}`).exists()).toBe(true);
+    expect(w.get(`#${activeId}`).attributes('role')).toBe('option');
+  });
+
+  test('activedescendant follows arrow keys', async () => {
+    const w = makeWrapper('a');
+    const trigger = w.get('.trigger');
+    await trigger.trigger('keydown', { key: 'ArrowDown' }); // open, active = idx 0
+    const first = trigger.attributes('aria-activedescendant');
+    await trigger.trigger('keydown', { key: 'ArrowDown' }); // active = idx 1
+    expect(trigger.attributes('aria-activedescendant')).not.toBe(first);
+    expect(w.get(`#${trigger.attributes('aria-activedescendant')}`).text()).toContain('Beta');
+  });
+});

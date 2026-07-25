@@ -37,9 +37,25 @@ function splitLine(line: string): string[] {
   return out.map((f) => f.trim());
 }
 
-/** Find the first header column whose lowercased name includes any of `needles`. */
-function findCol(header: string[], needles: string[]): number {
-  return header.findIndex((h) => needles.some((n) => h.includes(n)));
+/**
+ * Claim the best-matching header column for a role, never reusing one already
+ * claimed. Exact header names win over substrings, and needles are tried in
+ * priority order, because plain `includes` misfired in both directions: 'day'
+ * matched a "Monday" column, and a single "DateTime" column satisfied both the date
+ * and the duration role — so every row was then parsed with the date as its
+ * duration and silently skipped. Claiming makes that a clear "columns" error instead.
+ */
+function findCol(header: string[], needles: string[], claimed: Set<number>): number {
+  const free = (i: number) => i >= 0 && !claimed.has(i);
+  for (const n of needles) {
+    const exact = header.findIndex((h, i) => free(i) && h === n);
+    if (exact >= 0) return exact;
+  }
+  for (const n of needles) {
+    const partial = header.findIndex((h, i) => free(i) && h.includes(n));
+    if (partial >= 0) return partial;
+  }
+  return -1;
 }
 
 /**
@@ -77,9 +93,17 @@ export function parseCsvImport(text: string): CsvImportResult {
   if (lines.length < 2) throw new Error('empty');
 
   const header = splitLine(lines[0]).map((h) => h.toLowerCase());
-  const dateIdx = findCol(header, ['date', 'day']);
-  const domainIdx = findCol(header, ['domain', 'activity', 'site', 'host', 'url']);
-  const timeIdx = findCol(header, ['second', 'minute', 'hour', 'duration', 'time']);
+  // Claim in order of how specific the needles are, so the greediest role ('time')
+  // can't steal a column another role needs more.
+  const claimed = new Set<number>();
+  const claim = (needles: string[]): number => {
+    const i = findCol(header, needles, claimed);
+    if (i >= 0) claimed.add(i);
+    return i;
+  };
+  const timeIdx = claim(['seconds', 'minutes', 'hours', 'duration', 'second', 'minute', 'hour', 'time spent', 'time']);
+  const dateIdx = claim(['date', 'day']);
+  const domainIdx = claim(['domain', 'activity', 'site', 'host', 'url']);
   if (dateIdx < 0 || domainIdx < 0 || timeIdx < 0) throw new Error('columns');
 
   const unitHeader = header[timeIdx];

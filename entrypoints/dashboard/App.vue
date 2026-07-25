@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { browser } from 'wxt/browser';
 import { useI18n } from 'vue-i18n';
 import { useStats, type TabListItem } from '@/composables/useStats';
@@ -33,7 +33,26 @@ import { COFFEE_URL } from '@/lib/support';
 const { t } = useI18n();
 const locale = useLocale();
 const s = useStats();
-const loadedNow = Date.now();
+// The clock every date-bounded tile reads (trend windows, the work-log day, the
+// comparison window). A ref, not a constant, so it advances with each reload —
+// frozen at mount it meant a dashboard left open overnight kept charting yesterday
+// as "today". Every tile takes it as a prop so nothing reads Date.now() inside a
+// computed, where it would not be a reactive dependency.
+const loadedNow = ref(Date.now());
+
+// A dashboard left open showed whatever was true at mount forever: no polling, no
+// refresh. Reload whenever the tab comes back to the foreground (and it's been a
+// while), which is exactly when someone looks at it again.
+const REFRESH_AFTER_MS = 60_000;
+async function reload(opts: { silent?: boolean } = {}) {
+  loadedNow.value = Date.now();
+  await s.load(opts);
+}
+function onVisible() {
+  if (document.visibilityState !== 'visible') return;
+  if (Date.now() - loadedNow.value < REFRESH_AFTER_MS) return;
+  void reload({ silent: true });
+}
 const selected = ref<{ domain: string; now: number } | null>(null);
 const showReviewPrompt = ref(false);
 function onDismissReviewPrompt() {
@@ -83,7 +102,7 @@ async function reopenTabs(items: TabListItem[]) {
       /* skip unparseable / non-web urls (chrome://, etc.) */
     }
   }
-  await s.load({ silent: true });
+  await reload({ silent: true });
 }
 
 function buildUndo(items: TabListItem[]): (() => void) | undefined {
@@ -114,8 +133,11 @@ function onGoto(tabId: number) {
 }
 onMounted(async () => {
   await locale.load();
-  await s.load();
-  // Opened from the popup's Privacy link — show the in-app overlay (no separate page).
+  await reload();
+  document.addEventListener('visibilitychange', onVisible);
+  // Deep-linked with #privacy (from the site's privacy page, or a bookmark) — show
+  // the in-app overlay rather than a separate page. The dashboard's own privacy
+  // badge in the header opens the same dialog directly.
   if (location.hash === '#privacy') {
     showPrivacy.value = true;
     history.replaceState(null, '', location.pathname); // drop the hash from the URL
@@ -134,6 +156,11 @@ onMounted(async () => {
   // Never alongside onboarding — a brand-new install is nowhere near the
   // day-6 threshold anyway, but the check is explicit rather than assumed.
   if (!s.showOnboarding.value) showReviewPrompt.value = await shouldShowReviewPrompt(Date.now());
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('visibilitychange', onVisible);
+  clearTimeout(toastTimer);
 });
 </script>
 
@@ -169,7 +196,7 @@ onMounted(async () => {
     </div>
     <div v-else-if="s.loadError.value" class="load-error" role="alert">
       <p class="label">{{ t('common.loadError') }}</p>
-      <button type="button" class="btn btn-primary btn-sm" @click="s.load()">{{ t('common.retry') }}</button>
+      <button type="button" class="btn btn-primary btn-sm" @click="reload()">{{ t('common.retry') }}</button>
     </div>
     <template v-else>
       <p v-if="s.storageWarning.value" class="storage-warn" role="alert">{{ t('common.storageFull') }}</p>
@@ -182,6 +209,7 @@ onMounted(async () => {
         :weekly-active-days="s.weeklyActiveDays.value"
         :today-audio-seconds="s.todayAudioSeconds.value"
         :stats="s.activeStats.value"
+        :now="loadedNow"
       />
       <StatTile
         :label="t('stat.openTabs')"
@@ -211,11 +239,11 @@ onMounted(async () => {
       <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :custom="s.customCategories.value" />
       <HeatmapTile :data="s.heatmap.value" />
       <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :custom="s.customCategories.value" :now="loadedNow" @select="openDetail" @set-category="s.setCategoryOverride" />
-      <FocusCategoriesTile :productivity="s.categoryProductivity.value" :custom="s.customCategories.value" @set="s.setCategoryProductivity" @set-custom="s.setCustomProductivity" />
+      <FocusCategoriesTile :productivity="s.categoryProductivity.value" :custom="s.customCategories.value" :budgets="s.categoryBudgets.value" @set="s.setCategoryProductivity" @set-custom="s.setCustomProductivity" @set-budget="s.setCategoryBudget" />
       <!-- row: 2 + 1 — Open tabs by time beside Settings -->
       <TabTable :rows="s.tabRows.value" />
-      <SettingsPanel @changed="() => s.load({ silent: true })" />
-      <CustomizationPanel :custom="s.customCategories.value" :category-rules="s.categoryRules.value" @changed="() => s.load({ silent: true })" />
+      <SettingsPanel @changed="() => reload({ silent: true })" />
+      <CustomizationPanel :custom="s.customCategories.value" :category-rules="s.categoryRules.value" @changed="() => reload({ silent: true })" />
       </section>
     </template>
   </main>

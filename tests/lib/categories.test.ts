@@ -73,7 +73,7 @@ describe('categorize', () => {
   test('matches built-in tokens on label boundaries, not raw substring', () => {
     // Real boundary matches still work…
     expect(categorize('mobile.x.com')).toBe('Social');
-    expect(categorize('music.amazon.com')).toBe('Shopping');
+    expect(categorize('shop.amazon.com')).toBe('Shopping');
     // …but lookalikes that merely contain a token are not swallowed.
     expect(categorize('notx.com')).toBe('Other'); // contains 'x.com'
     expect(categorize('myamazon-clone.com')).toBe('Other'); // contains 'amazon'
@@ -164,5 +164,49 @@ describe('custom category resolvers', () => {
 
   test('allCategoryIds appends custom names after the built-ins', () => {
     expect(allCategoryIds(CUSTOM)).toEqual([...CATEGORIES, 'Learning']);
+  });
+});
+
+// Regression cover: needles that also appear in a LATER, broader list must be
+// claimed by the earlier list, and the modern-web categories must not all be "Other"
+// (everything in Other counts as neutral, i.e. excluded from the Focus % denominator).
+describe('categorize — overlapping and modern tokens', () => {
+  test('AWS hosts are Dev, not swallowed by Shopping\'s "amazon"', () => {
+    for (const d of ['aws.amazon.com', 'console.aws.amazon.com', 's3.console.aws.amazon.com', 'docs.aws.amazon.com']) {
+      expect(categorize(d)).toBe('Dev');
+    }
+  });
+
+  test('other cloud consoles are Dev', () => {
+    expect(categorize('console.cloud.google.com')).toBe('Dev');
+    expect(categorize('portal.azure.com')).toBe('Dev');
+  });
+
+  test('Amazon media subdomains are Media, and the shop is still Shopping', () => {
+    expect(categorize('music.amazon.com')).toBe('Media');
+    expect(categorize('amazon.com')).toBe('Shopping');
+    expect(categorize('amazon.co.uk')).toBe('Shopping');
+  });
+
+  test('AI assistants count as Work rather than falling into Other', () => {
+    for (const d of ['chatgpt.com', 'chat.openai.com', 'claude.ai', 'gemini.google.com', 'copilot.microsoft.com']) {
+      expect(categorize(d)).toBe('Work');
+    }
+  });
+
+  test('vendor docs and technical learning are Dev', () => {
+    for (const d of ['developer.apple.com', 'learn.microsoft.com', 'docs.python.org', 'react.dev', 'coursera.org', 'udemy.com']) {
+      expect(categorize(d)).toBe('Dev');
+    }
+  });
+
+  test('search engines stay neutral (Other) — navigation is not work or distraction', () => {
+    for (const d of ['google.com', 'bing.com', 'duckduckgo.com']) {
+      expect(categorize(d)).toBe('Other');
+    }
+  });
+
+  test('a user override still beats every built-in token', () => {
+    expect(categorize('chatgpt.com', { 'chatgpt.com': 'Social' })).toBe('Social');
   });
 });

@@ -189,14 +189,23 @@ export function useStats() {
       .sort((a, b) => a.lastActiveAt - b.lastActiveAt),
   );
 
+  // Persist a settings patch AND tell the background worker to drop its settings
+  // cache. Every one of these mutators changes something the worker reads —
+  // classification drives the continuous-session nudge and the budget nudge — and
+  // the worker caches settings in module scope. On Firefox the background page is
+  // PERSISTENT, so without this broadcast a domain the user just reclassified as
+  // productive kept firing "distracting" nudges for the rest of the browser session.
+  async function save(patch: Partial<Settings>): Promise<void> {
+    settings.value = await saveSettings(patch);
+    await browser.runtime.sendMessage({ type: 'settings-changed' }).catch(() => undefined);
+  }
+
   async function setCategoryOverride(domain: string, category: CategoryId): Promise<void> {
-    settings.value = await saveSettings({ categoryOverrides: { ...overrides.value, [domain]: category } });
+    await save({ categoryOverrides: { ...overrides.value, [domain]: category } });
   }
 
   async function setCategoryProductivity(category: Category, value: Productivity): Promise<void> {
-    settings.value = await saveSettings({
-      categoryProductivity: { ...categoryProductivity.value, [category]: value },
-    });
+    await save({ categoryProductivity: { ...categoryProductivity.value, [category]: value } });
   }
 
   // Reclassify a custom category's productivity. Custom categories carry their own
@@ -204,18 +213,15 @@ export function useStats() {
   // the matching entry in the customCategories array.
   async function setCustomProductivity(name: CategoryId, value: Productivity): Promise<void> {
     const next = customCategories.value.map((c) => (c.name === name ? { ...c, productivity: value } : c));
-    settings.value = await saveSettings({ customCategories: next });
+    await save({ customCategories: next });
   }
 
-  // Set/clear a category's daily budget (minutes). null/0 removes it. Unlike the
-  // productivity mapping (dashboard-only), budgets drive the background nudge, so
-  // broadcast settings-changed to invalidate the background's settings cache.
+  /** Set/clear a category's daily budget in minutes. null/0 removes it. */
   async function setCategoryBudget(category: CategoryId, minutes: number | null): Promise<void> {
     const next = { ...categoryBudgets.value };
     if (minutes && minutes > 0) next[category] = minutes;
     else delete next[category];
-    settings.value = await saveSettings({ categoryBudgets: next });
-    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    await save({ categoryBudgets: next });
   }
 
   async function addCategoryRule(pattern: string, category: CategoryId): Promise<void> {
@@ -223,17 +229,15 @@ export function useStats() {
     if (!clean) return;
     // Replace any existing rule with the same pattern, then append the new one.
     const next = [...categoryRules.value.filter((r) => r.pattern !== clean), { pattern: clean, category }];
-    settings.value = await saveSettings({ categoryRules: next });
+    await save({ categoryRules: next });
   }
 
   async function removeCategoryRule(pattern: string): Promise<void> {
-    settings.value = await saveSettings({
-      categoryRules: categoryRules.value.filter((r) => r.pattern !== pattern),
-    });
+    await save({ categoryRules: categoryRules.value.filter((r) => r.pattern !== pattern) });
   }
 
   async function dismissOnboarding(): Promise<void> {
-    settings.value = await saveSettings({ onboarded: true });
+    await save({ onboarded: true });
   }
 
   // Monotonic token so overlapping load() calls (mount + post-mutation refreshes)

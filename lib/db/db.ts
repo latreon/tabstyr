@@ -5,6 +5,12 @@ interface TabTimeDB extends DBSchema {
   sessions: {
     key: number;
     value: Session & { id?: number };
+    // `by-start` drives the 90-day window read and the prune cursor. `by-tab` and
+    // `by-key` currently have no reader: per-tab totals are derived from
+    // dailyDomainStats instead (key-independent, so they survive a restart), and
+    // `tabKey` itself is still needed as the cross-device session identity in
+    // lib/merge. The indexes are kept because dropping one requires a schema
+    // version bump and upgrade path, which buys nothing here.
     indexes: { 'by-start': number; 'by-tab': number; 'by-key': string };
   };
   dailyDomainStats: { key: [string, string]; value: DailyStat };
@@ -22,6 +28,14 @@ let dbPromise: Promise<IDBPDatabase<TabTimeDB>> | null = null;
 function blocking(): void {
   // A newer version wants to open elsewhere (popup vs worker): release our hold.
   void dbPromise?.then((db) => db.close());
+  dbPromise = null;
+}
+
+// The connection died outside our control — the browser closed it (user cleared
+// site data, storage pressure, corruption). Without this the cached promise kept
+// handing out a dead connection and every later read/write threw for the lifetime
+// of the page/worker. Dropping the cache lets the next getDB() reopen.
+function terminated(): void {
   dbPromise = null;
 }
 
@@ -48,6 +62,7 @@ function openAt(version: number | undefined): Promise<IDBPDatabase<TabTimeDB>> {
       }
     },
     blocking,
+    terminated,
   });
 }
 

@@ -16,19 +16,64 @@ function hashRoute(hash: string): string {
   return hash.split('?')[0];
 }
 
+// Stand-in for a path segment that looks like a secret. ASCII and URL-unreserved
+// on purpose: it round-trips through `new URL().pathname` unescaped, so pagePath()
+// can display it (a '…' came back percent-encoded as %E2%80%A6).
+const REDACTED = '~redacted';
+
+// Words that mean "the next segment is a one-time secret".
+const SECRET_PATH_WORDS = new Set([
+  'reset', 'invite', 'invitation', 'token', 'verify', 'verification', 'confirm',
+  'activate', 'activation', 'magic', 'otp', 'unsubscribe', 'session', 'auth',
+]);
+// An opaque identifier: one long unbroken alphanumeric run mixing letters and
+// digits (a document/share id, a hex token), or a UUID. Deliberately conservative:
+// anything word-separated is left alone, because real route segments look like that
+// ("summer-sale-2026", "2026-06-11-release-notes") and sub-page grouping plus the
+// path labels read them. The trade-off is that a hyphen-bearing base64url token can
+// still slip through; the query string and fragment — where most tokens live — are
+// dropped outright regardless.
+const OPAQUE_SEGMENT = /^(?=.{20,})(?=.*\d)(?=.*[a-zA-Z])[A-Za-z0-9]+$/;
+const UUID_SEGMENT = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * Redact path segments that look like credentials. Stripping `?…`/`#…` keeps
+ * secrets out of the query and fragment, but plenty of them live in the PATH —
+ * password-reset and invite links, magic-login URLs, share/document ids. Those
+ * paths are persisted (tabMeta, sessions) and included verbatim in every JSON
+ * export, so they get replaced rather than stored.
+ *
+ * Two rules: the segment right after a known secret word, and any long opaque
+ * alphanumeric segment. Redacted segments still group together, so the sub-page
+ * breakdown keeps working — "one row for password resets" instead of one row per
+ * token.
+ */
+function redactPath(pathname: string): string {
+  const parts = pathname.split('/');
+  return parts
+    .map((segment, i) => {
+      if (!segment) return segment; // leading/trailing slash
+      const prev = parts[i - 1]?.toLowerCase();
+      if (prev && SECRET_PATH_WORDS.has(prev)) return REDACTED;
+      return OPAQUE_SEGMENT.test(segment) || UUID_SEGMENT.test(segment) ? REDACTED : segment;
+    })
+    .join('/');
+}
+
 /**
  * Normalized page identity for sub-page (SPA) tracking: scheme + host + path
  * (+ a `#/` hash route when present), with the query string and all other
- * fragments stripped. Dropping `?…`/`#…` keeps secrets and PII (session tokens,
- * search terms) out of what we store and display, and collapses the countless
- * query-only variants of one page into a single entry. Non-web URLs are returned
- * unchanged (the engine never stores them anyway).
+ * fragments stripped and credential-shaped path segments redacted. Dropping
+ * `?…`/`#…` keeps secrets and PII (session tokens, search terms) out of what we
+ * store and display, and collapses the countless query-only variants of one page
+ * into a single entry. Non-web URLs are returned unchanged (the engine never
+ * stores them anyway).
  */
 export function pageOf(url: string): string {
   try {
     const u = new URL(url);
     if (u.protocol === 'http:' || u.protocol === 'https:') {
-      return `${u.protocol}//${u.host}${u.pathname}${hashRoute(u.hash)}`;
+      return `${u.protocol}//${u.host}${redactPath(u.pathname)}${redactPath(hashRoute(u.hash))}`;
     }
     return url;
   } catch {

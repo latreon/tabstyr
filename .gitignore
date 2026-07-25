@@ -13,3 +13,6 @@ e2e/__screenshots__/
 .env
 .env.*
 !.env.example
+
+# Coverage output (vitest --coverage)
+coverage/

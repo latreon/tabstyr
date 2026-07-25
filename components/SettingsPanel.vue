@@ -57,7 +57,12 @@ const sessionAlertMinutes = ref(30);
 const focusTarget = ref(50);
 const themeChoice = ref<'light' | 'dark'>('light');
 // Gate auto-save until the initial values are loaded, so seeding the refs in
-// onMounted doesn't immediately persist defaults over stored settings.
+// onMounted doesn't immediately persist what we just read back.
+// MUST be flipped in a later tick than the seeding assignments: the watcher below
+// is pre-flush, so setting this synchronously right after the assignments let the
+// callback see `loaded === true` and fire anyway. That wrote the settings back,
+// broadcast settings-changed, reloaded the whole dashboard and flashed a "Saved"
+// toast on every single dashboard open (for anyone with a non-default setting).
 const loaded = ref(false);
 let saveTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -84,6 +89,8 @@ onMounted(async () => {
   // If still on the implicit "system" default, show the resolved theme in the picker.
   themeChoice.value = s.theme === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : s.theme;
   focusTarget.value = s.focusTarget;
+  // Let the seeding watcher run (and bail on `loaded === false`) before opening the gate.
+  await nextTick();
   loaded.value = true;
 });
 

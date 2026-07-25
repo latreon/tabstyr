@@ -42,30 +42,30 @@ export default defineConfig({
         ...(chromium ? ['favicon'] : []),
       ],
       action: { default_title: 'TabStyr' },
-      // Explicit, auditable CSP for extension pages — Chromium MV3 only. Tightens
-      // the secure MV3 default: no remote scripts/eval, connect-src 'none' (the
-      // extension makes zero network requests), img-src limited to same-origin
-      // (the chrome-extension://…/_favicon source) + data:. style-src keeps
-      // 'unsafe-inline' for Vue's runtime styles. MV2 (Firefox) and Safari keep
-      // their own defaults — the MV3 object form is invalid there.
-      ...(chromium && manifestVersion === 3
-        ? {
-            content_security_policy: {
-              extension_pages:
-                "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'",
-            },
-          }
-        : {}),
-      // MV2 (Firefox, Safari) takes the STRING form of CSP. The MV2 default omits
-      // connect-src/base-uri/form-action; spell them out so these builds get the
-      // same defense-in-depth as Chromium — the extension makes zero network
-      // requests, submits no forms, and needs no <base>.
-      ...(!chromium && manifestVersion === 2
-        ? {
-            content_security_policy:
-              "script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'",
-          }
-        : {}),
+      // Explicit, auditable CSP for extension pages. Tightens the secure MV3
+      // default: no remote scripts/eval, connect-src 'none' (the extension makes
+      // zero network requests), img-src limited to same-origin (the
+      // chrome-extension://…/_favicon source) + data:. style-src keeps
+      // 'unsafe-inline' for Vue's runtime styles.
+      //
+      // `default-src 'self'` is what makes this a whitelist rather than a list of
+      // holes: CSP has no implicit fallback, so every directive NOT named here
+      // (font-src, media-src, worker-src, child-src …) was previously unrestricted.
+      // frame-src 'none' is then spelled out because no page in this extension
+      // embeds a frame, and a framed remote document would sidestep connect-src.
+      // Shared verbatim by the MV3 object form and the MV2 (Firefox/Safari) string
+      // form so the three builds can't drift apart.
+      ...(() => {
+        const csp =
+          "default-src 'self'; script-src 'self'; object-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'";
+        if (chromium && manifestVersion === 3) {
+          return { content_security_policy: { extension_pages: csp } };
+        }
+        if (!chromium && manifestVersion === 2) {
+          return { content_security_policy: csp };
+        }
+        return {};
+      })(),
       // Firefox (AMO) requirements:
       // - a stable add-on id,
       // - strict_min_version 115 — the floor for `storage.session`,

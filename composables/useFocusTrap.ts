@@ -4,12 +4,16 @@ import { onBeforeUnmount, onMounted, watch, type Ref } from 'vue';
 // pointer/focus interaction. Ref-counted so stacked dialogs are safe. Modals are
 // teleported to <body> (outside #app), so inerting #app disables only the
 // background, never the dialog itself.
+// The page scroll lock is ref-counted here too. Each modal used to set and clear
+// document.body.style.overflow itself, so closing one of two stacked dialogs
+// unlocked scrolling while the other was still open.
 let openDialogs = 0;
 function lockBackground() {
   if (openDialogs++ === 0) {
     const app = document.getElementById('app');
     app?.setAttribute('inert', '');
     app?.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = 'hidden';
   }
 }
 function unlockBackground() {
@@ -17,6 +21,7 @@ function unlockBackground() {
     const app = document.getElementById('app');
     app?.removeAttribute('inert');
     app?.removeAttribute('aria-hidden');
+    document.body.style.overflow = '';
   }
 }
 

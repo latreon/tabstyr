@@ -122,7 +122,7 @@ export interface WrappedData {
   focusTarget: number;
 
   // ── Visit shape ──────────────────────────────────────────────────────────
-  /** Longest single coalesced foreground visit, in seconds. */
+  /** Longest single coalesced foreground visit to ONE site, in seconds. */
   longestVisitSeconds: number;
   visitCount: number;
 
@@ -319,9 +319,13 @@ export function buildWrapped(input: WrappedInput): WrappedData | null {
   const totalSeconds = sites.reduce((sum, s) => sum + s.seconds, 0);
   if (totalSeconds <= 0) return null;
 
+  // Web domains only, to match totalSeconds — summing internal-page rows here made
+  // the audio headline describe a wider set of data than the active headline.
   const totalAudioSeconds = Math.max(
     0,
-    Math.round(stats.reduce((sum, s) => sum + Math.max(0, s.audioSeconds), 0)),
+    Math.round(
+      stats.reduce((sum, s) => (isWebDomain(s.domain) ? sum + Math.max(0, s.audioSeconds) : sum), 0),
+    ),
   );
 
   // aggregateByDate only records dates with active time, so its keys ARE the
@@ -351,7 +355,18 @@ export function buildWrapped(input: WrappedInput): WrappedData | null {
   const peak = peakHour(heatmap);
   const chronotype = chronotypeOf(heatmap);
 
-  const visits = coalesceSessions(foreground);
+  // Coalesce PER DOMAIN. coalesceSessions only looks at timestamps, so feeding it
+  // every session at once stitched adjacent slices from different sites into one
+  // "visit" — "longest visit" then measured an unbroken browsing streak across the
+  // whole web rather than time spent on a single site, and visitCount collapsed
+  // every site switch away.
+  const byDomain = new Map<string, Session[]>();
+  for (const s of foreground) {
+    const rows = byDomain.get(s.domain);
+    if (rows) rows.push(s);
+    else byDomain.set(s.domain, [s]);
+  }
+  const visits = [...byDomain.values()].flatMap((rows) => coalesceSessions(rows));
   const longestVisitSeconds = visits.reduce(
     (max, v) => Math.max(max, Math.round((v.end - v.start) / 1000)),
     0,

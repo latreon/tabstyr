@@ -2,14 +2,6 @@ import { getDB } from './db';
 import { monthOf } from '../monthly';
 import type { DailyStat, MonthlyStat, Session, TabMeta } from '../types';
 
-export async function addSessions(sessions: Session[]): Promise<void> {
-  if (!sessions.length) return;
-  const db = await getDB();
-  const tx = db.transaction('sessions', 'readwrite');
-  for (const s of sessions) await tx.store.add(s);
-  await tx.done;
-}
-
 function mergeStat(existing: DailyStat | undefined, d: DailyStat): DailyStat {
   return existing
     ? {
@@ -18,16 +10,6 @@ function mergeStat(existing: DailyStat | undefined, d: DailyStat): DailyStat {
         audioSeconds: existing.audioSeconds + d.audioSeconds,
       }
     : d;
-}
-
-export async function applyDailyStats(deltas: DailyStat[]): Promise<void> {
-  if (!deltas.length) return;
-  const db = await getDB();
-  const tx = db.transaction('dailyDomainStats', 'readwrite');
-  for (const d of deltas) {
-    await tx.store.put(mergeStat(await tx.store.get([d.date, d.domain]), d));
-  }
-  await tx.done;
 }
 
 /**
@@ -86,31 +68,6 @@ export async function getAllMonthlyStats(): Promise<MonthlyStat[]> {
   return (await getDB()).getAll('monthlyDomainStats');
 }
 
-/** Archived monthly totals within [from, to] inclusive (month keys 'YYYY-MM'). */
-export async function getMonthlyRange(from: string, to: string): Promise<MonthlyStat[]> {
-  const db = await getDB();
-  return db.getAll('monthlyDomainStats', IDBKeyRange.bound([from, ''], [to, '￿']));
-}
-
-/**
- * Merge monthly totals into the archive, summing by (month, domain). Used by
- * restore/sync to fold an imported archive into whatever is already stored.
- */
-export async function applyMonthlyStats(deltas: MonthlyStat[]): Promise<void> {
-  if (!deltas.length) return;
-  const db = await getDB();
-  const tx = db.transaction('monthlyDomainStats', 'readwrite');
-  for (const d of deltas) {
-    const existing = await tx.store.get([d.month, d.domain]);
-    await tx.store.put(
-      existing
-        ? { ...existing, seconds: existing.seconds + d.seconds, audioSeconds: existing.audioSeconds + d.audioSeconds }
-        : d,
-    );
-  }
-  await tx.done;
-}
-
 export async function getAllSessions(): Promise<Session[]> {
   return (await getDB()).getAll('sessions');
 }
@@ -119,32 +76,6 @@ export async function getAllSessions(): Promise<Session[]> {
 export async function getSessionsSince(ts: number): Promise<Session[]> {
   const db = await getDB();
   return db.getAllFromIndex('sessions', 'by-start', IDBKeyRange.lowerBound(ts));
-}
-
-/**
- * Total tracked seconds for each given stable tab key. Reads only the sessions
- * belonging to the requested keys via the `by-key` index — no full-table scan —
- * so cost scales with the number of open tabs, not total history.
- */
-export async function getSecondsForKeys(keys: string[]): Promise<Map<string, number>> {
-  const map = new Map<string, number>();
-  if (!keys.length) return map;
-  const db = await getDB();
-  const tx = db.transaction('sessions', 'readonly');
-  const index = tx.objectStore('sessions').index('by-key');
-  await Promise.all(
-    [...new Set(keys)].map(async (key) => {
-      const sessions = await index.getAll(key);
-      // Foreground only — exclude background-audio sessions so per-tab time matches
-      // the active-time metric used everywhere else in the app.
-      const total = sessions
-        .filter((s) => !s.audio)
-        .reduce((sum, s) => sum + Math.round((s.end - s.start) / 1000), 0);
-      if (total) map.set(key, total);
-    }),
-  );
-  await tx.done;
-  return map;
 }
 
 export async function upsertTabMeta(meta: TabMeta): Promise<void> {
