@@ -110,3 +110,38 @@ describe('pagePath', () => {
     expect(pagePath('https://a.com/p#section')).toBe('/p'); // non-route fragment ignored
   });
 });
+
+describe('pageOf path redaction', () => {
+  test('redacts the segment after a secret word', () => {
+    expect(pageOf('https://app.co/reset/aB3xY9zQ7pL2mN4k')).toBe('https://app.co/reset/~redacted');
+    expect(pageOf('https://app.co/invite/short')).toBe('https://app.co/invite/~redacted');
+  });
+
+  test('redacts long opaque ids and UUIDs anywhere in the path', () => {
+    expect(pageOf('https://docs.google.com/document/d/1a2B3c4D5e6F7g8H9i0JkLmNoPqRsTuVwXyZ/edit'))
+      .toBe('https://docs.google.com/document/d/~redacted/edit');
+    expect(pageOf('https://app.co/teams/550e8400-e29b-41d4-a716-446655440000/settings'))
+      .toBe('https://app.co/teams/~redacted/settings');
+  });
+
+  test('all token-shaped segments collapse to ONE sub-page row', () => {
+    expect(pageOf('https://app.co/reset/tokenAAAAAAAAAAAAAAAA'))
+      .toBe(pageOf('https://app.co/reset/tokenBBBBBBBBBBBBBBBB'));
+  });
+
+  test('leaves real route segments alone (sub-page grouping depends on them)', () => {
+    for (const u of [
+      'https://github.com/latreon/tabstyr/pull/2503',
+      'https://shop.com/products/summer-sale-2026',
+      'https://a.com/blog/2026-06-11-release-notes',
+      'https://en.wikipedia.org/wiki/Extended_periodic_table',
+      'https://youtube.com/watch',
+    ]) {
+      expect(pageOf(u)).toBe(u);
+    }
+  });
+
+  test('the placeholder survives a URL round-trip so pagePath can show it', () => {
+    expect(pagePath(pageOf('https://app.co/reset/aB3xY9zQ7pL2mN4k'))).toBe('/reset/~redacted');
+  });
+});

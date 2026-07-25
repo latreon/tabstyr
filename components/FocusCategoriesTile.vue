@@ -3,25 +3,36 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { CATEGORIES, CATEGORY_META, PRODUCTIVITY, categoryLabel, type Category, type CategoryId, type CustomCategory, type Productivity } from '@/lib/categories';
 import SelectBox from '@/components/ui/SelectBox.vue';
+import NumberStepper from '@/components/ui/NumberStepper.vue';
 
-defineProps<{
+const props = defineProps<{
   productivity: Record<Category, Productivity>;
   custom?: CustomCategory[];
+  /** Daily minute budgets per category value; absent/0 = no budget. */
+  budgets?: Partial<Record<CategoryId, number>>;
 }>();
 const emit = defineEmits<{
   set: [category: Category, value: Productivity];
   setCustom: [name: CategoryId, value: Productivity];
+  setBudget: [category: CategoryId, minutes: number | null];
 }>();
 const { t } = useI18n();
 
 const OPTIONS = computed(() => PRODUCTIVITY.map((p) => ({ value: p, label: t(`productivity.${p}`) })));
+
+// Daily time budget per category, in minutes. 0 means "no budget" — the stepper's
+// minimum, so stepping down to 0 clears it (the setter treats 0/null the same).
+const MAX_BUDGET_MINUTES = 24 * 60;
+const budgetOf = (c: CategoryId): number => props.budgets?.[c] ?? 0;
+const onBudget = (c: CategoryId, minutes: number) => emit('setBudget', c, minutes > 0 ? minutes : null);
 </script>
 
 <template>
   <div class="tile focus-cats-tile">
     <h2 class="label">{{ t('settings.focusCategories') }}</h2>
     <p class="hint">{{ t('settings.focusCategoriesHint') }}</p>
-    <ul class="prod-list">
+    <p class="hint">{{ t('settings.dailyBudgetsHint') }}</p>
+    <ul class="prod-list" :aria-label="t('settings.categoryProductivityAria')">
       <li v-for="c in CATEGORIES" :key="c" class="prod-row">
         <span class="prod-cat">
           <span class="cat-dot" :style="{ background: CATEGORY_META[c].color }" aria-hidden="true" />
@@ -34,6 +45,17 @@ const OPTIONS = computed(() => PRODUCTIVITY.map((p) => ({ value: p, label: t(`pr
             :label="t('settings.productivityForAria', { category: t(`categories.${c}`) })"
             @update:model-value="emit('set', c, $event as Productivity)"
           />
+          <span class="budget">
+            <NumberStepper
+              :model-value="budgetOf(c)"
+              :min="0"
+              :max="MAX_BUDGET_MINUTES"
+              :step="15"
+              :label="t('settings.budgetForAria', { category: t(`categories.${c}`) })"
+              @update:model-value="onBudget(c, $event)"
+            />
+            <span class="budget-unit">{{ budgetOf(c) ? t('settings.budgetUnit') : t('settings.budgetOff') }}</span>
+          </span>
         </span>
       </li>
       <!-- Custom categories carry their own productivity — reclassify it here, the
@@ -50,6 +72,17 @@ const OPTIONS = computed(() => PRODUCTIVITY.map((p) => ({ value: p, label: t(`pr
             :label="t('settings.productivityForAria', { category: c.name })"
             @update:model-value="emit('setCustom', c.name, $event as Productivity)"
           />
+          <span class="budget">
+            <NumberStepper
+              :model-value="budgetOf(c.name)"
+              :min="0"
+              :max="MAX_BUDGET_MINUTES"
+              :step="15"
+              :label="t('settings.budgetForAria', { category: c.name })"
+              @update:model-value="onBudget(c.name, $event)"
+            />
+            <span class="budget-unit">{{ budgetOf(c.name) ? t('settings.budgetUnit') : t('settings.budgetOff') }}</span>
+          </span>
         </span>
       </li>
     </ul>
@@ -71,7 +104,9 @@ const OPTIONS = computed(() => PRODUCTIVITY.map((p) => ({ value: p, label: t(`pr
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  /* Wider track than before: each row now carries a productivity picker AND a
+     budget stepper, so 240px wrapped the two controls onto separate lines. */
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: var(--sp-2) 20px;
 }
 .prod-row {
@@ -96,5 +131,15 @@ const OPTIONS = computed(() => PRODUCTIVITY.map((p) => ({ value: p, label: t(`pr
   align-items: center;
   gap: var(--sp-2);
   flex: none;
+}
+.budget {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.budget-unit {
+  min-width: 1.6em; /* reserve room so "off" → "m" doesn't shift the stepper */
+  font-size: var(--text-xs);
+  color: var(--text-3);
 }
 </style>

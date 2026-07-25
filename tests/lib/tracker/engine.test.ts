@@ -22,10 +22,14 @@ describe('TrackerEngine focus/blur', () => {
     expect(e.handleBlur(T0 + 40_000)).toEqual([]); // already blurred — no-op
   });
 
-  test('sessions under 1s are discarded', () => {
+  test('sessions under the minimum are discarded, but a brief real visit is kept', () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://a.com', T0);
-    expect(e.handleFocus(2, 'https://b.com', T0 + 500)).toEqual([]);
+    expect(e.handleFocus(2, 'https://b.com', T0 + 100)).toEqual([]); // below MIN_SESSION_MS
+    // 500ms IS a real (if brief) visit and is now recorded rather than thrown away.
+    const closed = e.handleFocus(3, 'https://c.com', T0 + 600);
+    expect(closed).toHaveLength(1);
+    expect(closed[0].end - closed[0].start).toBe(500);
   });
 
   test('redundant re-focus of the same tab+page keeps the session, loses no time', () => {
@@ -107,7 +111,9 @@ describe('TrackerEngine reconcile', () => {
     });
     const closed = e.reconcile(new Set([1]), T0 + 8 * 3_600_000); // 8h later
     expect(closed).toHaveLength(1);
-    expect(closed[0].end).toBe(T0 + 30 * 60_000); // capped at MAX_SESSION_MS, not +8h
+    // Over the cap ⇒ the heartbeat was missed, so only one heartbeat of grace is
+    // credited (NOT the 30-minute cap, which was 30 min of phantom time per wake).
+    expect(closed[0].end).toBe(T0 + 60_000);
     expect(e.getState().focused?.start).toBe(T0 + 8 * 3_600_000);
   });
 
@@ -119,7 +125,7 @@ describe('TrackerEngine reconcile', () => {
     });
     const closed = e.reconcile(new Set([1]), T0 + 8 * 3_600_000);
     expect(closed).toHaveLength(1);
-    expect(closed[0].end).toBe(T0 + 30 * 60_000); // capped, not start + 8h
+    expect(closed[0].end).toBe(T0 + 60_000); // one heartbeat of grace, not start + 8h
     expect(e.getState().audio).toEqual([]);
   });
 });
@@ -133,14 +139,25 @@ describe('TrackerEngine boundary safety', () => {
     expect(e.getState().focused?.start).toBe(T0);
   });
 
-  test('checkpoint keeps sub-1s elapsed time instead of discarding it', () => {
+  test('checkpoint keeps sub-minimum elapsed time instead of discarding it', () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://a.com', T0);
-    expect(e.checkpoint(T0 + 500)).toEqual([]); // nothing emitted
+    expect(e.checkpoint(T0 + 100)).toEqual([]); // below MIN_SESSION_MS — nothing emitted
     expect(e.getState().focused?.start).toBe(T0); // start NOT reset
     const closed = e.checkpoint(T0 + 1500);
     expect(closed).toHaveLength(1);
     expect(closed[0].start).toBe(T0); // full elapsed window kept
+  });
+
+  test('records a brief sub-second visit instead of dropping it', () => {
+    // Twenty ~900ms visits used to store nothing at all (MIN_SESSION_MS was 1000),
+    // silently losing 18s of genuine browsing while flicking through tabs.
+    const e = new TrackerEngine();
+    let total = 0;
+    for (let i = 0; i < 20; i++) {
+      for (const s of e.handleFocus(i, `https://site${i}.com/`, T0 + i * 900)) total += s.end - s.start;
+    }
+    expect(total).toBe(19 * 900); // every closed visit counted (the 20th is still open)
   });
 
   test('does not track internal pages (chrome://, newtab, extension)', () => {
@@ -155,12 +172,19 @@ describe('TrackerEngine boundary safety', () => {
     expect(e.getState().focused).toBeNull();
   });
 
-  test('caps a long NON-media session at the 30-minute bound (likely sleep)', () => {
+  test('credits only a heartbeat of grace for a long NON-media session (likely sleep)', () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://a.com', T0); // not audible
     const closed = e.handleBlur(T0 + 8 * 60 * 60_000); // "focused" across an 8h sleep
     expect(closed).toHaveLength(1);
-    expect(closed[0].end - closed[0].start).toBe(30 * 60_000); // not 8 hours
+    expect(closed[0].end - closed[0].start).toBe(60_000); // not 8 hours, and not 30 min
+  });
+
+  test('a normal close well inside the cap keeps its real duration', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://a.com', T0);
+    const closed = e.handleBlur(T0 + 12 * 60_000); // 12 real minutes of reading
+    expect(closed[0].end - closed[0].start).toBe(12 * 60_000); // grace never clips real time
   });
 
   test('counts a long video watched without input in full (audible, uncapped)', () => {
@@ -177,7 +201,8 @@ describe('TrackerEngine boundary safety', () => {
     // System clock jumps 3 days forward while the session is open (NTP/VM resume).
     const closed = e.handleBlur(T0 + 3 * 24 * 60 * 60_000);
     expect(closed).toHaveLength(1);
-    expect(closed[0].end - closed[0].start).toBe(24 * 60 * 60_000); // not 3 days of bogus time
+    // Past the 24h ceiling the timestamp is bogus, so credit grace only.
+    expect(closed[0].end - closed[0].start).toBe(60_000); // not 3 days of bogus time
   });
 
   test('drops a session when the clock jumps backward (now < start)', () => {
@@ -209,9 +234,9 @@ describe('TrackerEngine boundary safety', () => {
     const e = new TrackerEngine();
     e.syncAudio([{ tabId: 2, url: 'https://music.com/x' }], T0);
     // No heartbeat for 4h means the worker was stalled (system slept), not 4h of
-    // real listening — cap it at the 30-minute backstop instead of booking 4h.
+    // real listening — credit one heartbeat of grace instead of booking 4h.
     const closed = e.checkpoint(T0 + 4 * 60 * 60_000);
-    expect(closed[0].end - closed[0].start).toBe(30 * 60_000);
+    expect(closed[0].end - closed[0].start).toBe(60_000);
   });
 
   test('lock/sleep caps everything, even media sessions', () => {
@@ -219,7 +244,7 @@ describe('TrackerEngine boundary safety', () => {
     e.handleFocus(1, 'https://youtube.com/watch', T0, true);
     e.syncAudio([{ tabId: 2, url: 'https://music.com/x' }], T0);
     const closed = e.handleLocked(T0 + 3 * 60 * 60_000); // screen locked for 3h
-    for (const s of closed) expect(s.end - s.start).toBe(30 * 60_000);
+    for (const s of closed) expect(s.end - s.start).toBe(60_000);
     expect(e.getState().focused).toBeNull();
     expect(e.getState().audio).toEqual([]);
   });
@@ -257,14 +282,14 @@ describe('TrackerEngine boundary safety', () => {
   });
 
   // A heartbeat that fires far past the cap (alarm throttled) emits only the
-  // capped slice and resets start to now — time beyond the cap is intentionally
+  // grace slice and resets start to now — time beyond the cap is intentionally
   // dropped (treated as a likely sleep gap, not real use).
-  test('checkpoint past the cap emits the 30-minute slice and resets start', () => {
+  test('checkpoint past the cap emits one heartbeat of grace and resets start', () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://a.com', T0); // non-media
     const closed = e.checkpoint(T0 + 45 * 60_000);
     expect(closed).toHaveLength(1);
-    expect(closed[0].end - closed[0].start).toBe(30 * 60_000);
+    expect(closed[0].end - closed[0].start).toBe(60_000);
     expect(e.getState().focused?.start).toBe(T0 + 45 * 60_000); // start advanced to now
     // The next minute then accrues normally from the new start.
     const next = e.checkpoint(T0 + 46 * 60_000);

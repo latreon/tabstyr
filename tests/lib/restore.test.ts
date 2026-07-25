@@ -177,7 +177,7 @@ describe('parseBackup', () => {
 describe('restoreBackup', () => {
   test('replaces all data with the backup contents', async () => {
     // Seed some pre-existing data that restore must clear.
-    await repo.applyDailyStats([{ date: '2020-01-01', domain: 'old.com', seconds: 999, audioSeconds: 0 }]);
+    await repo.commitSessions([], [{ date: '2020-01-01', domain: 'old.com', seconds: 999, audioSeconds: 0 }]);
 
     const res = await restoreBackup(parseBackup(backupText()));
     expect(res).toEqual({ dailyStats: 1, monthlyStats: 1, sessions: 1, tabMeta: 1 });
@@ -192,7 +192,7 @@ describe('restoreBackup', () => {
   });
 
   test('rolls back and keeps existing data when a write fails mid-restore', async () => {
-    await repo.applyDailyStats([{ date: '2020-01-01', domain: 'old.com', seconds: 50, audioSeconds: 0 }]);
+    await repo.commitSessions([], [{ date: '2020-01-01', domain: 'old.com', seconds: 50, audioSeconds: 0 }]);
     // Two sessions sharing an explicit primary key → the second add() throws a
     // ConstraintError, aborting the single restore transaction. The clears must
     // roll back with it, leaving the pre-existing data intact.

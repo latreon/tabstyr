@@ -1,7 +1,13 @@
 import { domainOf, isWebDomain, pageOf } from '../domain';
 import type { ClosedSession, EngineState, OpenSession } from '../types';
 
-const MIN_SESSION_MS = 1000;
+// Floor for a stored slice. Its only job is to drop zero/negative spans (a
+// backward clock jump) and the sub-frame artifacts of a redundant event pair.
+// Deliberately well BELOW a second: a real visit can be brief (flicking through
+// tabs to find one), and at 1000ms twenty 900ms visits stored nothing at all —
+// 18s of genuine browsing silently discarded. rollup() sums a day+domain bucket
+// before rounding, so many short slices still add up to the right whole seconds.
+const MIN_SESSION_MS = 250;
 // Sleep/suspend backstop. The heartbeat normally splits active time into ≤1-minute
 // chunks, but Chrome can throttle MV3 alarms during long PASSIVE use. We therefore
 // only cap sessions that are NOT playing media — a focused tab playing audio/video
@@ -16,6 +22,14 @@ const MAX_SESSION_MS = 30 * 60_000;
 // books hours or days of bogus time onto an uncapped media session. 24h is well
 // beyond any real heartbeat interval, so genuine media is never clipped by it.
 const ABSOLUTE_MAX_SESSION_MS = 24 * 60 * 60_000;
+// What we credit when a slice exceeds its cap. Exceeding the cap means the
+// heartbeat did NOT fire on schedule (the machine slept, or MV3 throttled the
+// alarm), so the elapsed span is NOT evidence of use — the last moment we can
+// actually vouch for is one heartbeat after the slice began. Crediting the full
+// cap instead booked up to 30 minutes of phantom activity on every wake, which
+// on a laptop slept a few times a day inflated the headline by over an hour.
+const HEARTBEAT_MS = 60_000;
+const STALL_GRACE_MS = HEARTBEAT_MS;
 
 export class TrackerEngine {
   private focused: OpenSession | null;
@@ -47,7 +61,9 @@ export class TrackerEngine {
     // Non-media (or forced) sessions cap at 30min; media caps at the 24h absolute
     // ceiling so a forward clock jump can't book a giant uncapped slice.
     const cap = cappable ? MAX_SESSION_MS : ABSOLUTE_MAX_SESSION_MS;
-    const end = dur > cap ? open.start + cap : now;
+    // Within the cap the span is trustworthy — the heartbeat kept up. Over it, the
+    // heartbeat was missed, so credit only STALL_GRACE_MS (see above), not the cap.
+    const end = dur > cap ? open.start + STALL_GRACE_MS : now;
     return [{ ...open, end }];
   }
 

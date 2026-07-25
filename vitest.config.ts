@@ -13,5 +13,14 @@ export default defineConfig({
     // own aliases: @ → landing/src, @ext → the extension's shared lib/) and
     // its own `npm test` — running it from here would fail to resolve those.
     exclude: ['e2e/**', 'node_modules/**', 'landing/**'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html'],
+      // Only the code that actually ships in the extension. Config, tests, the
+      // separate landing package, generated output and the build scripts would
+      // otherwise dilute the number into meaninglessness.
+      include: ['lib/**', 'composables/**', 'components/**', 'entrypoints/**'],
+      exclude: ['**/*.d.ts'],
+    },
   },
 });

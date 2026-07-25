@@ -49,8 +49,16 @@ const daysActive = computed(() => new Set(domainStats.value.map((s) => s.date)).
 // actual browsing, not how many checkpoints fired.
 const visits = computed(() => coalesceSessions(domainSessions.value));
 const sessionCount = computed(() => visits.value.length);
+// Visit metrics are derived ONLY from the visits themselves, never by dividing the
+// daily-stats total by the visit count. The two stores can legitimately disagree —
+// a CSV import writes daily estimates with no backing sessions (count 0, so the old
+// formula showed "0s average" beside a non-zero total), and at the retention edge
+// sessions prune by timestamp while daily rows prune by date.
+const visitSeconds = computed(() =>
+  visits.value.reduce((sum, v) => sum + (v.end - v.start) / 1000, 0),
+);
 const avgSession = computed(() =>
-  sessionCount.value ? Math.round(totalSeconds.value / sessionCount.value) : 0,
+  sessionCount.value ? Math.round(visitSeconds.value / sessionCount.value) : 0,
 );
 const longestSession = computed(() =>
   visits.value.reduce((max, v) => Math.max(max, Math.round((v.end - v.start) / 1000)), 0),
@@ -89,9 +97,16 @@ const hideTip = () => (tip.value = null);
 const metrics = computed(() => [
   { label: t('domainDetail.total90d'), value: formatDuration(totalSeconds.value) },
   { label: t('domainDetail.shareOfAll'), value: `${sharePct.value}%` },
-  { label: t('domainDetail.sessions'), value: String(sessionCount.value) },
-  { label: t('domainDetail.avgSession'), value: formatDuration(avgSession.value) },
-  { label: t('domainDetail.longestSession'), value: formatDuration(longestSession.value) },
+  // Visit-shape rows only when there ARE visits — with imported-only data they'd
+  // all read zero next to a real total, which looks like a bug rather than "we
+  // have day totals but no session detail for this range".
+  ...(sessionCount.value
+    ? [
+        { label: t('domainDetail.sessions'), value: String(sessionCount.value) },
+        { label: t('domainDetail.avgSession'), value: formatDuration(avgSession.value) },
+        { label: t('domainDetail.longestSession'), value: formatDuration(longestSession.value) },
+      ]
+    : []),
   { label: t('domainDetail.activeDays'), value: String(daysActive.value) },
   ...(audioSeconds.value ? [{ label: t('domainDetail.audio'), value: formatDuration(audioSeconds.value) }] : []),
 ]);
@@ -101,13 +116,12 @@ function onKey(e: KeyboardEvent) {
 }
 onMounted(() => {
   document.addEventListener('keydown', onKey);
-  // Lock the page behind the modal so the backdrop scrolls, not the dashboard.
-  document.body.style.overflow = 'hidden';
+  // The page scroll lock is handled (ref-counted) by useFocusTrap, so stacked
+  // dialogs can't unlock each other's scroll.
   closeBtn.value?.focus();
 });
 onUnmounted(() => {
   document.removeEventListener('keydown', onKey);
-  document.body.style.overflow = '';
 });
 </script>
 

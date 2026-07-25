@@ -46,14 +46,13 @@ function onKey(e: KeyboardEvent) {
 }
 onMounted(() => {
   document.addEventListener('keydown', onKey);
-  document.body.style.overflow = 'hidden';
+  // Scroll lock is ref-counted in useFocusTrap.
   // Move focus into the dialog for a11y without visibly ringing an actionable
   // control — focus the (non-interactive) panel itself, not the CTA button.
   panel.value?.focus();
 });
 onUnmounted(() => {
   document.removeEventListener('keydown', onKey);
-  document.body.style.overflow = '';
 });
 </script>
 

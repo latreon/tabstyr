@@ -42,6 +42,27 @@ export interface ReportCardContent {
 }
 
 const FONT = "'InterVar', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif";
+
+/**
+ * Make sure the card's webfont is actually loaded before measuring/drawing text.
+ * InterVar ships as an @font-face with `font-display: swap`, and Canvas 2D does NOT
+ * trigger font loading the way the DOM does — it silently falls back. Rendering
+ * early therefore produced a PNG in the system font, with `fit()`'s truncation
+ * computed against the wrong metrics. Await this before renderReportCard.
+ */
+export async function ensureCardFont(): Promise<void> {
+  const fonts = (document as Document & { fonts?: FontFaceSet }).fonts;
+  if (!fonts) return;
+  try {
+    // load() requests the face if it isn't there yet; ready() waits for anything
+    // else already in flight. Both are best-effort — a failure just means the
+    // fallback font is used, which is better than blocking the export.
+    await Promise.all([fonts.load("700 16px 'InterVar'"), fonts.load("400 16px 'InterVar'")]);
+    await fonts.ready;
+  } catch {
+    /* font unavailable — the fallback stack still renders */
+  }
+}
 const MARGIN = 72;
 // Rows that fit the portrait page with comfortable spacing; caller may pass more
 // (we note the remainder under the list).
@@ -197,4 +218,18 @@ function paint(ctx: CanvasRenderingContext2D, c: ReportCardContent, scale: numbe
     ctx.font = `500 20px ${FONT}`;
     ctx.fillText(c.moreLabel, MARGIN, top + 24);
   }
+
+  // Footer: brand + tagline, pinned to the bottom margin. `brand`/`tagline` were
+  // documented as the footer and passed in by the caller, but nothing ever drew
+  // them — an exported card had a blank, unattributed bottom.
+  const footerY = REPORT_HEIGHT - MARGIN + 12;
+  ctx.textAlign = 'left';
+  ctx.fillStyle = ink;
+  ctx.font = `800 22px ${FONT}`;
+  ctx.fillText(fit(ctx, c.brand, innerW / 2), MARGIN, footerY);
+  ctx.textAlign = 'right';
+  ctx.fillStyle = dim;
+  ctx.font = `500 20px ${FONT}`;
+  ctx.fillText(fit(ctx, c.tagline, innerW / 2), W - MARGIN, footerY);
+  ctx.textAlign = 'left';
 }

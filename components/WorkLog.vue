@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { buildWorkLog, workLogText } from '@/lib/worklog';
 import { buildReport, reportCsv } from '@/lib/report';
-import { renderReportCard, canvasToImageBlob, REPORT_MAX_ROWS, type ReportCardContent } from '@/lib/report-card';
+import { renderReportCard, canvasToImageBlob, ensureCardFont, REPORT_MAX_ROWS, type ReportCardContent } from '@/lib/report-card';
 import { downloadBlob, downloadCsv } from '@/lib/export';
 import { allCategoryIds, categoryColor, categoryLabel, type CategoryId, type CategoryRule, type CustomCategory } from '@/lib/categories';
 import { addDays, dateKey, formatDuration, longDateLabel } from '@/lib/time';
@@ -96,6 +96,9 @@ async function exportPng() {
       tagline: 'tabstyr.com',
       theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light',
     };
+    // Canvas doesn't load webfonts on demand — wait for InterVar so the PNG uses
+    // the same face (and the same text metrics) as the page it came from.
+    await ensureCardFont();
     const canvas = document.createElement('canvas');
     renderReportCard(canvas, content, 2);
     const blob = await canvasToImageBlob(canvas, 'image/png');

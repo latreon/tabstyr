@@ -73,9 +73,11 @@ export interface CategoryRule {
 }
 
 // Built-in substring rules, first match wins. Order matters: Dev/Work before
-// broader buckets. Tokens are kept specific enough (brand or brand+TLD) to avoid
-// false matches on unrelated hostnames. Coverage is deliberately international —
-// non-US users should not see everything fall into "Other".
+// broader buckets — a token that also appears in a later, broader list (e.g.
+// `aws.amazon` vs Shopping's `amazon`) MUST be listed here to win. Tokens are kept
+// specific enough (brand or brand+TLD) to avoid false matches on unrelated
+// hostnames. Coverage is deliberately international — non-US users should not see
+// everything fall into "Other".
 const RULES: ReadonlyArray<readonly [Category, readonly string[]]> = [
   ['Dev', [
     'github', 'gitlab', 'bitbucket', 'gitea', 'gitee', 'git.sr.ht', 'sourcehut',
@@ -92,6 +94,18 @@ const RULES: ReadonlyArray<readonly [Category, readonly string[]]> = [
     'geeksforgeeks', 'leetcode', 'hackerrank', 'codeforces', 'codewars',
     'dev.to', 'hashnode', 'jetbrains', 'postman', 'swagger.io', 'deno.com',
     'terraform', 'kubernetes.io',
+    // Cloud consoles. `aws.amazon` MUST precede Shopping's `amazon` token, which
+    // otherwise swallowed every AWS host (console/docs/s3) into Shopping — and
+    // since Shopping is neutral by default, a cloud engineer's whole working day
+    // was excluded from the Focus % denominator.
+    'aws.amazon', 'amazonaws', 'console.cloud.google', 'portal.azure', 'azure.microsoft',
+    // Vendor/platform documentation — reference reading is dev work.
+    'developer.apple', 'developer.android', 'developer.chrome', 'learn.microsoft',
+    'docs.python', 'nodejs.org', 'react.dev', 'vuejs.org', 'svelte.dev', 'angular.dev',
+    'rust-lang.org', 'go.dev', 'php.net', 'ruby-lang.org', 'postgresql.org', 'redis.io',
+    // Technical learning — same productive intent as the docs above.
+    'coursera', 'udemy', 'edx.org', 'khanacademy', 'pluralsight', 'egghead.io',
+    'frontendmasters', 'exercism', 'codecademy', 'datacamp',
   ]],
   ['Work', [
     'mail.google', 'gmail', 'calendar.google', 'docs.google', 'drive.google',
@@ -106,6 +120,11 @@ const RULES: ReadonlyArray<readonly [Category, readonly string[]]> = [
     'mail.yandex', 'feishu', 'larksuite', 'dingtalk', 'mattermost', 'rocket.chat',
     'workplace.com', 'salesforce', 'hubspot', 'zendesk', 'freshdesk', 'intercom',
     'servicenow', 'workday', 'sap.com', 'oracle.com',
+    // AI assistants. By 2026 these are mainstream work tools, and leaving them in
+    // "Other" (neutral) meant a large, growing share of the working day counted
+    // toward nothing in Focus %. Users who disagree can override per-domain.
+    'chatgpt', 'chat.openai', 'openai.com', 'claude.ai', 'gemini.google',
+    'copilot.microsoft', 'perplexity.ai', 'mistral.ai', 'poe.com',
   ]],
   ['Finance', [
     'paypal', 'stripe.com', 'wise.com', 'revolut', 'payoneer', 'squareup',
@@ -132,6 +151,8 @@ const RULES: ReadonlyArray<readonly [Category, readonly string[]]> = [
     'viber', 'signal.org', 'zalo.me', 'truthsocial', 'gettr',
   ]],
   ['Media', [
+    // Ahead of Shopping's `amazon`, which otherwise claimed these.
+    'music.amazon', 'read.amazon',
     'youtube', 'netflix', 'spotify', 'twitch', 'hulu', 'disney', 'primevideo',
     'soundcloud', 'vimeo', 'music.apple', 'tv.apple', 'audible', 'mixcloud',
     'bandcamp', 'deezer', 'tidal.com', 'pandora.com', 'crunchyroll', 'funimation',
@@ -151,6 +172,8 @@ const RULES: ReadonlyArray<readonly [Category, readonly string[]]> = [
     'channelnewsasia', 'koreaherald', 'koreatimes', 'globo.com', 'clarin', 'folha',
     'abc.net.au', 'smh.com.au', 'theglobeandmail', 'cbc.ca', 'tass.ru', 'gazeta.ru',
     'lenta.ru', 'rbc.ru',
+    // Long-form reading platforms — closer to News (neutral) than to "Other".
+    'medium.com', 'substack.com',
   ]],
   ['Shopping', [
     'amazon', 'ebay', 'etsy', 'aliexpress', 'walmart', 'bestbuy', 'shopify', 'ikea',

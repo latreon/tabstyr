@@ -58,3 +58,40 @@ describe('parseCsvImport', () => {
     expect(() => parseCsvImport('foo,bar\n1,2')).toThrow('columns');
   });
 });
+
+// Column detection used plain `includes` with no mutual exclusion, so 'day' matched a
+// "Monday" column and a single "DateTime" column satisfied BOTH the date and the
+// duration role — every row was then parsed with a date as its duration and silently
+// skipped, with no error to explain why the import produced nothing.
+describe('parseCsvImport column detection', () => {
+  test('a weekday column does not get mistaken for the date column', () => {
+    const csv = [
+      'Monday,Date,Domain,Seconds',
+      'yes,2026-06-11,github.com,120',
+    ].join('\n');
+    const out = parseCsvImport(csv);
+    expect(out.stats).toEqual([{ date: '2026-06-11', domain: 'github.com', seconds: 120, audioSeconds: 0 }]);
+  });
+
+  test('one ambiguous column cannot fill two roles — it errors instead of skipping every row', () => {
+    // "DateTime" contains both 'date' and 'time'; claiming makes the missing role explicit.
+    expect(() => parseCsvImport('DateTime,Domain\n2026-06-11,github.com')).toThrow('columns');
+  });
+
+  test('an exact header name wins over a substring match', () => {
+    const csv = [
+      'Time spent (minutes),Date,Domain,Duration',
+      '5,2026-06-11,github.com,999',
+    ].join('\n');
+    // 'duration' is tried before the looser 'time', and it is an exact header, so the
+    // Duration column is the one claimed — unit falls back to seconds.
+    expect(parseCsvImport(csv).stats[0].seconds).toBe(999);
+  });
+
+  test('still infers the unit from the claimed duration column header', () => {
+    const hours = parseCsvImport('Date,Domain,Hours\n2026-06-11,github.com,2');
+    expect(hours.stats[0].seconds).toBe(7200);
+    const minutes = parseCsvImport('Date,Domain,Minutes\n2026-06-11,github.com,2');
+    expect(minutes.stats[0].seconds).toBe(120);
+  });
+});

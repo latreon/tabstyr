@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{ modelValue: number; min?: number; max?: number; step?: number; label?: string }>();
@@ -7,6 +7,7 @@ const emit = defineEmits<{ 'update:modelValue': [value: number] }>();
 const { t } = useI18n();
 
 const step = computed(() => props.step ?? 1);
+const input = ref<HTMLInputElement | null>(null);
 
 function clamp(v: number): number {
   let next = v;
@@ -14,8 +15,17 @@ function clamp(v: number): number {
   if (props.max !== undefined) next = Math.min(props.max, next);
   return next;
 }
+// Step from what the field currently SHOWS, not from `modelValue`. The field only
+// commits on change/blur (see onChange), so a value typed but not yet committed was
+// silently thrown away the moment the user reached for − or +.
+function currentValue(): number {
+  const typed = Number(input.value?.value);
+  return input.value && input.value.value.trim() !== '' && Number.isFinite(typed)
+    ? clamp(Math.round(typed))
+    : props.modelValue;
+}
 function bump(dir: number) {
-  emit('update:modelValue', clamp(props.modelValue + dir * step.value));
+  emit('update:modelValue', clamp(currentValue() + dir * step.value));
 }
 // Reconcile only when the edit is COMMITTED (blur / Enter), not on every
 // keystroke. Clamping mid-typing corrupted multi-digit entry: with min=15,
@@ -39,6 +49,7 @@ function onChange(e: Event) {
   <div class="stepper">
     <button type="button" :aria-label="t('common.decrease', { label: label ?? '' })" :disabled="min !== undefined && modelValue <= min" @click="bump(-1)">−</button>
     <input
+      ref="input"
       type="number"
       :value="modelValue"
       :min="min"

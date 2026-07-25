@@ -253,3 +253,48 @@ describe('buildWrapped — persona', () => {
     expect(w.persona).toEqual({ id: 'explorer', category: null });
   });
 });
+
+// coalesceSessions only looks at timestamps, so feeding it every session at once
+// stitched adjacent slices from DIFFERENT sites into one "visit" — longestVisit then
+// measured an unbroken browsing streak across the whole web, and visitCount collapsed
+// every site switch away.
+describe('buildWrapped visit shape is per site', () => {
+  const T = new Date(2026, 0, 5, 9, 0).getTime();
+  const s = (domain: string, from: number, to: number) => ({
+    tabId: 1, tabKey: 'k', url: `https://${domain}/`, domain, start: T + from, end: T + to, audio: false,
+  });
+
+  test('back-to-back slices on different sites are separate visits', () => {
+    const w = buildWrapped({
+      dailyStats: [
+        { date: '2026-01-05', domain: 'a.com', seconds: 60, audioSeconds: 0 },
+        { date: '2026-01-05', domain: 'b.com', seconds: 60, audioSeconds: 0 },
+      ],
+      // Adjacent in time (no gap), but two different sites.
+      sessions: [s('a.com', 0, 60_000), s('b.com', 60_000, 120_000)],
+    })!;
+    expect(w.visitCount).toBe(2);
+    expect(w.longestVisitSeconds).toBe(60); // one minute each, NOT a stitched two
+  });
+
+  test('consecutive slices on the SAME site still stitch into one visit', () => {
+    const w = buildWrapped({
+      dailyStats: [{ date: '2026-01-05', domain: 'a.com', seconds: 180, audioSeconds: 0 }],
+      sessions: [s('a.com', 0, 60_000), s('a.com', 60_000, 120_000), s('a.com', 120_000, 180_000)],
+    })!;
+    expect(w.visitCount).toBe(1);
+    expect(w.longestVisitSeconds).toBe(180);
+  });
+
+  test('background-audio seconds are counted for web domains only', () => {
+    const w = buildWrapped({
+      dailyStats: [
+        { date: '2026-01-05', domain: 'a.com', seconds: 120, audioSeconds: 60 },
+        // An internal-page row: excluded from totalSeconds, so it must be excluded here too.
+        { date: '2026-01-05', domain: 'chrome', seconds: 300, audioSeconds: 300 },
+      ],
+      sessions: [s('a.com', 0, 60_000)],
+    })!;
+    expect(w.totalAudioSeconds).toBe(60);
+  });
+});

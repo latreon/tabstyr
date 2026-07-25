@@ -64,13 +64,23 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
 
 <template>
   <div ref="root" class="selectbox" :class="{ wide }">
+    <!--
+      The listbox is a SIBLING of this button, not a descendant, so
+      aria-activedescendant alone pointed at an element outside the button's
+      subtree and screen readers announced nothing while arrowing through options.
+      aria-owns re-parents the list into the button's accessibility subtree, which
+      is what makes the active-option announcement work. Both aria-owns and
+      aria-controls are only set while the list actually exists in the DOM —
+      referencing a missing id is itself invalid.
+    -->
     <button
       type="button"
       class="trigger"
       :aria-label="label"
       :aria-expanded="open"
       aria-haspopup="listbox"
-      :aria-controls="`${uid}-list`"
+      :aria-controls="open ? `${uid}-list` : undefined"
+      :aria-owns="open ? `${uid}-list` : undefined"
       :aria-activedescendant="open ? `${uid}-opt-${activeIndex}` : undefined"
       @click="toggle"
       @keydown="onKeydown"
@@ -88,7 +98,6 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
       :class="{ 'open-up': openUp }"
       role="listbox"
       :aria-label="label"
-      :aria-activedescendant="`${uid}-opt-${activeIndex}`"
     >
       <li
         v-for="(o, i) in options"

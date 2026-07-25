@@ -97,10 +97,14 @@ export function csvField(value: string | number): string {
  * numeric column stays machine-parseable.
  */
 export function reportCsv(report: ReportData): string {
+  // Stored seconds are exact fractions (see tracker/aggregate.rollup — it no longer
+  // rounds, so per-commit rounding can't drift). Round at this edge so the CSV's
+  // numeric column stays whole seconds.
+  const whole = (secs: number) => Math.round(secs);
   const rows = [['domain', 'category', 'active_seconds', 'active_hm'].join(',')];
   for (const d of report.domains) {
-    rows.push([csvField(d.domain), csvField(d.category), d.seconds, hm(d.seconds)].join(','));
+    rows.push([csvField(d.domain), csvField(d.category), whole(d.seconds), hm(d.seconds)].join(','));
   }
-  rows.push(['TOTAL', '', report.totalSeconds, hm(report.totalSeconds)].map(csvField).join(','));
+  rows.push(['TOTAL', '', whole(report.totalSeconds), hm(report.totalSeconds)].map(csvField).join(','));
   return rows.join('\r\n');
 }

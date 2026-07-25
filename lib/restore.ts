@@ -148,7 +148,15 @@ export function parseBackup(text: string): ParsedBackup {
           .slice(0, MAX_SESSIONS)
           .map((s) => {
             const url = pageOf(s.url);
-            return { ...s, url, domain: domainOf(url), tabKey: s.tabKey ?? '' };
+            // Drop `id`, the IndexedDB autoincrement surrogate. It is a purely
+            // local key with no meaning in a backup, and restoreAll writes rows
+            // with add(), which HONOURS an inline id and advances the store's key
+            // generator to it. A file carrying id: 2^53 therefore restored fine and
+            // then made every future add() fail with ConstraintError forever — all
+            // tracking silently dead until a wipe. Let IndexedDB assign fresh ids.
+            // (mergeSessions strips it for the same reason.)
+            const { id: _id, ...row } = s as Session & { id?: unknown };
+            return { ...row, url, domain: domainOf(url), tabKey: s.tabKey ?? '' };
           })
           .filter((s) => isWebDomain(s.domain))
       : [],

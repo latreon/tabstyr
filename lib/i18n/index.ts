@@ -34,6 +34,21 @@ export function resolveLocale(pref: string | undefined): LocaleCode {
   return (hit ?? 'en') as LocaleCode;
 }
 
+/**
+ * Mirror the raw language PREFERENCE ('auto' or a code) for the next cold start.
+ * It must be the preference, not the resolved locale: caching the resolved code
+ * turned 'auto' into a hard-pinned language, so a user on 'auto' who later changed
+ * their browser language kept seeing the old one. Written by useLocale, which is
+ * the layer that knows the preference; setLocale only ever sees a concrete code.
+ */
+export function cacheLanguagePref(pref: string): void {
+  try {
+    localStorage.setItem(CACHE_KEY, pref);
+  } catch {
+    /* storage unavailable — the preference still applies for this session */
+  }
+}
+
 function cachedPref(): string | undefined {
   try {
     return localStorage.getItem(CACHE_KEY) ?? undefined;
@@ -95,15 +110,11 @@ export async function setLocale(code: LocaleCode): Promise<void> {
   // Keep <html lang> in sync so assistive tech reads the UI in the right language
   // (the static index.html ships lang="en").
   if (typeof document !== 'undefined') document.documentElement.lang = code;
-  try {
-    localStorage.setItem(CACHE_KEY, code);
-  } catch {
-    /* storage unavailable — locale still applies for this session */
-  }
 }
 
 /** Resolve the cached preference and apply it. Await this before mounting so a
- * non-English user never sees a flash of English. */
+ * non-English user never sees a flash of English. A cached 'auto' resolves through
+ * the CURRENT browser language, so following the browser keeps working. */
 export async function bootstrapLocale(): Promise<void> {
   await setLocale(resolveLocale(cachedPref()));
 }

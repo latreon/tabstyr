@@ -25,12 +25,11 @@ export function rollup(sessions: ClosedSession[]): DailyStat[] {
       cursor = segEnd;
     }
   }
-  // Round once per day+domain bucket so each stored value is whole seconds without
-  // per-slice drift. Sessions are pre-filtered (MIN_SESSION_MS guard) so zero/
-  // negative durations should not occur.
-  return [...map.values()].map((s) => ({
-    ...s,
-    seconds: Math.round(s.seconds),
-    audioSeconds: Math.round(s.audioSeconds),
-  }));
+  // Deliberately NOT rounded. Deltas are merged additively into the stored daily
+  // row on every commit (~1 per heartbeat minute), so rounding here rounded ~1440
+  // times a day and the errors accumulated into a visible random walk. Keeping the
+  // exact fractional seconds makes the stored total the true sum; every display
+  // and export path rounds at its own edge (formatDuration, hm, reportCsv, the
+  // Wrapped builder), which is the only place rounding belongs.
+  return [...map.values()];
 }

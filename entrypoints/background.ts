@@ -369,11 +369,15 @@ export default defineBackground(() => {
       // reliable way to hand file content to downloads.download() from here.
       // btoa() only accepts Latin1, so encode via TextEncoder first — a naive
       // btoa(json) would throw/corrupt on any non-Latin1 character (accents,
-      // CJK, emoji — all realistic in a page title in the backup).
+      // CJK, emoji — all realistic in a page title in the backup). Build the
+      // Latin1 string in chunks: one character per byte on a multi-megabyte
+      // backup rebuilt the string millions of times and stalled the worker.
       const bytes = new TextEncoder().encode(json);
-      let binary = '';
-      for (const b of bytes) binary += String.fromCharCode(b);
-      const url = `data:application/json;base64,${btoa(binary)}`;
+      const chunks: string[] = [];
+      for (let i = 0; i < bytes.length; i += 8192) {
+        chunks.push(String.fromCharCode(...bytes.subarray(i, i + 8192)));
+      }
+      const url = `data:application/json;base64,${btoa(chunks.join(''))}`;
       await browser.downloads.download({ url, filename: `tabstyr-backup-${dateKey(now)}.json`, saveAs: false });
       await browser.storage.local.set({ autoExportState: { lastExportAt: now } });
     } catch (e) {
@@ -421,7 +425,13 @@ export default defineBackground(() => {
     const now = Date.now();
     const tab = await browser.tabs.get(tabId).catch(() => null);
     if (!tab?.url || tab.incognito) {
-      await persist(eng, eng.handleBlur(now));
+      // Re-sync audio here too, exactly like every other focus path: switching to
+      // an internal page (or a private window) can leave the tab we just left
+      // playing media, and without this that became a background-audio session only
+      // at the next heartbeat — losing up to a minute of audio time each time.
+      const closed = eng.handleBlur(now);
+      closed.push(...(await syncAudioSessions(eng, now)));
+      await persist(eng, closed);
       return;
     }
     // Activation in a background window must not steal focus from the focused
@@ -437,10 +447,16 @@ export default defineBackground(() => {
     await persist(eng, closed);
   }));
 
-  browser.windows.onFocusChanged.addListener(guard(async (windowId) => {
+  // Optional-chained to match isInFocusedWindow, which already treats a missing
+  // `windows` API as "degrade open". Registering this unguarded contradicted that:
+  // if `windows` really were absent, the throw happened at worker start-up and took
+  // EVERY listener below it with it — no tracking at all, the opposite of degrading.
+  browser.windows?.onFocusChanged?.addListener(guard(async (windowId) => {
     const eng = await getEngine();
     const now = Date.now();
-    if (windowId === browser.windows.WINDOW_ID_NONE) {
+    // WINDOW_ID_NONE is -1 in every implementation; read it defensively so a partial
+    // `windows` shim can't make this comparison throw.
+    if (windowId === (browser.windows?.WINDOW_ID_NONE ?? -1)) {
       // Browser lost OS focus (user alt-tabbed to another app). Close the focused
       // session, but re-sync audio so a tab still playing media keeps counting as a
       // background-audio session — matching every other focus path. Without this,
@@ -701,7 +717,21 @@ export default defineBackground(() => {
     } else if (msg?.type === 'wipe-data') {
       await repo.wipeAll();
       await sessionStore.remove('engineState');
-      await browser.storage.local.remove(['notifyState', 'keyMigrationV2', 'budgetNotifyState', 'sessionAlertState']);
+      // Everything derived from the wiped data goes too, so "delete everything"
+      // really does. Deliberately KEPT: `installedAt` and `reviewPromptDismissed`
+      // (install trivia, not user data — and clearing the dismissal would start
+      // nagging someone who already said no), plus `settings`, which is the user's
+      // preferences and has its own controls.
+      await browser.storage.local.remove([
+        'notifyState',
+        'keyMigrationV2',
+        'budgetNotifyState',
+        'sessionAlertState',
+        'autoExportState',
+        'storageWarning',
+        'storageWarnDate',
+      ]);
+      storageWarned = null; // drop the in-memory mirror of the flag we just cleared
       enginePromise = null;
       await updateBadge();
     }

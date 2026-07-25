@@ -16,12 +16,11 @@ function onKey(e: KeyboardEvent) {
 }
 onMounted(() => {
   document.addEventListener('keydown', onKey);
-  document.body.style.overflow = 'hidden';
+  // Scroll lock is ref-counted in useFocusTrap.
   closeBtn.value?.focus();
 });
 onUnmounted(() => {
   document.removeEventListener('keydown', onKey);
-  document.body.style.overflow = '';
 });
 </script>
 

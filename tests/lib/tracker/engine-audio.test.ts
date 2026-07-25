@@ -86,11 +86,11 @@ describe('TrackerEngine.handleUrlChange', () => {
     expect(e.getState().focused?.url).toBe('https://mail.app/#/sent');
   });
 
-  test('sub-1s sub-page churn is not dropped — time rolls into the new page', () => {
+  test('sub-minimum sub-page churn is not dropped — time rolls into the new page', () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://github.com/a', T0);
-    // 500ms on /a then navigate: nothing emitted, but start is preserved on /b
-    expect(e.handleUrlChange(1, 'https://github.com/b', T0 + 500)).toEqual([]);
+    // 100ms on /a then navigate: nothing emitted, but start is preserved on /b
+    expect(e.handleUrlChange(1, 'https://github.com/b', T0 + 100)).toEqual([]);
     expect(e.getState().focused).toMatchObject({ url: 'https://github.com/b', start: T0 });
   });
 
