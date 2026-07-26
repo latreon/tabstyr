@@ -8,7 +8,8 @@ name: Changelog sync
 # There are TWO independent paths from a release to the live site, on purpose:
 #
 #   1. This workflow commits the refreshed data, so the repo — CHANGELOG.md and
-#      landing/src/data/changelog.json — is always accurate on main.
+#      landing/src/data/changelog.json — is always accurate on main, then hands
+#      off to deploy-landing.yml so the change actually reaches the site.
 #   2. The landing build itself re-fetches from the API (landing/package.json
 #      runs scripts/fetch-changelog.mjs --soft), so ANY deploy publishes the
 #      current releases even if this workflow never ran.
@@ -37,6 +38,9 @@ jobs:
   sync:
     name: Refresh from GitHub Releases
     runs-on: ubuntu-latest
+    # Surfaced for the publish job below: only deploy when the data actually moved.
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
     # Job-level, because a step's `if:` can read the env context but NOT secrets —
     # this is what makes the optional Netlify step skip cleanly when unconfigured.
     env:
@@ -76,9 +80,20 @@ jobs:
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
-      # The site is on Netlify. If its git auto-deploy is off (or paused), a push
-      # alone won't rebuild — so poke the build hook when one is configured.
-      # Optional: with no secret set this step is skipped, not failed.
+      # A last-resort nudge for anyone using Netlify's own git builds instead of
+      # deploy-landing.yml below: poke its build hook when one is configured.
+      # Optional — with no secret set this step is skipped, not failed.
       - name: Trigger a Netlify rebuild
         if: steps.commit.outputs.changed == 'true' && env.HOOK != ''
         run: curl -fsS -X POST -d '{}' "$HOOK" > /dev/null && echo "Netlify build triggered."
+
+  # The commit above is pushed with GITHUB_TOKEN, and GitHub deliberately does NOT
+  # fire `push` workflows for those — so deploy-landing.yml would never see it.
+  # Calling it directly is what closes the loop from "release published" to "the
+  # site shows it". Skipped when the sync found nothing to change.
+  publish:
+    name: Publish the refreshed site
+    needs: sync
+    if: needs.sync.outputs.changed == 'true'
+    uses: ./.github/workflows/deploy-landing.yml
+    secrets: inherit

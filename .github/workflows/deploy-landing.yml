@@ -1,0 +1,83 @@
+name: Deploy landing site
+
+# Publishes landing/dist to Netlify whenever the site changes on main — no
+# dashboard button, no local build, no drag-and-drop.
+#
+# Why build here rather than let Netlify build from git: `npm run build` ends in
+# scripts/prerender.mjs, which launches Chromium through Playwright to prerender
+# 110 routes. A runner can install that browser plus its OS libraries
+# (`--with-deps` needs apt, which Netlify's build image does not give us), and the
+# `landing` job in ci.yml already proves this exact sequence works. So the runner
+# builds and Netlify only hosts the finished directory.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'landing/**'
+      # The site's build re-fetches release notes through this script, so a change
+      # to it changes the built output too.
+      - 'scripts/fetch-changelog.mjs'
+      - '.github/workflows/deploy-landing.yml'
+  workflow_dispatch:
+  # Lets the changelog sync publish directly after it commits new release notes:
+  # a commit pushed with GITHUB_TOKEN does NOT fire `push` workflows, so without
+  # this the site would wait for the next unrelated commit.
+  workflow_call:
+
+# Only the newest commit is worth publishing; cancel a build that a later push
+# has already superseded.
+concurrency:
+  group: deploy-landing
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Build and publish to Netlify
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: landing
+    env:
+      # The Netlify project that serves tabstyr.com. Not a secret (it is in every
+      # deploy URL); only the auth token below has to be one.
+      NETLIFY_SITE_ID: iridescent-smakager-f6df69
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: landing/package-lock.json
+
+      # Fail early and legibly rather than building for two minutes and then
+      # discovering the deploy can't authenticate.
+      - name: Check the Netlify token is configured
+        if: env.NETLIFY_AUTH_TOKEN == ''
+        run: |
+          echo "::error::NETLIFY_AUTH_TOKEN is not set. Create a personal access token at" \
+               "https://app.netlify.com/user/applications and add it as a repository secret."
+          exit 1
+
+      # Retry: esbuild's postinstall can transiently fail with ETXTBSY ("text file
+      # busy") on hosted runners when the just-written binary is validated.
+      - run: npm ci || (sleep 5 && npm ci) || (sleep 15 && npm ci)
+      - run: npm test
+
+      # prerender.mjs drives a real browser; install it with its OS deps.
+      - run: npx playwright install --with-deps chromium
+
+      # Also refreshes landing/src/data/changelog.json from GitHub Releases
+      # (see landing/package.json), so a deploy always carries current notes.
+      - run: npm run build
+
+      - name: Publish to Netlify
+        run: |
+          npx --yes netlify-cli deploy \
+            --prod \
+            --dir dist \
+            --site "$NETLIFY_SITE_ID" \
+            --message "${GITHUB_SHA::7} — ${GITHUB_EVENT_NAME} on ${GITHUB_REF_NAME}"
