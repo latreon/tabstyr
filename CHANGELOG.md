@@ -2,6 +2,49 @@
 
 All notable changes to TabStyr. Generated from [GitHub Releases](https://github.com/latreon/tabstyr/releases) — the release page is the source of truth; run `npm run changelog:fetch && node scripts/generate-changelog.mjs` to refresh this file after a new release.
 
+## v2.0.3 — 2026-07-26
+
+TabStyr 2.0.3 — a follow-up to the 2.0.2 audit. A second, deeper pass over the same codebase found one broken feature, eight real bugs, and a set of smaller issues. All of them are fixed, and the parts of the code that had no tests now have them.
+
+#### Fixed — a feature that never worked
+
+- **Daily category budgets never notified you on Chrome.** The check ran only on every tenth heartbeat, counted in memory — but Chrome shuts the extension's worker down between heartbeats, so the count reset to one each time and the tenth tick was never reached. The nudge now runs on every heartbeat (it costs nothing when no budget is set), and the badge refresh keeps its ten-minute pace using a stored timestamp instead.
+
+#### Fixed — wrong numbers and dates
+
+- **"What did I work on?" got stuck on yesterday.** A dashboard left open past midnight rolled every other tile over to the new day but not this one, which also kept labelling yesterday as "today". It now follows the clock, and a day you picked deliberately stays picked.
+- **Notifications kept the old language.** Changing the interface language didn't reach the part of the extension that writes reminders — on Firefox they stayed in the previous language until the browser restarted.
+- **Two open TabStyr pages could undo each other's settings.** Each page held its own copy, so a change made in the dashboard could be reverted by an unrelated change made in the popup. Every page now notices the other's writes.
+- **The site list could show a day whose details had already expired.** Totals covered 91 days while the underlying visits covered 90, so the oldest day appeared with an empty breakdown.
+- A tab left playing a video could have its session cut short on returning to the browser through an internal page.
+- Hand-edited backups can no longer set a fractional "days before a tab is stale" or idle threshold, which the browser rejected outright.
+
+#### Privacy
+
+- **Private windows no longer appear anywhere in the interface.** Incognito tabs were never tracked or stored, but the open-tabs list and the tab counter still showed them — titles, URLs, and a close button — inside a normal window. They are now filtered out, matching the rest of the extension.
+
+#### Localization
+
+- **Russian counts read correctly.** "3 вкладки", not "3 вкладок" — Russian needs three plural forms where English needs two, and only two were being used.
+- The copied work-log summary is translated; it was English in every language.
+
+#### Import
+
+- **Clock-style durations now import.** A CSV whose time column reads "1:30:00" — the default export shape of several popular trackers — used to skip every row and report an empty file.
+- Number parsing is stricter, so an odd cell can't be silently reinterpreted as a different value.
+
+#### Accessibility
+
+- The number steppers' − and + buttons now reflect the value you can see rather than the last one saved, and stepping no longer leaves stale text in the field.
+
+#### Under the hood
+
+- Saving a setting no longer reports "save failed" when the save succeeded but the background notice didn't land.
+- Undo (reopen closed tabs) degrades gracefully where the browser has no window API instead of failing silently.
+- Every remaining untested module now has tests, including the one that turns stored data into a navigation — the guard against a crafted backup opening something it shouldn't.
+
+**Verified**: 762 unit and component tests (up from 608), 83% line coverage, clean typecheck, and Chrome / Firefox / Safari builds.
+
 ## v2.0.2 — 2026-07-25
 
 TabStyr 2.0.2 — a hardening release. A full audit of the extension turned up one critical data-loss bug, three high-severity correctness bugs, and a long tail of smaller issues. All of them are fixed.

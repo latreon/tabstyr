@@ -41,11 +41,17 @@ export function buildWorkLog(
   return { date, total, categories, domains };
 }
 
-/** Plain-text summary suitable for pasting into a standup note or invoice. */
-export function workLogText(log: WorkLog): string {
+/**
+ * Plain-text summary suitable for pasting into a standup note or invoice.
+ *
+ * `emptyLabel` is passed in by the caller so the copied text is localized like the
+ * rest of the UI — this module stays Vue/i18n-free, and the English default only
+ * applies to callers that have no translator (tests).
+ */
+export function workLogText(log: WorkLog, emptyLabel = 'No activity tracked.'): string {
   const lines = [`${longDateLabel(log.date)} — ${formatDuration(log.total)}`];
   if (!log.total) {
-    lines.push('No activity tracked.');
+    lines.push(emptyLabel);
     return lines.join('\n');
   }
   lines.push('');

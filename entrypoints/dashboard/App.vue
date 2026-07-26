@@ -89,8 +89,11 @@ async function reopenTabs(items: TabListItem[]) {
   // Cache which windows still exist so we restore each tab into its original
   // window when possible (e.g. a second monitor window), falling back to the
   // current window if that window was since closed.
+  // Optional-chained: on a runtime without the `windows` API the property access
+  // itself would throw synchronously, past the .catch() below, leaving an unhandled
+  // rejection and no reopened tabs. Without it we simply fall back to the current window.
   const liveWindows = new Set<number>(
-    await browser.windows.getAll().then((ws) => ws.map((w) => w.id as number)).catch(() => []),
+    (await browser.windows?.getAll?.().catch(() => []))?.map((w) => w.id as number) ?? [],
   );
   for (const item of items) {
     try {

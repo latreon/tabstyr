@@ -30,8 +30,11 @@ const MAX_MONTHLY_RETENTION_MONTHS = 60;
 const DAY_MS = 86_400_000;
 // Stale-tab staleness is a days-granularity threshold, so the badge doesn't need a
 // full tabMeta scan + tabs.query every heartbeat minute. Refresh it on real
-// mutations (tab add/remove, settings, startup, daily) and only every Nth heartbeat.
-const BADGE_HEARTBEAT_INTERVAL = 10;
+// mutations (tab add/remove, settings, startup, daily) and otherwise at most this
+// often. Deliberately a TIMESTAMP interval, not a "every Nth heartbeat" counter: an
+// MV3 worker is evicted ~30s after each event, so a per-worker tick counter reset to
+// 0 on nearly every alarm and the Nth tick was effectively never reached.
+const BADGE_REFRESH_MS = 10 * 60_000;
 // Cap stored tab titles. Titles are persisted in tabMeta and included in JSON
 // exports; a page can set an arbitrarily long document.title, so bound it (the UI
 // already truncates for display; this bounds storage + export). Well under the
@@ -77,8 +80,10 @@ export default defineBackground(() => {
   // with respect to the others; throughput is unaffected (events are sub-second).
   let queue: Promise<unknown> = Promise.resolve();
 
-  // Heartbeat counter (per worker lifetime) — see BADGE_HEARTBEAT_INTERVAL.
-  let heartbeatTicks = 0;
+  // Last badge refresh, mirrored in storage.session so the cadence survives the
+  // worker eviction that happens between heartbeats (see BADGE_REFRESH_MS).
+  // null = not yet read this worker lifetime.
+  let badgeRefreshedAt: number | null = null;
   // In-memory mirror of the persisted `storageWarning` flag. null = not yet read.
   // Avoids a storage.local round-trip on every successful commit.
   let storageWarned: boolean | null = null;
@@ -271,6 +276,20 @@ export default defineBackground(() => {
     return !!win && win.focused === true && win.id === windowId;
   }
 
+  // Refresh the badge only if it hasn't been refreshed within BADGE_REFRESH_MS.
+  // The marker lives in storage.session (not a worker-scoped variable) so the
+  // throttle is real across worker restarts instead of firing on every heartbeat.
+  async function updateBadgeThrottled(now: number): Promise<void> {
+    if (badgeRefreshedAt === null) {
+      const { badgeRefreshedAt: stored } = await sessionStore.get('badgeRefreshedAt');
+      badgeRefreshedAt = typeof stored === 'number' ? stored : 0;
+    }
+    if (now - badgeRefreshedAt < BADGE_REFRESH_MS) return;
+    await updateBadge();
+    badgeRefreshedAt = now;
+    await sessionStore.set({ badgeRefreshedAt: now });
+  }
+
   async function updateBadge(): Promise<void> {
     const [metas, settings, tabs] = await Promise.all([
       repo.getAllTabMeta(),
@@ -285,8 +304,10 @@ export default defineBackground(() => {
 
   // Per-category daily budget nudge. Sums today's active time per category and, if a
   // budget is crossed, fires at most ONE gentle notification per day (same throttle
-  // shape as stale nudges). Analytics only — it never blocks a site. Cheap enough to
-  // run on the badge cadence (every Nth heartbeat), and a no-op when no budgets are set.
+  // shape as stale nudges). Analytics only — it never blocks a site. Runs on every
+  // heartbeat: it returns before touching the database whenever notifications are off
+  // or no budget is set, and gating it on a coarser cadence made it depend on worker
+  // longevity, which MV3 does not provide.
   async function checkBudgets(now: number): Promise<void> {
     const settings = await getSettings();
     if (!settings.notificationsEnabled || !browser.notifications) return;
@@ -485,8 +506,16 @@ export default defineBackground(() => {
     const eng = await getEngine();
     const now = Date.now();
     if (state === 'active') {
+      // Clear the idle flag FIRST: the user is demonstrably back even if the tab
+      // they resumed on isn't trackable (internal page, private window), and the
+      // early return below would otherwise leave `idle` set until the next focus
+      // change — making checkpoint() force-close an open media session.
+      eng.markActive();
       const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
-      if (!tab?.id || !tab.url || tab.incognito) return;
+      if (!tab?.id || !tab.url || tab.incognito) {
+        await persist(eng, []);
+        return;
+      }
       const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible);
       closed.push(...(await syncAudioSessions(eng, now))); // resume audio after idle
       await touchTab(tab.id, now);
@@ -632,12 +661,11 @@ export default defineBackground(() => {
       // Every heartbeat, not the coarser badge cadence — a continuous-session nudge
       // needs to fire promptly once the threshold is crossed, not up to ~10 min late.
       await checkSessionAlert(eng, now);
-      // Badge is days-granularity — refresh periodically, not every minute. The
-      // budget check rides the same cadence (cheap; no-op when no budgets set).
-      if (++heartbeatTicks % BADGE_HEARTBEAT_INTERVAL === 0) {
-        await updateBadge();
-        await checkBudgets(now);
-      }
+      // Cheap and no-op when no budgets are set, so it runs every heartbeat rather
+      // than on a cadence that a restarted worker would never reach.
+      await checkBudgets(now);
+      // Badge is days-granularity — refresh at most every BADGE_REFRESH_MS.
+      await updateBadgeThrottled(now);
     } else if (alarm.name === 'daily') {
       await runDailyMaintenance(now);
     }

@@ -53,4 +53,12 @@ describe('workLogText', () => {
     const text = workLogText(buildWorkLog(STATS, '2026-01-01'));
     expect(text).toContain('No activity tracked.');
   });
+
+  test('uses the caller-supplied empty label so the copied text is localized', () => {
+    // The component passes t('worklog.noActivity'); the English default exists only
+    // for callers with no translator (these tests).
+    const text = workLogText(buildWorkLog(STATS, '2026-01-01'), 'Активность не зафиксирована.');
+    expect(text).toContain('Активность не зафиксирована.');
+    expect(text).not.toContain('No activity tracked.');
+  });
 });

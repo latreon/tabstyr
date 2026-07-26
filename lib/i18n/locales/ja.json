@@ -172,6 +172,7 @@
     "copied": "コピーしました ✓",
     "summary": "— {time}を費やしましたが、対象サイトはありません。 | — {time}を{count}個のサイトに費やしました。 | — {time}を{count}個のサイトに費やしました。",
     "nothingTracked": "— 何も記録されていません。",
+    "noActivity": "記録されたアクティビティはありません。",
     "legendAria": "ドットの色の凡例",
     "viewSiteAria": "{domain}の詳細を表示 — {category}",
     "changeCategory": "カテゴリを変更（現在：{category}）",

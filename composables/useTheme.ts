@@ -1,5 +1,5 @@
 import { onMounted, onUnmounted, ref } from 'vue';
-import { getSettings, saveSettings } from '@/lib/settings';
+import { broadcastSettingsChanged, getSettings, saveSettings } from '@/lib/settings';
 import { cacheTheme } from '@/lib/theme-cache';
 import type { ThemeSetting } from '@/lib/types';
 
@@ -22,16 +22,27 @@ export function useTheme() {
     cacheTheme(setting.value); // keep the sync pre-paint mirror current
   }
 
+  // Persist, then tell the other contexts to drop their settings cache — otherwise
+  // their next save merges onto a snapshot without this change and reverts it.
+  async function persist(next: ThemeSetting) {
+    try {
+      await saveSettings({ theme: next });
+      await broadcastSettingsChanged();
+    } catch (e) {
+      console.error('[theme] save failed', e);
+    }
+  }
+
   async function cycle() {
     setting.value = CYCLE[(CYCLE.indexOf(setting.value) + 1) % CYCLE.length];
     // Apply in-session regardless; a storage failure shouldn't break the toggle.
-    try { await saveSettings({ theme: setting.value }); } catch (e) { console.error('[theme] save failed', e); }
+    await persist(setting.value);
     apply();
   }
 
   async function set(next: ThemeSetting) {
     setting.value = next;
-    try { await saveSettings({ theme: next }); } catch (e) { console.error('[theme] save failed', e); }
+    await persist(next);
     apply();
   }
 

@@ -19,7 +19,7 @@ const TODAY = dateKey(NOW);
 
 let wrapper: VueWrapper | null = null;
 
-async function mountPopup(tabs: Array<{ id: number; url: string }> = []) {
+async function mountPopup(tabs: Array<{ id: number; url: string; incognito?: boolean }> = []) {
   vi.spyOn(browser.tabs, 'query').mockResolvedValue(tabs as never);
   wrapper = mount(Popup);
   // load() chains a locale load, five parallel storage/IndexedDB reads and the
@@ -121,6 +121,15 @@ describe('popup', () => {
       { id: 3, url: own },
     ]);
     expect(w.get('.counts').text()).toContain('2');
+  });
+
+  test('does not count private (incognito) tabs, which are never tracked', async () => {
+    const w = await mountPopup([
+      { id: 1, url: 'https://a.com/' },
+      { id: 2, url: 'https://secret.com/', incognito: true },
+    ]);
+    // Counting them would make the headline disagree with the data below it.
+    expect(w.get('.counts').text()).toContain('1');
   });
 
   test('surfaces a load failure with a retry instead of a blank panel', async () => {

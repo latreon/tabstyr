@@ -46,6 +46,12 @@ export const DEFAULT_SETTINGS: Settings = {
 
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
 
+// A usable numeric setting. `typeof v === 'number'` alone lets NaN/Infinity through,
+// and clamp() is NaN-transparent (Math.min/max propagate it), so a corrupt value
+// would survive sanitization and reach consumers (e.g. idle.setDetectionInterval).
+// Rejecting them here makes the field fall back to its DEFAULT_SETTINGS value.
+const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
+
 // User-added categories. Keep only well-formed entries: a non-empty name that
 // doesn't collide with a built-in (add-only — built-ins are reserved) nor with an
 // earlier custom (case-insensitive), a valid hex color, and a valid productivity.
@@ -144,7 +150,7 @@ function sanitizeBudgets(
   const out: Partial<Record<CategoryId, number>> = {};
   for (const [key, v] of Object.entries(raw as Record<string, unknown>)) {
     if (!isValid(key)) continue;
-    if (typeof v === 'number' && Number.isFinite(v) && v > 0) {
+    if (isNum(v) && v > 0) {
       out[key] = clamp(Math.round(v), 1, MAX_BUDGET_MINUTES);
     }
   }
@@ -159,8 +165,11 @@ function coerce(raw: unknown): Partial<Settings> {
   const overrides = sanitizeOverrides(r.categoryOverrides, isValid);
   const rules = sanitizeRules(r.categoryRules, isValid);
   return {
-    ...(typeof r.staleDays === 'number' && { staleDays: clamp(r.staleDays, 1, 60) }),
-    ...(typeof r.idleSeconds === 'number' && { idleSeconds: clamp(r.idleSeconds, 15, 600) }),
+    // Rounded like every other numeric setting: both are consumed as whole units
+    // (days for stale detection, integer seconds by idle.setDetectionInterval, which
+    // rejects a fractional argument), so a hand-edited backup can't smuggle 15.5 in.
+    ...(isNum(r.staleDays) && { staleDays: clamp(Math.round(r.staleDays), 1, 60) }),
+    ...(isNum(r.idleSeconds) && { idleSeconds: clamp(Math.round(r.idleSeconds), 15, 600) }),
     ...(typeof r.audioEnabled === 'boolean' && { audioEnabled: r.audioEnabled }),
     ...((r.theme === 'system' || r.theme === 'dark' || r.theme === 'light') && { theme: r.theme }),
     customCategories,
@@ -168,13 +177,13 @@ function coerce(raw: unknown): Partial<Settings> {
     ...(rules && { categoryRules: rules }),
     // Always a full, valid mapping (missing/invalid entries fall back to default).
     categoryProductivity: sanitizeProductivity(r.categoryProductivity),
-    ...(typeof r.focusTarget === 'number' && { focusTarget: clamp(Math.round(r.focusTarget), 10, 90) }),
+    ...(isNum(r.focusTarget) && { focusTarget: clamp(Math.round(r.focusTarget), 10, 90) }),
     categoryBudgets: sanitizeBudgets(r.categoryBudgets, isValid),
     ...(typeof r.onboarded === 'boolean' && { onboarded: r.onboarded }),
     ...(typeof r.notificationsEnabled === 'boolean' && { notificationsEnabled: r.notificationsEnabled }),
-    ...(typeof r.sessionAlertMinutes === 'number' && { sessionAlertMinutes: clamp(Math.round(r.sessionAlertMinutes), 0, MAX_SESSION_ALERT_MINUTES) }),
+    ...(isNum(r.sessionAlertMinutes) && { sessionAlertMinutes: clamp(Math.round(r.sessionAlertMinutes), 0, MAX_SESSION_ALERT_MINUTES) }),
     ...(typeof r.language === 'string' && { language: r.language.slice(0, 20) }),
-    ...(typeof r.autoExportDays === 'number' && { autoExportDays: r.autoExportDays <= 0 ? 0 : clamp(Math.round(r.autoExportDays), 1, 365) }),
+    ...(isNum(r.autoExportDays) && { autoExportDays: r.autoExportDays <= 0 ? 0 : clamp(Math.round(r.autoExportDays), 1, 365) }),
   };
 }
 
@@ -184,6 +193,9 @@ function coerce(raw: unknown): Partial<Settings> {
 // invalidateSettings() when a 'settings-changed' message arrives from another
 // context (the dashboard saving). Treat the returned object as READ-ONLY.
 let cache: Settings | null = null;
+// Serialized form of the last value THIS context wrote, so the storage listener
+// below can tell our own write apart from another context's.
+let lastWritten: string | null = null;
 
 export async function getSettings(): Promise<Settings> {
   if (cache) return cache;
@@ -197,6 +209,7 @@ export async function saveSettings(patch: Partial<Settings>): Promise<Settings> 
   // hostile/oversized value (e.g. from an imported backup) is clamped/dropped here
   // rather than only when read back, so it can't bloat or corrupt stored settings.
   const next = { ...DEFAULT_SETTINGS, ...coerce({ ...(await getSettings()), ...patch }) };
+  lastWritten = JSON.stringify(next);
   await browser.storage.local.set({ settings: next });
   cache = next;
   return next;
@@ -207,4 +220,53 @@ export async function saveSettings(patch: Partial<Settings>): Promise<Settings> 
  * message in the background worker). */
 export function invalidateSettings(): void {
   cache = null;
+}
+
+/**
+ * Drop this context's cache whenever ANOTHER context writes settings.
+ *
+ * Every context (popup, each dashboard tab, the worker) caches settings in module
+ * scope, and saveSettings merges its patch onto that cache. Without this listener a
+ * second page held a stale snapshot and its next save silently reverted the first
+ * page's changes — e.g. change the focus target in the dashboard, then toggle the
+ * theme in the popup, and the focus target came back. Invalidating on every foreign
+ * write makes the next save merge onto current data instead.
+ *
+ * Own writes are skipped (the value we just stored is identical) so the common path
+ * does no extra storage round-trip. Registration is best-effort: a runtime without
+ * storage.onChanged simply keeps the previous single-context behaviour.
+ *
+ * Called once on import. Exported so tests can re-register after resetting their
+ * fake browser (which drops all listeners); the handler is idempotent, so an extra
+ * registration only ever clears an already-cleared cache.
+ */
+export function syncSettingsAcrossContexts(): void {
+  try {
+    browser.storage?.onChanged?.addListener((changes, areaName) => {
+      if (areaName !== 'local' || !changes.settings) return;
+      if (JSON.stringify(changes.settings.newValue ?? null) === lastWritten) return;
+      cache = null;
+    });
+  } catch {
+    /* storage.onChanged unavailable — cache stays context-local */
+  }
+}
+syncSettingsAcrossContexts();
+
+/**
+ * Tell the other contexts (chiefly the background worker) that settings changed, so
+ * they drop their cache. Fire-and-forget: a missing receiver is not an error the
+ * caller should surface, and reporting one made a successful save look failed.
+ *
+ * Required after ANY page-side saveSettings — the worker reads settings on every
+ * heartbeat (notification language, idle interval, category classification, budgets)
+ * and on Firefox its background page is persistent, so a stale cache never expires
+ * on its own.
+ */
+export async function broadcastSettingsChanged(): Promise<void> {
+  try {
+    await browser.runtime.sendMessage({ type: 'settings-changed' });
+  } catch {
+    /* no receiver (worker asleep / page-only context) — it re-reads on next start */
+  }
 }

@@ -172,6 +172,7 @@
     "copied": "Copied ✓",
     "summary": "— you spent {time} across no sites. | — you spent {time} across {count} site. | — you spent {time} across {count} sites.",
     "nothingTracked": "— nothing tracked.",
+    "noActivity": "No activity tracked.",
     "legendAria": "Dot colour key",
     "viewSiteAria": "View {domain} details — {category}",
     "changeCategory": "Change category (now {category})",

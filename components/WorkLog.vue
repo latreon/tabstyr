@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { HISTORY_DAYS } from '@/composables/useStats';
 import { buildWorkLog, workLogText } from '@/lib/worklog';
 import { buildReport, reportCsv } from '@/lib/report';
 import { renderReportCard, canvasToImageBlob, ensureCardFont, REPORT_MAX_ROWS, type ReportCardContent } from '@/lib/report-card';
@@ -23,21 +24,32 @@ const props = defineProps<{
 const emit = defineEmits<{ select: [domain: string]; setCategory: [domain: string, category: CategoryId] }>();
 const { t } = useI18n();
 
-const today = dateKey(props.now);
-const minDate = addDays(today, -89);
+// Derived from the `now` prop, NOT captured once at setup: the dashboard bumps `now`
+// on every (re)load, so a plain const froze this tile's calendar at mount — a page
+// left open past midnight could no longer reach the new day, and yesterday kept being
+// labelled "today" while every sibling tile had rolled over.
+const today = computed(() => dateKey(props.now));
+const minDate = computed(() => addDays(today.value, -(HISTORY_DAYS - 1)));
 
-const selected = ref(today);
+const selected = ref(today.value);
 const copied = ref(false);
 
-const log = computed(() => buildWorkLog(props.stats, selected.value, props.overrides, props.rules ?? []));
-const isToday = computed(() => selected.value === today);
+// Follow the clock across a day change: a selection that WAS today becomes the new
+// today, and anything now outside the window is pulled back inside it.
+watch(today, (next, prev) => {
+  if (selected.value === prev || selected.value > next) selected.value = next;
+  else if (selected.value < minDate.value) selected.value = minDate.value;
+});
 
-const canPrev = computed(() => selected.value > minDate);
-const canNext = computed(() => selected.value < today);
+const log = computed(() => buildWorkLog(props.stats, selected.value, props.overrides, props.rules ?? []));
+const isToday = computed(() => selected.value === today.value);
+
+const canPrev = computed(() => selected.value > minDate.value);
+const canNext = computed(() => selected.value < today.value);
 
 function step(days: number) {
   const next = addDays(selected.value, days);
-  if (next >= minDate && next <= today) selected.value = next;
+  if (next >= minDate.value && next <= today.value) selected.value = next;
 }
 
 // Category colours that appear as dots next to each site — shown as a legend so
@@ -48,7 +60,7 @@ const legend = computed(() =>
 
 async function copy() {
   try {
-    await navigator.clipboard.writeText(workLogText(log.value));
+    await navigator.clipboard.writeText(workLogText(log.value, t('worklog.noActivity')));
     copied.value = true;
     setTimeout(() => (copied.value = false), 2000);
   } catch (e) {

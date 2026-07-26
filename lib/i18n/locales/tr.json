@@ -172,6 +172,7 @@
     "copied": "Kopyalandı ✓",
     "summary": "— hiçbir sitede {time} geçirdiniz. | — {count} sitede {time} geçirdiniz. | — {count} sitede {time} geçirdiniz.",
     "nothingTracked": "— hiçbir şey kaydedilmedi.",
+    "noActivity": "Kaydedilen etkinlik yok.",
     "legendAria": "Nokta renk açıklaması",
     "viewSiteAria": "{domain} ayrıntılarını gör — {category}",
     "changeCategory": "Kategoriyi değiştir (şu an {category})",

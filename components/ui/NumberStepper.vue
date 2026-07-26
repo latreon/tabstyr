@@ -8,6 +8,9 @@ const { t } = useI18n();
 
 const step = computed(() => props.step ?? 1);
 const input = ref<HTMLInputElement | null>(null);
+// Text typed but not yet committed (the field commits on change/blur — see onChange).
+// null = the field is showing `modelValue`.
+const draft = ref<string | null>(null);
 
 function clamp(v: number): number {
   let next = v;
@@ -15,17 +18,36 @@ function clamp(v: number): number {
   if (props.max !== undefined) next = Math.min(props.max, next);
   return next;
 }
-// Step from what the field currently SHOWS, not from `modelValue`. The field only
-// commits on change/blur (see onChange), so a value typed but not yet committed was
-// silently thrown away the moment the user reached for − or +.
-function currentValue(): number {
-  const typed = Number(input.value?.value);
-  return input.value && input.value.value.trim() !== '' && Number.isFinite(typed)
-    ? clamp(Math.round(typed))
-    : props.modelValue;
+// Parse whatever the field currently holds, clamped; null when it holds nothing
+// usable. Read from the DOM so it is true even for a value set without an `input`
+// event, which is what stepping must be based on: the field only commits on
+// change/blur (see onChange), so a value typed but not yet committed was silently
+// thrown away the moment the user reached for − or +.
+function typedValue(): number | null {
+  const el = input.value;
+  if (!el || el.value.trim() === '') return null;
+  const n = Number(el.value);
+  return Number.isFinite(n) ? clamp(Math.round(n)) : null;
 }
+// Same number, but reactive (the DOM can't be a computed dependency), so the ±
+// buttons' disabled state tracks what the user SEES rather than the last committed
+// value — typing 60 with max=60 used to leave + looking enabled.
+const effectiveValue = computed(() => {
+  if (draft.value === null) return props.modelValue;
+  const typed = Number(draft.value);
+  return draft.value.trim() !== '' && Number.isFinite(typed) ? clamp(Math.round(typed)) : props.modelValue;
+});
+const atMin = computed(() => props.min !== undefined && effectiveValue.value <= props.min);
+const atMax = computed(() => props.max !== undefined && effectiveValue.value >= props.max);
+
 function bump(dir: number) {
-  emit('update:modelValue', clamp(currentValue() + dir * step.value));
+  const next = clamp((typedValue() ?? props.modelValue) + dir * step.value);
+  draft.value = null;
+  // The bound :value only re-renders when modelValue actually changes, so sync the
+  // DOM field directly — stepping away from an uncommitted entry that clamps to the
+  // same number would otherwise leave the typed text on screen.
+  if (input.value) input.value.value = String(next);
+  emit('update:modelValue', next);
 }
 // Reconcile only when the edit is COMMITTED (blur / Enter), not on every
 // keystroke. Clamping mid-typing corrupted multi-digit entry: with min=15,
@@ -35,6 +57,7 @@ function bump(dir: number) {
 function onChange(e: Event) {
   const target = e.target as HTMLInputElement;
   const raw = Number(target.value);
+  draft.value = null; // the edit is over either way
   if (target.value.trim() === '' || !Number.isFinite(raw)) {
     target.value = String(props.modelValue); // revert
     return;
@@ -43,11 +66,16 @@ function onChange(e: Event) {
   target.value = String(next);
   emit('update:modelValue', next);
 }
+// Track keystrokes only so the ± buttons reflect the visible number; nothing is
+// clamped or emitted here (clamping mid-typing made multi-digit entry impossible).
+function onInput(e: Event) {
+  draft.value = (e.target as HTMLInputElement).value;
+}
 </script>
 
 <template>
   <div class="stepper">
-    <button type="button" :aria-label="t('common.decrease', { label: label ?? '' })" :disabled="min !== undefined && modelValue <= min" @click="bump(-1)">−</button>
+    <button type="button" :aria-label="t('common.decrease', { label: label ?? '' })" :disabled="atMin" @click="bump(-1)">−</button>
     <input
       ref="input"
       type="number"
@@ -56,9 +84,10 @@ function onChange(e: Event) {
       :max="max"
       :step="step"
       :aria-label="label"
+      @input="onInput"
       @change="onChange"
     />
-    <button type="button" :aria-label="t('common.increase', { label: label ?? '' })" :disabled="max !== undefined && modelValue >= max" @click="bump(1)">+</button>
+    <button type="button" :aria-label="t('common.increase', { label: label ?? '' })" :disabled="atMax" @click="bump(1)">+</button>
   </div>
 </template>
 

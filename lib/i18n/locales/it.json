@@ -172,6 +172,7 @@
     "copied": "Copiato ✓",
     "summary": "— hai trascorso {time} su nessun sito. | — hai trascorso {time} su {count} sito. | — hai trascorso {time} su {count} siti.",
     "nothingTracked": "— nulla registrato.",
+    "noActivity": "Nessuna attività registrata.",
     "legendAria": "Legenda dei colori dei punti",
     "viewSiteAria": "Vedi dettagli di {domain} — {category}",
     "changeCategory": "Cambia categoria (ora {category})",
