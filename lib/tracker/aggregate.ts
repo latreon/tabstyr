@@ -17,11 +17,16 @@ export function rollup(sessions: ClosedSession[]): DailyStat[] {
       const segEnd = midnight > cursor ? Math.min(s.end, midnight) : s.end;
       const date = dateKey(cursor);
       const key = `${date}|${s.domain}`;
-      const stat = map.get(key) ?? { date, domain: s.domain, seconds: 0, audioSeconds: 0 };
+      const prev = map.get(key) ?? { date, domain: s.domain, seconds: 0, audioSeconds: 0 };
       const secs = (segEnd - cursor) / 1000;
-      stat.seconds += secs;
-      if (s.audio) stat.audioSeconds += secs;
-      map.set(key, stat);
+      // Replace rather than mutate: the returned rows are handed straight to the
+      // repo's merge step and (via mergeDaily) compared against stored rows, so they
+      // must never be objects a caller could still hold a reference into.
+      map.set(key, {
+        ...prev,
+        seconds: prev.seconds + secs,
+        audioSeconds: prev.audioSeconds + (s.audio ? secs : 0),
+      });
       cursor = segEnd;
     }
   }

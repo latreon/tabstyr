@@ -172,6 +172,7 @@
     "copied": "Kopiert ✓",
     "summary": "— du hast {time} auf keinen Seiten verbracht. | — du hast {time} auf {count} Seite verbracht. | — du hast {time} auf {count} Seiten verbracht.",
     "nothingTracked": "— nichts erfasst.",
+    "noActivity": "Keine Aktivität erfasst.",
     "legendAria": "Legende der Punktfarben",
     "viewSiteAria": "Details zu {domain} ansehen — {category}",
     "changeCategory": "Kategorie ändern (aktuell {category})",

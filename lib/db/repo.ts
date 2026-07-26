@@ -114,6 +114,13 @@ export async function replaceAllTabMeta(metas: TabMeta[]): Promise<void> {
  * sessions/dailyDomainStats it has no other retention, so left alone it would grow
  * forever with (months × distinct domains ever visited). This bounds the months
  * dimension the same way the 90-day window bounds the raw stores.
+ *
+ * INVARIANT for future readers: daily and monthly rows are DISJOINT by day, never by
+ * month. The month containing the cutoff is split — its pruned days live in
+ * monthlyDomainStats, its surviving days in dailyDomainStats — so a consumer that
+ * wants a long-range total must add the two, and one that wants "this month" must
+ * pick a single source. Summing a whole month from both stores double-counts nothing
+ * today only because no caller does it; keep it that way.
  */
 export async function pruneBefore(cutoffDate: string, cutoffTs: number, monthlyCutoff: string): Promise<void> {
   const db = await getDB();

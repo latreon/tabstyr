@@ -99,6 +99,17 @@ export class TrackerEngine {
     if (this.focused) this.focused.audible = audible;
   }
 
+  /**
+   * The user is active again after an idle period, without a (trackable) focus
+   * change to report — e.g. they resumed on an internal page or a private window.
+   * handleFocus normally clears the flag, but those paths never reach it, and a
+   * stale `idle` makes the next checkpoint() force-close a still-playing media
+   * session as though the user were away.
+   */
+  markActive(): void {
+    this.idle = false;
+  }
+
   handleBlur(now: number): ClosedSession[] {
     const out = this.focused ? this.closed(this.focused, now) : [];
     this.focused = null;

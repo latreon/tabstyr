@@ -2,7 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { browser } from 'wxt/browser';
-import { getSettings, saveSettings } from '@/lib/settings';
+import { broadcastSettingsChanged, getSettings, saveSettings } from '@/lib/settings';
 import { useTheme } from '@/composables/useTheme';
 import { useLocale } from '@/composables/useLocale';
 import { useFocusTrap } from '@/composables/useFocusTrap';
@@ -124,7 +124,7 @@ async function persistSettings() {
       sessionAlertMinutes: sessionAlertMinutes.value,
       focusTarget: focusTarget.value,
     });
-    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    await broadcastSettingsChanged();
     emit('changed'); // refresh the dashboard so the focus goal reflects immediately
     showToast(t('settings.saved'));
   } catch (e) {
@@ -144,7 +144,7 @@ watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, autoExportDay
 async function replayOnboarding() {
   try {
     await saveSettings({ onboarded: false });
-    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    await broadcastSettingsChanged();
     emit('changed');
     showToast(t('settings.introShown'));
   } catch (e) {
@@ -258,7 +258,7 @@ async function onCsvFile(e: Event) {
     // MAX-merge: seeds days you have no data for, never inflates measured days,
     // idempotent on re-import (see repo.applyDailyStatsMax).
     await repo.applyDailyStatsMax(stats);
-    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    await broadcastSettingsChanged();
     emit('changed');
     showToast(t('settings.imported', { count: stats.length }));
   } catch (e) {
@@ -359,7 +359,7 @@ async function confirmMerge() {
     await repo.restoreAll(merged.sessions, merged.dailyStats, localTabMeta, merged.monthlyStats);
     await saveSettings(mergeSettingsMaps(await getSettings(), data.settings) as Partial<Settings>);
     pendingRestore.value = null;
-    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    await broadcastSettingsChanged();
     emit('changed');
     showToast(t('settings.merged', { sessions: merged.sessions.length }));
   } catch (e) {
@@ -376,7 +376,7 @@ async function confirmRestore() {
   try {
     const res = await restoreBackup(pendingRestore.value);
     pendingRestore.value = null;
-    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    await broadcastSettingsChanged();
     emit('changed');
     showToast(t('settings.restored', { days: res.dailyStats, sessions: res.sessions }));
   } catch (e) {

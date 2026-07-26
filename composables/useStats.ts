@@ -3,7 +3,7 @@ import { browser } from 'wxt/browser';
 import * as repo from '@/lib/db/repo';
 import { displayDomain, domainOf, isWebDomain } from '@/lib/domain';
 import { findStale } from '@/lib/tracker/stale';
-import { getSettings, saveSettings } from '@/lib/settings';
+import { broadcastSettingsChanged, getSettings, saveSettings } from '@/lib/settings';
 import { addDays, dateKey } from '@/lib/time';
 import { buildHourlyHeatmap, type HeatmapData } from '@/lib/heatmap';
 import { groupByCategory, CATEGORY_PRODUCTIVITY, type Category, type CategoryId, type CategoryRule, type CustomCategory, type Productivity } from '@/lib/categories';
@@ -14,6 +14,11 @@ import { buildInsights, type Insight } from '@/lib/insights';
 import type { DailyStat, Session, Settings, TabMeta } from '@/lib/types';
 
 const RETENTION_MS = 90 * 86_400_000;
+// Days of daily-stat history the dashboard reads, INCLUDING today. Kept equal to the
+// session window above (90 × 24h) so a headline total can't include a day whose
+// sessions have already aged out — reading 91 days left the oldest day with totals
+// but no session detail (empty per-domain breakdown, heatmap, visit counts).
+export const HISTORY_DAYS = 90;
 // Rolling window shown in the hourly heatmap: today + the 6 prior days.
 const HEATMAP_DAYS = 7;
 
@@ -197,7 +202,7 @@ export function useStats() {
   // productive kept firing "distracting" nudges for the rest of the browser session.
   async function save(patch: Partial<Settings>): Promise<void> {
     settings.value = await saveSettings(patch);
-    await browser.runtime.sendMessage({ type: 'settings-changed' }).catch(() => undefined);
+    await broadcastSettingsChanged();
   }
 
   async function setCategoryOverride(domain: string, category: CategoryId): Promise<void> {
@@ -269,7 +274,7 @@ export function useStats() {
       const today = todayKey.value;
       const [loadedSettings, loadedStats, metas, tabs] = await Promise.all([
         getSettings(),
-        repo.getStatsRange(addDays(today, -90), today),
+        repo.getStatsRange(addDays(today, -(HISTORY_DAYS - 1)), today),
         repo.getAllTabMeta(),
         browser.tabs.query({}),
       ]);
@@ -277,9 +282,12 @@ export function useStats() {
       settings.value = loadedSettings;
       stats.value = loadedStats;
 
-      // Exclude the extension's own pages (dashboard) so the count and the list agree.
+      // Exclude the extension's own pages (dashboard) so the count and the list agree,
+      // and private windows: the worker never tracks or stores anything about an
+      // incognito tab, so listing one here (title + URL, closable) would surface
+      // private browsing in a normal window and make the count disagree with the data.
       const ownPrefix = browser.runtime.getURL('');
-      const realTabs = tabs.filter((t) => t.id && t.url && !t.url.startsWith(ownPrefix));
+      const realTabs = tabs.filter((t) => t.id && t.url && !t.incognito && !t.url.startsWith(ownPrefix));
       openTabCount.value = realTabs.length;
 
       const liveIds = new Set(realTabs.map((t) => t.id as number));

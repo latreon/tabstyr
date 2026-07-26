@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { getSettings, saveSettings } from '@/lib/settings';
+import { broadcastSettingsChanged, getSettings, saveSettings } from '@/lib/settings';
 import { setLocale, resolveLocale, cacheLanguagePref } from '@/lib/i18n';
 
 // User preference: 'auto' (follow the browser) or a supported locale code.
@@ -20,7 +20,14 @@ export function useLocale() {
     // Cache the PREFERENCE verbatim, so 'auto' stays 'auto' for the next cold start.
     cacheLanguagePref(pref);
     // Switch the active locale even if persisting the preference fails.
-    try { await saveSettings({ language: pref }); } catch (e) { console.error('[locale] save failed', e); }
+    try {
+      await saveSettings({ language: pref });
+      // The worker renders every notification (stale tabs, budgets, session alerts)
+      // in settings.language from its own cached copy — on Firefox that background
+      // page is persistent, so without this broadcast notifications stayed in the
+      // previous language for the rest of the browser session.
+      await broadcastSettingsChanged();
+    } catch (e) { console.error('[locale] save failed', e); }
     await setLocale(resolveLocale(pref));
   }
 

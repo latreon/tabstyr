@@ -68,7 +68,9 @@ async function load() {
       .sort((a, b) => b.seconds - a.seconds)
       .slice(0, 5);
     const ownPrefix = browser.runtime.getURL('');
-    const realTabs = tabs.filter((t) => t.url && !t.url.startsWith(ownPrefix));
+    // Skip our own pages AND private windows — incognito tabs are never tracked, so
+    // counting them here would disagree with every number below it (matches useStats).
+    const realTabs = tabs.filter((t) => t.url && !t.incognito && !t.url.startsWith(ownPrefix));
     tabCount.value = realTabs.length;
     const liveIds = new Set(realTabs.flatMap((t) => (t.id ? [t.id] : [])));
     staleCount.value = findStale(

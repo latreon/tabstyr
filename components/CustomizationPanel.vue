@@ -2,7 +2,7 @@
 import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { browser } from 'wxt/browser';
-import { getSettings, saveSettings } from '@/lib/settings';
+import { broadcastSettingsChanged, getSettings, saveSettings } from '@/lib/settings';
 import {
   allCategoryIds,
   categoryColor,
@@ -114,7 +114,7 @@ async function addCustomCategory() {
       return;
     }
     newCatName.value = '';
-    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    await broadcastSettingsChanged();
     emit('changed');
     showToast(t('settings.categoryAdded'));
   } catch (e) {
@@ -130,7 +130,7 @@ async function removeCustomCategory(name: string) {
     customCategories.value = saved.customCategories;
     rules.value = saved.categoryRules; // rules referencing the removed name were dropped
     catError.value = '';
-    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    await broadcastSettingsChanged();
     emit('changed');
     showToast(t('settings.categoryRemoved'));
   } catch (e) {
@@ -152,7 +152,7 @@ async function addRule() {
     const saved = await saveSettings({ categoryRules: next });
     rules.value = saved.categoryRules;
     newPattern.value = '';
-    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    await broadcastSettingsChanged();
     emit('changed');
     showToast(t('settings.ruleAdded'));
   } catch (e) {
@@ -167,7 +167,7 @@ async function removeRule(pattern: string) {
     const saved = await saveSettings({ categoryRules: next });
     rules.value = saved.categoryRules;
     ruleError.value = '';
-    await browser.runtime.sendMessage({ type: 'settings-changed' });
+    await broadcastSettingsChanged();
     emit('changed');
   } catch (e) {
     console.error('[customization] remove rule failed', e);

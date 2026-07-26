@@ -172,6 +172,7 @@
     "copied": "已复制 ✓",
     "summary": "— 你在没有网站上花费了 {time}。 | — 你在 {count} 个网站上花费了 {time}。 | — 你在 {count} 个网站上花费了 {time}。",
     "nothingTracked": "— 未记录任何内容。",
+    "noActivity": "未记录任何活动。",
     "legendAria": "圆点颜色图例",
     "viewSiteAria": "查看 {domain} 详情 — {category}",
     "changeCategory": "更改类别（当前：{category}）",

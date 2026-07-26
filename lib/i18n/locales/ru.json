@@ -100,7 +100,7 @@
     "minutesAgo": "активна {count} мин назад",
     "hoursAgo": "активна {count} ч назад",
     "daysAgo": "активна {count} дн назад",
-    "closed": "Закрыта {count} вкладка | Закрыто {count} вкладок",
+    "closed": "Закрыто {count} вкладок | Закрыта {count} вкладка | Закрыто {count} вкладки | Закрыто {count} вкладок",
     "undo": "Отменить"
   },
   "categories": {
@@ -170,8 +170,9 @@
     "nextDay": "Следующий день",
     "copy": "Копировать",
     "copied": "Скопировано ✓",
-    "summary": "— вы провели {time} ни на одном сайте. | — вы провели {time} на {count} сайте. | — вы провели {time} на {count} сайтах.",
+    "summary": "— вы провели {time} ни на одном сайте. | — вы провели {time} на {count} сайте. | — вы провели {time} на {count} сайтах. | — вы провели {time} на {count} сайтах.",
     "nothingTracked": "— ничего не записано.",
+    "noActivity": "Активность не зафиксирована.",
     "legendAria": "Обозначение цветов точек",
     "viewSiteAria": "Подробнее о {domain} — {category}",
     "changeCategory": "Изменить категорию (сейчас {category})",

@@ -72,6 +72,35 @@ function extractDomain(raw: string): string {
   return isWebDomain(prefixed) ? prefixed : '';
 }
 
+// A plain number, optionally signed/decimal. Deliberately strict (no hex, no
+// exponent, no thousands separators) so an odd cell falls through to the clock parser
+// or is skipped rather than being silently reinterpreted by Number().
+const PLAIN_NUMBER = /^[+-]?\d+(?:\.\d+)?$/;
+// A clockface duration: H:MM:SS or H:MM (also MM:SS is written this way by some
+// exporters, but H:MM is the dominant convention — Toggl, Clockify and Harvest all
+// render "1:30" as one and a half hours — so two parts are read as hours:minutes).
+const CLOCK_DURATION = /^(\d+):([0-5]?\d)(?::([0-5]?\d))?$/;
+
+/**
+ * Seconds from a duration cell. Plain numbers are scaled by the unit inferred from
+ * the column header; clockface values carry their own unit and ignore it. Returns
+ * null when the cell is not a duration at all, so the caller can skip the row.
+ *
+ * Clock support matters because it is the DEFAULT export shape of several popular
+ * trackers — without it every row parsed as NaN and a real file imported as "empty".
+ */
+function parseDurationCell(raw: string, unit: number): number | null {
+  const v = raw.trim();
+  if (!v) return null;
+  if (PLAIN_NUMBER.test(v)) return Number(v) * unit;
+  const clock = CLOCK_DURATION.exec(v);
+  if (!clock) return null;
+  const [, a, b, c] = clock;
+  return c === undefined
+    ? Number(a) * 3600 + Number(b) * 60
+    : Number(a) * 3600 + Number(b) * 60 + Number(c);
+}
+
 /** Normalize a cell to a YYYY-MM-DD local date key, or null if unparseable. */
 function toDateKey(raw: string): string | null {
   if (DATE_RE.test(raw)) return raw;
@@ -86,6 +115,7 @@ function toDateKey(raw: string): string | null {
  * Parse a time-tracker CSV into aggregated daily per-domain stats. Recognizes a
  * date column, a domain/activity/site column, and a duration column whose unit is
  * inferred from its header (seconds / minutes / hours; defaults to seconds).
+ * Clockface durations ("1:30:00", "0:45") are recognized regardless of that unit.
  * Throws a tagged Error ('empty' | 'columns') the UI maps to a localized message.
  */
 export function parseCsvImport(text: string): CsvImportResult {
@@ -117,12 +147,12 @@ export function parseCsvImport(text: string): CsvImportResult {
     const cols = splitLine(lines[i]);
     const date = toDateKey(cols[dateIdx] ?? '');
     const domain = extractDomain(cols[domainIdx] ?? '');
-    const value = Number(cols[timeIdx]);
-    if (!date || !domain || !Number.isFinite(value) || value <= 0) {
+    const value = parseDurationCell(cols[timeIdx] ?? '', unit);
+    if (!date || !domain || value === null || !Number.isFinite(value) || value <= 0) {
       skipped++;
       continue;
     }
-    const seconds = Math.round(value * unit);
+    const seconds = Math.round(value);
     if (seconds <= 0) { skipped++; continue; }
     const key = `${date}|${domain}`;
     const cur = byKey.get(key) ?? { date, domain, seconds: 0, audioSeconds: 0 };

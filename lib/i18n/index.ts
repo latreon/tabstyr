@@ -72,6 +72,33 @@ const loaders: Record<string, () => Promise<{ default: typeof en }>> = {
   'zh-CN': () => import('./locales/zh-CN.json'),
 };
 
+/**
+ * Russian plural selection. vue-i18n's built-in rule is the Germanic one/other
+ * split, so a 2-form Russian message produced "Закрыто 3 вкладок" (the 5+ genitive
+ * plural) for counts of 2–4, which are grammatically "3 вкладки".
+ *
+ * Message shape for Russian plural keys is `zero | one | few | many` (4 forms):
+ *   one  → 1, 21, 31 … (but not 11)
+ *   few  → 2–4, 22–24 … (but not 12–14)
+ *   many → 0, 5–20, 25–30 …
+ * Messages with fewer forms fall back to vue-i18n's default indexing, so a locale
+ * catalog that hasn't been expanded yet still renders (just less precisely).
+ */
+export function russianPluralRule(choice: number, choicesLength: number): number {
+  if (choicesLength < 4) {
+    // Mirror vue-i18n's default: zero|one|other for 3 forms, one|other for 2.
+    if (choicesLength === 3) return choice === 0 ? 0 : choice === 1 ? 1 : 2;
+    return choice === 1 ? 0 : 1;
+  }
+  const n = Math.abs(Math.trunc(choice));
+  if (n === 0) return 0;
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return 1; // one
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 2; // few
+  return 3; // many
+}
+
 export const i18n = createI18n({
   legacy: false,
   locale: 'en', // real locale applied by bootstrapLocale() once its messages load
@@ -79,6 +106,10 @@ export const i18n = createI18n({
   messages: { en },
   missingWarn: false,
   fallbackWarn: false,
+  // Only locales whose plural rule differs from the built-in one/other split need an
+  // entry. Turkish/Japanese/Korean/Chinese have a single form (their catalogs repeat
+  // it), and the Romance/Germanic locales match the default.
+  pluralRules: { ru: russianPluralRule },
 });
 
 setDateLocale('en');

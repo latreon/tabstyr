@@ -30,6 +30,9 @@ function emptyGrid(): number[][] {
  * session cap all interact at hour edges.
  */
 export function buildHourlyHeatmap(sessions: Array<{ start: number; end: number }>): HeatmapData {
+  // `grid` is a private accumulation buffer allocated here and returned once, fully
+  // built — no caller can observe an intermediate state, so filling it in place is
+  // construction rather than mutation of shared data.
   const grid = emptyGrid();
   let total = 0;
 
