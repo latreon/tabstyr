@@ -94,4 +94,47 @@ describe('parseCsvImport column detection', () => {
     const minutes = parseCsvImport('Date,Domain,Minutes\n2026-06-11,github.com,2');
     expect(minutes.stats[0].seconds).toBe(120);
   });
+
+  describe('clockface durations', () => {
+    // The default export shape of several popular trackers. Parsed as NaN they used
+    // to skip every row, so a perfectly good file imported as "empty".
+    test('reads H:MM:SS', () => {
+      const r = parseCsvImport('Date,Domain,Duration\n2026-06-11,github.com,1:30:15');
+      expect(r.stats[0].seconds).toBe(5415);
+      expect(r.skipped).toBe(0);
+    });
+
+    test('reads H:MM as hours and minutes', () => {
+      expect(parseCsvImport('Date,Domain,Duration\n2026-06-11,github.com,1:30').stats[0].seconds).toBe(5400);
+      expect(parseCsvImport('Date,Domain,Duration\n2026-06-11,github.com,0:45').stats[0].seconds).toBe(2700);
+    });
+
+    test('a clock value carries its own unit and ignores the header unit', () => {
+      // "Minutes" would otherwise multiply an already-absolute duration by 60.
+      expect(parseCsvImport('Date,Domain,Minutes\n2026-06-11,github.com,2:00').stats[0].seconds).toBe(7200);
+    });
+
+    test('aggregates clock and numeric rows for the same day+domain', () => {
+      const r = parseCsvImport(
+        ['Date,Domain,Seconds', '2026-06-11,github.com,0:01:00', '2026-06-11,github.com,30'].join('\n'),
+      );
+      expect(r.stats[0].seconds).toBe(90);
+      expect(r.imported).toBe(2);
+    });
+
+    test('rejects nonsense that is neither a number nor a clock', () => {
+      const r = parseCsvImport(
+        ['Date,Domain,Duration', '2026-06-11,github.com,about an hour', '2026-06-11,github.com,1:75'].join('\n'),
+      );
+      expect(r.stats).toEqual([]);
+      expect(r.skipped).toBe(2);
+    });
+
+    test('no longer misreads a hex-looking or exponent cell as a number', () => {
+      // Number('0x20') is 32 — an accidental, silent reinterpretation. Strict now.
+      const r = parseCsvImport('Date,Domain,Seconds\n2026-06-11,github.com,0x20');
+      expect(r.stats).toEqual([]);
+      expect(r.skipped).toBe(1);
+    });
+  });
 });

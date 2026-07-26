@@ -327,3 +327,33 @@ describe('TrackerEngine onReplaced (tabId remap)', () => {
     expect(e.getState().focused?.tabId).toBe(1); // unchanged
   });
 });
+
+describe('markActive', () => {
+  test('clears the idle flag so a playing media session is not force-closed', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://yt.com/watch', T0, true); // focused + audible
+    e.handleIdle(T0 + 60_000); // no input: the video keeps counting, but idle is set
+    expect(e.getState().isIdle).toBe(true);
+    expect(e.getState().focused).not.toBeNull();
+
+    // The user comes back on an untrackable tab (internal page / private window), so
+    // no handleFocus runs. Without markActive the flag stayed set and the next
+    // checkpoint force-closed the still-playing session as though they were away.
+    e.markActive();
+    expect(e.getState().isIdle).toBe(false);
+
+    const closed = e.checkpoint(T0 + 90_000);
+    expect(closed).toHaveLength(1); // a normal heartbeat slice...
+    expect(e.getState().focused?.start).toBe(T0 + 90_000); // ...and the session lives on
+  });
+
+  test('an idle non-media session is still closed by the next checkpoint', () => {
+    // markActive is the ONLY thing that clears the flag here; nothing about it should
+    // resurrect a session that idling legitimately ended.
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://a.com', T0);
+    e.handleIdle(T0 + 60_000);
+    expect(e.getState().focused).toBeNull();
+    expect(e.checkpoint(T0 + 90_000)).toEqual([]);
+  });
+});

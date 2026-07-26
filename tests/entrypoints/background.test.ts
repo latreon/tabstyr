@@ -5,6 +5,7 @@ import { fakeBrowser } from 'wxt/testing';
 import { resetDBConnection } from '@/lib/db/db';
 import * as repo from '@/lib/db/repo';
 import { invalidateSettings, saveSettings } from '@/lib/settings';
+import { dateKey } from '@/lib/time';
 import background from '@/entrypoints/background';
 
 const DAY_MS = 86_400_000;
@@ -109,6 +110,71 @@ describe('background: alarms', () => {
 
     background.main(); // simulates the service worker being woken again
     await vi.waitFor(async () => expect((await fakeBrowser.alarms.getAll()).length).toBe(2));
+  });
+});
+
+describe('background: heartbeat side-checks survive worker restarts', () => {
+  // An MV3 worker is evicted ~30s after each event, so nearly every 1-minute
+  // heartbeat runs in a FRESH worker. Anything gated on a per-worker counter
+  // ("every Nth heartbeat") therefore never fires in practice — these tests pin the
+  // behaviour to a single heartbeat of a single worker lifetime.
+  async function seedTodaySocialTime(seconds: number) {
+    await repo.applyDailyStatsMax([
+      { date: dateKey(Date.now()), domain: 'reddit.com', seconds, audioSeconds: 0 },
+    ]);
+  }
+
+  test('a budget nudge fires on the FIRST heartbeat of a fresh worker', async () => {
+    await saveSettings({ notificationsEnabled: true, categoryBudgets: { Social: 1 } });
+    await seedTodaySocialTime(120); // 2 min against a 1-min budget
+
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'heartbeat', scheduledTime: Date.now() });
+
+    await vi.waitFor(async () => {
+      expect(Object.keys(await fakeBrowser.notifications.getAll())).toContain('tab-time-budget');
+    });
+  });
+
+  test('the budget nudge still fires at most once a day', async () => {
+    await saveSettings({ notificationsEnabled: true, categoryBudgets: { Social: 1 } });
+    await seedTodaySocialTime(120);
+
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'heartbeat', scheduledTime: Date.now() });
+    await vi.waitFor(async () => {
+      expect(Object.keys(await fakeBrowser.notifications.getAll())).toContain('tab-time-budget');
+    });
+
+    await fakeBrowser.notifications.clear('tab-time-budget');
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'heartbeat', scheduledTime: Date.now() });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(Object.keys(await fakeBrowser.notifications.getAll())).not.toContain('tab-time-budget');
+  });
+
+  test('no nudge when no budget is configured', async () => {
+    await saveSettings({ notificationsEnabled: true });
+    await seedTodaySocialTime(3600);
+
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'heartbeat', scheduledTime: Date.now() });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(Object.keys(await fakeBrowser.notifications.getAll())).not.toContain('tab-time-budget');
+  });
+
+  test('the badge refresh throttle is persisted, not per-worker', async () => {
+    const setBadge = vi.spyOn(fakeBrowser.action, 'setBadgeText');
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'heartbeat', scheduledTime: Date.now() });
+    await vi.waitFor(() => expect(setBadge).toHaveBeenCalled());
+
+    // A brand-new worker (fresh module scope) must still honour the interval and
+    // NOT refresh again a minute later.
+    setBadge.mockClear();
+    background.main();
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'heartbeat', scheduledTime: Date.now() });
+    await new Promise((r) => setTimeout(r, 20));
+    expect(setBadge).not.toHaveBeenCalled();
   });
 });
 

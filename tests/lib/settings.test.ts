@@ -1,11 +1,22 @@
-import { beforeEach, describe, expect, test } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { fakeBrowser } from 'wxt/testing';
-import { DEFAULT_SETTINGS, getSettings, invalidateSettings, saveSettings } from '@/lib/settings';
+import {
+  DEFAULT_SETTINGS,
+  broadcastSettingsChanged,
+  getSettings,
+  invalidateSettings,
+  saveSettings,
+  syncSettingsAcrossContexts,
+} from '@/lib/settings';
 
 describe('settings', () => {
   beforeEach(() => {
     fakeBrowser.reset();
     invalidateSettings(); // drop the in-process cache so each test reads fresh storage
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   test('returns defaults when nothing stored', async () => {
@@ -339,6 +350,94 @@ describe('settings', () => {
       const s = await getSettings();
       expect(s.categoryOverrides).toEqual({});
       expect(s.categoryRules).toEqual([]);
+    });
+  });
+
+  describe('numeric hardening', () => {
+    test('rounds staleDays and idleSeconds like every other numeric setting', async () => {
+      // A hand-edited or third-party backup can carry fractions. idleSeconds reaches
+      // idle.setDetectionInterval, which rejects a non-integer argument.
+      await fakeBrowser.storage.local.set({ settings: { staleDays: 3.7, idleSeconds: 15.5 } });
+      const s = await getSettings();
+      expect(s.staleDays).toBe(4);
+      expect(s.idleSeconds).toBe(16);
+      expect(Number.isInteger(s.staleDays)).toBe(true);
+      expect(Number.isInteger(s.idleSeconds)).toBe(true);
+    });
+
+    test('non-finite numbers fall back to the default instead of surviving clamp()', async () => {
+      // clamp() is NaN-transparent (Math.min/max propagate it), so the guard has to
+      // reject these before they reach it.
+      await fakeBrowser.storage.local.set({
+        settings: {
+          staleDays: Number.NaN,
+          idleSeconds: Number.POSITIVE_INFINITY,
+          focusTarget: Number.NaN,
+          sessionAlertMinutes: Number.NaN,
+          autoExportDays: Number.NaN,
+        },
+      });
+      const s = await getSettings();
+      expect(s.staleDays).toBe(DEFAULT_SETTINGS.staleDays);
+      expect(s.idleSeconds).toBe(DEFAULT_SETTINGS.idleSeconds);
+      expect(s.focusTarget).toBe(DEFAULT_SETTINGS.focusTarget);
+      expect(s.sessionAlertMinutes).toBe(DEFAULT_SETTINGS.sessionAlertMinutes);
+      expect(s.autoExportDays).toBe(DEFAULT_SETTINGS.autoExportDays);
+    });
+
+    test('a non-finite budget value is dropped', async () => {
+      await fakeBrowser.storage.local.set({ settings: { categoryBudgets: { Social: Number.NaN, Media: 30 } } });
+      expect((await getSettings()).categoryBudgets).toEqual({ Media: 30 });
+    });
+  });
+
+  describe('cross-context cache coherence', () => {
+    test("another context's write drops this context's cache (no lost update)", async () => {
+      // Re-register the listener: fakeBrowser.reset() in beforeEach clears the one
+      // installed when the module was first imported.
+      syncSettingsAcrossContexts();
+      await saveSettings({ focusTarget: 80 });          // this context writes
+      expect((await getSettings()).focusTarget).toBe(80); // ...and caches it
+
+      // Simulate ANOTHER extension page (its own module cache) saving different data.
+      await fakeBrowser.storage.local.set({
+        settings: { ...DEFAULT_SETTINGS, focusTarget: 80, staleDays: 21 },
+      });
+      // Our cache must be gone, so the next read sees the foreign write...
+      expect((await getSettings()).staleDays).toBe(21);
+      // ...and our next save merges onto it instead of reverting it.
+      await saveSettings({ audioEnabled: false });
+      const stored = (await fakeBrowser.storage.local.get('settings')).settings as Record<string, unknown>;
+      expect(stored).toMatchObject({ staleDays: 21, focusTarget: 80, audioEnabled: false });
+    });
+
+    test('our own write does not invalidate our cache (no extra storage read)', async () => {
+      syncSettingsAcrossContexts();
+      await saveSettings({ staleDays: 9 });
+      // The listener must recognise the value it just saw as ours and leave the cache
+      // in place, so the common path costs no additional storage round-trip.
+      const get = vi.spyOn(fakeBrowser.storage.local, 'get');
+      expect((await getSettings()).staleDays).toBe(9);
+      expect(get).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('broadcastSettingsChanged', () => {
+    test('notifies other contexts with a settings-changed message', async () => {
+      const seen: unknown[] = [];
+      fakeBrowser.runtime.onMessage.addListener((msg: unknown) => {
+        seen.push(msg);
+        return undefined;
+      });
+      await broadcastSettingsChanged();
+      expect(seen).toEqual([{ type: 'settings-changed' }]);
+    });
+
+    test('never rejects when there is no receiver', async () => {
+      // A missing receiver is normal (worker asleep), and surfacing it made a
+      // successful save report "save failed".
+      vi.spyOn(fakeBrowser.runtime, 'sendMessage').mockRejectedValue(new Error('no receiver'));
+      await expect(broadcastSettingsChanged()).resolves.toBeUndefined();
     });
   });
 });

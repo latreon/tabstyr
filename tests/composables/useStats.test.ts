@@ -23,7 +23,9 @@ const meta = (p: Partial<TabMeta>): TabMeta =>
 const session = (p: Partial<Session>): Session =>
   ({ tabId: 1, tabKey: 'k1', url: 'https://a.com/x', domain: 'a.com', start: NOW - 60_000, end: NOW, audio: false, ...p });
 
-function stubTabs(tabs: Array<{ id: number; url: string; title?: string; windowId?: number }>) {
+function stubTabs(
+  tabs: Array<{ id: number; url: string; title?: string; windowId?: number; incognito?: boolean }>,
+) {
   vi.spyOn(browser.tabs, 'query').mockResolvedValue(tabs as never);
 }
 
@@ -142,6 +144,20 @@ describe('useStats tab lists', () => {
       ],
     });
     expect(s.staleTabItems.value.map((t) => t.tabId)).toEqual([2, 1]);
+  });
+
+  test('private (incognito) tabs never appear in the lists or the count', async () => {
+    // The worker refuses to track or store anything about an incognito tab, so
+    // listing one here would surface private browsing in a normal window (title +
+    // URL, closable) and make the count disagree with every number beside it.
+    stubTabs([
+      { id: 1, url: 'https://a.com/', title: 'A' },
+      { id: 2, url: 'https://secret.com/', title: 'Secret', incognito: true },
+    ]);
+    const s = await loaded([], { metas: [meta({ tabId: 1 }), meta({ tabId: 2, key: 'k2', url: 'https://secret.com/' })] });
+    expect(s.openTabCount.value).toBe(1);
+    expect(s.openTabsList.value.map((t) => t.url)).toEqual(['https://a.com/']);
+    expect(s.tabRows.value.map((r) => r.domain)).toEqual(['a.com']);
   });
 
   test('recentSessions keeps foreground web sessions only', async () => {
