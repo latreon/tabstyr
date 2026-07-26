@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import RingLogo from './RingLogo.vue';
-import NewsletterSignup from './NewsletterSignup.vue';
+// Newsletter signup is parked, not removed — see the footer template below.
+// import NewsletterSignup from './NewsletterSignup.vue';
 import { LINKS, AUTHOR, STORE_LIVE } from '@/site';
 import { localizedPath, locale, useI18n } from '@/i18n';
 
@@ -18,7 +19,14 @@ const blogHref = computed(() => localizedPath(locale.value, 'blog'));
       <div class="brand-col">
         <a href="#top" class="brand"><RingLogo :size="22" /> <span>TabStyr</span></a>
         <p class="tag">{{ t('footer.tag') }}</p>
-        <NewsletterSignup class="news-block" />
+        <!--
+          Newsletter signup ("Get updates" / email field / Subscribe) is parked for
+          now. Commented out rather than deleted: the component, its Formspree
+          wiring, its styles and its translations in all 11 locales are untouched, so
+          bringing it back is this line plus the import above — no rebuild of the
+          feature.
+          <NewsletterSignup class="news-block" />
+        -->
       </div>
 
       <nav class="cols" aria-label="Footer">
