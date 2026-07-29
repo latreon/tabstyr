@@ -1,0 +1,120 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+#
+# CodeRabbit AI review settings. Public repositories get the full paid feature
+# set for free. Docs: https://docs.coderabbit.ai/guides/configure-coderabbit
+
+language: en-US
+early_access: false
+
+reviews:
+  profile: chill # 'assertive' comments on far more, most of it stylistic nitpick
+  request_changes_workflow: false # comments only — never blocks the merge button
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: true
+
+  # Skip mechanical PRs: version bumps, generated changelog syncs, dependency
+  # updates that CI already gates.
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - main
+    ignore_title_keywords:
+      - 'chore(deps)'
+      - 'chore(deps-dev)'
+      - 'ci(deps)'
+      - 'wip'
+
+  path_filters:
+    # Build output and generated artefacts — reviewing bundles wastes the review.
+    - '!dist/**'
+    - '!.output/**'
+    - '!.wxt/**'
+    - '!coverage/**'
+    - '!landing/dist/**'
+    - '!test-results/**'
+    - '!playwright-report/**'
+    - '!e2e/__screenshots__/**'
+    - '!docs/store/**'
+    - '!**/*.svg'
+    - '!**/*.png'
+    - '!package-lock.json'
+    # Generated from GitHub Releases by scripts/fetch-changelog.mjs.
+    - '!landing/src/data/changelog.json'
+
+  path_instructions:
+    - path: 'entrypoints/**'
+      instructions: >-
+        Extension entrypoints (MV3 background service worker, popup, dashboard).
+        The background worker can be torn down at any moment: flag in-memory state
+        that is assumed to survive between events, and timers/intervals that
+        assume a long-lived worker. Flag any browser.* API call whose promise
+        rejection is unhandled — an extension that throws in the worker fails
+        silently for the user.
+
+    - path: 'lib/tracker/**'
+      instructions: >-
+        Core time-tracking engine. This is the source of truth for user data, so
+        prioritise correctness: off-by-one on day boundaries, timezone/DST
+        handling, double-counting when tabs are switched rapidly, and time
+        attributed to the wrong domain after an SPA navigation.
+
+    - path: 'lib/db/**'
+      instructions: >-
+        IndexedDB persistence. Flag schema changes that lack a migration path for
+        existing installs, unbounded reads over the full history, and writes that
+        are not resilient to the transaction aborting.
+
+    - path: 'lib/crypto.ts'
+      instructions: >-
+        Encrypted backup path. Scrutinise key derivation parameters, IV/nonce
+        reuse, and any change that could make an existing encrypted backup
+        undecryptable. Never suggest weakening the parameters for speed.
+
+    - path: '**/*.vue'
+      instructions: >-
+        Vue 3 SFCs with <script setup lang="ts">. Flag v-html on any value that is
+        not provably static, missing keyboard/ARIA affordances on custom
+        interactive elements, watchers/listeners that are never cleaned up in
+        onBeforeUnmount, and hardcoded user-facing strings that should go through
+        i18n (t(...)).
+
+    - path: 'landing/**'
+      instructions: >-
+        Public marketing site — it is the first thing a visitor sees. Prioritise
+        accessibility (contrast, focus visibility, reduced-motion), Core Web
+        Vitals (layout shift, oversized images, render-blocking assets), and
+        correct meta/SEO tags. It reuses the extension's pure lib/ modules via the
+        @ext alias; flag any import that would pull wxt/browser or IndexedDB into
+        the standalone site build.
+
+    - path: 'tests/**'
+      instructions: >-
+        Vitest unit tests. Flag tests that assert on implementation details rather
+        than behaviour, and tests that would still pass if the code under test were
+        deleted. Do not ask for more tests where a behaviour is already covered.
+
+    - path: '.github/workflows/**'
+      instructions: >-
+        Flag unpinned or downgraded action versions, secrets exposed to
+        pull_request_target, and over-broad `permissions` blocks.
+
+  tools:
+    # ESLint runs in CI over both packages with --max-warnings 0. Letting
+    # CodeRabbit run its own copy just duplicates the same findings on the PR.
+    eslint:
+      enabled: false
+    # Shell scripts and YAML are worth a second pass — nothing else covers them.
+    shellcheck:
+      enabled: true
+    yamllint:
+      enabled: true
+    markdownlint:
+      enabled: true
+    gitleaks:
+      enabled: true
+
+chat:
+  auto_reply: true

@@ -16,3 +16,6 @@ e2e/__screenshots__/
 
 # Coverage output (vitest --coverage)
 coverage/
+
+# Netlify CLI local state (created by `netlify link` / `netlify deploy`)
+.netlify/

@@ -1,0 +1,69 @@
+# Qodo Merge (PR-Agent) configuration.
+# Free for open-source repos via the "Qodo Merge for Open Source" GitHub app.
+# Reference: https://github.com/qodo-ai/pr-agent
+#
+# DELIBERATELY NARROW SCOPE. CodeRabbit (.coderabbit.yaml) already posts the PR
+# summary and the line-by-line review on every PR. Running Qodo's /review and
+# /describe as well would put two bots' opinions on the same lines, which is how
+# PR review becomes noise that gets ignored.
+#
+# So the split is:
+#   CodeRabbit -> summary + review + chat
+#   Qodo       -> /improve only (concrete, ranked code-change suggestions)
+# Both stay comment-only; neither gates the merge button.
+
+[config]
+# Skip PRs where there is nothing for an LLM to usefully say. CI already gates
+# these. Values are regexes.
+ignore_pr_title = [
+    '^chore\(deps',
+    '^chore\(deps-dev\)',
+    '^ci\(deps\)',
+    '^\[?[Ww][Ii][Pp]\]?',
+]
+ignore_pr_labels = ["dependencies"]
+
+[github_app]
+# Only run on PR open/reopen, and only /improve. Nothing on every push — a bot
+# re-reviewing after each commit trains people to stop reading it.
+pr_commands = [
+    "/improve",
+]
+handle_push_trigger = false
+
+[pr_code_suggestions]
+# Keep it to a handful of high-confidence suggestions. Long ranked lists get
+# skimmed, not acted on.
+num_code_suggestions_per_chunk = 3
+# 0-10 confidence scale; below ~6 the suggestions are mostly stylistic guesses.
+suggestions_score_threshold = 6
+# Post as one persistent comment that updates in place, not as committable
+# single-click suggestions — an LLM patch applied without review is how
+# plausible-but-wrong changes land on main.
+commitable_code_suggestions = false
+persistent_comment = true
+# Stay silent when there is nothing worth saying.
+publish_output_no_suggestions = false
+
+[ignore]
+# Build output, generated data and binary assets. Reviewing a bundled copy of our
+# own source produces duplicate findings with useless line numbers.
+glob = [
+    'dist/**',
+    '.output/**',
+    '.wxt/**',
+    'coverage/**',
+    'landing/dist/**',
+    'test-results/**',
+    'playwright-report/**',
+    'e2e/__screenshots__/**',
+    'docs/store/**',
+    'node_modules/**',
+    'package-lock.json',
+    # Generated from GitHub Releases by scripts/fetch-changelog.mjs.
+    'landing/src/data/changelog.json',
+    '**/*.png',
+    '**/*.svg',
+    '**/*.woff2',
+    '**/*.mp4',
+]

@@ -15,7 +15,9 @@ export default defineConfig({
     exclude: ['e2e/**', 'node_modules/**', 'landing/**'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'html'],
+      // text = local terminal summary, html = browsable local report,
+      // lcov = the machine-readable file Codecov uploads in CI.
+      reporter: ['text', 'html', 'lcov'],
       // Only the code that actually ships in the extension. Config, tests, the
       // separate landing package, generated output and the build scripts would
       // otherwise dilute the number into meaninglessness.

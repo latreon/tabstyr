@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
-const props = defineProps<{
+defineProps<{
   src: string;
   poster: string;
   label: string;

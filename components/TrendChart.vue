@@ -56,11 +56,11 @@ function hideTip() {
     </div>
     <div class="chart">
       <div class="y-axis" aria-hidden="true">
-        <span v-for="t in [...ticks].reverse()" :key="t.seconds" class="y-label">{{ t.label }}</span>
+        <span v-for="tick in [...ticks].reverse()" :key="tick.seconds" class="y-label">{{ tick.label }}</span>
         <span class="y-label">0</span>
       </div>
       <div class="plot">
-        <div v-for="t in ticks" :key="t.seconds" class="gridline" :style="{ bottom: `${(t.seconds / chartMax) * 100}%` }" aria-hidden="true" />
+        <div v-for="tick in ticks" :key="tick.seconds" class="gridline" :style="{ bottom: `${(tick.seconds / chartMax) * 100}%` }" aria-hidden="true" />
         <div class="bars" role="group" :aria-label="t('trend.title')">
           <div
             v-for="(p, i) in points"

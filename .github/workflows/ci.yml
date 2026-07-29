@@ -5,12 +5,22 @@ on:
     branches: [main]
   pull_request:
 
+# Least privilege, stated explicitly. The repository default is currently
+# read-only, but relying on that means a change to the org/repo default silently
+# widens what every job here can do with the workflow token.
+permissions:
+  contents: read
+
 jobs:
   check:
-    name: Type-check · test · build
+    name: Lint · type-check · test · build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # No job here performs authenticated git operations, so don't leave the
+          # workflow token in .git/config for later steps (zizmor: artipacked).
+          persist-credentials: false
       - uses: actions/setup-node@v6
         with:
           node-version: 22
@@ -20,8 +30,24 @@ jobs:
       - run: npm ci || (sleep 5 && npm ci) || (sleep 15 && npm ci)
       - run: node scripts/make-icons.mjs
       - run: npm run check:version
+      # One ESLint pass covers both packages (extension root + landing/src) —
+      # see eslint.config.js. Warnings fail the build so they can't accumulate.
+      - run: npm run lint
       - run: npm run typecheck
-      - run: npm test
+      # Coverage run instead of a plain `npm test`: it executes the same suite and
+      # additionally writes coverage/lcov.info for the Codecov upload below.
+      - run: npm run test:coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: ./coverage/lcov.info
+          flags: extension
+          # Public repo, so uploads work without a token; the secret is used when
+          # present because tokenless uploads are rate-limited and can flake.
+          token: ${{ secrets.CODECOV_TOKEN }}
+          # Codecov being unreachable must never fail the merge gate — the tests
+          # themselves already passed by this point.
+          fail_ci_if_error: false
       - run: npm run build
       - run: npm run build:firefox
 
@@ -33,6 +59,10 @@ jobs:
     continue-on-error: true
     steps:
       - uses: actions/checkout@v7
+        with:
+          # No job here performs authenticated git operations, so don't leave the
+          # workflow token in .git/config for later steps (zizmor: artipacked).
+          persist-credentials: false
       - uses: actions/setup-node@v6
         with:
           node-version: 22
@@ -53,6 +83,10 @@ jobs:
         working-directory: landing
     steps:
       - uses: actions/checkout@v7
+        with:
+          # No job here performs authenticated git operations, so don't leave the
+          # workflow token in .git/config for later steps (zizmor: artipacked).
+          persist-credentials: false
       - uses: actions/setup-node@v6
         with:
           node-version: 22
