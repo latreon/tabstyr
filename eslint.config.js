@@ -70,7 +70,10 @@ export default tseslint.config(
 
   // Build/release scripts: plain Node ESM, no DOM.
   {
-    files: ['scripts/**/*.mjs', 'landing/scripts/**/*.mjs', '*.config.{js,ts}'],
+    // '**/*.config.*' not '*.config.*': the bare form only matches the repo root,
+    // which left landing/vite.config.ts and landing/vitest.config.ts resolving as
+    // browser code (window defined, __dirname not) even though they are Node.
+    files: ['scripts/**/*.mjs', 'landing/scripts/**/*.mjs', '**/*.config.{js,ts}'],
     languageOptions: {
       globals: { ...globals.node },
     },

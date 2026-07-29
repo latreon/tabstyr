@@ -45,6 +45,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          # actions/checkout leaves the workflow token in .git/config by default.
+          # This workflow runs on pull_request, and CodeQL needs no authenticated
+          # git operations after checkout, so don't leave a token lying around
+          # for later steps to pick up (zizmor: artipacked).
+          persist-credentials: false
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
