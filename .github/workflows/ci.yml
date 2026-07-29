@@ -5,6 +5,12 @@ on:
     branches: [main]
   pull_request:
 
+# Least privilege, stated explicitly. The repository default is currently
+# read-only, but relying on that means a change to the org/repo default silently
+# widens what every job here can do with the workflow token.
+permissions:
+  contents: read
+
 jobs:
   check:
     name: Lint · type-check · test · build

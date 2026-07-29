@@ -47,6 +47,11 @@ jobs:
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          # This job deploys via netlify-cli and never writes to git, so the
+          # workflow token has no reason to sit in .git/config where the build and
+          # the npx-fetched CLI below could reach it (zizmor: artipacked).
+          persist-credentials: false
       - uses: actions/setup-node@v6
         with:
           node-version: 22
