@@ -1,5 +1,3 @@
-/* eslint-disable */
-declare const chrome: any;
 
 // Live end-to-end proof of the webNavigation SPA tracking: drive real pushState
 // navigations in one tab and confirm the background records distinct sub-page

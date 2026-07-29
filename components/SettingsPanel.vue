@@ -15,7 +15,7 @@ import { mergeBackup, mergeSettingsMaps } from '@/lib/merge';
 import { parseCsvImport } from '@/lib/import-csv';
 import { dateKey } from '@/lib/time';
 import { getDateLocale } from '@/lib/locale';
-import type { Settings, ThemeSetting } from '@/lib/types';
+import type { Settings } from '@/lib/types';
 import SelectBox from '@/components/ui/SelectBox.vue';
 import ToggleSwitch from '@/components/ui/ToggleSwitch.vue';
 import NumberStepper from '@/components/ui/NumberStepper.vue';
@@ -32,7 +32,7 @@ const THEME_OPTIONS = computed(() => [
 // Explicit locales only — each shown in its own script. No "Automatic": the
 // picker always reflects a concrete language.
 const LANGUAGE_OPTIONS = computed(() =>
-  SUPPORTED_LOCALES.map((l) => ({ value: l.code, label: `${l.flag}  ${l.label}` })),
+  SUPPORTED_LOCALES.map((l) => ({ value: l.code, label: `${l.flag}\u00a0\u00a0${l.label}` })),
 );
 // A stored 'auto' preference resolves to a concrete locale for display/selection.
 const currentLocale = computed(() => resolveLocale(locale.language.value));

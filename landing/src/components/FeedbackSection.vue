@@ -44,8 +44,8 @@ const cards = computed(() => [
           :rel="c.external ? 'noopener' : undefined"
         >
           <span class="chip" aria-hidden="true">
-            <svg v-if="c.icon === 'spark'" viewBox="0 0 24 24"><path d="M9.5 16.5h5M10 20h4M12 3a6 6 0 0 1 3.5 10.9c-.6.5-1 1.2-1 2H9.5c0-.8-.4-1.5-1-2A6 6 0 0 1 12 3Z"/></svg>
-            <svg v-else viewBox="0 0 24 24"><path d="M12 20s-7-4.3-9.3-8.5A4.7 4.7 0 0 1 12 6a4.7 4.7 0 0 1 9.3 5.5C19 15.7 12 20 12 20Z"/></svg>
+            <svg v-if="c.icon === 'spark'" viewBox="0 0 24 24"><path d="M9.5 16.5h5M10 20h4M12 3a6 6 0 0 1 3.5 10.9c-.6.5-1 1.2-1 2H9.5c0-.8-.4-1.5-1-2A6 6 0 0 1 12 3Z" /></svg>
+            <svg v-else viewBox="0 0 24 24"><path d="M12 20s-7-4.3-9.3-8.5A4.7 4.7 0 0 1 12 6a4.7 4.7 0 0 1 9.3 5.5C19 15.7 12 20 12 20Z" /></svg>
           </span>
           <h3 class="card-title">{{ c.title }}</h3>
           <p class="card-body">{{ c.body }}</p>

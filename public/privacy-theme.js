@@ -5,6 +5,6 @@
 try {
   var t = localStorage.getItem('tabstyr:theme');
   if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t;
-} catch (e) {
+} catch {
   /* storage unavailable — CSS media-query fallback applies */
 }

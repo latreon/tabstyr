@@ -11,7 +11,6 @@ import sharp from 'sharp';
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const SHOTS = resolve(ROOT, 'docs/store/screenshots');
-const PH = resolve(ROOT, 'docs/store/producthunt/screenshots');
 const OUT = resolve(ROOT, 'docs/store/slides');
 mkdirSync(OUT, { recursive: true });
 

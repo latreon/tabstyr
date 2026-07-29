@@ -8,7 +8,12 @@ const props = withDefaults(
     format?: (n: number) => string;
     durationMs?: number;
   }>(),
-  { durationMs: 1100 },
+  {
+    durationMs: 1100,
+    // Default rendering: rounded, thousands-separated. Callers pass e.g.
+    // formatDuration to render the same animated number as a duration.
+    format: (n: number) => Math.round(n).toLocaleString(),
+  },
 );
 
 const display = ref(0);
@@ -43,5 +48,5 @@ onBeforeUnmount(() => cancelAnimationFrame(raf));
 </script>
 
 <template>
-  <span>{{ format ? format(display) : Math.round(display).toLocaleString() }}</span>
+  <span>{{ format(display) }}</span>
 </template>

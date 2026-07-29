@@ -1,4 +1,3 @@
-/* eslint-disable */
 declare const chrome: any;
 
 // Renders the dashboard + popup in the longest-string locale (German) and a CJK
