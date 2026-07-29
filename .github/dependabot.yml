@@ -3,8 +3,14 @@ updates:
   # npm dependencies — monthly, low-noise. Minor + patch bumps are grouped into a
   # single PR; major bumps (e.g. a wxt/vite/vue-i18n jump) open separately so they
   # get a deliberate review. Every PR is gated by the CI workflow.
+  #
+  # BOTH lockfiles: the landing site under /landing is a separate npm package with
+  # its own package-lock.json (vite / vue-tsc / playwright). Watching only "/" left
+  # that whole tree receiving zero advisory PRs.
   - package-ecosystem: "npm"
-    directory: "/"
+    directories:
+      - "/"
+      - "/landing"
     schedule:
       interval: "monthly"
     open-pull-requests-limit: 5
