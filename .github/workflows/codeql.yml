@@ -1,0 +1,59 @@
+name: CodeQL
+
+# Static security analysis (SAST). Free for public repositories. Findings land in
+# the repo's Security → Code scanning tab and are annotated inline on PRs.
+#
+# Advanced setup (this file) rather than GitHub's default setup so the scanned
+# paths, query suite and schedule live in version control and get reviewed.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Weekly re-scan so newly published queries find old code, not just new PRs.
+    - cron: '17 4 * * 1'
+
+# A newer push to the same ref makes the in-flight scan irrelevant.
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      # Required to upload the SARIF results to code scanning.
+      security-events: write
+      contents: read
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # One language covers the whole repo: .ts, .js/.mjs and .vue SFCs
+          # (extension + landing site).
+          - language: javascript-typescript
+            build-mode: none
+          # Scans the workflows themselves — script injection via untrusted
+          # ${{ }} interpolation, over-broad permissions, unsafe checkout of PR
+          # code. Relevant here because deploy-landing.yml handles secrets.
+          - language: actions
+            build-mode: none
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          config-file: ./.github/codeql/codeql-config.yml
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: /language:${{ matrix.language }}

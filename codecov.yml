@@ -1,0 +1,49 @@
+# Codecov configuration. Free for public repositories.
+#
+# Only the code that ships in the extension is measured (see coverage.include in
+# vitest.config.ts): lib/, composables/, components/, entrypoints/. Build
+# scripts, config and the separate landing package are out of scope.
+
+coverage:
+  # Round the reported number rather than showing spurious precision.
+  precision: 2
+  round: down
+  range: '70...90'
+
+  status:
+    project:
+      default:
+        # Measured against the base commit rather than a fixed number, so the
+        # gate tracks reality instead of needing edits every time coverage moves.
+        target: auto
+        # Small dips are normal when refactoring removes covered lines; a real
+        # regression is bigger than this.
+        threshold: 1%
+    patch:
+      default:
+        # New/changed lines in a PR should be tested. Lower than the repo average
+        # on purpose: a strict 100% patch gate mostly produces token tests.
+        target: 80%
+        threshold: 1%
+
+# Fold the bot's PR comment into one block that updates in place rather than
+# posting a new comment per push.
+comment:
+  layout: 'condensed_header, diff, condensed_files, condensed_footer'
+  behavior: default
+  require_changes: true
+
+# Don't post a status/comment until every expected upload has arrived.
+codecov:
+  require_ci_to_pass: true
+
+ignore:
+  - 'dist/**'
+  - '.output/**'
+  - '.wxt/**'
+  - 'coverage/**'
+  - 'e2e/**'
+  - 'tests/**'
+  - 'scripts/**'
+  - 'landing/**'
+  - '**/*.d.ts'

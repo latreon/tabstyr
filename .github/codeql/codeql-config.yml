@@ -1,0 +1,24 @@
+name: tabstyr CodeQL config
+
+# security-extended adds the lower-precision security queries on top of the
+# default suite — worth it here because the surface (extension content/background
+# scripts + a public marketing site) is exactly where DOM XSS, unsafe URL
+# handling and injection-style issues hide. Deliberately NOT
+# security-and-quality: its maintainability queries duplicate what ESLint and
+# review already cover, at a much worse signal-to-noise ratio.
+queries:
+  - uses: security-extended
+
+paths-ignore:
+  # Build output — analysing bundled/minified copies of our own source produces
+  # duplicate findings with useless locations.
+  - dist
+  - .output
+  - .wxt
+  - landing/dist
+  # Tooling artefacts.
+  - coverage
+  - test-results
+  - playwright-report
+  - node_modules
+  - '**/*.min.js'
