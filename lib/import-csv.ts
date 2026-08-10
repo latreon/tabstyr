@@ -37,6 +37,27 @@ function splitLine(line: string): string[] {
   return out.map((f) => f.trim());
 }
 
+/** Split CSV into logical records, retaining CR/LF inside a quoted field. */
+function splitRecords(text: string): string[] {
+  const records: string[] = [];
+  let record = '';
+  let quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') {
+      record += ch;
+      if (quoted && text[i + 1] === '"') record += text[++i];
+      else quoted = !quoted;
+    } else if ((ch === '\n' || ch === '\r') && !quoted) {
+      if (ch === '\r' && text[i + 1] === '\n') i++;
+      if (record.trim()) records.push(record);
+      record = '';
+    } else record += ch;
+  }
+  if (record.trim()) records.push(record);
+  return records;
+}
+
 /**
  * Claim the best-matching header column for a role, never reusing one already
  * claimed. Exact header names win over substrings, and needles are tried in
@@ -119,7 +140,7 @@ function toDateKey(raw: string): string | null {
  * Throws a tagged Error ('empty' | 'columns') the UI maps to a localized message.
  */
 export function parseCsvImport(text: string): CsvImportResult {
-  const lines = text.split(/\r?\n/).filter((l) => l.trim() !== '');
+  const lines = splitRecords(text);
   if (lines.length < 2) throw new Error('empty');
 
   const header = splitLine(lines[0]).map((h) => h.toLowerCase());

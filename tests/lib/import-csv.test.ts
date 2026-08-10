@@ -34,6 +34,11 @@ describe('parseCsvImport', () => {
     expect(r.imported + r.skipped).toBe(1);
   });
 
+  test('keeps quoted newlines inside one logical record', () => {
+    const r = parseCsvImport('date,domain,seconds\n2026-06-10,"github.com\n",600');
+    expect(r.stats).toEqual([{ date: '2026-06-10', domain: 'github.com', seconds: 600, audioSeconds: 0 }]);
+  });
+
   test('drops bad dates, zero/negative and non-numeric durations', () => {
     const r = parseCsvImport(
       ['date,domain,seconds', 'not-a-date,a.com,60', '2026-06-10,a.com,0', '2026-06-10,a.com,-5', '2026-06-10,a.com,x'].join('\n'),

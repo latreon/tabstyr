@@ -11,7 +11,7 @@ interface TabTimeDB extends DBSchema {
     // `tabKey` itself is still needed as the cross-device session identity in
     // lib/merge. The indexes are kept because dropping one requires a schema
     // version bump and upgrade path, which buys nothing here.
-    indexes: { 'by-start': number; 'by-tab': number; 'by-key': string };
+    indexes: { 'by-start': number; 'by-end': number; 'by-tab': number; 'by-key': string };
   };
   dailyDomainStats: { key: [string, string]; value: DailyStat };
   // Long-range archive: per-domain monthly totals for days pruned out of the raw
@@ -21,7 +21,7 @@ interface TabTimeDB extends DBSchema {
 }
 
 const DB_NAME = 'tab-time';
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 
 let dbPromise: Promise<IDBPDatabase<TabTimeDB>> | null = null;
 
@@ -45,6 +45,7 @@ function openAt(version: number | undefined): Promise<IDBPDatabase<TabTimeDB>> {
       if (oldVersion < 1) {
         const sessions = db.createObjectStore('sessions', { keyPath: 'id', autoIncrement: true });
         sessions.createIndex('by-start', 'start');
+        sessions.createIndex('by-end', 'end');
         sessions.createIndex('by-tab', 'tabId');
         db.createObjectStore('dailyDomainStats', { keyPath: ['date', 'domain'] });
         db.createObjectStore('tabMeta', { keyPath: 'tabId' });
@@ -59,6 +60,9 @@ function openAt(version: number | undefined): Promise<IDBPDatabase<TabTimeDB>> {
         // lazily as they age past the retention window in pruneBefore — never
         // pre-filled here (that would duplicate still-live daily rows).
         db.createObjectStore('monthlyDomainStats', { keyPath: ['month', 'domain'] });
+      }
+      if (oldVersion >= 1 && oldVersion < 4) {
+        tx.objectStore('sessions').createIndex('by-end', 'end');
       }
     },
     blocking,

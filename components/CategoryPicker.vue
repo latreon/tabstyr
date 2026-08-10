@@ -14,6 +14,7 @@ const options = computed(() =>
 
 const open = ref(false);
 const root = ref<HTMLElement | null>(null);
+const trigger = ref<HTMLButtonElement | null>(null);
 const menu = ref<HTMLElement | null>(null);
 // Open upward when there isn't room below (long lists near the viewport bottom).
 const dropUp = ref(false);
@@ -31,6 +32,7 @@ function toggle() {
 function choose(c: CategoryId) {
   if (c !== props.current) emit('select', c);
   open.value = false;
+  void nextTick(() => trigger.value?.focus());
 }
 function onClickOutside(e: MouseEvent) {
   if (root.value && !root.value.contains(e.target as Node)) open.value = false;
@@ -39,6 +41,7 @@ function onKey(e: KeyboardEvent) {
   if (e.key === 'Escape' && open.value) {
     e.stopPropagation();
     open.value = false;
+    void nextTick(() => trigger.value?.focus());
   }
 }
 // Roving focus across the menu items (role="menu" promises arrow-key navigation).
@@ -64,6 +67,7 @@ onBeforeUnmount(() => {
 <template>
   <div ref="root" class="cat-picker" @click.stop>
     <button
+      ref="trigger"
       type="button"
       class="trigger"
       :aria-expanded="open"

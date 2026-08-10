@@ -147,6 +147,11 @@ describe('pageOf path redaction', () => {
       .toBe('https://app.co/teams/~redacted/settings');
   });
 
+  test('redacts base64url-style ids containing hyphens and underscores', () => {
+    expect(pageOf('https://files.example/share-doc/AbC_def-1234567890XYZsecret'))
+      .toBe('https://files.example/share-doc/~redacted');
+  });
+
   test('all token-shaped segments collapse to ONE sub-page row', () => {
     expect(pageOf('https://app.co/reset/tokenAAAAAAAAAAAAAAAA'))
       .toBe(pageOf('https://app.co/reset/tokenBBBBBBBBBBBBBBBB'));

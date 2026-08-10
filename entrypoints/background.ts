@@ -148,19 +148,25 @@ export default defineBackground(() => {
   }
 
   async function persist(eng: TrackerEngine, closed: ClosedSession[]): Promise<void> {
-    // Persist the rebased engine state BEFORE committing the slices. The engine
-    // already advanced each open session's `start` when it produced `closed`, so
-    // the state is consistent with those slices being saved. The two writes can't
-    // be atomic; ordering state-first means that if the MV3 worker is evicted
-    // between them, the next cold start resumes from the new `start` and at worst
-    // loses one ≤1-minute slice. Committing first instead would let reconcile
-    // re-emit an already-saved slice from the stale `start` — double-counting time.
-    await sessionStore.set({ engineState: eng.getState() });
+    // Commit history before advancing the durable checkpoint. This favors preserving
+    // measured time: if the commit fails, the old checkpoint remains retryable.
     if (closed.length) {
       const sessions = await stampKeys(closed);
       // Sessions + their daily rollup committed atomically (single transaction).
-      await commitWithRecovery(sessions, rollup(sessions));
+      try {
+        await commitWithRecovery(sessions, rollup(sessions));
+      } catch (error) {
+        // `eng` has already rebased its open sessions. Discard this in-memory
+        // instance so the next event reloads the still-old durable checkpoint and
+        // retries the elapsed slice instead of continuing past uncommitted time.
+        enginePromise = null;
+        throw error;
+      }
     }
+    // Advance the durable checkpoint only after history is safely committed. If a
+    // commit fails, the old state remains available and the elapsed slice is retried
+    // after the next worker wake instead of being permanently forgotten.
+    await sessionStore.set({ engineState: eng.getState() });
   }
 
   // Commit sessions, recovering from a full disk instead of silently dropping

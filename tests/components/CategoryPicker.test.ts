@@ -89,12 +89,17 @@ describe('CategoryPicker', () => {
     app.remove();
   });
 
-  test('Escape closes the menu', async () => {
-    const w = mount(CategoryPicker, { props: { current: 'Work' } });
+  test('Escape closes the menu and restores trigger focus', async () => {
+    const app = document.createElement('div');
+    document.body.appendChild(app);
+    const w = mount(CategoryPicker, { props: { current: 'Work' }, attachTo: app });
     await openMenu(w);
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     await w.vm.$nextTick();
     expect(w.find('[role="menu"]').exists()).toBe(false);
+    expect(document.activeElement).toBe(w.get('.trigger').element);
+    w.unmount();
+    app.remove();
   });
 
   test('a click elsewhere on the page closes the menu', async () => {

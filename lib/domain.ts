@@ -33,7 +33,15 @@ const SECRET_PATH_WORDS = new Set([
 // path labels read them. The trade-off is that a hyphen-bearing base64url token can
 // still slip through; the query string and fragment — where most tokens live — are
 // dropped outright regardless.
-const OPAQUE_SEGMENT = /^(?=.{20,})(?=.*\d)(?=.*[a-zA-Z])[A-Za-z0-9]+$/;
+const OPAQUE_SEGMENT = /^(?=.{20,})(?=.*\d)(?=.*[a-zA-Z])[A-Za-z0-9_-]+$/;
+function isOpaqueSegment(segment: string): boolean {
+  if (!OPAQUE_SEGMENT.test(segment)) return false;
+  // Word-like slugs normally contain several separators (release-note titles,
+  // product names). Base64url identifiers are dense and usually contain `_` or at
+  // most one `-`; retain the former while redacting the latter.
+  const separators = segment.match(/[-_]/g)?.length ?? 0;
+  return segment.includes('_') || separators <= 1;
+}
 const UUID_SEGMENT = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
@@ -55,7 +63,7 @@ function redactPath(pathname: string): string {
       if (!segment) return segment; // leading/trailing slash
       const prev = parts[i - 1]?.toLowerCase();
       if (prev && SECRET_PATH_WORDS.has(prev)) return REDACTED;
-      return OPAQUE_SEGMENT.test(segment) || UUID_SEGMENT.test(segment) ? REDACTED : segment;
+      return isOpaqueSegment(segment) || UUID_SEGMENT.test(segment) ? REDACTED : segment;
     })
     .join('/');
 }

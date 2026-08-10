@@ -35,6 +35,7 @@ const items = computed(() =>
         color: categoryColor(s.category, props.custom),
         seconds: s.seconds,
         pct: total.value ? Math.round((s.seconds / total.value) * 100) : 0,
+        widthPct: total.value ? (s.seconds / total.value) * 100 : 0,
         budget, // minutes, or undefined
         overBudget: progress >= 1,
       };
@@ -66,7 +67,7 @@ const stackSummary = computed(() =>
           :key="i.category"
           class="seg"
           :class="{ active: hovered === i.category }"
-          :style="{ width: `${i.pct}%`, background: i.color }"
+          :style="{ width: `${i.widthPct}%`, background: i.color }"
           :title="t('category.segTitle', { category: i.label, time: formatDuration(i.seconds), pct: i.pct })"
           @mouseenter="hovered = i.category"
           @mouseleave="hovered = null"
