@@ -112,6 +112,24 @@ describe('TrackerEngine.handleUrlChange', () => {
     expect(e.handleUrlChange(2, 'https://spotify.com/b', T0 + 30_000)).toEqual([]);
     expect(e.getState().audio[0].start).toBe(T0);
   });
+
+  test('focused navigation to an internal page closes tracking', () => {
+    const e = new TrackerEngine();
+    e.handleFocus(1, 'https://github.com/a', T0);
+    const closed = e.handleUrlChange(1, 'chrome://settings', T0 + 30_000);
+    expect(closed).toHaveLength(1);
+    expect(closed[0].domain).toBe('github.com');
+    expect(e.getState().focused).toBeNull();
+  });
+
+  test('audio navigation to an internal page closes and removes the session', () => {
+    const e = new TrackerEngine();
+    e.syncAudio([{ tabId: 2, url: 'https://spotify.com/a' }], T0);
+    const closed = e.handleUrlChange(2, 'chrome://newtab', T0 + 30_000);
+    expect(closed).toHaveLength(1);
+    expect(closed[0]).toMatchObject({ domain: 'spotify.com', audio: true });
+    expect(e.getState().audio).toEqual([]);
+  });
 });
 
 describe('TrackerEngine idle + media', () => {

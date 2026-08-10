@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { domainOf, isWebDomain, isLocalDevHost, pageOf, pagePath } from '@/lib/domain';
+import { displayDomain, domainOf, isWebDomain, isLocalDevHost, pageOf, pagePath } from '@/lib/domain';
 
 describe('domainOf', () => {
   test('extracts hostname from http(s) urls', () => {
@@ -11,6 +11,9 @@ describe('domainOf', () => {
     expect(domainOf('chrome://settings')).toBe('chrome');
     expect(domainOf('about:blank')).toBe('about');
     expect(domainOf('chrome-extension://abc/popup.html')).toBe('chrome-extension');
+    expect(domainOf('file:///tmp/report.html')).toBe('file');
+    expect(domainOf('javascript:alert(1)')).toBe('javascript');
+    expect(domainOf('data:text/plain,hello')).toBe('data');
   });
 
   test('returns "other" for invalid urls', () => {
@@ -43,6 +46,26 @@ describe('isWebDomain', () => {
     expect(isWebDomain('127.0.0.1')).toBe(true);
     expect(isWebDomain('192.168.1.10')).toBe(true);
     expect(isWebDomain('[::1]')).toBe(false); // IPv6 literal — accepted gap
+  });
+
+  test('rejects malformed IPv4 literals and navigation-smuggling characters', () => {
+    for (const domain of [
+      '999.999.999.999',
+      '256.0.0.1',
+      'github.com/path',
+      'github.com?next=evil.test',
+      'user@github.com',
+      ' github.com',
+      'github.com\n.evil.test',
+    ]) expect(isWebDomain(domain)).toBe(false);
+  });
+});
+
+describe('displayDomain', () => {
+  test('strips only a leading lowercase www label', () => {
+    expect(displayDomain('www.example.com')).toBe('example.com');
+    expect(displayDomain('api.www.example.com')).toBe('api.www.example.com');
+    expect(displayDomain('example.com')).toBe('example.com');
   });
 });
 

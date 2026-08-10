@@ -127,7 +127,15 @@ export function isWebDomain(domain: string): boolean {
   // IPv6 literals (`[::1]`) carry brackets/colons and are deliberately rejected
   // here (the `:`-ban is what blocks navigation smuggling); they're a rare,
   // accepted gap rather than tracked.
-  return /^(?=.{1,253}$)[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?)+$/i.test(domain);
+  if (!/^(?=.{1,253}$)[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?)+$/i.test(domain)) {
+    return false;
+  }
+  // A dotted-numeric value is an IPv4 literal, not a DNS name. Validate its
+  // octets explicitly so corrupt imported/storage data such as 999.999.999.999
+  // cannot pass this navigation boundary merely because it matches hostname
+  // label syntax.
+  if (IPV4_RE.test(domain)) return domain.split('.').every((part) => Number(part) <= 255);
+  return true;
 }
 
 // IPv4 literal (each octet loosely 1–3 digits — host strings come from
