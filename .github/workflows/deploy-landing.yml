@@ -52,7 +52,7 @@ jobs:
           # workflow token has no reason to sit in .git/config where the build and
           # the npx-fetched CLI below could reach it (zizmor: artipacked).
           persist-credentials: false
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
