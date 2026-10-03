@@ -17,24 +17,43 @@ export interface CsvImportResult {
   skipped: number; // rows dropped (non-web, bad date, zero/negative time)
 }
 
-/** Split one CSV line into fields, honoring double-quoted fields with embedded commas. */
+/** Split CSV records while keeping newlines inside quoted fields. */
+function splitRecords(text: string): string[] {
+  const out: string[] = [];
+  let inQuotes = false;
+  let start = 0;
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === '"') {
+      if (inQuotes && text[i + 1] === '"') i++;
+      else inQuotes = !inQuotes;
+    } else if (!inQuotes && (text[i] === '\n' || text[i] === '\r')) {
+      out.push(text.slice(start, i));
+      if (text[i] === '\r' && text[i + 1] === '\n') i++;
+      start = i + 1;
+      if (out.length > MAX_ROWS) break;
+    }
+  }
+  if (out.length <= MAX_ROWS && start < text.length) out.push(text.slice(start));
+  return out.filter((record) => record.trim() !== '');
+}
+
+/** Split one CSV record into fields, honoring quoted commas and escaped quotes. */
 function splitLine(line: string): string[] {
   const out: string[] = [];
   let field = '';
   let inQuotes = false;
   for (let i = 0; i < line.length; i++) {
     const ch = line[i];
-    if (inQuotes) {
-      if (ch === '"') {
-        if (line[i + 1] === '"') { field += '"'; i++; } // escaped quote
-        else inQuotes = false;
-      } else field += ch;
-    } else if (ch === '"') inQuotes = true;
-    else if (ch === ',') { out.push(field); field = ''; }
-    else field += ch;
+    if (ch === '"') {
+      if (inQuotes && line[i + 1] === '"') { field += '"'; i++; }
+      else inQuotes = !inQuotes;
+    } else if (ch === ',' && !inQuotes) {
+      out.push(field.trim());
+      field = '';
+    } else field += ch;
   }
-  out.push(field);
-  return out.map((f) => f.trim());
+  out.push(field.trim());
+  return out;
 }
 
 /**
@@ -103,7 +122,11 @@ function parseDurationCell(raw: string, unit: number): number | null {
 
 /** Normalize a cell to a YYYY-MM-DD local date key, or null if unparseable. */
 function toDateKey(raw: string): string | null {
-  if (DATE_RE.test(raw)) return raw;
+  if (DATE_RE.test(raw)) {
+    const [year, month, day] = raw.split('-').map(Number);
+    const date = new Date(Date.UTC(year, month - 1, day));
+    return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day ? raw : null;
+  }
   const t = Date.parse(raw);
   if (!Number.isFinite(t)) return null;
   const d = new Date(t);
@@ -119,7 +142,7 @@ function toDateKey(raw: string): string | null {
  * Throws a tagged Error ('empty' | 'columns') the UI maps to a localized message.
  */
 export function parseCsvImport(text: string): CsvImportResult {
-  const lines = text.split(/\r?\n/).filter((l) => l.trim() !== '');
+  const lines = splitRecords(text);
   if (lines.length < 2) throw new Error('empty');
 
   const header = splitLine(lines[0]).map((h) => h.toLowerCase());

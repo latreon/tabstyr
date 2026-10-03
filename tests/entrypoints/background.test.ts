@@ -10,17 +10,8 @@ import background from '@/entrypoints/background';
 
 const DAY_MS = 86_400_000;
 
-// fake-browser implements every webextension-polyfill method it doesn't
-// explicitly mock as a throwing "not implemented" stub — including
-// `runtime.setUninstallURL`, which every real browser provides. Stub it the
-// same way a real browser always would, so `background.main()` doesn't throw
-// on the line that wires up uninstall feedback.
-function stubUninstallUrl() {
-  return vi.spyOn(fakeBrowser.runtime, 'setUninstallURL').mockResolvedValue();
-}
-
-// Same gap as setUninstallURL above: fake-browser has an `idle` namespace but
-// never implemented `onStateChanged.addListener`, so registering it throws.
+// fake-browser has an `idle` namespace but never implemented
+// `onStateChanged.addListener`, so registering it throws.
 // None of these tests drive idle events, so a no-op listener is enough.
 function stubIdleApi() {
   vi.spyOn(fakeBrowser.idle.onStateChanged, 'addListener').mockImplementation(() => {});
@@ -53,7 +44,6 @@ beforeEach(() => {
   resetDBConnection();
   fakeBrowser.reset();
   invalidateSettings(); // drop settings.ts's in-process cache between tests
-  stubUninstallUrl();
   stubIdleApi();
   stubOnReplaced();
 });
@@ -87,10 +77,6 @@ describe('background: lifecycle', () => {
     expect(installedAt).toBeUndefined();
   });
 
-  test('registers the uninstall feedback URL so leaving opens the feedback form', () => {
-    background.main();
-    expect(fakeBrowser.runtime.setUninstallURL).toHaveBeenCalledWith('https://tabstyr.com/ideas?src=uninstall');
-  });
 });
 
 describe('background: alarms', () => {
@@ -297,6 +283,31 @@ describe('background: scheduled export', () => {
 });
 
 describe('background: onMessage', () => {
+  test('restore-start commits tracker checkpoint before pausing writes', async () => {
+    background.main();
+
+    await fakeBrowser.runtime.onMessage.trigger({ type: 'restore-start' }, { id: fakeBrowser.runtime.id });
+
+    expect(await repo.getEngineState()).toEqual({ focused: null, audio: [], isIdle: false });
+    await fakeBrowser.runtime.onMessage.trigger(
+      { type: 'restore-finish', succeeded: false },
+      { id: fakeBrowser.runtime.id },
+    );
+  });
+
+  test('restore-start reports checkpoint failures and resumes normal handling', async () => {
+    vi.spyOn(repo, 'commitTrackingState').mockRejectedValueOnce(new Error('checkpoint failed'));
+    background.main();
+
+    await expect(
+      fakeBrowser.runtime.onMessage.trigger({ type: 'restore-start' }, { id: fakeBrowser.runtime.id }),
+    ).rejects.toThrow('checkpoint failed');
+    await fakeBrowser.runtime.onMessage.trigger(
+      { type: 'restore-finish', succeeded: false },
+      { id: fakeBrowser.runtime.id },
+    );
+  });
+
   test('wipe-data from the extension itself clears all stored data', async () => {
     await repo.upsertTabMeta({ tabId: 1, key: 'k1', url: 'https://a.com', title: 'A', lastActiveAt: Date.now(), createdAt: Date.now() });
     background.main();
@@ -306,6 +317,7 @@ describe('background: onMessage', () => {
     await vi.waitFor(async () => {
       expect(await repo.getAllTabMeta()).toEqual([]);
     });
+    expect(await repo.getEngineState()).toEqual({ focused: null, audio: [], isIdle: false });
   });
 
   test('ignores a wipe-data message from a different extension', async () => {

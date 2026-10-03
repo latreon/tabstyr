@@ -17,7 +17,7 @@ describe('getDB connection caching', () => {
   test('creates every store the app writes to', async () => {
     const db = await getDB();
     expect([...db.objectStoreNames].sort()).toEqual(
-      ['dailyDomainStats', 'monthlyDomainStats', 'sessions', 'tabMeta'].sort(),
+      ['dailyDomainStats', 'engineState', 'monthlyDomainStats', 'sessions', 'tabMeta'].sort(),
     );
   });
 

@@ -121,13 +121,31 @@ function buildUndo(items: TabListItem[]): (() => void) | undefined {
 }
 
 async function onCloseTab(item: TabListItem) {
-  await s.closeTab(item.tabId);
-  showToast(t('tabs.closed', { count: 1 }, 1), buildUndo([item]));
+  try {
+    await s.closeTab(item.tabId);
+    showToast(t('tabs.closed', { count: 1 }, 1), buildUndo([item]));
+  } catch (error) {
+    console.error('[dashboard] close tab failed', error);
+    showToast(t('tabs.closeFailed'));
+  }
 }
 
 async function onCloseAll(items: TabListItem[]) {
-  await s.closeTabs(items.map((i) => i.tabId));
-  showToast(t('tabs.closed', { count: items.length }, items.length), buildUndo(items));
+  try {
+    const closedIds = await s.closeTabs(items.map((i) => i.tabId));
+    const closedItems = items.filter((item) => closedIds.includes(item.tabId));
+    if (!closedItems.length) {
+      showToast(t('tabs.closeFailed'));
+      return;
+    }
+    const message = closedItems.length < items.length
+      ? t('tabs.closePartial', { count: closedItems.length })
+      : t('tabs.closed', { count: closedItems.length }, closedItems.length);
+    showToast(message, buildUndo(closedItems));
+  } catch (error) {
+    console.error('[dashboard] close tabs failed', error);
+    showToast(t('tabs.closeFailed'));
+  }
 }
 
 function onGoto(tabId: number) {

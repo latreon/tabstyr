@@ -16,18 +16,11 @@ so they aren't mistaken for defects during review or QA.
   YouTube videos both map to `youtube.com/watch`, so the per-page breakdown groups
   by path, not by individual video. Domain and category totals are unaffected.
 
-- **Cold-start key attribution (first event after browser restart).** On a cold
-  start the engine restores in parallel with `onStartup`'s tab-meta rematch
-  (`entrypoints/background.ts`). If a tab-activated event lands in the sub-second
-  window before rematch completes, that single session may get a fresh per-tab key
-  instead of the restored one. At most one session's per-tab attribution is
-  affected; daily/domain totals are never wrong.
-
-- **Restart rematch when several tabs share a domain.** `rematchTabMeta`
-  (`lib/tracker/stale.ts`) falls back to a domain-level match when a restored URL
-  drifted (dropped fragment, redirect). With two+ tabs on the same domain the
-  stable per-tab key can be assigned to the wrong one of them. This only scrambles
-  per-tab display attribution after a restart, not totals.
+- **Tab identity after browser restart.** Browser tab IDs can change after restart.
+  TabStyr rematches saved tab metadata by exact normalized URL before tracking
+  resumes. A changed URL loses its old per-tab link rather than borrowing another
+  tab's key. If several open tabs share the same exact URL, the browser provides no
+  stable identity to tell them apart, so their per-tab history can still swap.
 
 ## Tab manager
 

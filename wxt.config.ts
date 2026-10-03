@@ -34,13 +34,12 @@ export default defineConfig({
         // YouTube videos is attributed to the page actually viewed. Local-only: we
         // read the URL of the focused tab's top frame, never page content.
         'webNavigation',
-        // Optional scheduled backup export (off by default) saves a JSON file to
-        // the browser's normal downloads location — no server, no upload.
-        'downloads',
         // `favicon` exists only on Chromium. Firefox & Safari fall back to the
         // letter-chip in FaviconChip.vue, so requesting it there would be invalid.
         ...(chromium ? ['favicon'] : []),
       ],
+      // Ask only when the user enables scheduled backup export.
+      optional_permissions: ['downloads'],
       action: { default_title: 'TabStyr' },
       // Explicit, auditable CSP for extension pages. Tightens the secure MV3
       // default: no remote scripts/eval, connect-src 'none' (the extension makes

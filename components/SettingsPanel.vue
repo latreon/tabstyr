@@ -65,6 +65,7 @@ const themeChoice = ref<'light' | 'dark'>('light');
 // toast on every single dashboard open (for anyone with a non-default setting).
 const loaded = ref(false);
 let saveTimer: ReturnType<typeof setTimeout> | undefined;
+let settingsSavePromise = Promise.resolve();
 
 const toast = ref<string | null>(null);
 let toastTimer: ReturnType<typeof setTimeout> | undefined;
@@ -114,29 +115,80 @@ async function setTheme(next: 'light' | 'dark') {
 // Auto-save the numeric/toggle preferences. Debounced so rapid stepper clicks
 // collapse into one write + one toast, and one settings-changed broadcast.
 async function persistSettings() {
-  try {
-    await saveSettings({
-      staleDays: staleDays.value,
-      idleSeconds: idleSeconds.value,
-      audioEnabled: audioEnabled.value,
-      notificationsEnabled: notificationsEnabled.value,
-      autoExportDays: Number(autoExportDays.value),
-      sessionAlertMinutes: sessionAlertMinutes.value,
-      focusTarget: focusTarget.value,
-    });
-    await broadcastSettingsChanged();
-    emit('changed'); // refresh the dashboard so the focus goal reflects immediately
-    showToast(t('settings.saved'));
-  } catch (e) {
-    console.error('[settings] save failed', e);
-    showToast(t('settings.saveFailed'));
+  const settings: Partial<Settings> = {
+    staleDays: staleDays.value,
+    idleSeconds: idleSeconds.value,
+    audioEnabled: audioEnabled.value,
+    notificationsEnabled: notificationsEnabled.value,
+    autoExportDays: Number(autoExportDays.value),
+    sessionAlertMinutes: sessionAlertMinutes.value,
+    focusTarget: focusTarget.value,
+  };
+  const save = settingsSavePromise.then(async () => {
+    try {
+      await saveSettings(settings);
+      await broadcastSettingsChanged();
+      emit('changed'); // refresh the dashboard so the focus goal reflects immediately
+      showToast(t('settings.saved'));
+    } catch (e) {
+      console.error('[settings] save failed', e);
+      showToast(t('settings.saveFailed'));
+    }
+  });
+  settingsSavePromise = save;
+  await save;
+}
+
+async function finishPendingSettingsSave() {
+  if (saveTimer) {
+    clearTimeout(saveTimer);
+    saveTimer = undefined;
+    await persistSettings();
+    return;
   }
+  await settingsSavePromise;
+}
+
+async function refreshSettingsControls() {
+  const settings = await getSettings();
+  loaded.value = false;
+  staleDays.value = settings.staleDays;
+  idleSeconds.value = settings.idleSeconds;
+  audioEnabled.value = settings.audioEnabled;
+  notificationsEnabled.value = settings.notificationsEnabled;
+  autoExportDays.value = String(settings.autoExportDays);
+  sessionAlertMinutes.value = settings.sessionAlertMinutes;
+  focusTarget.value = settings.focusTarget;
+  await nextTick();
+  loaded.value = true;
+  await theme.set(settings.theme);
+  await locale.setLanguage(settings.language);
+}
+
+async function changeAutoExport(value: string) {
+  if (value !== '0') {
+    try {
+      const granted = await browser.permissions.request({ permissions: ['downloads'] });
+      if (!granted) {
+        showToast(t('settings.downloadPermissionDenied'));
+        return;
+      }
+    } catch (error) {
+      console.error('[settings] downloads permission request failed', error);
+      showToast(t('settings.downloadPermissionDenied'));
+      return;
+    }
+  }
+  autoExportDays.value = value;
 }
 
 watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, autoExportDays, sessionAlertMinutes, focusTarget], () => {
   if (!loaded.value) return;
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(persistSettings, 400);
+  saveTimer = setTimeout(() => {
+    saveTimer = undefined;
+    void persistSettings();
+  }, 400);
 });
 
 // Re-show the first-run intro on the dashboard. Clearing `onboarded` makes the
@@ -342,23 +394,39 @@ onBeforeUnmount(() => {
 async function confirmMerge() {
   if (!pendingRestore.value || restoring.value) return;
   restoring.value = true;
+  let lifecycleStarted = false;
+  let succeeded = false;
   try {
+    await finishPendingSettingsSave();
+    await browser.runtime.sendMessage({ type: 'restore-start' });
+    lifecycleStarted = true;
     // Strip Vue proxies (structured clone can't clone them) — same as restoreBackup.
     const data: ParsedBackup = JSON.parse(JSON.stringify(pendingRestore.value));
-    const [localSessions, localDaily, localMonthly, localTabMeta] = await Promise.all([
+    const [localSessions, localDaily, localMonthly] = await Promise.all([
       repo.getAllSessions(),
       repo.getAllDailyStats(),
       repo.getAllMonthlyStats(),
-      repo.getAllTabMeta(),
     ]);
     const merged = mergeBackup(
       { sessions: localSessions, dailyStats: localDaily, monthlyStats: localMonthly },
       { sessions: data.sessions, dailyStats: data.dailyStats, monthlyStats: data.monthlyStats },
     );
-    // One atomic transaction (reuses restore's clear+write); local tabMeta preserved.
-    await repo.restoreAll(merged.sessions, merged.dailyStats, localTabMeta, merged.monthlyStats);
-    await saveSettings(mergeSettingsMaps(await getSettings(), data.settings) as Partial<Settings>);
+    const previousSettings = await getSettings();
+    await saveSettings(mergeSettingsMaps(previousSettings, data.settings) as Partial<Settings>);
+    try {
+      // Leave tab metadata in place so live tab events cannot be lost mid-merge.
+      await repo.restoreAll(merged.sessions, merged.dailyStats, undefined, merged.monthlyStats, false);
+    } catch (error) {
+      try {
+        await saveSettings(previousSettings);
+      } catch (rollbackError) {
+        throw new AggregateError([error, rollbackError], 'Merge and settings rollback failed.', { cause: rollbackError });
+      }
+      throw error;
+    }
+    succeeded = true;
     pendingRestore.value = null;
+    await refreshSettingsControls();
     await broadcastSettingsChanged();
     emit('changed');
     showToast(t('settings.merged', { sessions: merged.sessions.length }));
@@ -366,6 +434,13 @@ async function confirmMerge() {
     console.error('[settings] merge failed', e);
     showToast(t('settings.restoreFailed'));
   } finally {
+    if (lifecycleStarted) {
+      try {
+        await browser.runtime.sendMessage({ type: 'restore-finish', succeeded });
+      } catch (error) {
+        console.error('[settings] tracker restart failed after merge', error);
+      }
+    }
     restoring.value = false;
   }
 }
@@ -374,14 +449,32 @@ async function confirmRestore() {
   if (!pendingRestore.value || restoring.value) return;
   restoring.value = true;
   try {
-    const res = await restoreBackup(pendingRestore.value);
+    await finishPendingSettingsSave();
+    let succeeded = false;
+    let result: Awaited<ReturnType<typeof restoreBackup>> | undefined;
+    try {
+      await browser.runtime.sendMessage({ type: 'restore-start' });
+      result = await restoreBackup(pendingRestore.value);
+      succeeded = true;
+    } catch (error) {
+      console.error('[settings] restore failed', error);
+      showToast(t('settings.restoreFailed'));
+    } finally {
+      try {
+        await browser.runtime.sendMessage({ type: 'restore-finish', succeeded });
+      } catch (error) {
+        console.error('[settings] tracker restart failed after restore', error);
+      }
+    }
+    if (!succeeded || !result) {
+      pendingRestore.value = null;
+      return;
+    }
     pendingRestore.value = null;
-    await broadcastSettingsChanged();
+    await refreshSettingsControls();
+    await broadcastSettingsChanged().catch((error) => console.error('[settings] restored settings broadcast failed', error));
     emit('changed');
-    showToast(t('settings.restored', { days: res.dailyStats, sessions: res.sessions }));
-  } catch (e) {
-    console.error('[settings] restore failed', e);
-    showToast(t('settings.restoreFailed'));
+    showToast(t('settings.restored', { days: result.dailyStats, sessions: result.sessions }));
   } finally {
     restoring.value = false;
   }
@@ -506,7 +599,7 @@ async function confirmWipe() {
           :model-value="autoExportDays"
           :options="AUTO_EXPORT_OPTIONS"
           :label="t('settings.autoExport')"
-          @update:model-value="autoExportDays = $event"
+          @update:model-value="changeAutoExport"
         />
       </div>
       <p class="rules-hint">{{ t('settings.autoExportHint') }}</p>

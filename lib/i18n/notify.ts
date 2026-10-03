@@ -29,6 +29,19 @@ const STORAGE_FULL: Record<string, string> = {
   ko: '저장 공간이 가득 찼습니다 — 추적이 일시 중지되었습니다. TabStyr를 열어 백업을 내보내고 오래된 데이터를 삭제하세요.',
   'zh-CN': '存储已满 — 已暂停统计。打开 TabStyr 导出备份并清除旧数据。',
 };
+const AUTO_EXPORT_FAILED: Record<string, string> = {
+  en: 'Scheduled backup failed. Check downloads permission and storage space.',
+  es: 'Falló la copia programada. Comprueba el permiso de descargas y el espacio disponible.',
+  de: 'Geplantes Backup fehlgeschlagen. Prüfe Download-Berechtigung und Speicherplatz.',
+  fr: 'Échec de la sauvegarde planifiée. Vérifiez l’autorisation et l’espace disponible.',
+  it: 'Backup programmato non riuscito. Controlla il permesso e lo spazio disponibile.',
+  'pt-BR': 'Falha no backup agendado. Verifique a permissão e o espaço disponível.',
+  ru: 'Не удалось создать копию. Проверьте разрешение на загрузки и свободное место.',
+  tr: 'Zamanlanmış yedekleme başarısız. İndirme iznini ve boş alanı kontrol edin.',
+  ja: '定期バックアップに失敗しました。ダウンロード権限と空き容量を確認してください。',
+  ko: '예약 백업에 실패했습니다. 다운로드 권한과 저장 공간을 확인하세요.',
+  'zh-CN': '定时备份失败。请检查下载权限和存储空间。',
+};
 // Keep in sync with each locale's `notification.budget`. {category} is the
 // localized category name (from CATEGORY_LABELS below).
 const BUDGET: Record<string, string> = {
@@ -100,6 +113,10 @@ export function staleNotification(languagePref: string | undefined, count: numbe
 /** Localized "storage full" notification message for a stored language preference. */
 export function storageFullNotification(languagePref: string | undefined): string {
   return STORAGE_FULL[resolve(languagePref)] ?? STORAGE_FULL.en;
+}
+
+export function autoExportFailedNotification(languagePref: string | undefined): string {
+  return AUTO_EXPORT_FAILED[resolve(languagePref)] ?? AUTO_EXPORT_FAILED.en;
 }
 
 /**

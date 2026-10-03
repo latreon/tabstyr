@@ -3,7 +3,7 @@ import { TrackerEngine } from '@/lib/tracker/engine';
 import { rollup } from '@/lib/tracker/aggregate';
 import { findStale, rematchTabMeta, shouldNotify } from '@/lib/tracker/stale';
 import { advanceSessionAlertState, shouldNotifySessionAlert, type SessionAlertState } from '@/lib/tracker/session-alert';
-import { staleNotification, storageFullNotification, budgetNotification, sessionAlertNotification } from '@/lib/i18n/notify';
+import { staleNotification, storageFullNotification, budgetNotification, sessionAlertNotification, autoExportFailedNotification } from '@/lib/i18n/notify';
 import { getSettings, invalidateSettings } from '@/lib/settings';
 import { categorize, categoryProductivityOf, groupByCategory } from '@/lib/categories';
 import { activeSeconds } from '@/lib/metrics';
@@ -14,7 +14,6 @@ import { addDays, dateKey } from '@/lib/time';
 import { monthKeyBefore } from '@/lib/monthly';
 import { toJsonBackup } from '@/lib/export';
 import { domainOf, isWebDomain, pageOf } from '@/lib/domain';
-import { UNINSTALL_FEEDBACK_URL } from '@/lib/links';
 import { recordInstallDate } from '@/lib/review-prompt';
 import type { ClosedSession, EngineState, Session } from '@/lib/types';
 
@@ -71,6 +70,7 @@ const sessionStore = {
 
 export default defineBackground(() => {
   let enginePromise: Promise<TrackerEngine> | null = null;
+  let isRestoring = false;
 
   // Serialize every event handler through one promise chain. The handlers share a
   // single mutable TrackerEngine and mutate it across multiple awaits (tabs.get,
@@ -91,7 +91,10 @@ export default defineBackground(() => {
   // Wrap an async event listener so it runs after the previous handler finishes,
   // and so a thrown error is logged, not left as an unhandled rejection that
   // silently stops tracking for this worker.
-  function guard<A extends unknown[]>(fn: (...a: A) => Promise<unknown>): (...a: A) => Promise<void> {
+  function guard<A extends unknown[]>(
+    fn: (...a: A) => Promise<unknown>,
+    propagateError = false,
+  ): (...a: A) => Promise<void> {
     return (...a: A) => {
       const run = queue
         .catch(() => {}) // a prior handler's failure must not break the chain
@@ -100,6 +103,7 @@ export default defineBackground(() => {
           () => {},
           (e) => {
             console.error('[tab-time] handler failed', e);
+            if (propagateError) throw e;
           },
         );
       queue = run;
@@ -107,17 +111,32 @@ export default defineBackground(() => {
     };
   }
 
+  async function rematchOpenTabs(): Promise<void> {
+    const [metas, tabs] = await Promise.all([repo.getAllTabMeta(), browser.tabs.query({})]);
+    const live = tabs.flatMap((tab) =>
+      tab.id && tab.url && !tab.incognito ? [{ id: tab.id, url: pageOf(tab.url) }] : [],
+    );
+    await repo.replaceAllTabMeta(rematchTabMeta(metas, live));
+  }
+
   // Single-threaded JS + the ??= singleton make concurrent listener access safe;
   // interleaved awaits can at worst lose a sub-second session between events,
   // which the 1-minute heartbeat checkpoint + reconcile bounds and repairs.
   function getEngine(): Promise<TrackerEngine> {
     enginePromise ??= (async () => {
-      const { engineState } = await sessionStore.get('engineState');
-      const eng = new TrackerEngine((engineState as EngineState) ?? null);
+      // Tab IDs can change on browser restart. Rematch metadata before closing any
+      // restored session, or stampKeys could attach its time to another tab.
+      await rematchOpenTabs();
+      const [storedState, legacy] = await Promise.all([
+        repo.getEngineState(),
+        sessionStore.get('engineState'),
+      ]);
+      const eng = new TrackerEngine(storedState ?? (legacy.engineState as EngineState) ?? null);
       const tabs = await browser.tabs.query({});
       const liveIds = new Set(tabs.flatMap((t) => (t.id ? [t.id] : [])));
       const closed = eng.reconcile(liveIds, Date.now());
       await persist(eng, closed);
+      if (!isRestoring) await sessionStore.remove('engineState');
       return eng;
     })().catch((e) => {
       // A failed init must not stick as a permanently-rejected promise (??= would
@@ -147,19 +166,16 @@ export default defineBackground(() => {
     return out;
   }
 
-  async function persist(eng: TrackerEngine, closed: ClosedSession[]): Promise<void> {
-    // Persist the rebased engine state BEFORE committing the slices. The engine
-    // already advanced each open session's `start` when it produced `closed`, so
-    // the state is consistent with those slices being saved. The two writes can't
-    // be atomic; ordering state-first means that if the MV3 worker is evicted
-    // between them, the next cold start resumes from the new `start` and at worst
-    // loses one ≤1-minute slice. Committing first instead would let reconcile
-    // re-emit an already-saved slice from the stale `start` — double-counting time.
-    await sessionStore.set({ engineState: eng.getState() });
-    if (closed.length) {
-      const sessions = await stampKeys(closed);
-      // Sessions + their daily rollup committed atomically (single transaction).
-      await commitWithRecovery(sessions, rollup(sessions));
+  async function persist(eng: TrackerEngine, closed: ClosedSession[], allowDuringRestore = false): Promise<void> {
+    if (isRestoring && !allowDuringRestore) return;
+    const sessions = closed.length ? await stampKeys(closed) : [];
+    try {
+      await commitWithRecovery(eng.getState(), sessions, rollup(sessions));
+    } catch (error) {
+      // The engine has already advanced in memory. Rebuild from the last committed
+      // checkpoint so a failed transaction cannot discard its closed slice.
+      enginePromise = null;
+      throw error;
     }
   }
 
@@ -167,16 +183,16 @@ export default defineBackground(() => {
   // data. On QuotaExceededError: reclaim space by pruning past-retention rows and
   // retry once; if it still fails, warn the user (throttled) and leave a flag the
   // dashboard surfaces. Non-quota errors propagate to the guard() logger unchanged.
-  async function commitWithRecovery(sessions: Session[], deltas: ReturnType<typeof rollup>): Promise<void> {
+  async function commitWithRecovery(state: EngineState, sessions: Session[], deltas: ReturnType<typeof rollup>): Promise<void> {
     try {
-      await repo.commitSessions(sessions, deltas);
+      await repo.commitTrackingState(state, sessions, deltas);
       await clearStorageWarning();
     } catch (e) {
       if (!isQuotaError(e)) throw e;
       const now = Date.now();
       try {
         await repo.pruneBefore(addDays(dateKey(now), -RETENTION_DAYS), now - RETENTION_DAYS * DAY_MS, monthKeyBefore(now, MAX_MONTHLY_RETENTION_MONTHS));
-        await repo.commitSessions(sessions, deltas);
+        await repo.commitTrackingState(state, sessions, deltas);
         await clearStorageWarning();
         return;
       } catch (retryErr) {
@@ -276,6 +292,22 @@ export default defineBackground(() => {
     return !!win && win.focused === true && win.id === windowId;
   }
 
+  async function restartEngine(removeLegacyState: boolean, touchActiveTab = true): Promise<void> {
+    if (removeLegacyState) await sessionStore.remove('engineState');
+    enginePromise = null;
+    const eng = await getEngine();
+    const now = Date.now();
+    const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
+    if (tab?.id && tab.url && !tab.incognito && (await isInFocusedWindow(tab.windowId))) {
+      const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible);
+      closed.push(...(await syncAudioSessions(eng, now)));
+      if (touchActiveTab) await touchTab(tab.id, now, tab);
+      await persist(eng, closed);
+      return;
+    }
+    await persist(eng, await syncAudioSessions(eng, now));
+  }
+
   // Refresh the badge only if it hasn't been refreshed within BADGE_REFRESH_MS.
   // The marker lives in storage.session (not a worker-scoped variable) so the
   // throttle is real across worker restarts instead of firing on every heartbeat.
@@ -371,13 +403,16 @@ export default defineBackground(() => {
   // lib/export.ts's downloadFile does. Absent on platforms without `downloads`
   // (degrades to a no-op, same as idle/notifications elsewhere in this file).
   async function runAutoExportIfDue(now: number): Promise<void> {
-    if (!browser.downloads) return;
     const settings = await getSettings();
     if (settings.autoExportDays <= 0) return;
     const { autoExportState } = await browser.storage.local.get('autoExportState');
-    const lastExportAt = (autoExportState as { lastExportAt?: number } | undefined)?.lastExportAt ?? 0;
+    const state = (autoExportState as { lastExportAt?: number; lastFailureDate?: string } | undefined) ?? {};
+    const lastExportAt = state.lastExportAt ?? 0;
     if (now - lastExportAt < settings.autoExportDays * DAY_MS) return;
+    const today = dateKey(now);
+    if (state.lastFailureDate === today) return;
     try {
+      if (!browser.downloads) throw new Error('Downloads permission unavailable.');
       const [dailyStats, monthlyStats, sessions, tabMeta] = await Promise.all([
         repo.getAllDailyStats(),
         repo.getAllMonthlyStats(),
@@ -403,6 +438,21 @@ export default defineBackground(() => {
       await browser.storage.local.set({ autoExportState: { lastExportAt: now } });
     } catch (e) {
       console.error('[tab-time] auto-export failed', e);
+      await browser.storage.local.set({ autoExportState: { lastExportAt, lastFailureDate: today } }).catch((storageError) => {
+        console.error('[tab-time] auto-export failure state could not be saved', storageError);
+      });
+      if (browser.notifications) {
+        try {
+          await browser.notifications.create('tab-time-auto-export-failed', {
+            type: 'basic',
+            iconUrl: browser.runtime.getURL('/icon/128.png'),
+            title: 'TabStyr',
+            message: autoExportFailedNotification(settings.language),
+          });
+        } catch (notificationError) {
+          console.error('[tab-time] auto-export failure notice failed', notificationError);
+        }
+      }
     }
   }
 
@@ -684,26 +734,19 @@ export default defineBackground(() => {
     }
   });
 
-  // Opened in a browser tab right before the extension is removed — the only
-  // way to learn why someone left. Re-set on every worker wake (cheap, no
-  // network call) rather than gating on 'install' so an update never leaves
-  // it unset for a user who installed before this shipped.
-  void browser.runtime.setUninstallURL?.(UNINSTALL_FEEDBACK_URL);
-
   browser.runtime.onStartup.addListener(guard(async () => {
-    // Tab IDs reset on browser restart: re-match saved tabMeta to live tabs by URL.
-    const [metas, tabs] = await Promise.all([repo.getAllTabMeta(), browser.tabs.query({})]);
-    // Normalize the live URL the same way touchTab stores it, so the exact-URL
-    // match still hits (stored meta.url is now pageOf-normalized).
-    const live = tabs.flatMap((t) => (t.id && t.url && !t.incognito ? [{ id: t.id, url: pageOf(t.url) }] : []));
-    await repo.replaceAllTabMeta(rematchTabMeta(metas, live));
+    await rematchOpenTabs();
     await updateBadge();
   }));
 
   browser.notifications?.onClicked?.addListener((notificationId) => {
     // The budget nudge and the continuous-session nudge both open the dashboard to
     // the focus section; stale/other open the stale-tab manager (the historical default).
-    const hash = notificationId === 'tab-time-budget' || notificationId === 'tab-time-session' ? '#focus' : '#stale';
+    const hash = notificationId === 'tab-time-auto-export-failed'
+      ? ''
+      : notificationId === 'tab-time-budget' || notificationId === 'tab-time-session'
+        ? '#focus'
+        : '#stale';
     void browser.tabs.create({ url: browser.runtime.getURL(`/dashboard.html${hash}`) });
   });
 
@@ -733,7 +776,7 @@ export default defineBackground(() => {
     // Only act on messages from this extension's own pages — never a web page or
     // another extension (defense in depth; wipe-data is destructive).
     if ((sender as { id?: string })?.id !== browser.runtime.id) return;
-    const msg = message as { type?: string } | null | undefined;
+    const msg = message as { type?: string; succeeded?: boolean } | null | undefined;
     if (msg?.type === 'settings-changed') {
       invalidateSettings(); // the dashboard just wrote new settings — drop stale cache
       const settings = await getSettings();
@@ -742,9 +785,28 @@ export default defineBackground(() => {
       const eng = await getEngine();
       await persist(eng, await syncAudioSessions(eng, Date.now()));
       await updateBadge();
+    } else if (msg?.type === 'restore-start') {
+      isRestoring = true;
+      try {
+        const eng = await getEngine();
+        await persist(eng, await syncAudioSessions(eng, Date.now()), true);
+        await sessionStore.remove('engineState');
+      } catch (error) {
+        isRestoring = false;
+        throw error;
+      }
+    } else if (msg?.type === 'restore-finish') {
+      isRestoring = false;
+      await restartEngine(!!msg.succeeded);
     } else if (msg?.type === 'wipe-data') {
-      await repo.wipeAll();
-      await sessionStore.remove('engineState');
+      isRestoring = true;
+      try {
+        await repo.wipeAll();
+        enginePromise = null;
+      } finally {
+        isRestoring = false;
+      }
+      await restartEngine(true, false);
       // Everything derived from the wiped data goes too, so "delete everything"
       // really does. Deliberately KEPT: `installedAt` and `reviewPromptDismissed`
       // (install trivia, not user data — and clearing the dismissal would start
@@ -760,10 +822,9 @@ export default defineBackground(() => {
         'storageWarnDate',
       ]);
       storageWarned = null; // drop the in-memory mirror of the flag we just cleared
-      enginePromise = null;
       await updateBadge();
     }
-  }));
+  }, true));
 
   void getSettings().then((s) => browser.idle?.setDetectionInterval?.(s.idleSeconds));
 });

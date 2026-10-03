@@ -29,7 +29,7 @@ export interface WrappedCardContent {
   bigValue: string; // e.g. "12h 30m"
   bigCaption: string; // e.g. "total active browsing"
   rows: WrappedCardRow[]; // 3–4 highlight rows
-  footer: string; // e.g. "TabStyr · 0 bytes leave your device"
+  footer: string; // e.g. "TabStyr · browsing data stays on your device"
   /** Two hex stops for the background gradient (persona accent → deep). */
   accentA: string;
   accentB: string;

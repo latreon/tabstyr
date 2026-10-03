@@ -1,6 +1,8 @@
 import { getDB } from './db';
 import { monthOf } from '../monthly';
-import type { DailyStat, MonthlyStat, Session, TabMeta } from '../types';
+import type { DailyStat, EngineState, MonthlyStat, Session, TabMeta } from '../types';
+
+const EMPTY_ENGINE_STATE: EngineState = { focused: null, audio: [], isIdle: false };
 
 function mergeStat(existing: DailyStat | undefined, d: DailyStat): DailyStat {
   return existing
@@ -27,6 +29,25 @@ export async function commitSessions(sessions: Session[], deltas: DailyStat[]): 
     await statStore.put(mergeStat(await statStore.get([d.date, d.domain]), d));
   }
   await tx.done;
+}
+
+/** Commit tracker checkpoint, sessions, and daily totals as one recoverable unit. */
+export async function commitTrackingState(state: EngineState, sessions: Session[], deltas: DailyStat[]): Promise<void> {
+  const db = await getDB();
+  const tx = db.transaction(['engineState', 'sessions', 'dailyDomainStats'], 'readwrite');
+  const stateStore = tx.objectStore('engineState');
+  const sessionStore = tx.objectStore('sessions');
+  const statStore = tx.objectStore('dailyDomainStats');
+  await stateStore.put({ id: 1, state });
+  for (const session of sessions) await sessionStore.add(session);
+  for (const delta of deltas) {
+    await statStore.put(mergeStat(await statStore.get([delta.date, delta.domain]), delta));
+  }
+  await tx.done;
+}
+
+export async function getEngineState(): Promise<EngineState | undefined> {
+  return (await getDB()).get('engineState', 1).then((record) => record?.state);
 }
 
 /**
@@ -72,10 +93,12 @@ export async function getAllSessions(): Promise<Session[]> {
   return (await getDB()).getAll('sessions');
 }
 
-/** Sessions whose start is at or after `ts`, via the `by-start` index. */
+/** Sessions active at or after `ts`, including sessions that began before it. */
 export async function getSessionsSince(ts: number): Promise<Session[]> {
   const db = await getDB();
-  return db.getAllFromIndex('sessions', 'by-start', IDBKeyRange.lowerBound(ts));
+  const earliestStart = ts - 24 * 60 * 60_000;
+  const sessions = await db.getAllFromIndex('sessions', 'by-start', IDBKeyRange.lowerBound(earliestStart));
+  return sessions.filter((session) => session.end > ts);
 }
 
 export async function upsertTabMeta(meta: TabMeta): Promise<void> {
@@ -200,34 +223,36 @@ export async function backfillKeylessSessions(tabIdToKey: Map<number, string>): 
 }
 
 /**
- * Replace ALL stored data with a backup's contents in ONE transaction: clears the
- * three stores and writes the new rows together. If any write fails (quota, bad
- * record, IndexedDB error) the whole transaction aborts and IndexedDB rolls back
- * the clears too — so a failed restore can never leave the user wiped or
- * half-restored. The stores are empty post-clear, so daily stats are written as
- * absolute values (no merge).
+ * Replace stored history in ONE transaction. If any write fails, IndexedDB rolls
+ * back every clear and write. Undefined `tabMeta` keeps current open-tab metadata;
+ * `clearEngineState` is false for merges, which keep the live tracker checkpoint.
  */
 export async function restoreAll(
   sessions: Session[],
   stats: DailyStat[],
-  tabMeta: TabMeta[],
+  tabMeta: TabMeta[] | undefined,
   monthlyStats: MonthlyStat[] = [],
+  clearEngineState = true,
 ): Promise<void> {
   const db = await getDB();
-  const tx = db.transaction(['sessions', 'dailyDomainStats', 'monthlyDomainStats', 'tabMeta'], 'readwrite');
+  const tx = db.transaction(['sessions', 'dailyDomainStats', 'monthlyDomainStats', 'tabMeta', 'engineState'], 'readwrite');
   const sessionStore = tx.objectStore('sessions');
   const statStore = tx.objectStore('dailyDomainStats');
   const monthlyStore = tx.objectStore('monthlyDomainStats');
   const metaStore = tx.objectStore('tabMeta');
+  const stateStore = tx.objectStore('engineState');
   const writes = (async () => {
     await sessionStore.clear();
     await statStore.clear();
     await monthlyStore.clear();
-    await metaStore.clear();
+    if (tabMeta) await metaStore.clear();
+    if (clearEngineState) await stateStore.put({ id: 1, state: EMPTY_ENGINE_STATE });
     for (const s of sessions) await sessionStore.add(s);
     for (const d of stats) await statStore.put(d);
     for (const m of monthlyStats) await monthlyStore.put(m);
-    for (const m of tabMeta) await metaStore.put(m);
+    if (tabMeta) {
+      for (const meta of tabMeta) await metaStore.put(meta);
+    }
   })();
   // Await BOTH the writes and the transaction. A failing write auto-aborts the tx,
   // so tx.done ALSO rejects — Promise.all would surface one and leave the other as
@@ -240,12 +265,14 @@ export async function restoreAll(
 
 export async function wipeAll(): Promise<void> {
   const db = await getDB();
-  const tx = db.transaction(['sessions', 'dailyDomainStats', 'monthlyDomainStats', 'tabMeta'], 'readwrite');
+  const tx = db.transaction(['sessions', 'dailyDomainStats', 'monthlyDomainStats', 'tabMeta', 'engineState'], 'readwrite');
   await Promise.all([
     tx.objectStore('sessions').clear(),
     tx.objectStore('dailyDomainStats').clear(),
     tx.objectStore('monthlyDomainStats').clear(),
     tx.objectStore('tabMeta').clear(),
+    tx.objectStore('engineState').clear(),
+    tx.objectStore('engineState').put({ id: 1, state: EMPTY_ENGINE_STATE }),
   ]);
   await tx.done;
 }

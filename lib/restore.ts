@@ -1,6 +1,6 @@
 import * as repo from './db/repo';
 import { SCHEMA_VERSION } from './export';
-import { saveSettings } from './settings';
+import { getSettings, saveSettings } from './settings';
 import { domainOf, isWebDomain, pageOf } from './domain';
 import type { DailyStat, MonthlyStat, Session, Settings, TabMeta } from './types';
 
@@ -47,12 +47,25 @@ const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFin
 const isStr = (v: unknown): v is string => typeof v === 'string';
 const isBoundedStr = (v: unknown, max: number): v is string => isStr(v) && v.length <= max;
 const isTs = (v: unknown): v is number => isNum(v) && v > 0 && v < MAX_TS;
+function isDateKey(v: unknown): v is string {
+  if (!isBoundedStr(v, 10) || !DATE_RE.test(v)) return false;
+  const [year, month, day] = v.split('-').map(Number);
+  const date = new Date(0);
+  date.setUTCHours(0, 0, 0, 0);
+  date.setUTCFullYear(year, month - 1, day);
+  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+}
+function isMonthKey(v: unknown): v is string {
+  if (!isBoundedStr(v, 7) || !MONTH_RE.test(v)) return false;
+  const month = Number(v.slice(5));
+  return month >= 1 && month <= 12;
+}
 
 function isStat(v: unknown): v is DailyStat {
   const o = v as DailyStat;
   return (
     !!o &&
-    isBoundedStr(o.date, 10) && DATE_RE.test(o.date) &&
+    isDateKey(o.date) &&
     isBoundedStr(o.domain, MAX_KEY_LEN) && isWebDomain(o.domain) &&
     isNum(o.seconds) && o.seconds >= 0 && o.seconds <= MAX_DAY_SECONDS &&
     isNum(o.audioSeconds) && o.audioSeconds >= 0 && o.audioSeconds <= o.seconds
@@ -62,7 +75,7 @@ function isMonthlyStat(v: unknown): v is MonthlyStat {
   const o = v as MonthlyStat;
   return (
     !!o &&
-    isBoundedStr(o.month, 7) && MONTH_RE.test(o.month) &&
+    isMonthKey(o.month) &&
     isBoundedStr(o.domain, MAX_KEY_LEN) && isWebDomain(o.domain) &&
     isNum(o.seconds) && o.seconds >= 0 && o.seconds <= MAX_MONTH_SECONDS &&
     isNum(o.audioSeconds) && o.audioSeconds >= 0 && o.audioSeconds <= o.seconds
@@ -85,7 +98,7 @@ function isSession(v: unknown): v is Session {
 function isMeta(v: unknown): v is TabMeta {
   const o = v as TabMeta;
   return (
-    !!o && isNum(o.tabId) &&
+    !!o && Number.isSafeInteger(o.tabId) && o.tabId >= 0 &&
     isBoundedStr(o.key, MAX_KEY_LEN) &&
     // Only real web URLs — a crafted file:// / chrome:// / javascript: value must
     // not be stored (it would leak into the next export and could be fed to a
@@ -185,12 +198,22 @@ export async function restoreBackup(parsed: ParsedBackup): Promise<RestoreResult
   // Proxy, and callers often hold `parsed` in a ref. A JSON round-trip yields
   // plain, structured-cloneable objects (all fields are JSON-serializable).
   const data: ParsedBackup = JSON.parse(JSON.stringify(parsed));
-  // Clear + write all three stores in a SINGLE transaction: a failure aborts the
-  // whole restore and rolls back the clears, so existing history is never lost to
-  // a half-completed import (see repo.restoreAll).
-  await repo.restoreAll(data.sessions, data.dailyStats, data.tabMeta, data.monthlyStats);
-  // getSettings() re-sanitizes on the next read, so unsafe fields can't survive.
+  const previousSettings = data.settings ? await getSettings() : undefined;
   if (data.settings) await saveSettings(data.settings as Partial<Settings>);
+  try {
+    // IndexedDB replacement is atomic. Save settings first because browser storage
+    // cannot join that transaction; restore old settings if the database rejects.
+    await repo.restoreAll(data.sessions, data.dailyStats, data.tabMeta, data.monthlyStats);
+  } catch (error) {
+    if (previousSettings) {
+      try {
+        await saveSettings(previousSettings);
+      } catch (rollbackError) {
+        throw new AggregateError([error, rollbackError], 'Restore and settings rollback failed.', { cause: rollbackError });
+      }
+    }
+    throw error;
+  }
   return {
     dailyStats: data.dailyStats.length,
     monthlyStats: data.monthlyStats.length,

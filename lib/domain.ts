@@ -26,15 +26,12 @@ const SECRET_PATH_WORDS = new Set([
   'reset', 'invite', 'invitation', 'token', 'verify', 'verification', 'confirm',
   'activate', 'activation', 'magic', 'otp', 'unsubscribe', 'session', 'auth',
 ]);
-// An opaque identifier: one long unbroken alphanumeric run mixing letters and
-// digits (a document/share id, a hex token), or a UUID. Deliberately conservative:
-// anything word-separated is left alone, because real route segments look like that
-// ("summer-sale-2026", "2026-06-11-release-notes") and sub-page grouping plus the
-// path labels read them. The trade-off is that a hyphen-bearing base64url token can
-// still slip through; the query string and fragment — where most tokens live — are
-// dropped outright regardless.
-const OPAQUE_SEGMENT = /^(?=.{20,})(?=.*\d)(?=.*[a-zA-Z])[A-Za-z0-9]+$/;
+// An opaque identifier: one long token mixing letters and digits (a share id or
+// base64url token), or a UUID. Keep date and year slugs readable. Redaction cannot
+// identify every secret.
+const OPAQUE_SEGMENT = /^(?=.{20,})(?=.*\d)(?=.*[a-zA-Z])[A-Za-z0-9_-]+$/;
 const UUID_SEGMENT = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const READABLE_DATE_SLUG = /^(?:(?:[a-z]+-)*(?:19|20)\d{2}(?:-[a-z]+)*|(?:19|20)\d{2}-\d{2}-\d{2}(?:-[a-z]+)*)$/i;
 
 /**
  * Redact path segments that look like credentials. Stripping `?…`/`#…` keeps
@@ -55,7 +52,8 @@ function redactPath(pathname: string): string {
       if (!segment) return segment; // leading/trailing slash
       const prev = parts[i - 1]?.toLowerCase();
       if (prev && SECRET_PATH_WORDS.has(prev)) return REDACTED;
-      return OPAQUE_SEGMENT.test(segment) || UUID_SEGMENT.test(segment) ? REDACTED : segment;
+      const opaque = OPAQUE_SEGMENT.test(segment) && !READABLE_DATE_SLUG.test(segment);
+      return opaque || UUID_SEGMENT.test(segment) ? REDACTED : segment;
     })
     .join('/');
 }

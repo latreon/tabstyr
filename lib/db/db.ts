@@ -1,5 +1,5 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
-import type { DailyStat, MonthlyStat, Session, TabMeta } from '../types';
+import type { DailyStat, EngineState, MonthlyStat, Session, TabMeta } from '../types';
 
 interface TabTimeDB extends DBSchema {
   sessions: {
@@ -18,10 +18,11 @@ interface TabTimeDB extends DBSchema {
   // 90-day window (see repo.pruneBefore). Keyed by [month, domain].
   monthlyDomainStats: { key: [string, string]; value: MonthlyStat };
   tabMeta: { key: number; value: TabMeta };
+  engineState: { key: number; value: { id: number; state: EngineState } };
 }
 
 const DB_NAME = 'tab-time';
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 
 let dbPromise: Promise<IDBPDatabase<TabTimeDB>> | null = null;
 
@@ -60,6 +61,7 @@ function openAt(version: number | undefined): Promise<IDBPDatabase<TabTimeDB>> {
         // pre-filled here (that would duplicate still-live daily rows).
         db.createObjectStore('monthlyDomainStats', { keyPath: ['month', 'domain'] });
       }
+      if (oldVersion < 4) db.createObjectStore('engineState', { keyPath: 'id' });
     },
     blocking,
     terminated,

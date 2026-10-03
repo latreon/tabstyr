@@ -1,7 +1,6 @@
 // Support button ("Buy me a coffee"), rendered in the popup footer and the
 // dashboard header. Clicking it opens this URL in a new tab — user-initiated
-// navigation only; the extension itself never makes a network request (keeps the
-// "0 bytes leave your device" promise). Single source of truth.
+// navigation only; TabStyr never sends browsing data. Single source of truth.
 //
 // Polar pay-what-you-want tip. `?amount` prefills the value in cents ($5 = 500);
 // the user can still change it at checkout. Opening a Polar Checkout Link spins

@@ -122,6 +122,12 @@ describe('pageOf path redaction', () => {
       .toBe('https://docs.google.com/document/d/~redacted/edit');
     expect(pageOf('https://app.co/teams/550e8400-e29b-41d4-a716-446655440000/settings'))
       .toBe('https://app.co/teams/~redacted/settings');
+    expect(pageOf('https://app.co/share/abcD1234-efGH5678-ijKL9012'))
+      .toBe('https://app.co/share/~redacted');
+    expect(pageOf('https://app.co/share/abcD1234-efGH5678-ijKL9012-mnOP3456'))
+      .toBe('https://app.co/share/~redacted');
+    expect(pageOf('https://app.co/share/abcd-efgh-ijkl-mnop-1234567890'))
+      .toBe('https://app.co/share/~redacted');
   });
 
   test('all token-shaped segments collapse to ONE sub-page row', () => {

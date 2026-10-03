@@ -361,18 +361,25 @@ export function useStats() {
   }
 
   async function closeTab(tabId: number): Promise<void> {
-    await browser.tabs.remove(tabId).catch(() => undefined);
-    await repo.removeTabMeta(tabId).catch(() => undefined);
-    // Silent: refresh data in place so the open modal stays mounted (no spinner,
-    // no scroll jump) while the user keeps closing tabs.
-    await load({ silent: true });
+    try {
+      await browser.tabs.remove(tabId);
+      await repo.removeTabMeta(tabId);
+    } finally {
+      // Silent refresh keeps the open modal mounted while the user closes tabs.
+      await load({ silent: true });
+    }
   }
 
   // Close several tabs at once (e.g. "Close all stale"), then refresh once.
-  async function closeTabs(tabIds: number[]): Promise<void> {
-    await Promise.all(tabIds.map((id) => browser.tabs.remove(id).catch(() => undefined)));
-    await Promise.all(tabIds.map((id) => repo.removeTabMeta(id).catch(() => undefined)));
-    await load({ silent: true });
+  async function closeTabs(tabIds: number[]): Promise<number[]> {
+    const results = await Promise.allSettled(tabIds.map((id) => browser.tabs.remove(id)));
+    const closedIds = tabIds.filter((_, index) => results[index].status === 'fulfilled');
+    try {
+      await Promise.all(closedIds.map((id) => repo.removeTabMeta(id)));
+    } finally {
+      await load({ silent: true });
+    }
+    return closedIds;
   }
 
   async function snoozeTab(tabId: number): Promise<void> {

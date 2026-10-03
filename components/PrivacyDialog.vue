@@ -61,6 +61,8 @@ onUnmounted(() => {
             <tr><td><code>idle</code></td><td>{{ t('privacy.permIdle') }}</td></tr>
             <tr><td><code>alarms</code></td><td>{{ t('privacy.permAlarms') }}</td></tr>
             <tr><td><code>notifications</code></td><td>{{ t('privacy.permNotifications') }}</td></tr>
+            <tr><td><code>webNavigation</code></td><td>{{ t('privacy.permWebNavigation') }}</td></tr>
+            <tr><td><code>downloads</code> (optional)</td><td>{{ t('privacy.permDownloads') }}</td></tr>
             <tr><td><code>favicon</code> (Chromium)</td><td>{{ t('privacy.permFavicon') }}</td></tr>
           </tbody>
         </table>

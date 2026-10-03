@@ -137,6 +137,12 @@ describe('tabMeta', () => {
     expect(all.map((m) => m.tabId)).toEqual([9]);
   });
 
+  test('restoreAll can keep tab metadata during a merge', async () => {
+    await repo.upsertTabMeta(tabMeta({ tabId: 1 }));
+    await repo.restoreAll([], [], undefined, [], false);
+    expect(await repo.getAllTabMeta()).toEqual([tabMeta({ tabId: 1 })]);
+  });
+
   test('replaceAllTabMeta with empty array clears the store', async () => {
     await repo.upsertTabMeta(tabMeta({ tabId: 1 }));
     await repo.replaceAllTabMeta([]);
@@ -190,7 +196,7 @@ describe('prune + wipe', () => {
     expect(stats.map((s) => s.date)).toEqual(['2026-06-11']);
   });
 
-  test('wipeAll clears every store', async () => {
+  test('wipeAll clears user data and resets engine checkpoint', async () => {
     await seedMonthly([{ month: '2026-01', domain: 'a.com', seconds: 100, audioSeconds: 0 }]);
     await seedSessions([session({})]);
     await repo.upsertTabMeta(tabMeta({}));
@@ -198,6 +204,7 @@ describe('prune + wipe', () => {
     expect(await repo.getAllSessions()).toEqual([]);
     expect(await repo.getAllTabMeta()).toEqual([]);
     expect(await repo.getAllMonthlyStats()).toEqual([]);
+    expect(await repo.getEngineState()).toEqual({ focused: null, audio: [], isIdle: false });
   });
 });
 

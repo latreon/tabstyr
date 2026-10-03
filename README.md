@@ -43,8 +43,8 @@ and websites, then turns it into clear, useful insights — a dashboard, trends,
 when-you-browse heatmap, work/distraction breakdowns, and reminders about tabs
 you've forgotten.
 
-It is **100% local**. There are no servers, no accounts, no analytics, and no
-network requests. Your data lives in your browser's database and never leaves it.
+It stores browsing-time data only in your browser. TabStyr has no servers, accounts,
+or analytics, and does not send that data anywhere.
 
 > **The honest metric.** The headline number is your *active foreground time*.
 > Background audio is counted and shown **separately**, so your totals never
@@ -154,7 +154,7 @@ longer so long-range trends survive pruning — and it never leaves your device 
   browser already provides to extensions.
 
 Full policy: [docs/store/privacy-policy.md](docs/store/privacy-policy.md). The
-policy is also viewable in-app — the **0 bytes leave your device** badge opens it
+policy is also viewable in-app — the **browsing data stays on your device** badge opens it
 as an overlay (no new tab, no page navigation).
 
 ### Security
@@ -286,8 +286,8 @@ Deliberate design choices — listed so the behaviour reads as intended, not as 
   accruing (it isn't "away-from-keyboard listening time"); a focused, audible
   media tab keeps counting as watch time.
 - **URLs are reduced.** Stored page identity is scheme + host + path (+ `#/` SPA
-  route); query strings and token fragments are stripped, so secrets never land in
-  storage or exports.
+  route). Query strings and most token-like path segments are removed. This is a
+  best-effort filter; it cannot recognize every secret in a URL path.
 
 ## Development
 

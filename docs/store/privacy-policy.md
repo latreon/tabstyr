@@ -6,9 +6,8 @@ _Last updated: 2026-06-12_
 
 **TabStyr does not collect, transmit, or share any data.** Everything it records
 stays on your device. There are no servers, no analytics, no accounts, and the
-extension makes no automated network requests. The only outbound connection is
-one you initiate yourself: clicking the optional "Buy me a coffee" link opens
-a Polar checkout page (buy.polar.sh) in a new browser tab.
+extension makes no automated network requests. Clicking the optional "Buy me a
+coffee" link opens a Polar checkout page.
 
 ## What the extension stores
 
@@ -38,7 +37,7 @@ of it stays on your device.
 - It does **not** read page contents — only tab metadata (URL/title) provided by
   the browser's standard extension APIs.
 - It does **not** contact any server on its own. The optional "Buy me a coffee"
-  link only opens a Polar checkout page in a new tab when you click it; nothing is sent.
+  link opens a Polar checkout page when clicked; no browsing data is sent.
 
 ## Permissions and why they're needed
 

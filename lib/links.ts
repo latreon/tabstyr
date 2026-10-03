@@ -1,14 +1,5 @@
 // External links the extension can open in a new tab on explicit user action.
-// The extension itself never fetches these — opening one is user-initiated
-// navigation, so the "0 bytes leave your device" promise holds. Single source.
-
-export const SITE_URL = 'https://tabstyr.com';
-
-// chrome.runtime.setUninstallURL opens this in the browser (not the extension)
-// right before uninstall completes — it's the only way to learn why someone
-// left. Routes to the same in-app "share an idea" form the rest of the site
-// uses, tagged so responses are distinguishable from general feedback.
-export const UNINSTALL_FEEDBACK_URL = `${SITE_URL}/ideas?src=uninstall`;
+// The extension itself never fetches these; opening one follows user action.
 
 // Chrome Web Store listing — the /reviews suffix opens straight to the
 // "Write a review" tab instead of the general listing page.
