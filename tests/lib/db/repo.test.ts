@@ -109,14 +109,15 @@ describe('sessions + stats', () => {
     expect(stats).toHaveLength(2);
   });
 
-  test('getSessionsSince reads from the by-start index', async () => {
+  test('getSessionsSince returns sessions overlapping the cutoff', async () => {
     await seedSessions([
       session({ start: T0 - 10 * DAY, end: T0 - 10 * DAY + 60_000 }),
+      session({ start: T0 - DAY - 30_000, end: T0 - DAY + 30_000 }),
       session({ start: T0, end: T0 + 60_000 }),
     ]);
     const recent = await repo.getSessionsSince(T0 - DAY);
-    expect(recent).toHaveLength(1);
-    expect(recent[0].start).toBe(T0);
+    expect(recent).toHaveLength(2);
+    expect(recent.map((s) => s.start)).toContain(T0 - DAY - 30_000);
   });
 });
 

@@ -208,11 +208,21 @@ export async function saveSettings(patch: Partial<Settings>): Promise<Settings> 
   // Sanitize the MERGED result before persisting — never write a raw patch. A
   // hostile/oversized value (e.g. from an imported backup) is clamped/dropped here
   // rather than only when read back, so it can't bloat or corrupt stored settings.
-  const next = { ...DEFAULT_SETTINGS, ...coerce({ ...(await getSettings()), ...patch }) };
-  lastWritten = JSON.stringify(next);
-  await browser.storage.local.set({ settings: next });
-  cache = next;
-  return next;
+  const write = async (): Promise<Settings> => {
+    // Always re-read inside the cross-context lock. A cached snapshot may predate a
+    // save made by another dashboard/popup immediately before this lock was granted.
+    const { settings } = await browser.storage.local.get('settings');
+    const current = { ...DEFAULT_SETTINGS, ...coerce(settings) };
+    const next = { ...DEFAULT_SETTINGS, ...coerce({ ...current, ...patch }) };
+    lastWritten = JSON.stringify(next);
+    await browser.storage.local.set({ settings: next });
+    cache = next;
+    return next;
+  };
+  // Web Locks are shared by every document and worker on the extension origin,
+  // turning the otherwise racy read/merge/write into one serialized mutation.
+  const locks = typeof navigator !== 'undefined' ? navigator.locks : undefined;
+  return locks ? locks.request('tabstyr-settings', write) : write();
 }
 
 /** Drop the cache so the next getSettings() re-reads from storage. Call when

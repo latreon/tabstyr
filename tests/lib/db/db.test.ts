@@ -24,7 +24,7 @@ describe('getDB connection caching', () => {
   test('the sessions store carries the indexes the readers rely on', async () => {
     const db = await getDB();
     const tx = db.transaction('sessions', 'readonly');
-    expect([...tx.objectStore('sessions').indexNames].sort()).toEqual(['by-key', 'by-start', 'by-tab']);
+    expect([...tx.objectStore('sessions').indexNames].sort()).toEqual(['by-end', 'by-key', 'by-start', 'by-tab']);
     await tx.done;
   });
 

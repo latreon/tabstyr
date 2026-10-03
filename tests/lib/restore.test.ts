@@ -47,6 +47,30 @@ describe('parseBackup', () => {
     expect(parsed.sessions).toEqual([]);
   });
 
+  test('drops impossible calendar dates and months', () => {
+    const parsed = parseBackup(JSON.stringify({
+      app: 'tabstyr',
+      dailyStats: [
+        { date: '2026-02-31', domain: 'a.com', seconds: 10, audioSeconds: 0 },
+        { date: '2026-02-28', domain: 'a.com', seconds: 10, audioSeconds: 0 },
+      ],
+      monthlyStats: [
+        { month: '2026-13', domain: 'a.com', seconds: 10, audioSeconds: 0 },
+        { month: '2026-12', domain: 'a.com', seconds: 10, audioSeconds: 0 },
+      ],
+    }));
+    expect(parsed.dailyStats.map((s) => s.date)).toEqual(['2026-02-28']);
+    expect(parsed.monthlyStats.map((s) => s.month)).toEqual(['2026-12']);
+  });
+
+  test('drops metadata with invalid browser tab ids', () => {
+    const base = { key: 'k', url: 'https://a.com', title: 'A', lastActiveAt: 1, createdAt: 1 };
+    const parsed = parseBackup(JSON.stringify({ app: 'tabstyr', tabMeta: [
+      { ...base, tabId: -1 }, { ...base, tabId: 1.5 }, { ...base, tabId: 2 },
+    ] }));
+    expect(parsed.tabMeta.map((m) => m.tabId)).toEqual([2]);
+  });
+
   test('drops sessions with a non-string tabKey, normalizes a missing one', () => {
     const text = JSON.stringify({
       app: 'tabstyr',

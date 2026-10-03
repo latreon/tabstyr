@@ -17,26 +17,6 @@ export interface CsvImportResult {
   skipped: number; // rows dropped (non-web, bad date, zero/negative time)
 }
 
-/** Split CSV records while keeping newlines inside quoted fields. */
-function splitRecords(text: string): string[] {
-  const out: string[] = [];
-  let inQuotes = false;
-  let start = 0;
-  for (let i = 0; i < text.length; i++) {
-    if (text[i] === '"') {
-      if (inQuotes && text[i + 1] === '"') i++;
-      else inQuotes = !inQuotes;
-    } else if (!inQuotes && (text[i] === '\n' || text[i] === '\r')) {
-      out.push(text.slice(start, i));
-      if (text[i] === '\r' && text[i + 1] === '\n') i++;
-      start = i + 1;
-      if (out.length > MAX_ROWS) break;
-    }
-  }
-  if (out.length <= MAX_ROWS && start < text.length) out.push(text.slice(start));
-  return out.filter((record) => record.trim() !== '');
-}
-
 /** Split one CSV record into fields, honoring quoted commas and escaped quotes. */
 function splitLine(line: string): string[] {
   const out: string[] = [];
@@ -54,6 +34,27 @@ function splitLine(line: string): string[] {
   }
   out.push(field.trim());
   return out;
+}
+
+/** Split CSV into logical records, retaining CR/LF inside a quoted field. */
+function splitRecords(text: string): string[] {
+  const records: string[] = [];
+  let record = '';
+  let quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') {
+      record += ch;
+      if (quoted && text[i + 1] === '"') record += text[++i];
+      else quoted = !quoted;
+    } else if ((ch === '\n' || ch === '\r') && !quoted) {
+      if (ch === '\r' && text[i + 1] === '\n') i++;
+      if (record.trim()) records.push(record);
+      record = '';
+    } else record += ch;
+  }
+  if (record.trim()) records.push(record);
+  return records;
 }
 
 /**

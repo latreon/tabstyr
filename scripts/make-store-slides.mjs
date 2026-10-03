@@ -43,7 +43,7 @@ const DEFS = `
     <stop offset="0" stop-color="#ffffff"/><stop offset="0.6" stop-color="#f1ebff"/><stop offset="1" stop-color="#c9b6ff"/>
   </linearGradient>
   <radialGradient id="iconGlow" cx="50%" cy="50%" r="50%">
-    <stop offset="0" stop-color="#7c5cf0" stop-opacity="0.50"/><stop offset="1" stop-color="#7c5cf0" stop-opacity="0"/>
+    <stop offset="0" stop-color="#7c5cf0" stop-opacity="0.26"/><stop offset="1" stop-color="#7c5cf0" stop-opacity="0"/>
   </radialGradient>
   <radialGradient id="panelGlow" cx="50%" cy="50%" r="50%">
     <stop offset="0" stop-color="#7c5cf0" stop-opacity="0.30"/><stop offset="1" stop-color="#7c5cf0" stop-opacity="0"/>
@@ -282,7 +282,7 @@ async function slide1Hero() {
   const iconCy = iconTop + ICON / 2;
   const body = `
     ${eyebrow(cx, 162, 'PRODUCTIVITY · BROWSER EXTENSION', 'middle')}
-    <circle cx="${cx}" cy="${iconCy}" r="158" fill="url(#iconGlow)"/>
+    <circle cx="${cx}" cy="${iconCy}" r="132" fill="url(#iconGlow)"/>
     <text x="${cx}" y="506" text-anchor="middle" font-family="${FONT}" font-size="96" font-weight="800" letter-spacing="-2" fill="url(#title)">TabStyr</text>
     <text x="${cx}" y="558" text-anchor="middle" font-family="${FONT}" font-size="29" font-weight="500" fill="#a7a5bd">See how you really spend your time online.</text>
     ${chipRowCentered(cx, 618, [

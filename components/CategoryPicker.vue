@@ -32,7 +32,7 @@ function toggle() {
 function choose(c: CategoryId) {
   if (c !== props.current) emit('select', c);
   open.value = false;
-  trigger.value?.focus();
+  void nextTick(() => trigger.value?.focus());
 }
 function onClickOutside(e: MouseEvent) {
   if (root.value && !root.value.contains(e.target as Node)) open.value = false;
@@ -41,7 +41,7 @@ function onKey(e: KeyboardEvent) {
   if (e.key === 'Escape' && open.value) {
     e.stopPropagation();
     open.value = false;
-    trigger.value?.focus();
+    void nextTick(() => trigger.value?.focus());
   }
 }
 // Roving focus across the menu items (role="menu" promises arrow-key navigation).

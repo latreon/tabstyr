@@ -43,6 +43,16 @@ describe('CategoryChart', () => {
     expect(label).toContain('25%');
   });
 
+  test('uses exact ratios for geometry even when display percentages round', () => {
+    const thirds = ['Work', 'Social', 'Dev'].map((category) => ({ category, seconds: 1, audioSeconds: 0 }));
+    const w = mount(CategoryChart, { props: { slices: thirds } });
+    const total = w.findAll('.seg').reduce(
+      (sum, segment) => sum + Number.parseFloat((segment.element as HTMLElement).style.width),
+      0,
+    );
+    expect(total).toBeCloseTo(100, 8);
+  });
+
   test('shows an empty state instead of a zero-width bar', () => {
     const w = mount(CategoryChart, { props: { slices: [] } });
     expect(w.find('.stack').exists()).toBe(false);

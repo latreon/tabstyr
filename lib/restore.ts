@@ -47,19 +47,17 @@ const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFin
 const isStr = (v: unknown): v is string => typeof v === 'string';
 const isBoundedStr = (v: unknown, max: number): v is string => isStr(v) && v.length <= max;
 const isTs = (v: unknown): v is number => isNum(v) && v > 0 && v < MAX_TS;
-function isDateKey(v: unknown): v is string {
+const isDateKey = (v: unknown): v is string => {
   if (!isBoundedStr(v, 10) || !DATE_RE.test(v)) return false;
-  const [year, month, day] = v.split('-').map(Number);
-  const date = new Date(0);
-  date.setUTCHours(0, 0, 0, 0);
-  date.setUTCFullYear(year, month - 1, day);
-  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
-}
-function isMonthKey(v: unknown): v is string {
+  const [y, m, d] = v.split('-').map(Number);
+  const actual = new Date(y, m - 1, d);
+  return actual.getFullYear() === y && actual.getMonth() === m - 1 && actual.getDate() === d;
+};
+const isMonthKey = (v: unknown): v is string => {
   if (!isBoundedStr(v, 7) || !MONTH_RE.test(v)) return false;
-  const month = Number(v.slice(5));
-  return month >= 1 && month <= 12;
-}
+  const [y, m] = v.split('-').map(Number);
+  return y >= 1 && m >= 1 && m <= 12;
+};
 
 function isStat(v: unknown): v is DailyStat {
   const o = v as DailyStat;
@@ -98,7 +96,7 @@ function isSession(v: unknown): v is Session {
 function isMeta(v: unknown): v is TabMeta {
   const o = v as TabMeta;
   return (
-    !!o && Number.isSafeInteger(o.tabId) && o.tabId >= 0 &&
+    !!o && isNum(o.tabId) && Number.isSafeInteger(o.tabId) && o.tabId >= 0 &&
     isBoundedStr(o.key, MAX_KEY_LEN) &&
     // Only real web URLs — a crafted file:// / chrome:// / javascript: value must
     // not be stored (it would leak into the next export and could be fed to a
@@ -198,20 +196,19 @@ export async function restoreBackup(parsed: ParsedBackup): Promise<RestoreResult
   // Proxy, and callers often hold `parsed` in a ref. A JSON round-trip yields
   // plain, structured-cloneable objects (all fields are JSON-serializable).
   const data: ParsedBackup = JSON.parse(JSON.stringify(parsed));
+  // Clear + write all three stores in a SINGLE transaction: a failure aborts the
+  // whole restore and rolls back the clears, so existing history is never lost to
+  // a half-completed import (see repo.restoreAll).
+  // Settings cannot share an IndexedDB transaction with the data stores. Validate
+  // and persist them first, before the destructive data commit, so a settings write
+  // failure leaves existing history untouched. If the data transaction then fails,
+  // restore the prior settings best-effort before surfacing the error.
   const previousSettings = data.settings ? await getSettings() : undefined;
   if (data.settings) await saveSettings(data.settings as Partial<Settings>);
   try {
-    // IndexedDB replacement is atomic. Save settings first because browser storage
-    // cannot join that transaction; restore old settings if the database rejects.
     await repo.restoreAll(data.sessions, data.dailyStats, data.tabMeta, data.monthlyStats);
   } catch (error) {
-    if (previousSettings) {
-      try {
-        await saveSettings(previousSettings);
-      } catch (rollbackError) {
-        throw new AggregateError([error, rollbackError], 'Restore and settings rollback failed.', { cause: rollbackError });
-      }
-    }
+    if (previousSettings) await saveSettings(previousSettings);
     throw error;
   }
   return {

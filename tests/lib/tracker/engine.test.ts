@@ -139,6 +139,31 @@ describe('TrackerEngine boundary safety', () => {
     expect(e.getState().focused?.start).toBe(T0);
   });
 
+  test('getState also defensively copies background-audio sessions', () => {
+    const e = new TrackerEngine();
+    e.syncAudio([{ tabId: 2, url: 'https://music.example/song' }], T0);
+    const state = e.getState();
+    state.audio[0].start = 0;
+    state.audio.push({ tabId: 3, url: 'https://fake.example', domain: 'fake.example', start: 0, audio: true });
+    expect(e.getState().audio).toEqual([
+      { tabId: 2, url: 'https://music.example/song', domain: 'music.example', start: T0, audio: true },
+    ]);
+  });
+
+  test('accepts exactly the minimum duration and exact caps without clipping', () => {
+    const brief = new TrackerEngine();
+    brief.handleFocus(1, 'https://a.com', T0);
+    expect(brief.handleBlur(T0 + 250)[0].end - T0).toBe(250);
+
+    const regular = new TrackerEngine();
+    regular.handleFocus(1, 'https://a.com', T0);
+    expect(regular.handleBlur(T0 + 30 * 60_000)[0].end - T0).toBe(30 * 60_000);
+
+    const media = new TrackerEngine();
+    media.handleFocus(1, 'https://video.example/watch', T0, true);
+    expect(media.handleBlur(T0 + 24 * 60 * 60_000)[0].end - T0).toBe(24 * 60 * 60_000);
+  });
+
   test('checkpoint keeps sub-minimum elapsed time instead of discarding it', () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://a.com', T0);

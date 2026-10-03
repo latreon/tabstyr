@@ -93,12 +93,10 @@ export async function getAllSessions(): Promise<Session[]> {
   return (await getDB()).getAll('sessions');
 }
 
-/** Sessions active at or after `ts`, including sessions that began before it. */
+/** Sessions that overlap `ts` (end strictly after it), via the `by-end` index. */
 export async function getSessionsSince(ts: number): Promise<Session[]> {
   const db = await getDB();
-  const earliestStart = ts - 24 * 60 * 60_000;
-  const sessions = await db.getAllFromIndex('sessions', 'by-start', IDBKeyRange.lowerBound(earliestStart));
-  return sessions.filter((session) => session.end > ts);
+  return db.getAllFromIndex('sessions', 'by-end', IDBKeyRange.lowerBound(ts, true));
 }
 
 export async function upsertTabMeta(meta: TabMeta): Promise<void> {
