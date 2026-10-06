@@ -1,0 +1,13 @@
+# Runs the CI check job locally before every push. Skip once with LEFTHOOK=0.
+pre-push:
+  parallel: true
+  commands:
+    lint:
+      run: npm run lint
+    typecheck:
+      run: npm run typecheck
+    test:
+      run: npm test
+    landing-test:
+      root: landing/
+      run: npm test
