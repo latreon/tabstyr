@@ -2,6 +2,71 @@
 
 All notable changes to TabStyr. Generated from [GitHub Releases](https://github.com/latreon/tabstyr/releases) — the release page is the source of truth; run `npm run changelog:fetch && node scripts/generate-changelog.mjs` to refresh this file after a new release.
 
+## v2.1.0 — 2026-10-06
+
+### TabStyr 2.1.0
+
+This release lets you look at any day's breakdown, not only today's.
+
+#### New: daily breakdown
+
+- Pick any of the last 90 days in the new **Daily breakdown** bar above the dashboard, with previous/next buttons, a date picker, and a **Today** button to jump back.
+- **By category**, **Top sites**, and **Focus** follow the selected day. Their titles show the date, for example "Top sites · Mon, Oct 5". The focus streak shows only on today.
+- In the **Activity trend** chart (Day view), click a bar, or focus it and press Enter, to open that day's breakdown. The selected day is highlighted in the chart.
+- "What did I work on?" uses the same date control.
+- New text is translated into all 11 languages.
+
+#### Maintenance
+
+- Dependency updates, including sharp, vitest, nanoid, brace-expansion, shell-quote, source-map-js, postcss-selector-parser, and the grouped minor and patch updates.
+- GitHub Actions updated to `setup-node` v7 and `codecov-action` v7.
+- Softer icon glow on the first store slide.
+- Local checks before every push (lint, type check, tests), plus `npm run ci` and `npm run deploy:landing` for running the pipeline and site deploy by hand.
+- Landing site tests no longer depend on the extension's generated TypeScript config, which had broken the landing CI job.
+
+#### Verification
+
+- 773 unit tests across 70 test files.
+- TypeScript and ESLint checks pass.
+- Chromium, Firefox, and Safari production builds pass.
+- All 20 Playwright end-to-end scenarios pass.
+- Landing site: 67 tests pass and the prerendered build passes.
+
+**Full changelog:** https://github.com/latreon/tabstyr/compare/v2.0.4...v2.1.0
+
+## v2.0.4 — 2026-08-10
+
+### TabStyr 2.0.4
+
+This maintenance release hardens tracking reliability, backup privacy, imports, and cross-window settings synchronization following a full code audit.
+
+#### Reliability and data safety
+
+- Preserve checkpointed browsing time when an IndexedDB commit fails, allowing the service worker to retry from its last durable state.
+- Prevent destructive history replacement when restored settings cannot be persisted, and roll settings back if the data transaction fails.
+- Serialize settings updates across popup, dashboard, and background contexts so simultaneous edits no longer overwrite unrelated preferences.
+- Include sessions that overlap the history cutoff instead of dropping the in-range portion; IndexedDB is upgraded automatically with a new end-time index.
+
+#### Privacy and validation
+
+- Redact dense base64url-style identifiers containing `-` or `_` from stored page paths and exports while preserving human-readable route slugs.
+- Reject impossible calendar dates/months and invalid browser tab IDs in imported backups.
+
+#### Import and interface fixes
+
+- Parse quoted multiline CSV fields as one logical record.
+- Restore keyboard focus to the category picker after selection or Escape.
+- Use exact category ratios for stacked-chart geometry so segments always fill the chart without rounding gaps or clipping.
+
+#### Verification
+
+- 773 unit tests across 70 test files.
+- TypeScript and ESLint checks pass.
+- Chromium, Firefox, and Safari production builds pass.
+- All 20 Playwright end-to-end scenarios pass (the visual capture scenario requires a timeout above the default 30 seconds on slower CI hosts).
+
+**Full changelog:** https://github.com/latreon/tabstyr/compare/v2.0.3...v2.0.4
+
 ## v2.0.3 — 2026-07-26
 
 TabStyr 2.0.3 — a follow-up to the 2.0.2 audit. A second, deeper pass over the same codebase found one broken feature, eight real bugs, and a set of smaller issues. All of them are fixed, and the parts of the code that had no tests now have them.
