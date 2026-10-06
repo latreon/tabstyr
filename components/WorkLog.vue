@@ -11,7 +11,7 @@ import { addDays, dateKey, formatDuration, longDateLabel } from '@/lib/time';
 import { displayDomain } from '@/lib/domain';
 import type { DailyStat } from '@/lib/types';
 import FaviconChip from '@/components/FaviconChip.vue';
-import DatePicker from '@/components/ui/DatePicker.vue';
+import DayNav from '@/components/DayNav.vue';
 import CategoryPicker from '@/components/CategoryPicker.vue';
 
 const props = defineProps<{
@@ -43,14 +43,6 @@ watch(today, (next, prev) => {
 
 const log = computed(() => buildWorkLog(props.stats, selected.value, props.overrides, props.rules ?? []));
 const isToday = computed(() => selected.value === today.value);
-
-const canPrev = computed(() => selected.value > minDate.value);
-const canNext = computed(() => selected.value < today.value);
-
-function step(days: number) {
-  const next = addDays(selected.value, days);
-  if (next >= minDate.value && next <= today.value) selected.value = next;
-}
 
 // Category colours that appear as dots next to each site — shown as a legend so
 // the meaning is clear at a glance.
@@ -128,9 +120,7 @@ async function exportPng() {
     <div class="wl-head">
       <h2 class="label">{{ t('worklog.title') }}</h2>
       <div class="wl-controls">
-        <button class="nav" :disabled="!canPrev" :aria-label="t('worklog.prevDay')" @click="step(-1)">‹</button>
-        <DatePicker v-model="selected" :min="minDate" :max="today" />
-        <button class="nav" :disabled="!canNext" :aria-label="t('worklog.nextDay')" @click="step(1)">›</button>
+        <DayNav v-model="selected" :min="minDate" :max="today" />
         <button class="btn btn-ghost btn-sm" :disabled="!log.total" @click="copy">{{ copied ? t('worklog.copied') : t('worklog.copy') }}</button>
         <button class="btn btn-ghost btn-sm" :disabled="!log.total" @click="exportCsv">{{ t('worklog.csv') }}</button>
         <button class="btn btn-ghost btn-sm" :disabled="!log.total || exporting" @click="exportPng">{{ t('worklog.png') }}</button>
@@ -188,25 +178,6 @@ async function exportPng() {
   gap: 6px;
   flex-wrap: wrap; /* Copy/CSV/Image + date nav wrap instead of overflowing on narrow widths */
 }
-.nav {
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--border);
-  background: var(--card-strong);
-  color: var(--text-2);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  font-size: 18px;
-  line-height: 1;
-}
-.nav:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
 .date {
   border: 1px solid var(--border);
   background: var(--card-strong);
@@ -217,7 +188,6 @@ async function exportPng() {
   font-family: inherit;
   color-scheme: light dark;
 }
-.nav:focus-visible,
 .date:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;

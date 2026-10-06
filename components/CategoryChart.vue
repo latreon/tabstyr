@@ -9,6 +9,7 @@ const props = defineProps<{
   slices: CategorySlice[];
   budgets?: Partial<Record<CategoryId, number>>;
   custom?: CustomCategory[];
+  dateLabel?: string; // set when showing a past day instead of today
 }>();
 const { t } = useI18n();
 
@@ -25,7 +26,7 @@ const items = computed(() =>
     .filter((s) => s.seconds > 0)
     .map((s) => {
       const budget = budgetFor(s.category);
-      // `s` is already active-only (todayByCategory is built from useStats'
+      // `s` is already active-only (dayByCategory is built from useStats'
       // activeStats); budgetProgress expects active seconds and no longer subtracts
       // audio, so the slice can be passed straight through.
       const progress = budgetProgress(s, budget);
@@ -54,7 +55,7 @@ const stackSummary = computed(() =>
 <template>
   <div class="tile cat-tile">
     <div class="cat-head">
-      <h2 class="label">{{ t('category.title') }}</h2>
+      <h2 class="label">{{ dateLabel ? t('category.titleOn', { date: dateLabel }) : t('category.title') }}</h2>
       <span class="cat-total">{{ formatDuration(total) }}</span>
     </div>
 

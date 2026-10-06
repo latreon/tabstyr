@@ -18,6 +18,8 @@ import FocusTrend from '@/components/FocusTrend.vue';
 import ComparisonTile from '@/components/ComparisonTile.vue';
 import HeatmapTile from '@/components/HeatmapTile.vue';
 import WorkLog from '@/components/WorkLog.vue';
+import DayNav from '@/components/DayNav.vue';
+import { longDateLabel } from '@/lib/time';
 import DomainDetail from '@/components/DomainDetail.vue';
 import TabTable from '@/components/TabTable.vue';
 import SettingsPanel from '@/components/SettingsPanel.vue';
@@ -30,9 +32,24 @@ import ThemeToggle from '@/components/ThemeToggle.vue';
 import PrivacyDialog from '@/components/PrivacyDialog.vue';
 import { COFFEE_URL } from '@/lib/support';
 
-const { t } = useI18n();
+const { t, locale: activeLocale } = useI18n();
 const locale = useLocale();
 const s = useStats();
+
+const dayBar = ref<HTMLElement | null>(null);
+const isTodaySelected = computed(() => s.selectedDay.value === s.todayKey.value);
+// Tiles keep their "today" titles until another day is picked.
+const dayLabel = computed(() => {
+  void activeLocale.value;
+  return isTodaySelected.value ? undefined : longDateLabel(s.selectedDay.value);
+});
+function showDay(day: string) {
+  s.selectedDay.value = day;
+  dayBar.value?.scrollIntoView({
+    behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    block: 'start',
+  });
+}
 // The clock every date-bounded tile reads (trend windows, the work-log day, the
 // comparison window). A ref, not a constant, so it advances with each reload —
 // frozen at mount it meant a dashboard left open overnight kept charting yesterday
@@ -205,6 +222,13 @@ onBeforeUnmount(() => {
       <p v-if="s.storageWarning.value" class="storage-warn" role="alert">{{ t('common.storageFull') }}</p>
       <OnboardingCard v-if="s.showOnboarding.value" @dismiss="s.dismissOnboarding" />
       <ReviewPrompt v-if="showReviewPrompt" @dismiss="onDismissReviewPrompt" />
+      <div ref="dayBar" class="day-bar">
+        <h2 class="label">{{ t('breakdown.title') }}</h2>
+        <div class="day-bar-controls">
+          <button v-if="!isTodaySelected" type="button" class="btn btn-ghost btn-sm" @click="s.selectedDay.value = s.todayKey.value">{{ t('common.today') }}</button>
+          <DayNav v-model="s.selectedDay.value" :min="s.firstDay.value" :max="s.todayKey.value" />
+        </div>
+      </div>
       <section class="bento" :aria-label="t('dashboard.statsAria')">
       <HeroTile
         :today-seconds="s.todaySeconds.value"
@@ -230,14 +254,14 @@ onBeforeUnmount(() => {
         :action-hint="t('tabs.review')"
         @activate="openTabsModal('stale')"
       />
-      <!-- Today by category fills the space below Open tabs / Stale tabs, beside the tall hero -->
-      <CategoryChart :slices="s.todayByCategory.value" :budgets="s.categoryBudgets.value" :custom="s.customCategories.value" />
-      <!-- Top sites today + Focus today -->
-      <TopSitesChart :domains="s.todayByDomain.value" @select="openDetail" />
-      <ProductivityTile id="focus" :summary="s.productivity.value" />
+      <!-- By category fills the space below Open tabs / Stale tabs, beside the tall hero -->
+      <CategoryChart :slices="s.dayByCategory.value" :budgets="s.categoryBudgets.value" :custom="s.customCategories.value" :date-label="dayLabel" />
+      <!-- Top sites + Focus for the selected day -->
+      <TopSitesChart :domains="s.dayByDomain.value" :date-label="dayLabel" @select="openDetail" />
+      <ProductivityTile id="focus" :summary="s.dayProductivity.value" :date-label="dayLabel" />
       <!-- full-width rows -->
       <InsightsTile :insights="s.insights.value" />
-      <TrendChart :stats="s.activeStats.value" :now="loadedNow" />
+      <TrendChart :stats="s.activeStats.value" :now="loadedNow" :selected-day="s.selectedDay.value" @select-day="showDay" />
       <FocusTrend :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :productivity="s.categoryProductivity.value" :custom="s.customCategories.value" :now="loadedNow" :target="s.productivity.value.focusTarget" />
       <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :custom="s.customCategories.value" />
       <HeatmapTile :data="s.heatmap.value" />
@@ -342,6 +366,20 @@ onBeforeUnmount(() => {
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
+}
+.day-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space);
+  scroll-margin-top: var(--sp-4);
+}
+.day-bar-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 .storage-warn {
   margin-bottom: 16px;

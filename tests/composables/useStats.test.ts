@@ -58,13 +58,13 @@ describe('useStats active-time derivations', () => {
     expect(s.todayAudioSeconds.value).toBe(120);
   });
 
-  test('todayByDomain hides audio-only domains and sorts by active time', async () => {
+  test('dayByDomain hides audio-only domains and sorts by active time', async () => {
     const s = await loaded([
       { date: TODAY, domain: 'music.com', seconds: 600, audioSeconds: 600 },
       { date: TODAY, domain: 'a.com', seconds: 100, audioSeconds: 0 },
       { date: TODAY, domain: 'b.com', seconds: 300, audioSeconds: 0 },
     ]);
-    expect(s.todayByDomain.value.map((d) => d.domain)).toEqual(['b.com', 'a.com']);
+    expect(s.dayByDomain.value.map((d) => d.domain)).toEqual(['b.com', 'a.com']);
   });
 
   test('the weekly average divides by active days, not by seven', async () => {
@@ -86,10 +86,10 @@ describe('useStats active-time derivations', () => {
     expect(s.weeklyAvgSeconds.value).toBe(3600);
   });
 
-  test('todayByCategory groups through the user\'s overrides', async () => {
+  test('dayByCategory groups through the user\'s overrides', async () => {
     await saveSettings({ categoryOverrides: { 'a.com': 'Finance' } });
     const s = await loaded([{ date: TODAY, domain: 'a.com', seconds: 600, audioSeconds: 0 }]);
-    expect(s.todayByCategory.value).toEqual([{ category: 'Finance', seconds: 600, audioSeconds: 0 }]);
+    expect(s.dayByCategory.value).toEqual([{ category: 'Finance', seconds: 600, audioSeconds: 0 }]);
   });
 
   test('productivity reads active seconds and the user\'s focus target', async () => {

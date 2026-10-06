@@ -11,6 +11,9 @@
     "decrease": "減らす {label}",
     "increase": "増やす {label}"
   },
+  "breakdown": {
+    "title": "日別の内訳"
+  },
   "datePicker": {
     "pickDay": "日を選択",
     "chooseDate": "日付を選択",
@@ -115,6 +118,7 @@
   },
   "category": {
     "title": "今日のカテゴリ別",
+    "titleOn": "カテゴリ別 · {date}",
     "shareAria": "カテゴリ別の時間の割合",
     "segTitle": "{category} · {time} · {pct}%",
     "overBudget": "超過",
@@ -123,6 +127,7 @@
   },
   "focus": {
     "title": "今日の集中度",
+    "titleOn": "集中度 · {date}",
     "streak": "🔥 {count}日連続",
     "streakTitle": "集中度{target}%以上が{count}日間",
     "ariaFocus": "集中度{pct}%",
@@ -134,7 +139,9 @@
   },
   "topSites": {
     "title": "今日のトップサイト",
-    "viewDetailsAria": "{domain}の詳細を表示 — 今日{time}アクティブ"
+    "titleOn": "トップサイト · {date}",
+    "viewDetailsAria": "{domain}の詳細を表示 — 今日{time}アクティブ",
+    "viewDetailsAriaOn": "{domain}の詳細を表示 — {date}に{time}アクティブ"
   },
   "trend": {
     "title": "アクティビティの推移",

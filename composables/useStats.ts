@@ -1,4 +1,4 @@
-import { computed, ref, shallowRef } from 'vue';
+import { computed, ref, shallowRef, watch } from 'vue';
 import { browser } from 'wxt/browser';
 import * as repo from '@/lib/db/repo';
 import { displayDomain, domainOf, isWebDomain } from '@/lib/domain';
@@ -69,6 +69,16 @@ export function useStats() {
   const storageWarning = ref(false);
 
   const todayKey = ref(dateKey(Date.now()));
+  // Day shown by the category, top sites and focus tiles. Defaults to today.
+  const selectedDay = ref(todayKey.value);
+  const firstDay = computed(() => addDays(todayKey.value, -(HISTORY_DAYS - 1)));
+
+  // A selection that was today follows the clock to the new day, and a day that
+  // left the history window moves back inside it.
+  watch(todayKey, (next, prev) => {
+    if (selectedDay.value === prev || selectedDay.value > next) selectedDay.value = next;
+    else if (selectedDay.value < firstDay.value) selectedDay.value = firstDay.value;
+  });
 
   // The primary metric across the app is ACTIVE FOREGROUND time on real web pages:
   //   active = seconds − audioSeconds   (stored `seconds` includes background audio)
@@ -98,9 +108,9 @@ export function useStats() {
     return weeklyActiveDays.value ? total / weeklyActiveDays.value : 0;
   });
 
-  const todayByDomain = computed(() => {
+  const dayByDomain = computed(() => {
     const map = new Map<string, { seconds: number; audioSeconds: number }>();
-    for (const s of todayStats.value) {
+    for (const s of activeStats.value.filter((stat) => stat.date === selectedDay.value)) {
       const cur = map.get(s.domain) ?? { seconds: 0, audioSeconds: 0 };
       map.set(s.domain, { seconds: cur.seconds + s.seconds, audioSeconds: cur.audioSeconds + s.audioSeconds });
     }
@@ -123,9 +133,9 @@ export function useStats() {
   // Show the first-run intro only once settings have loaded and it isn't dismissed.
   const showOnboarding = computed(() => !!settings.value && !settings.value.onboarded);
 
-  // Today's time grouped into categories (Work/Dev/Social/…), respecting overrides + user rules.
-  const todayByCategory = computed(() =>
-    groupByCategory(todayByDomain.value, overrides.value, categoryRules.value),
+  // The selected day's time grouped into categories (Work/Dev/Social/…), respecting overrides + user rules.
+  const dayByCategory = computed(() =>
+    groupByCategory(dayByDomain.value, overrides.value, categoryRules.value),
   );
 
   // Focus %, productive/distracting split, and the current focus streak.
@@ -146,6 +156,10 @@ export function useStats() {
       focusTarget: p.focusTarget,
     });
   });
+
+  const dayProductivity = computed(() =>
+    summarizeProductivity(activeStats.value, selectedDay.value, overrides.value, categoryRules.value, focusTarget.value, categoryProductivity.value, customCategories.value),
+  );
 
   // "Open tabs by time" — one row per DOMAIN that has an open tab, showing that
   // domain's total foreground active time over the window. Reads from the daily
@@ -384,9 +398,9 @@ export function useStats() {
 
   return {
     stats, activeStats, tabRows, staleTabs, staleTabItems, openTabsList, openTabCount, settings, heatmap, recentSessions,
-    loading, loadError, storageWarning, todayKey,
+    loading, loadError, storageWarning, todayKey, selectedDay, firstDay,
     todaySeconds, todayAudioSeconds, weeklyAvgSeconds, weeklyActiveDays,
-    todayByDomain, todayByCategory, productivity, insights, overrides, categoryRules, customCategories, categoryProductivity, focusTarget, categoryBudgets, showOnboarding,
+    dayByDomain, dayByCategory, productivity, dayProductivity, insights, overrides, categoryRules, customCategories, categoryProductivity, focusTarget, categoryBudgets, showOnboarding,
     load, closeTab, closeTabs, snoozeTab, setCategoryOverride, setCategoryProductivity, setCustomProductivity, setCategoryBudget, addCategoryRule, removeCategoryRule, dismissOnboarding,
   };
 }

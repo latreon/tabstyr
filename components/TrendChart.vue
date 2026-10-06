@@ -5,7 +5,8 @@ import { buildTrend, type TrendMode, type TrendPoint } from '@/lib/trend';
 import { trendTooltip, xTickEvery, yTicks } from '@/lib/chart-scale';
 import type { DailyStat } from '@/lib/types';
 
-const props = defineProps<{ stats: DailyStat[]; now: number }>();
+const props = defineProps<{ stats: DailyStat[]; now: number; selectedDay?: string }>();
+const emit = defineEmits<{ selectDay: [day: string] }>();
 const { t } = useI18n();
 const mode = ref<TrendMode>('day');
 const MODES: TrendMode[] = ['day', 'week', 'month'];
@@ -17,6 +18,8 @@ const points = computed(() => buildTrend(props.stats, mode.value, props.now));
 const ticks = computed(() => yTicks(Math.max(1, ...points.value.map((p) => p.seconds))));
 const chartMax = computed(() => ticks.value[2].seconds);
 const labelEvery = computed(() => xTickEvery(mode.value));
+// Only day bars map to one day, which is why only they open a day breakdown.
+const isDayMode = computed(() => mode.value === 'day');
 
 const tooltip = ref<{ text: string; x: number; bottom: number } | null>(null);
 
@@ -66,9 +69,13 @@ function hideTip() {
             v-for="(p, i) in points"
             :key="p.key"
             class="bar-col"
-            role="img"
+            :class="{ selectable: isDayMode, selected: isDayMode && p.key === selectedDay }"
+            :role="isDayMode ? 'button' : 'img'"
             tabindex="0"
             :aria-label="trendTooltip(p.key, mode, p.seconds, p.partial, t)"
+            :aria-pressed="isDayMode ? p.key === selectedDay : undefined"
+            @click="isDayMode && emit('selectDay', p.key)"
+            @keydown.enter.space.prevent="isDayMode && emit('selectDay', p.key)"
             @mouseenter="showTip($event, p)"
             @mouseleave="hideTip"
             @focus="showTip($event, p)"
@@ -193,6 +200,12 @@ function hideTip() {
 .bar-col:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+.bar-col.selectable {
+  cursor: pointer;
+}
+.bar-col.selected {
+  background: var(--row-hover);
 }
 .bar-fill {
   width: 100%;

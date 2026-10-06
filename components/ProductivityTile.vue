@@ -4,7 +4,10 @@ import { useI18n } from 'vue-i18n';
 import { formatDuration } from '@/lib/time';
 import type { ProductivitySummary } from '@/lib/productivity';
 
-const props = defineProps<{ summary: ProductivitySummary }>();
+const props = defineProps<{
+  summary: ProductivitySummary;
+  dateLabel?: string; // set when showing a past day instead of today
+}>();
 const { t } = useI18n();
 
 const hasData = computed(() => props.summary.productiveSeconds + props.summary.distractingSeconds > 0);
@@ -13,14 +16,14 @@ const prodWidth = computed(() => `${props.summary.todayFocusPct}%`);
 
 <template>
   <div class="tile prod-tile">
-    <h2 class="label">{{ t('focus.title') }}</h2>
+    <h2 class="label">{{ dateLabel ? t('focus.titleOn', { date: dateLabel }) : t('focus.title') }}</h2>
 
     <template v-if="hasData">
       <div class="figure">
         <span class="pct" :class="{ good: summary.todayFocusPct >= summary.focusTarget }">
           {{ summary.todayFocusPct }}<em>%</em>
         </span>
-        <span v-if="summary.streakDays > 0" class="streak" :title="t('focus.streakTitle', { count: summary.streakDays, target: summary.focusTarget })">
+        <span v-if="!dateLabel && summary.streakDays > 0" class="streak" :title="t('focus.streakTitle', { count: summary.streakDays, target: summary.focusTarget })">
           {{ t('focus.streak', { count: summary.streakDays }) }}
         </span>
       </div>
