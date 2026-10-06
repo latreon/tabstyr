@@ -18,6 +18,8 @@
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "e2e": "playwright test",
+    "ci": "node scripts/make-icons.mjs && npm run check:version && npm run lint && npm run typecheck && npm test && npm run build && npm run build:firefox && npm run e2e && npm --prefix landing test && npm --prefix landing run build",
+    "deploy:landing": "npm --prefix landing test && npm --prefix landing run build && npx --yes netlify-cli deploy --prod --dir landing/dist --site iridescent-smakager-f6df69",
     "check:version": "node scripts/sync-readme-version.mjs",
     "version": "node scripts/sync-readme-version.mjs --write && git add .github/badges/version.svg",
     "promo:video": "node scripts/make-promo-video.mjs",
