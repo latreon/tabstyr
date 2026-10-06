@@ -203,22 +203,25 @@
         <path d="M12 3l7 3v5.5c0 4-3 7-7 8.5-4-1.5-7-4.5-7-8.5V6z" />
         <path d="M9 12l2 2 4-4.5" />
       </svg>
-      0 bytes leave your device
+      Browsing data stays on your device
     </div>
 
     <div class="card">
       <p><strong>TabStyr does not collect, transmit, or share any data.</strong> Everything it
-      records stays on your device. There are no servers, no analytics, no accounts, and no
-      network requests of any kind.</p>
+      records stays on your device. There are no servers, no analytics, no accounts, and the
+      extension makes no network requests. When you remove the extension, your browser opens a
+      feedback page on tabstyr.com. Sending feedback there is optional.</p>
 
       <h2>What the extension stores (locally, in your browser's IndexedDB)</h2>
       <ul>
         <li><strong>Session records</strong> — start/end timestamps, the page's domain, and whether the tab was playing audio.</li>
         <li><strong>Daily per-domain totals</strong> — aggregated seconds per site per day.</li>
+        <li><strong>Monthly per-domain totals</strong> — seconds per site per month, with no URLs, timestamps, or session detail.</li>
         <li><strong>Open-tab metadata</strong> — title, URL, last-active time, and a randomly generated local identifier used to attribute time correctly.</li>
         <li><strong>Settings</strong> — your preferences (stale threshold, idle timeout, theme, background-audio counting, category overrides and rules).</li>
       </ul>
-      <p>Data is kept for a rolling <strong>90-day window</strong>; older data is pruned automatically.</p>
+      <p>Session records and daily totals are kept for <strong>90 days</strong>, then pruned automatically.
+      Monthly per-domain totals are kept for up to <strong>60 months</strong> to power long-range trends.</p>
 
       <h2>What it does NOT do</h2>
       <ul>
@@ -237,6 +240,8 @@
           <tr><td><code>idle</code></td><td>Pause tracking when you step away</td></tr>
           <tr><td><code>alarms</code></td><td>Periodic checkpoints and daily maintenance</td></tr>
           <tr><td><code>notifications</code></td><td>Optional once-a-day stale-tab reminder</td></tr>
+          <tr><td><code>webNavigation</code></td><td>Notice page changes inside a site (like the next YouTube video) so time goes to the page you are on</td></tr>
+          <tr><td><code>downloads</code></td><td>Save scheduled backup files to your downloads folder. Scheduled backups are off by default</td></tr>
           <tr><td><code>favicon</code> (Chromium)</td><td>Show site icons in lists</td></tr>
         </tbody>
       </table>

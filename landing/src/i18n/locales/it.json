@@ -1,12 +1,12 @@
 {
   "meta": {
     "title": "TabStyr — Monitoraggio privato del tempo nel browser",
-    "description": "Scopri dove finisce davvero il tuo tempo nel browser — tempo attivo per sito, andamenti, mappe di calore, focus e promemoria per le schede dimenticate. 100% locale. 0 byte lasciano il tuo dispositivo.",
-    "ogDescription": "Tempo attivo per sito, andamenti, mappe di calore, focus. 100% locale — niente lascia il tuo dispositivo.",
+    "description": "Scopri dove va davvero il tuo tempo nel browser: tempo attivo per sito, tendenze, heatmap, concentrazione e promemoria per le schede inattive. 100% locale. I tuoi dati di navigazione non lasciano mai il dispositivo.",
+    "ogDescription": "Tempo attivo per sito, tendenze, heatmap, concentrazione. 100% locale: i tuoi dati di navigazione non lasciano mai il dispositivo.",
     "privacyTitle": "Informativa sulla privacy — TabStyr",
-    "privacyDescription": "TabStyr non raccoglie nulla. Nessun server, nessuna analisi, nessun account, nessuna richiesta di rete. Tutto rimane sul tuo dispositivo.",
+    "privacyDescription": "L'estensione TabStyr non raccoglie dati di navigazione. Niente server, niente analytics, niente account e nessuna richiesta di rete dall'estensione.",
     "ideasTitle": "Condividi un'idea — TabStyr",
-    "ideasDescription": "Suggerisci una funzione o segnala un bug per TabStyr. Nessun account, nessun tracciamento — arriva direttamente a chi lo crea.",
+    "ideasDescription": "Suggerisci una funzione o segnala un bug di TabStyr. Nessun account necessario. Il tuo messaggio arriva allo sviluppatore tramite Formspree.",
     "wrappedTitle": "Browsing Wrapped — TabStyr",
     "wrappedDescription": "Trascina il tuo export di TabStyr e ottieni un Browsing Wrapped splendido e condivisibile — il tuo tempo sul web, calcolato al 100% nel tuo browser.",
     "changelogTitle": "Changelog — TabStyr",
@@ -37,11 +37,11 @@
     "stats": [
       {
         "unit": "byte",
-        "label": "lasciano il tuo dispositivo"
+        "label": "di dati di navigazione lasciano il tuo dispositivo"
       },
       {
         "unit": "giorni",
-        "label": "di cronologia, ripuliti automaticamente"
+        "label": "di cronologia dettagliata"
       },
       {
         "unit": "lingue",
@@ -51,7 +51,9 @@
         "unit": "%",
         "label": "locale e aperto per scelta"
       }
-    ]
+    ],
+    "ctaFirefox": "Aggiungi a Firefox — gratis",
+    "alsoOn": "Anche su {browser}"
   },
   "features": {
     "eyebrow": "Cosa fa",
@@ -91,7 +93,7 @@
     "steps": [
       {
         "title": "Aggiungilo al browser",
-        "body": "Un clic dal Chrome Web Store. Nessuna registrazione, nessun permesso oltre alla scheda attiva."
+        "body": "Un clic dal Chrome Web Store o da Firefox Add-ons. Nessuna registrazione. Ogni permesso è spiegato nell'informativa sulla privacy, e nessuno può leggere il contenuto delle pagine."
       },
       {
         "title": "Naviga come sempre",
@@ -125,8 +127,8 @@
   "privacyBand": {
     "eyebrow": "La privacy, non come funzione — ma come fondamento",
     "h2Num": "0 byte",
-    "h2Rest": "lasciano il tuo dispositivo.",
-    "lede": "I tuoi dati vivono nel database del tuo browser (IndexedDB), ripuliti in una finestra mobile di 90 giorni. Puoi esportarli, ripristinarli o cancellarli — in qualsiasi momento, sempre offline.",
+    "h2Rest": "di dati di navigazione lasciano il tuo dispositivo.",
+    "lede": "I tuoi dati vivono nel database del tuo browser (IndexedDB). Sessioni e totali giornalieri vengono eliminati dopo 90 giorni, i totali mensili per sito dopo 60 mesi. Esporta, ripristina o cancella quando vuoi, tutto offline.",
     "points": [
       {
         "k": "Nessun server",
@@ -153,7 +155,7 @@
     "items": [
       {
         "q": "I miei dati di navigazione sono davvero privati?",
-        "a": "Sì. TabStyr non effettua alcuna richiesta di rete — la sua content-security policy le blocca persino. Tutto è memorizzato localmente nel tuo browser e ripulito dopo 90 giorni. Puoi esportarlo o cancellarlo in qualsiasi momento."
+        "a": "Sì. L'estensione non fa alcuna richiesta di rete, e la sua content security policy le blocca persino. Tutto è salvato localmente nel browser. Sessioni e totali giornalieri vengono eliminati dopo 90 giorni, i totali mensili per sito dopo 60 mesi. Puoi esportare o cancellare tutto in qualsiasi momento."
       },
       {
         "q": "Cosa monitora esattamente?",
@@ -165,7 +167,7 @@
       },
       {
         "q": "Quali browser sono supportati?",
-        "a": "Chrome, Edge, Brave, Opera, Arc e altri browser Chromium pienamente. Firefox 115+ è supportato (le favicon appaiono come chip con la lettera iniziale). Safari funziona dopo una conversione con Xcode."
+        "a": "Installala dal Chrome Web Store per Chrome, Brave, Opera, Arc e gli altri browser Chromium, oppure da Firefox Add-ons per Firefox 115+ (lì le favicon appaiono come badge con iniziali). Edge non ha ancora una pagina su Edge Add-ons, ma può installarla dal Chrome Web Store dopo aver consentito le estensioni da altri store. Safari non ha ancora una versione sull'App Store; gli sviluppatori possono compilarla per Safari dal codice sorgente."
       },
       {
         "q": "È gratuito? Open source?",
@@ -180,7 +182,7 @@
   "feedback": {
     "eyebrow": "Feedback e idee",
     "title": "Costruito alla luce del sole — insieme a te.",
-    "sub": "Nessun tracciamento, nessun widget di feedback che chiama casa. Solo un modulo semplice — nessun account, nessun accesso e nulla di salvato su di te.",
+    "sub": "Nessun widget di feedback che telefona a casa. Solo un modulo semplice, senza account né accesso. Il tuo messaggio e, se la aggiungi, la tua email arrivano allo sviluppatore tramite Formspree.",
     "ideaTitle": "Condividi un'idea o segnala un bug",
     "ideaBody": "Vuoi una funzione, una nuova metrica, o hai trovato qualcosa che non va? Dimmelo proprio qui — nessun account necessario.",
     "ideaCta": "Apri il modulo",
@@ -190,15 +192,16 @@
   },
   "cta": {
     "title": "Riprenditi il tuo tempo nel browser.",
-    "sub": "Installa in due clic. I tuoi dati non lasciano mai il dispositivo. La disinstallazione rimuove tutto.",
+    "sub": "Si installa in due clic. I tuoi dati di navigazione non lasciano mai il dispositivo. Disinstallando si elimina tutto.",
     "primary": "Aggiungi a Chrome — gratis",
     "comingSoon": "Presto su Chrome",
     "edge": "Componenti aggiuntivi Edge",
-    "edgeSoon": "Edge in arrivo",
+    "edgeSoon": "Edge Add-ons in arrivo",
     "firefox": "Firefox",
     "firefoxSoon": "Firefox in arrivo",
     "safariSoon": "Safari in arrivo",
-    "soonNote": "Le pubblicazioni negli store sono in arrivo — metti una stella al repo per sapere quando saranno disponibili."
+    "soonNote": "Le pubblicazioni negli store sono in arrivo — metti una stella al repo per sapere quando saranno disponibili.",
+    "primaryFirefox": "Aggiungi a Firefox — gratis"
   },
   "footer": {
     "tag": "Analisi del tempo nel browser, private e locali.",
@@ -211,17 +214,17 @@
     "shareIdea": "Condividi un'idea",
     "coffee": "Offrimi un caffè",
     "builtBy": "Creato da",
-    "badge": "0 byte lasciano il tuo dispositivo"
+    "badge": "I dati di navigazione restano sul tuo dispositivo"
   },
   "privacyPage": {
     "back": "← Torna al sito",
     "backCta": "← Torna a TabStyr",
     "eyebrow": "Informativa sulla privacy",
     "titleNum": "0 byte",
-    "titleRest": "lasciano il tuo dispositivo.",
-    "updated": "Ultimo aggiornamento: 2026-06-12",
-    "leadStrong": "TabStyr non raccoglie, trasmette o condivide alcun dato.",
-    "leadRest": "Tutto ciò che registra rimane sul tuo dispositivo. Non ci sono server, né analisi, né account, né richieste di rete di alcun tipo.",
+    "titleRest": "di dati di navigazione lasciano il tuo dispositivo.",
+    "updated": "Ultimo aggiornamento: 2026-10-06",
+    "leadStrong": "L'estensione TabStyr non raccoglie, trasmette né condivide i tuoi dati di navigazione.",
+    "leadRest": "Tutto ciò che registra resta sul tuo dispositivo. Non ci sono server, analytics o account, e l'estensione non fa richieste di rete.",
     "storesTitle": "Cosa memorizza (localmente, nell'IndexedDB del tuo browser)",
     "stores": [
       {
@@ -233,6 +236,10 @@
         "body": "secondi per sito al giorno."
       },
       {
+        "label": "Totali mensili per dominio",
+        "body": "secondi per sito al mese, senza URL, orari o dettagli delle sessioni."
+      },
+      {
         "label": "Metadati delle schede aperte",
         "body": "titolo, URL, ora dell'ultima attività e un id locale casuale usato per attribuire il tempo."
       },
@@ -241,10 +248,10 @@
         "body": "soglia di obsolescenza, timeout di inattività, tema, conteggio dell'audio, regole di categoria."
       }
     ],
-    "retention": "I dati vengono conservati in una finestra mobile di 90 giorni, poi ripuliti automaticamente.",
+    "retention": "Le sessioni e i totali giornalieri vengono conservati per 90 giorni, poi eliminati automaticamente. I totali mensili per dominio restano fino a 60 mesi per le tendenze di lungo periodo.",
     "notTitle": "Cosa NON fa",
     "notItems": [
-      "Non invia dati fuori dal tuo dispositivo, né usa server, sincronizzazione cloud o analisi.",
+      "Non invia dati di navigazione fuori dal tuo dispositivo e non usa server, sincronizzazione cloud o analytics.",
       "Non contiene pubblicità né tracker.",
       "Non legge il contenuto delle pagine — solo i metadati delle schede (URL/titolo) dalle API standard delle estensioni."
     ],
@@ -270,7 +277,15 @@
       },
       {
         "perm": "notifications",
-        "why": "Promemoria opzionale per le schede dimenticate, al massimo una volta al giorno."
+        "why": "Promemoria facoltativi per schede inattive, limiti giornalieri per categoria e sessioni lunghe, più un avviso se lo spazio è pieno."
+      },
+      {
+        "perm": "webNavigation",
+        "why": "Rilevare i cambi di pagina all'interno di un sito, come il video successivo su YouTube, per attribuire il tempo alla pagina che stai guardando."
+      },
+      {
+        "perm": "downloads",
+        "why": "Salvare i backup programmati nella cartella dei download. I backup programmati sono disattivati per impostazione predefinita."
       },
       {
         "perm": "favicon (Chromium)",
@@ -283,6 +298,12 @@
       "Esporta tutta la tua cronologia come JSON, con crittografia opzionale tramite passphrase (AES-256-GCM).",
       "Ripristina da un backup su questo o su un altro dispositivo.",
       "Cancella tutti i dati con un clic; rimuovere l'estensione elimina tutto."
+    ],
+    "feedbackTitle": "Il feedback che scegli di inviare",
+    "feedbackItems": [
+      "Il modulo per le idee su questo sito invia il tuo messaggio, il suo tipo e, se la aggiungi, la tua email a Formspree, un servizio di moduli che lo inoltra allo sviluppatore.",
+      "Quando rimuovi l'estensione, il browser apre questo modulo su tabstyr.com. Inviarlo è facoltativo.",
+      "Questo sito non usa script di analytics o di tracciamento."
     ]
   },
   "ideaPage": {
@@ -291,7 +312,7 @@
     "titleLead": "Cosa dovrebbe fare",
     "titleAccent": "TabStyr",
     "titleTail": "ora?",
-    "lead": "Richieste di funzioni, idee abbozzate, piccoli fastidi — tutto è benvenuto. Arriva direttamente a chi lo crea. Nessun account, nessun tracciamento.",
+    "lead": "Richieste di funzioni, idee abbozzate, piccoli fastidi: tutto è benvenuto. Nessun account necessario. Il tuo messaggio arriva allo sviluppatore tramite Formspree.",
     "thankYou": "Grazie!",
     "successBody": "La tua idea è arrivata — va direttamente a chi lo crea. Se hai lasciato un'email, potresti ricevere una risposta.",
     "sendAnother": "Invia un'altra",

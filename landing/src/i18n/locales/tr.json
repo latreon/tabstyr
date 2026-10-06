@@ -1,12 +1,12 @@
 {
   "meta": {
     "title": "TabStyr — Gizli tarayıcı zaman takibi",
-    "description": "Tarayıcı zamanınızın gerçekte nereye gittiğini görün — site başına aktif süre, eğilimler, ısı haritaları, odak ve eskimiş sekme uyarıları. %100 yerel. Cihazınızdan 0 bayt ayrılmaz.",
-    "ogDescription": "Site başına aktif süre, eğilimler, ısı haritaları, odak. %100 yerel — cihazınızdan hiçbir şey ayrılmaz.",
+    "description": "Tarayıcı zamanınızın gerçekte nereye gittiğini görün: site başına aktif süre, eğilimler, ısı haritaları, odak ve unutulmuş sekme hatırlatmaları. %100 yerel. Tarama verileriniz cihazınızdan asla çıkmaz.",
+    "ogDescription": "Site başına aktif süre, eğilimler, ısı haritaları, odak. %100 yerel: tarama verileriniz cihazınızdan asla çıkmaz.",
     "privacyTitle": "Gizlilik politikası — TabStyr",
-    "privacyDescription": "TabStyr hiçbir şey toplamaz. Sunucu yok, analiz yok, hesap yok, ağ isteği yok. Her şey cihazınızda kalır.",
+    "privacyDescription": "TabStyr uzantısı tarama verisi toplamaz. Sunucu, analiz ve hesap yoktur; uzantı ağ isteği göndermez.",
     "ideasTitle": "Bir fikir paylaşın — TabStyr",
-    "ideasDescription": "TabStyr için bir özellik önerin veya bir hata bildirin. Hesap yok, takip yok — doğrudan geliştiriciye ulaşır.",
+    "ideasDescription": "TabStyr için bir özellik önerin veya hata bildirin. Hesap gerekmez. Mesajınız Formspree üzerinden geliştiriciye ulaşır.",
     "wrappedTitle": "Tarama Özeti — TabStyr",
     "wrappedDescription": "TabStyr dışa aktarımınızı bırakın ve şık, paylaşılabilir bir Tarama Özeti elde edin — web'de geçirdiğiniz zaman, %100 tarayıcınızda hesaplanır.",
     "changelogTitle": "Değişiklik günlüğü — TabStyr",
@@ -37,11 +37,11 @@
     "stats": [
       {
         "unit": "bayt",
-        "label": "cihazınızdan ayrılır"
+        "label": "tarama verisi cihazınızdan çıkar"
       },
       {
         "unit": "gün",
-        "label": "geçmiş, otomatik budanır"
+        "label": "ayrıntılı geçmiş"
       },
       {
         "unit": "dil",
@@ -51,7 +51,9 @@
         "unit": "%",
         "label": "yerel ve tasarımı gereği açık"
       }
-    ]
+    ],
+    "ctaFirefox": "Firefox'a ekle — ücretsiz",
+    "alsoOn": "{browser} için de var"
   },
   "features": {
     "eyebrow": "Ne yapar",
@@ -91,7 +93,7 @@
     "steps": [
       {
         "title": "Tarayıcına ekle",
-        "body": "Chrome Web Store'dan tek tıkla. Kayıt yok, aktif sekme dışında izin yok."
+        "body": "Chrome Web Store'dan veya Firefox Add-ons'tan tek tık. Kayıt yok. Her izin gizlilik politikasında açıklanır ve hiçbiri sayfa içeriğini okuyamaz."
       },
       {
         "title": "Her zamanki gibi gezin",
@@ -125,8 +127,8 @@
   "privacyBand": {
     "eyebrow": "Gizlilik, bir özellik olarak değil — temel olarak",
     "h2Num": "0 bayt",
-    "h2Rest": "cihazınızdan ayrılır.",
-    "lede": "Verileriniz tarayıcınızın kendi veritabanında (IndexedDB) bulunur ve sürekli kayan 90 günlük bir pencereye budanır. Dışa aktarabilir, geri yükleyebilir veya silebilirsiniz — istediğiniz zaman, tamamen çevrimdışı.",
+    "h2Rest": "tarama verisi cihazınızdan çıkar.",
+    "lede": "Verileriniz tarayıcınızın kendi veritabanında (IndexedDB) durur. Oturumlar ve günlük toplamlar 90 gün sonra, site başına aylık toplamlar 60 ay sonra silinir. İstediğiniz zaman dışa aktarın, geri yükleyin veya silin, hepsi çevrimdışı.",
     "points": [
       {
         "k": "Sunucu yok",
@@ -153,7 +155,7 @@
     "items": [
       {
         "q": "Gezinme verilerim gerçekten gizli mi?",
-        "a": "Evet. TabStyr sıfır ağ isteği yapar — içerik güvenlik politikası bunları engeller bile. Her şey tarayıcınızda yerel olarak saklanır ve 90 günden sonra budanır. İstediğiniz zaman dışa aktarabilir veya silebilirsiniz."
+        "a": "Evet. Uzantı hiçbir ağ isteği yapmaz; içerik güvenlik politikası bunları engeller bile. Her şey tarayıcınızda yerel olarak saklanır. Oturumlar ve günlük toplamlar 90 gün sonra, site başına aylık toplamlar 60 ay sonra silinir. İstediğiniz zaman hepsini dışa aktarabilir veya silebilirsiniz."
       },
       {
         "q": "Tam olarak neyi takip eder?",
@@ -165,7 +167,7 @@
       },
       {
         "q": "Hangi tarayıcılar destekleniyor?",
-        "a": "Chrome, Edge, Brave, Opera, Arc ve diğer Chromium tarayıcıları tam olarak. Firefox 115+ desteklenir (favicon'lar harf etiketleri olarak görünür). Safari, bir Xcode dönüşümünden sonra çalışır."
+        "a": "Chrome, Brave, Opera, Arc ve diğer Chromium tarayıcılar için Chrome Web Store'dan, Firefox 115+ için Firefox Add-ons'tan yükleyin (Firefox'ta site simgeleri harf rozetleri olarak görünür). Edge Add-ons'ta henüz sayfası yok, ancak başka mağazalardan uzantılara izin verdiğinizde Edge, Chrome Web Store'dan yükleyebilir. Safari için henüz App Store sürümü yok; geliştiriciler kaynak koddan Safari için derleyebilir."
       },
       {
         "q": "Ücretsiz mi? Açık kaynak mı?",
@@ -180,7 +182,7 @@
   "feedback": {
     "eyebrow": "Geri bildirim ve fikirler",
     "title": "Açıkça inşa edildi — sizinle birlikte.",
-    "sub": "Takip yok, eve telefon eden geri bildirim widget'ları yok. Sadece basit bir form — hesap yok, oturum açma yok ve hakkınızda hiçbir şey saklanmaz.",
+    "sub": "Gizlice veri gönderen geri bildirim araçları yok. Hesap ve giriş gerektirmeyen basit bir form var. Mesajınız ve eklerseniz e-postanız Formspree üzerinden geliştiriciye ulaşır.",
     "ideaTitle": "Bir fikir paylaşın veya bir hata bildirin",
     "ideaBody": "Bir özellik, yeni bir metrik mi istiyorsunuz ya da bozuk bir şeye mi rastladınız? Tam burada söyleyin — hesap gerekmez.",
     "ideaCta": "Formu aç",
@@ -190,15 +192,16 @@
   },
   "cta": {
     "title": "Tarayıcı zamanınızı geri alın.",
-    "sub": "İki tıkla kurun. Verileriniz cihazdan asla ayrılmaz. Kaldırma her şeyi siler.",
+    "sub": "İki tıkla yükleyin. Tarama verileriniz cihazdan asla çıkmaz. Kaldırınca her şey silinir.",
     "primary": "Chrome'a ekle — ücretsiz",
     "comingSoon": "Yakında Chrome'da",
     "edge": "Edge Eklentileri",
-    "edgeSoon": "Edge yakında",
+    "edgeSoon": "Edge Add-ons yakında",
     "firefox": "Firefox",
     "firefoxSoon": "Firefox yakında",
     "safariSoon": "Safari yakında",
-    "soonNote": "Mağaza girişleri yolda — indikleri zaman haberdar olmak için depoyu yıldızlayın."
+    "soonNote": "Mağaza girişleri yolda — indikleri zaman haberdar olmak için depoyu yıldızlayın.",
+    "primaryFirefox": "Firefox'a ekle — ücretsiz"
   },
   "footer": {
     "tag": "Gizli, yerel tarayıcı zamanı içgörüleri.",
@@ -211,17 +214,17 @@
     "shareIdea": "Bir fikir paylaşın",
     "coffee": "Bana bir kahve ısmarla",
     "builtBy": "Geliştiren",
-    "badge": "Cihazınızdan 0 bayt ayrılır"
+    "badge": "Tarama verileri cihazınızda kalır"
   },
   "privacyPage": {
     "back": "← Siteye dön",
     "backCta": "← TabStyr'a dön",
     "eyebrow": "Gizlilik politikası",
     "titleNum": "0 bayt",
-    "titleRest": "cihazınızdan ayrılır.",
-    "updated": "Son güncelleme: 2026-06-12",
-    "leadStrong": "TabStyr hiçbir veri toplamaz, iletmez veya paylaşmaz.",
-    "leadRest": "Kaydettiği her şey cihazınızda kalır. Sunucu yok, analiz yok, hesap yok ve hiçbir türden ağ isteği yok.",
+    "titleRest": "tarama verisi cihazınızdan çıkar.",
+    "updated": "Son güncelleme: 2026-10-06",
+    "leadStrong": "TabStyr uzantısı tarama verilerinizi toplamaz, iletmez veya paylaşmaz.",
+    "leadRest": "Kaydettiği her şey cihazınızda kalır. Sunucu, analiz ve hesap yoktur; uzantı ağ isteği göndermez.",
     "storesTitle": "Neyi saklar (yerel olarak, tarayıcınızın IndexedDB'sinde)",
     "stores": [
       {
@@ -233,6 +236,10 @@
         "body": "gün başına site başına saniye."
       },
       {
+        "label": "Alan adı başına aylık toplamlar",
+        "body": "site başına aylık saniye; URL, zaman damgası veya oturum ayrıntısı içermez."
+      },
+      {
         "label": "Açık sekme meta verileri",
         "body": "başlık, URL, son aktif olma zamanı ve süreyi ilişkilendirmek için kullanılan rastgele bir yerel kimlik."
       },
@@ -241,10 +248,10 @@
         "body": "eskime eşiği, boşta kalma zaman aşımı, tema, ses sayımı, kategori kuralları."
       }
     ],
-    "retention": "Veriler sürekli kayan 90 günlük bir pencerede tutulur, ardından otomatik olarak budanır.",
+    "retention": "Oturum kayıtları ve günlük toplamlar 90 gün saklanır, sonra otomatik silinir. Alan adı başına aylık toplamlar, uzun vadeli eğilimler için 60 aya kadar saklanır.",
     "notTitle": "Neyi YAPMAZ",
     "notItems": [
-      "Verileri cihazınızdan dışarı göndermez veya sunucu, bulut senkronizasyonu ya da analiz kullanmaz.",
+      "Tarama verilerini cihazınızın dışına göndermez; sunucu, bulut eşitleme veya analiz kullanmaz.",
       "Reklam veya izleyici içermez.",
       "Sayfa içeriklerini okumaz — yalnızca standart uzantı API'lerinden gelen sekme meta verileri (URL/başlık)."
     ],
@@ -270,7 +277,15 @@
       },
       {
         "perm": "notifications",
-        "why": "İsteğe bağlı, günde en fazla bir kez eskimiş sekme hatırlatması."
+        "why": "Unutulmuş sekmeler, günlük kategori sınırları ve uzun oturumlar için isteğe bağlı hatırlatmalar ile depolama dolduğunda bir uyarı."
+      },
+      {
+        "perm": "webNavigation",
+        "why": "Bir site içindeki sayfa değişikliklerini, örneğin bir sonraki YouTube videosunu fark ederek süreyi baktığınız sayfaya yazmak."
+      },
+      {
+        "perm": "downloads",
+        "why": "Zamanlanmış yedek dosyalarını indirme klasörünüze kaydetmek. Zamanlanmış yedekler varsayılan olarak kapalıdır."
       },
       {
         "perm": "favicon (Chromium)",
@@ -283,6 +298,12 @@
       "Tüm geçmişinizi JSON olarak, isteğe bağlı olarak parolayla şifrelenmiş (AES-256-GCM) şekilde dışa aktarın.",
       "Bu veya başka bir cihazda bir yedekten geri yükleyin.",
       "Tüm verileri tek tıkla silin; uzantıyı kaldırmak her şeyi siler."
+    ],
+    "feedbackTitle": "Kendi seçiminizle gönderdiğiniz geri bildirim",
+    "feedbackItems": [
+      "Bu sitedeki fikir formu mesajınızı, türünü ve eklerseniz e-postanızı bir form hizmeti olan Formspree'ye gönderir; Formspree de bunu geliştiriciye iletir.",
+      "Uzantıyı kaldırdığınızda tarayıcınız bu formu tabstyr.com'da açar. Göndermek isteğe bağlıdır.",
+      "Bu web sitesi analiz veya izleme betiği kullanmaz."
     ]
   },
   "ideaPage": {
@@ -291,7 +312,7 @@
     "titleLead": "Bundan sonra",
     "titleAccent": "TabStyr",
     "titleTail": "ne yapmalı?",
-    "lead": "Özellik istekleri, ham fikirler, küçük sorunlar — hepsi hoş karşılanır. Doğrudan geliştiriciye ulaşır. Hesap yok, takip yok.",
+    "lead": "Özellik istekleri, ham fikirler, küçük rahatsızlıklar: hepsi memnuniyetle karşılanır. Hesap gerekmez. Mesajınız Formspree üzerinden geliştiriciye ulaşır.",
     "thankYou": "Teşekkürler!",
     "successBody": "Fikriniz alındı — doğrudan geliştiriciye ulaşır. Bir e-posta bıraktıysanız, yanıt alabilirsiniz.",
     "sendAnother": "Bir tane daha gönder",

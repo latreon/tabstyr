@@ -26,7 +26,9 @@ export default defineConfig({
     const chromium = browser !== 'firefox' && browser !== 'safari';
     return {
       name: 'TabStyr',
-      description: 'Private browsing-time insights — active time per site, trends, heatmaps, focus, and stale-tab nudges. All local.',
+      // Translated in public/_locales. The stores list one language per locale folder.
+      description: '__MSG_extDescription__',
+      default_locale: 'en',
       permissions: [
         'tabs', 'storage', 'idle', 'alarms', 'notifications',
         // webNavigation detects in-page (SPA) route changes — pushState/replaceState

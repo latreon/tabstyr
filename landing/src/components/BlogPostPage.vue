@@ -2,12 +2,16 @@
 import { computed, onMounted } from 'vue';
 import RingLogo from './RingLogo.vue';
 import LangSwitch from './LangSwitch.vue';
+import CtaSection from './CtaSection.vue';
+import { useReveal } from '@/composables/useReveal';
 import { localizedPath, locale, useI18n } from '@/i18n';
 import { renderMarkdown } from '@/lib/markdown';
 import { BLOG_POSTS } from '@/data/blog-posts';
 
 const props = defineProps<{ slug: string }>();
 const { t } = useI18n();
+// The page loads after the app's first reveal scan, which misses the install section.
+useReveal();
 const home = computed(() => localizedPath(locale.value, ''));
 const blogHome = computed(() => localizedPath(locale.value, 'blog'));
 
@@ -53,6 +57,7 @@ onMounted(() => {
           <!-- eslint-disable-next-line vue/no-v-html -- our own authored content, not user input -->
           <div class="article-body" v-html="html" />
         </div>
+        <CtaSection />
       </template>
       <p v-else class="not-found">{{ t('blogPage.notFound') }}</p>
 

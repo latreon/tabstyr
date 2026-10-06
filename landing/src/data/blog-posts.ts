@@ -83,13 +83,15 @@ The whole point of "no servers" as a claim rather than a slogan is that it's che
     date: '2026-07-13',
     excerpt:
       "They all show you where your time went, but they solve different problems for different people. A quick breakdown of who each tool is actually for.",
-    body: `People land on TabStyr's page after searching for a "RescueTime alternative" or a "private screen time tracker," and the honest answer is: it depends what you're trying to measure.
+    body: `*Prices and features checked on October 6, 2026. Links to each source are below.*
+
+People land on TabStyr's page after searching for a "RescueTime alternative" or a "private screen time tracker," and the honest answer is: it depends what you're trying to measure.
 
 ## What each tool actually is
 
-**RescueTime** watches everything on your computer — every app, every window, not just the browser — and sends that activity to its own servers for the dashboards and weekly reports. If you want to know how much time you spend in Slack vs. your code editor vs. your browser, RescueTime is built for exactly that, and it requires an account.
+**RescueTime** tracks activity across your computer, phone, and browser, not just browser tabs, and sends it to its own servers for the dashboards and weekly reports. If you want to know how much time you spend in Slack vs. your code editor vs. your browser, RescueTime is built for exactly that. It needs an account and a paid plan: there is no permanent free plan, only a 14-day trial, with personal plans from $7 a month billed yearly ([pricing](https://www.rescuetime.com/pricing)).
 
-**Toggl Track** is a manual-first time tracker built for billing and project accounting — you start a timer, tag it to a client or project, and stop it. Some automatic capture exists, but the core workflow assumes you're deliberately tracking work to invoice against, and it's also account-based with data on Toggl's servers.
+**Toggl Track** is a manual-first time tracker built for billing and project accounting — you start a timer, tag it to a client or project, and stop it. The core workflow assumes you're deliberately tracking work to invoice against. It's account-based with data on Toggl's servers, and it has a free plan plus paid plans from $9 per user a month ([pricing](https://toggl.com/track/pricing/)).
 
 **TabStyr** only sees browser tabs. It doesn't know or care what's happening in your terminal or your email client. In exchange, there's no account, no server, and no setup beyond installing the extension — it starts working the moment you add it.
 
@@ -101,14 +103,22 @@ If the question is narrower — "how much of my browser time today was GitHub vs
 
 ## A quick side-by-side
 
-- **Scope** — TabStyr: browser tabs only. RescueTime: all apps + browser. Toggl: manual/automatic entries.
+- **Scope** — TabStyr: browser tabs only. RescueTime: computer, phone, and browser. Toggl: manual and timer entries.
 - **Data location** — TabStyr: your device only. RescueTime: RescueTime's servers. Toggl: Toggl's servers.
 - **Account** — TabStyr: not required. RescueTime: required. Toggl: required.
-- **Price** — TabStyr: free. RescueTime: free tier + paid plans. Toggl: free tier + paid plans.
+- **Price** — TabStyr: free. RescueTime: paid plans after a 14-day trial. Toggl: free plan + paid plans.
 - **Best for** — TabStyr: browser-only insight without an account. RescueTime: a whole-computer usage picture. Toggl: billable time & project accounting.
+
+## Closer alternatives
+
+If you want a local-first tracker but not TabStyr, two tools are closer to it than RescueTime or Toggl:
+
+**ActivityWatch** is free, open-source (MPL-2.0) and local-first: your data stays on your own device. It runs as a desktop app on Windows, macOS, and Linux (plus Android) and tracks active apps and window titles, with Chrome and Firefox extensions for browser activity ([activitywatch.net](https://activitywatch.net/)). Pick it if you want the whole-computer picture without sending data to a server, and you are fine installing a desktop app.
+
+**Browlytics** is a Chrome extension that, like TabStyr, tracks time per website, groups it into categories, and says all data stays on your device with no account ([Chrome Web Store listing](https://chromewebstore.google.com/detail/browlytics-browser-time-t/iebmkodailohbjgfkajfjfmpjhfpdheg)). Pick it if you want a smaller, simpler browser tracker. TabStyr also runs on Firefox, comes in 11 interface languages, and has focus scoring, an activity heatmap, stale-tab reminders, encrypted backups, and open-source code.
 
 None of these are strictly "better" — they're answering different questions. Pick based on which question you're actually asking.
 
-The [full README comparison table](https://github.com/latreon/tabstyr#tabstyr-vs-rescuetime--toggl-track) has the same breakdown if you want it at a glance.`,
+The [full README comparison table](https://github.com/latreon/tabstyr#tabstyr-vs-rescuetime--toggl-track) has the RescueTime and Toggl breakdown at a glance.`,
   },
 ];

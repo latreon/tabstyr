@@ -132,10 +132,13 @@ For browser time specifically:
 |---|---|---|---|
 | Where your data lives | Only your device (IndexedDB) | RescueTime's servers | Toggl's servers |
 | Account required | No | Yes | Yes |
-| Price | Free, no tiers | Free tier + paid plans | Free tier + paid plans |
+| Price | Free, no tiers | Paid plans, 14-day trial | Free plan + paid plans |
 | Tracks | Browser tabs only | All apps + browser | Manual/automatic time entries |
 | Source | Open (MIT) | Closed | Closed |
 | Setup | Install, done | Install + account + sync | Install + account + workspace setup |
+
+Prices checked on 2026-10-06 against the [RescueTime](https://www.rescuetime.com/pricing)
+and [Toggl Track](https://toggl.com/track/pricing/) pricing pages.
 
 If cross-app tracking or team reporting is what you need, RescueTime or Toggl
 are the better fit. If you specifically want to see where *browser* time goes

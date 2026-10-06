@@ -183,12 +183,18 @@ export function applyHead(rest: string): void {
   // paths consolidate into one indexable URL instead of competing as duplicates.
   const canonicalRest = isVs ? 'blog/tabstyr-vs-rescuetime-vs-toggl' : rest;
   const abs = (code: string): string => SITE_URL + localizedPath(code, canonicalRest);
-  upsertLink('canonical', abs(locale.value));
-  upsertMeta('meta[property="og:url"]', { property: 'og:url', content: abs(locale.value) });
+  // Blog posts and release notes are written in English only. Their localized URLs
+  // point search engines to the English page instead of claiming a translation.
+  const isEnglishOnly = isBlog || rest === 'changelog';
+  const canonicalCode = isEnglishOnly ? DEFAULT_LOCALE : locale.value;
+  upsertLink('canonical', abs(canonicalCode));
+  upsertMeta('meta[property="og:url"]', { property: 'og:url', content: abs(canonicalCode) });
 
   // Refresh hreflang alternates (remove stale ones first, then re-add all).
   document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((n) => n.remove());
-  for (const l of LOCALES) upsertLink('alternate', abs(l.code), l.hreflang);
+  if (!isEnglishOnly) {
+    for (const l of LOCALES) upsertLink('alternate', abs(l.code), l.hreflang);
+  }
   upsertLink('alternate', abs(DEFAULT_LOCALE), 'x-default');
 }
 

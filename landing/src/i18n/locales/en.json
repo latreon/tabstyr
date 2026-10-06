@@ -10,12 +10,12 @@
   },
   "meta": {
     "title": "TabStyr — Private browser time tracking",
-    "description": "See where your browser time really goes — active time per site, trends, heatmaps, focus, and stale-tab nudges. 100% local. 0 bytes leave your device.",
-    "ogDescription": "Active time per site, trends, heatmaps, focus. 100% local — nothing leaves your device.",
+    "description": "See where your browser time really goes — active time per site, trends, heatmaps, focus, and stale-tab nudges. 100% local. Your browsing data never leaves your device.",
+    "ogDescription": "Active time per site, trends, heatmaps, focus. 100% local — your browsing data never leaves your device.",
     "privacyTitle": "Privacy policy — TabStyr",
-    "privacyDescription": "TabStyr collects nothing. No servers, no analytics, no accounts, no network requests. Everything stays on your device.",
+    "privacyDescription": "The TabStyr extension collects no browsing data. No servers, no analytics, no accounts, and no network requests from the extension.",
     "ideasTitle": "Share an idea — TabStyr",
-    "ideasDescription": "Suggest a feature or report a bug for TabStyr. No account, no tracking — it goes straight to the maker.",
+    "ideasDescription": "Suggest a feature or report a bug for TabStyr. No account needed. Your message goes to the maker through Formspree.",
     "wrappedTitle": "Browsing Wrapped — TabStyr",
     "wrappedDescription": "Drop your TabStyr export and get a gorgeous, shareable Browsing Wrapped — your time on the web, computed 100% in your browser.",
     "changelogTitle": "Changelog — TabStyr",
@@ -46,11 +46,11 @@
     "stats": [
       {
         "unit": "bytes",
-        "label": "leave your device"
+        "label": "of browsing data leave your device"
       },
       {
         "unit": "days",
-        "label": "of history, auto-pruned"
+        "label": "of detailed history"
       },
       {
         "unit": "languages",
@@ -60,7 +60,9 @@
         "unit": "%",
         "label": "local & open by design"
       }
-    ]
+    ],
+    "ctaFirefox": "Add to Firefox — free",
+    "alsoOn": "Also on {browser}"
   },
   "features": {
     "eyebrow": "What it does",
@@ -100,7 +102,7 @@
     "steps": [
       {
         "title": "Add it to your browser",
-        "body": "One click from the Chrome Web Store. No sign-up, no permissions beyond the active tab."
+        "body": "One click from the Chrome Web Store or Firefox Add-ons. No sign-up. Every permission is explained in the privacy policy, and none of them can read page content."
       },
       {
         "title": "Browse like you normally do",
@@ -134,8 +136,8 @@
   "privacyBand": {
     "eyebrow": "Privacy, not as a feature — as the foundation",
     "h2Num": "0 bytes",
-    "h2Rest": "leave your device.",
-    "lede": "Your data lives in your browser's own database (IndexedDB), pruned to a rolling 90-day window. You can export it, restore it, or wipe it — any time, all offline.",
+    "h2Rest": "of browsing data leave your device.",
+    "lede": "Your data lives in your browser's own database (IndexedDB). Sessions and daily totals are deleted after 90 days, monthly per-site totals after 60 months. Export, restore, or wipe it any time, all offline.",
     "points": [
       {
         "k": "No servers",
@@ -162,7 +164,7 @@
     "items": [
       {
         "q": "Is my browsing data really private?",
-        "a": "Yes. TabStyr makes zero network requests — its content-security policy even blocks them. Everything is stored locally in your browser and pruned after 90 days. You can export or wipe it anytime."
+        "a": "Yes. The extension makes zero network requests, and its content-security policy even blocks them. Everything is stored locally in your browser. Sessions and daily totals are deleted after 90 days, monthly per-site totals after 60 months. You can export or wipe it all at any time."
       },
       {
         "q": "What exactly does it track?",
@@ -174,7 +176,7 @@
       },
       {
         "q": "Which browsers are supported?",
-        "a": "Chrome, Edge, Brave, Opera, Arc and other Chromium browsers fully. Firefox 115+ is supported (favicons show as letter chips). Safari works after an Xcode conversion."
+        "a": "Install it from the Chrome Web Store for Chrome, Brave, Opera, Arc and other Chromium browsers, or from Firefox Add-ons for Firefox 115+ (favicons show as letter chips there). Edge has no Edge Add-ons listing yet, but it can install from the Chrome Web Store once you allow extensions from other stores. Safari has no App Store release yet; developers can build it for Safari from the source code."
       },
       {
         "q": "Is it free? Open source?",
@@ -189,7 +191,7 @@
   "feedback": {
     "eyebrow": "Feedback & ideas",
     "title": "Built in the open — with you.",
-    "sub": "No tracking, no feedback widgets phoning home. Just a simple form — no account, no sign-in, and nothing stored about you.",
+    "sub": "No feedback widgets phoning home. Just a simple form with no account and no sign-in. Your message, and your email if you add one, go to the maker through Formspree.",
     "ideaTitle": "Share an idea or report a bug",
     "ideaBody": "Want a feature, a new metric, or hit something broken? Tell me right here — no account needed.",
     "ideaCta": "Open the form",
@@ -199,15 +201,16 @@
   },
   "cta": {
     "title": "Take back your browser time.",
-    "sub": "Install in two clicks. Your data never leaves the device. Uninstall removes everything.",
+    "sub": "Install in two clicks. Your browsing data never leaves the device. Uninstall removes everything.",
     "primary": "Add to Chrome — free",
     "comingSoon": "Coming soon to Chrome",
     "edge": "Edge Add-ons",
-    "edgeSoon": "Edge soon",
+    "edgeSoon": "Edge Add-ons soon",
     "firefox": "Firefox",
     "firefoxSoon": "Firefox soon",
     "safariSoon": "Safari soon",
-    "soonNote": "Store listings are on the way — star the repo to hear when they land."
+    "soonNote": "Store listings are on the way — star the repo to hear when they land.",
+    "primaryFirefox": "Add to Firefox — free"
   },
   "footer": {
     "tag": "Private, local browser-time insights.",
@@ -220,17 +223,17 @@
     "shareIdea": "Share an idea",
     "coffee": "Buy me a coffee",
     "builtBy": "Built by",
-    "badge": "0 bytes leave your device"
+    "badge": "Browsing data stays on your device"
   },
   "privacyPage": {
     "back": "← Back to site",
     "backCta": "← Back to TabStyr",
     "eyebrow": "Privacy policy",
     "titleNum": "0 bytes",
-    "titleRest": "leave your device.",
-    "updated": "Last updated: 2026-06-12",
-    "leadStrong": "TabStyr does not collect, transmit, or share any data.",
-    "leadRest": "Everything it records stays on your device. There are no servers, no analytics, no accounts, and no network requests of any kind.",
+    "titleRest": "of browsing data leave your device.",
+    "updated": "Last updated: 2026-10-06",
+    "leadStrong": "The TabStyr extension does not collect, transmit, or share your browsing data.",
+    "leadRest": "Everything it records stays on your device. There are no servers, no analytics, no accounts, and the extension makes no network requests.",
     "storesTitle": "What it stores (locally, in your browser's IndexedDB)",
     "stores": [
       {
@@ -242,6 +245,10 @@
         "body": "seconds per site per day."
       },
       {
+        "label": "Monthly per-domain totals",
+        "body": "seconds per site per month, with no URLs, timestamps, or session detail."
+      },
+      {
         "label": "Open-tab metadata",
         "body": "title, URL, last-active time, and a random local id used to attribute time."
       },
@@ -250,10 +257,10 @@
         "body": "stale threshold, idle timeout, theme, audio counting, category rules."
       }
     ],
-    "retention": "Data is kept for a rolling 90-day window, then pruned automatically.",
+    "retention": "Session records and daily totals are kept for 90 days, then pruned automatically. Monthly per-domain totals are kept for up to 60 months to power long-range trends.",
     "notTitle": "What it does NOT do",
     "notItems": [
-      "Does not send data off your device, or use servers, cloud sync, or analytics.",
+      "Does not send browsing data off your device, or use servers, cloud sync, or analytics.",
       "Does not contain ads or trackers.",
       "Does not read page contents — only tab metadata (URL/title) from standard extension APIs."
     ],
@@ -279,7 +286,15 @@
       },
       {
         "perm": "notifications",
-        "why": "Optional, at-most-once-a-day stale-tab reminder."
+        "why": "Optional reminders about stale tabs, daily category limits, and long sessions, plus a warning if storage is full."
+      },
+      {
+        "perm": "webNavigation",
+        "why": "Notice page changes inside a site, like the next YouTube video, so time goes to the page you are on."
+      },
+      {
+        "perm": "downloads",
+        "why": "Save scheduled backup files to your downloads folder. Scheduled backups are off by default."
       },
       {
         "perm": "favicon (Chromium)",
@@ -292,6 +307,12 @@
       "Export your full history as JSON, optionally passphrase-encrypted (AES-256-GCM).",
       "Restore from a backup on this or another device.",
       "Wipe all data in one click; removing the extension deletes everything."
+    ],
+    "feedbackTitle": "Feedback you choose to send",
+    "feedbackItems": [
+      "The idea form on this website sends your message, its type, and your email if you add one to Formspree, a form service, which passes it on to the maker.",
+      "When you remove the extension, your browser opens this form on tabstyr.com. Sending it is optional.",
+      "This website uses no analytics or tracking scripts."
     ]
   },
   "ideaPage": {
@@ -300,7 +321,7 @@
     "titleLead": "What should",
     "titleAccent": "TabStyr",
     "titleTail": "do next?",
-    "lead": "Feature requests, rough ideas, papercuts — all welcome. It goes straight to the maker. No account, no tracking.",
+    "lead": "Feature requests, rough ideas, papercuts — all welcome. No account needed. Your message goes to the maker through Formspree.",
     "thankYou": "Thank you!",
     "successBody": "Your idea is in — it goes straight to the maker. If you left an email, you might hear back.",
     "sendAnother": "Send another",

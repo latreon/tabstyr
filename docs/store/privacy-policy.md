@@ -27,8 +27,8 @@ your browser's IndexedDB:
 
 Raw session records and daily totals are kept for a rolling **90-day window** and
 pruned automatically. Before a day is pruned it is folded into the compact monthly
-per-domain roll-up above, which is retained longer to power long-range trends. All
-of it stays on your device.
+per-domain roll-up above, which is kept for up to 60 months to power long-range
+trends. All of it stays on your device.
 
 ## What it does NOT do
 
