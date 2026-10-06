@@ -112,11 +112,16 @@ export default defineBackground(() => {
   }
 
   async function rematchOpenTabs(): Promise<void> {
+    // Session storage is empty only after a browser restart, when tab IDs change.
+    // Rematching on every worker wake would drop tabs that changed URL in the background.
+    const { tabMetaRematched } = await sessionStore.get('tabMetaRematched');
+    if (tabMetaRematched) return;
     const [metas, tabs] = await Promise.all([repo.getAllTabMeta(), browser.tabs.query({})]);
     const live = tabs.flatMap((tab) =>
       tab.id && tab.url && !tab.incognito ? [{ id: tab.id, url: pageOf(tab.url) }] : [],
     );
     await repo.replaceAllTabMeta(rematchTabMeta(metas, live));
+    await sessionStore.set({ tabMetaRematched: true });
   }
 
   // Single-threaded JS + the ??= singleton make concurrent listener access safe;
@@ -797,6 +802,8 @@ export default defineBackground(() => {
       }
     } else if (msg?.type === 'restore-finish') {
       isRestoring = false;
+      // Restored tab metadata carries tab IDs from the browser session it was saved in.
+      if (msg.succeeded) await sessionStore.remove('tabMetaRematched');
       await restartEngine(!!msg.succeeded);
     } else if (msg?.type === 'wipe-data') {
       isRestoring = true;
