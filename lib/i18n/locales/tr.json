@@ -11,6 +11,9 @@
     "decrease": "Azalt {label}",
     "increase": "Artır {label}"
   },
+  "breakdown": {
+    "title": "Günlük döküm"
+  },
   "datePicker": {
     "pickDay": "Bir gün seç",
     "chooseDate": "Bir tarih seç",
@@ -115,6 +118,7 @@
   },
   "category": {
     "title": "Bugün kategoriye göre",
+    "titleOn": "Kategoriye göre · {date}",
     "shareAria": "Kategoriye göre zaman payı",
     "segTitle": "{category} · {time} · %{pct}",
     "overBudget": "aşıldı",
@@ -123,6 +127,7 @@
   },
   "focus": {
     "title": "Bugün odak",
+    "titleOn": "Odak · {date}",
     "streak": "🔥 {count} günlük seri",
     "streakTitle": "%{target}+ odakla {count} gün",
     "ariaFocus": "Odak %{pct}",
@@ -134,7 +139,9 @@
   },
   "topSites": {
     "title": "Bugünün en çok kullanılan siteleri",
-    "viewDetailsAria": "{domain} ayrıntılarını gör — bugün {time} aktif"
+    "titleOn": "En çok kullanılan siteler · {date}",
+    "viewDetailsAria": "{domain} ayrıntılarını gör — bugün {time} aktif",
+    "viewDetailsAriaOn": "{domain} ayrıntılarını gör — {date} tarihinde {time} aktif"
   },
   "trend": {
     "title": "Etkinlik eğilimi",

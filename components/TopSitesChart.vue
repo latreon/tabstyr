@@ -5,7 +5,10 @@ import { formatDuration } from '@/lib/time';
 import { displayDomain } from '@/lib/domain';
 import FaviconChip from '@/components/FaviconChip.vue';
 
-const props = defineProps<{ domains: Array<{ domain: string; seconds: number; audioSeconds: number }> }>();
+const props = defineProps<{
+  domains: Array<{ domain: string; seconds: number; audioSeconds: number }>;
+  dateLabel?: string; // set when showing a past day instead of today
+}>();
 const emit = defineEmits<{ select: [domain: string] }>();
 const { t } = useI18n();
 
@@ -25,13 +28,15 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds + d.aud
         </linearGradient>
       </defs>
     </svg>
-    <h2 class="label">{{ t('topSites.title') }}</h2>
+    <h2 class="label">{{ dateLabel ? t('topSites.titleOn', { date: dateLabel }) : t('topSites.title') }}</h2>
     <p v-if="!top.length" class="label">{{ t('common.nothingYet') }}</p>
     <button
       v-for="d in top"
       :key="d.domain"
       class="row"
-      :aria-label="t('topSites.viewDetailsAria', { domain: displayDomain(d.domain), time: formatDuration(d.seconds) })"
+      :aria-label="dateLabel
+        ? t('topSites.viewDetailsAriaOn', { domain: displayDomain(d.domain), time: formatDuration(d.seconds), date: dateLabel })
+        : t('topSites.viewDetailsAria', { domain: displayDomain(d.domain), time: formatDuration(d.seconds) })"
       @click="emit('select', d.domain)"
     >
       <FaviconChip :domain="d.domain" />

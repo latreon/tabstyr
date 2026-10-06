@@ -11,6 +11,9 @@
     "decrease": "Diminuer {label}",
     "increase": "Augmenter {label}"
   },
+  "breakdown": {
+    "title": "Détail du jour"
+  },
   "datePicker": {
     "pickDay": "Choisir un jour",
     "chooseDate": "Choisir une date",
@@ -115,6 +118,7 @@
   },
   "category": {
     "title": "Aujourd'hui par catégorie",
+    "titleOn": "Par catégorie · {date}",
     "shareAria": "Part du temps par catégorie",
     "segTitle": "{category} · {time} · {pct}%",
     "overBudget": "dépassé",
@@ -123,6 +127,7 @@
   },
   "focus": {
     "title": "Concentration aujourd'hui",
+    "titleOn": "Concentration · {date}",
     "streak": "🔥 série de {count} jours",
     "streakTitle": "{count} jours à {target}%+ de concentration",
     "ariaFocus": "Concentration {pct}%",
@@ -134,7 +139,9 @@
   },
   "topSites": {
     "title": "Sites les plus visités aujourd'hui",
-    "viewDetailsAria": "Voir les détails de {domain} — {time} actif aujourd'hui"
+    "titleOn": "Sites les plus visités · {date}",
+    "viewDetailsAria": "Voir les détails de {domain} — {time} actif aujourd'hui",
+    "viewDetailsAriaOn": "Voir les détails de {domain} — {time} actif le {date}"
   },
   "trend": {
     "title": "Tendance d'activité",

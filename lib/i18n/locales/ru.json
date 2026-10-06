@@ -11,6 +11,9 @@
     "decrease": "Уменьшить {label}",
     "increase": "Увеличить {label}"
   },
+  "breakdown": {
+    "title": "Разбивка по дням"
+  },
   "datePicker": {
     "pickDay": "Выбрать день",
     "chooseDate": "Выбрать дату",
@@ -115,6 +118,7 @@
   },
   "category": {
     "title": "Сегодня по категориям",
+    "titleOn": "По категориям · {date}",
     "shareAria": "Доля времени по категориям",
     "segTitle": "{category} · {time} · {pct}%",
     "overBudget": "превышено",
@@ -123,6 +127,7 @@
   },
   "focus": {
     "title": "Фокус сегодня",
+    "titleOn": "Фокус · {date}",
     "streak": "🔥 серия {count} дн.",
     "streakTitle": "{count} дн. с фокусом {target}%+",
     "ariaFocus": "Фокус {pct}%",
@@ -134,7 +139,9 @@
   },
   "topSites": {
     "title": "Топ сайтов за сегодня",
-    "viewDetailsAria": "Подробнее о {domain} — {time} активно сегодня"
+    "titleOn": "Топ сайтов · {date}",
+    "viewDetailsAria": "Подробнее о {domain} — {time} активно сегодня",
+    "viewDetailsAriaOn": "Подробнее о {domain} — {time} активно {date}"
   },
   "trend": {
     "title": "Динамика активности",

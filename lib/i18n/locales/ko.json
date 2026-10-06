@@ -11,6 +11,9 @@
     "decrease": "줄이기 {label}",
     "increase": "늘리기 {label}"
   },
+  "breakdown": {
+    "title": "일별 상세"
+  },
   "datePicker": {
     "pickDay": "날짜 선택",
     "chooseDate": "날짜 선택",
@@ -115,6 +118,7 @@
   },
   "category": {
     "title": "오늘 카테고리별",
+    "titleOn": "카테고리별 · {date}",
     "shareAria": "카테고리별 시간 비율",
     "segTitle": "{category} · {time} · {pct}%",
     "overBudget": "초과",
@@ -123,6 +127,7 @@
   },
   "focus": {
     "title": "오늘의 집중",
+    "titleOn": "집중 · {date}",
     "streak": "🔥 {count}일 연속",
     "streakTitle": "집중도 {target}%+ {count}일 연속",
     "ariaFocus": "집중도 {pct}%",
@@ -134,7 +139,9 @@
   },
   "topSites": {
     "title": "오늘의 상위 사이트",
-    "viewDetailsAria": "{domain} 상세 보기 — 오늘 {time} 활동"
+    "titleOn": "상위 사이트 · {date}",
+    "viewDetailsAria": "{domain} 상세 보기 — 오늘 {time} 활동",
+    "viewDetailsAriaOn": "{domain} 상세 보기 — {date} {time} 활동"
   },
   "trend": {
     "title": "활동 추이",

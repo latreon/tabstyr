@@ -63,7 +63,7 @@ async function load() {
     topDomains.value = [...byDomain.entries()]
       .map(([domain, seconds]) => ({ domain, seconds }))
       // Hide domains with no ACTIVE time (background-audio only), matching the
-      // dashboard's todayByDomain — otherwise a music tab showed up here as "0s".
+      // dashboard's dayByDomain — otherwise a music tab showed up here as "0s".
       .filter((d) => d.seconds > 0)
       .sort((a, b) => b.seconds - a.seconds)
       .slice(0, 5);

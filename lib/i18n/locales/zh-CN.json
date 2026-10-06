@@ -11,6 +11,9 @@
     "decrease": "减少 {label}",
     "increase": "增加 {label}"
   },
+  "breakdown": {
+    "title": "每日明细"
+  },
   "datePicker": {
     "pickDay": "选择某天",
     "chooseDate": "选择日期",
@@ -115,6 +118,7 @@
   },
   "category": {
     "title": "今日按类别",
+    "titleOn": "按类别 · {date}",
     "shareAria": "各类别的时间占比",
     "segTitle": "{category} · {time} · {pct}%",
     "overBudget": "超出",
@@ -123,6 +127,7 @@
   },
   "focus": {
     "title": "今日专注",
+    "titleOn": "专注 · {date}",
     "streak": "🔥 连续 {count} 天",
     "streakTitle": "连续 {count} 天专注度达到 {target}%+",
     "ariaFocus": "专注度 {pct}%",
@@ -134,7 +139,9 @@
   },
   "topSites": {
     "title": "今日热门网站",
-    "viewDetailsAria": "查看 {domain} 详情 — 今日活跃 {time}"
+    "titleOn": "热门网站 · {date}",
+    "viewDetailsAria": "查看 {domain} 详情 — 今日活跃 {time}",
+    "viewDetailsAriaOn": "查看 {domain} 详情 — {date} 活跃 {time}"
   },
   "trend": {
     "title": "活动趋势",
