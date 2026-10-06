@@ -51,7 +51,7 @@ jobs:
           # Always work from the default branch, not the tag a release event
           # points at — a tag checkout is detached and can't be pushed to.
           ref: main
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
 
