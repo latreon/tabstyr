@@ -41,9 +41,9 @@ jobs:
       run:
         working-directory: landing
     env:
-      # The Netlify project that serves tabstyr.com. Not a secret (it is in every
-      # deploy URL); only the auth token below has to be one.
-      NETLIFY_SITE_ID: iridescent-smakager-f6df69
+      # Project ID of the Netlify project that serves tabstyr.com. Not a secret;
+      # only the auth token below has to be one.
+      NETLIFY_SITE_ID: 148ed039-a57d-4a12-963b-da6273face11
       NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v7
@@ -79,10 +79,12 @@ jobs:
       # (see landing/package.json), so a deploy always carries current notes.
       - run: npm run build
 
+      # --no-build: the site is built above, and netlify-cli would otherwise run its own build.
       - name: Publish to Netlify
         run: |
           npx --yes netlify-cli deploy \
             --prod \
+            --no-build \
             --dir dist \
             --site "$NETLIFY_SITE_ID" \
             --message "${GITHUB_SHA::7} — ${GITHUB_EVENT_NAME} on ${GITHUB_REF_NAME}"
