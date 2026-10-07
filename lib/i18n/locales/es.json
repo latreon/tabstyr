@@ -239,7 +239,7 @@
     "staleDays": "Obsoleta tras (días)",
     "idleSeconds": "Tiempo de inactividad (segundos)",
     "pauseTracking": "Pausar seguimiento",
-    "pauseTrackingHint": "Detiene el seguimiento en todas partes hasta que vuelvas a desactivarlo. Independiente del tiempo de inactividad: aquí nada se detecta automáticamente, permanece pausado hasta que lo cambies de nuevo. El tiempo ya registrado se conserva. Para borrarlo, usa «Borrar todos los datos» en Ajustes.",
+    "pauseTrackingHint": "Detiene todo el seguimiento hasta que lo vuelvas a activar. El tiempo registrado se conserva.",
     "countAudio": "Contar audio en segundo plano",
     "save": "Guardar",
     "wipe": "Borrar todos los datos",

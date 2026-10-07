@@ -239,7 +239,7 @@
     "staleDays": "Stale after (days)",
     "idleSeconds": "Idle timeout (seconds)",
     "pauseTracking": "Pause tracking",
-    "pauseTrackingHint": "Stop tracking everywhere until you turn this back off. Independent of the idle timeout — nothing is auto-detected here, it stays paused until you flip it back. Time already recorded stays. To remove it, use “Wipe all data” in Settings.",
+    "pauseTrackingHint": "Stops all tracking until you turn it back on. Recorded time stays.",
     "countAudio": "Count background audio",
     "save": "Save",
     "wipe": "Wipe all data",

@@ -239,7 +239,7 @@
     "staleDays": "Obsoleta dopo (giorni)",
     "idleSeconds": "Timeout di inattività (secondi)",
     "pauseTracking": "Metti in pausa il monitoraggio",
-    "pauseTrackingHint": "Interrompe il monitoraggio ovunque finché non lo disattivi di nuovo. Indipendente dal timeout di inattività: qui nulla viene rilevato automaticamente, resta in pausa finché non lo riattivi. Il tempo già registrato resta. Per eliminarlo, usa «Cancella tutti i dati» nelle impostazioni.",
+    "pauseTrackingHint": "Ferma tutto il monitoraggio finché non lo riattivi. Il tempo registrato resta.",
     "countAudio": "Conta audio in background",
     "save": "Salva",
     "wipe": "Cancella tutti i dati",

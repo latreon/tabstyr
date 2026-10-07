@@ -10,6 +10,7 @@ import { renderWrappedCard, canvasToImageBlob, type WrappedCardContent } from '@
 import type { WrappedData } from '@ext/wrapped';
 import { faviconUrl } from '@/lib/favicon';
 import WrappedIcon from './WrappedIcon.vue';
+import ToggleSwitch from '../ToggleSwitch.vue';
 
 const props = defineProps<{ data: WrappedData; custom?: CustomCategory[] }>();
 const { t } = useI18n();
@@ -234,10 +235,10 @@ const cardAria = computed(() => {
     <div class="card-frame">
       <canvas ref="canvas" class="card-canvas" :aria-label="cardAria" role="img" />
     </div>
-    <label v-if="data.topSite" class="hide-sites">
-      <input v-model="hideSites" type="checkbox" />
-      {{ t('wrapped.card.hideSites') }}
-    </label>
+    <div v-if="data.topSite" class="hide-sites">
+      <ToggleSwitch v-model="hideSites" :label="t('wrapped.card.hideSites')" />
+      <span aria-hidden="true" @click="hideSites = !hideSites">{{ t('wrapped.card.hideSites') }}</span>
+    </div>
     <div class="card-actions">
       <button type="button" class="btn btn-primary" :class="{ ok: saved }" :disabled="preparing" @click="download">
         <span class="ic">
@@ -288,8 +289,8 @@ const cardAria = computed(() => {
 .card-canvas { display: block; width: 100%; height: 100%; }
 
 .card-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-.hide-sites { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--text-2); cursor: pointer; }
-.hide-sites input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+.hide-sites { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: var(--text-2); }
+.hide-sites span { cursor: pointer; }
 .btn {
   display: inline-flex;
   align-items: center;

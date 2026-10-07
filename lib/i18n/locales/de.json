@@ -239,7 +239,7 @@
     "staleDays": "Veraltet nach (Tagen)",
     "idleSeconds": "Leerlauf-Zeitlimit (Sekunden)",
     "pauseTracking": "Tracking pausieren",
-    "pauseTrackingHint": "Stoppt die Erfassung überall, bis du dies wieder ausschaltest. Unabhängig vom Leerlauf-Timeout – hier wird nichts automatisch erkannt, es bleibt pausiert, bis du es zurückschaltest. Bereits erfasste Zeit bleibt erhalten. Zum Entfernen nutze „Alle Daten löschen“ in den Einstellungen.",
+    "pauseTrackingHint": "Stoppt das gesamte Tracking, bis du es wieder einschaltest. Erfasste Zeit bleibt.",
     "countAudio": "Hintergrund-Audio zählen",
     "save": "Speichern",
     "wipe": "Alle Daten löschen",

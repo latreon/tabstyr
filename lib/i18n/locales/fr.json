@@ -239,7 +239,7 @@
     "staleDays": "Inactif après (jours)",
     "idleSeconds": "Délai d'inactivité (secondes)",
     "pauseTracking": "Mettre le suivi en pause",
-    "pauseTrackingHint": "Arrête le suivi partout jusqu'à ce que vous le désactiviez à nouveau. Indépendant du délai d'inactivité : rien n'est détecté automatiquement ici, ça reste en pause jusqu'à ce que vous le changiez. Le temps déjà enregistré est conservé. Pour le supprimer, utilisez « Effacer toutes les données » dans les réglages.",
+    "pauseTrackingHint": "Arrête tout le suivi jusqu'à ce que vous le réactiviez. Le temps enregistré est conservé.",
     "countAudio": "Compter l'audio en arrière-plan",
     "save": "Enregistrer",
     "wipe": "Effacer toutes les données",

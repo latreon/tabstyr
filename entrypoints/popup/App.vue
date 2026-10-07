@@ -123,9 +123,8 @@ async function togglePause() {
       </span>
       <button
         class="pause-toggle tip-right"
-        :class="{ active: trackingPaused }"
         :aria-label="t(trackingPaused ? 'popup.resumeTracking' : 'popup.pauseTracking')"
-        :data-tip="t(trackingPaused ? 'popup.resumeTracking' : 'popup.pauseTracking')"
+        :data-tip="trackingPaused ? undefined : t('popup.pauseTracking')"
         @click="togglePause"
       >
         <!-- Play: resume (Lucide) -->
@@ -262,11 +261,6 @@ async function togglePause() {
 }
 .pause-toggle:hover { border-color: var(--accent); color: var(--text); }
 .pause-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.pause-toggle.active {
-  background: var(--warn-bg);
-  border-color: var(--warn-border);
-  color: var(--warn);
-}
 .stale-count {
   color: var(--warn);
   font-weight: 600;
