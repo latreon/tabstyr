@@ -69,7 +69,9 @@
     "dashboard": "Panel",
     "loadError": "İstatistikler yüklenemedi — açılır pencereyi yeniden açmayı deneyin.",
     "topSitesAria": "Bugünün en çok kullanılan siteleri",
-    "openAria": "{domain} aç — bugün {time}"
+    "openAria": "{domain} aç — bugün {time}",
+    "pauseTracking": "İzlemeyi duraklat",
+    "resumeTracking": "İzlemeyi sürdür"
   },
   "hero": {
     "todayActive": "Bugün · aktif",
@@ -236,6 +238,8 @@
     "language": "Dil",
     "staleDays": "Şu kadar gün sonra eski (gün)",
     "idleSeconds": "Boşta kalma süresi (saniye)",
+    "pauseTracking": "İzlemeyi duraklat",
+    "pauseTrackingHint": "Siz tekrar açana kadar tüm izlemeyi durdurur. Kaydedilen süre korunur.",
     "countAudio": "Arka plan sesini say",
     "save": "Kaydet",
     "wipe": "Tüm verileri sil",
@@ -252,6 +256,16 @@
     "ruleRemoveFailed": "Kural kaldırılamadı",
     "removeRuleAria": "{pattern} için kuralı kaldır",
     "categoryForRuleAria": "Kural için kategori",
+    "excludedDomains": "Hariç tutulan siteler",
+    "excludedDomainsHint": "Buradaki siteler hiçbir zaman izlenmez — oturum yok, panoda hiçbir yerde kayıt yok. Bir kategori kuralının aksine bu, sayım şeklini değiştirmek yerine izlemeyi tamamen durdurur. Daha önce kaydedilen süre korunur. Silmek için Ayarlar'daki “Tüm verileri sil” seçeneğini kullanın.",
+    "noExcludedDomains": "Henüz hariç tutulan site yok.",
+    "excludedDomainPlaceholder": "örn. reddit.com",
+    "excludeExists": "Bu site zaten hariç tutuluyor.",
+    "excludeInvalid": "reddit.com gibi bir site girin.",
+    "excludeAdded": "Site hariç tutuldu",
+    "excludeAddFailed": "Bu site hariç tutulamadı",
+    "excludeRemoveFailed": "Bu hariç tutma kaldırılamadı",
+    "removeExcludedAria": "{domain} hariç tutmayı durdur",
     "customCategories": "Özel kategoriler",
     "customCategoriesHint": "Yerleşik kategorilere ek olarak kendi kategorilerinizi ekleyin ve onlara site veya kural atayın. Yerleşik kategoriler yeniden adlandırılamaz veya kaldırılamaz.",
     "noCustomCategories": "Henüz özel kategori yok.",
@@ -333,6 +347,8 @@
     "merged": "Birleştirildi — {sessions} oturum eklendi.",
     "importCsv": "CSV içe aktar",
     "importCsvHint": "Başka bir izleyiciden veri alın: tarih, site ve süre sütunları olan bir CSV (ör. RescueTime dışa aktarımı). İçe aktarılan süre tahmini olarak gösterilir ve ölçülen günlerin üzerine asla yazmaz.",
+    "wrappedHint": "Browsing Wrapped bir yedeği paylaşılabilir bir hikâyeye dönüştürür. Yukarıdan bir yedek dışa aktarın, sonra dosyayı Wrapped sayfasına bırakın. Dosya tarayıcınızda okunur ve asla yüklenmez.",
+    "openWrapped": "Wrapped'ını oluştur",
     "imported": "{count} kayıt içe aktarıldı (tahmini).",
     "importEmpty": "Bu CSV’de kullanılabilir satır bulunamadı.",
     "importInvalid": "CSV okunamadı — tarih, site ve süre sütunları gerekir."
@@ -359,7 +375,9 @@
     "dismiss": "Hayır, teşekkürler"
   },
   "dashboard": {
-    "statsAria": "Tarayıcı kullanım istatistikleri"
+    "statsAria": "Tarayıcı kullanım istatistikleri",
+    "trendsGroup": "Eğilimler ve kalıplar",
+    "settingsGroup": "Sekmeler, kategoriler ve ayarlar"
   },
   "notification": {
     "stale": "{count} sekme {days}+ gündür kullanılmadı",

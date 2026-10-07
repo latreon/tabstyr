@@ -69,7 +69,9 @@
     "dashboard": "대시보드",
     "loadError": "통계를 불러오지 못했습니다 — 팝업을 다시 열어 보세요.",
     "topSitesAria": "오늘의 상위 사이트",
-    "openAria": "{domain} 열기 — 오늘 {time}"
+    "openAria": "{domain} 열기 — 오늘 {time}",
+    "pauseTracking": "추적 일시 중지",
+    "resumeTracking": "추적 재개"
   },
   "hero": {
     "todayActive": "오늘 · 활동",
@@ -236,6 +238,8 @@
     "language": "언어",
     "staleDays": "오래됨 기준 (일)",
     "idleSeconds": "유휴 시간 제한 (초)",
+    "pauseTracking": "추적 일시 중지",
+    "pauseTrackingHint": "다시 켤 때까지 모든 추적을 멈춥니다. 기록된 시간은 남습니다.",
     "countAudio": "백그라운드 오디오 집계",
     "save": "저장",
     "wipe": "모든 데이터 지우기",
@@ -252,6 +256,16 @@
     "ruleRemoveFailed": "규칙을 제거하지 못했습니다",
     "removeRuleAria": "{pattern} 규칙 제거",
     "categoryForRuleAria": "규칙 카테고리",
+    "excludedDomains": "제외된 사이트",
+    "excludedDomainsHint": "여기에 추가한 사이트는 전혀 추적되지 않습니다 — 세션도, 대시보드 표시도 없습니다. 카테고리 규칙과 달리 집계 방식을 바꾸는 게 아니라 추적 자체를 멈춥니다. 이미 기록된 시간은 남습니다. 삭제하려면 설정에서 '모든 데이터 지우기'를 사용하세요.",
+    "noExcludedDomains": "아직 제외된 사이트가 없습니다.",
+    "excludedDomainPlaceholder": "예: reddit.com",
+    "excludeExists": "이미 제외된 사이트입니다.",
+    "excludeInvalid": "reddit.com 같은 사이트를 입력하세요.",
+    "excludeAdded": "사이트를 제외했습니다",
+    "excludeAddFailed": "사이트를 제외할 수 없습니다",
+    "excludeRemoveFailed": "제외를 해제할 수 없습니다",
+    "removeExcludedAria": "{domain} 제외 해제",
     "customCategories": "사용자 지정 카테고리",
     "customCategoriesHint": "기본 카테고리에 더해 나만의 카테고리를 추가하고 사이트나 규칙을 지정하세요. 기본 카테고리는 이름 변경이나 삭제가 불가능합니다.",
     "noCustomCategories": "아직 사용자 지정 카테고리가 없습니다.",
@@ -333,6 +347,8 @@
     "merged": "병합됨 — 세션 {sessions}개 결합.",
     "importCsv": "CSV 가져오기",
     "importCsvHint": "다른 트래커의 데이터를 가져옵니다: 날짜, 사이트, 시간 열이 있는 CSV(예: RescueTime 내보내기). 가져온 시간은 추정치로 표시되며 측정된 날짜를 덮어쓰지 않습니다.",
+    "wrappedHint": "Browsing Wrapped는 백업을 공유할 수 있는 스토리로 만들어 줍니다. 위에서 백업을 내보낸 뒤 Wrapped 페이지에 파일을 끌어다 놓으세요. 파일은 브라우저에서 읽히며 업로드되지 않습니다.",
+    "openWrapped": "내 Wrapped 만들기",
     "imported": "{count}개 항목을 가져왔습니다(추정).",
     "importEmpty": "해당 CSV에서 사용할 수 있는 행을 찾지 못했습니다.",
     "importInvalid": "CSV를 읽을 수 없습니다 — 날짜, 사이트, 시간 열이 필요합니다."
@@ -359,7 +375,9 @@
     "dismiss": "괜찮습니다"
   },
   "dashboard": {
-    "statsAria": "브라우저 사용 통계"
+    "statsAria": "브라우저 사용 통계",
+    "trendsGroup": "추세와 패턴",
+    "settingsGroup": "탭, 카테고리, 설정"
   },
   "notification": {
     "stale": "{count}개 탭이 {days}일 이상 사용되지 않음",

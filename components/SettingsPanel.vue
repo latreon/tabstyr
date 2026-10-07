@@ -10,6 +10,7 @@ import { SUPPORTED_LOCALES, resolveLocale } from '@/lib/i18n';
 import * as repo from '@/lib/db/repo';
 import { downloadFile, toJsonBackup } from '@/lib/export';
 import { encryptToEnvelope, isEncryptedEnvelope, decryptFromEnvelope, MIN_PASSPHRASE } from '@/lib/crypto';
+import { WRAPPED_URL } from '@/lib/links';
 import { parseBackup, restoreBackup, MAX_BACKUP_BYTES, type ParsedBackup } from '@/lib/restore';
 import { mergeBackup, mergeSettingsMaps } from '@/lib/merge';
 import { parseCsvImport } from '@/lib/import-csv';
@@ -44,6 +45,7 @@ const staleDays = ref(3);
 const idleSeconds = ref(180);
 const audioEnabled = ref(true);
 const notificationsEnabled = ref(true);
+const trackingPaused = ref(false);
 // SelectBox works over string values; converted to/from the numeric setting
 // (days, 0 = off) at the read/write boundary.
 const autoExportDays = ref('0');
@@ -84,6 +86,7 @@ onMounted(async () => {
   idleSeconds.value = s.idleSeconds;
   audioEnabled.value = s.audioEnabled;
   notificationsEnabled.value = s.notificationsEnabled;
+  trackingPaused.value = s.trackingPaused;
   autoExportDays.value = String(s.autoExportDays);
   sessionAlertMinutes.value = s.sessionAlertMinutes;
   // If still on the implicit "system" default, show the resolved theme in the picker.
@@ -120,6 +123,7 @@ async function persistSettings() {
       idleSeconds: idleSeconds.value,
       audioEnabled: audioEnabled.value,
       notificationsEnabled: notificationsEnabled.value,
+      trackingPaused: trackingPaused.value,
       autoExportDays: Number(autoExportDays.value),
       sessionAlertMinutes: sessionAlertMinutes.value,
       focusTarget: focusTarget.value,
@@ -133,7 +137,7 @@ async function persistSettings() {
   }
 }
 
-watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, autoExportDays, sessionAlertMinutes, focusTarget], () => {
+watch([staleDays, idleSeconds, audioEnabled, notificationsEnabled, trackingPaused, autoExportDays, sessionAlertMinutes, focusTarget], () => {
   if (!loaded.value) return;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(persistSettings, 400);
@@ -473,6 +477,11 @@ async function confirmWipe() {
     </div>
     <p class="field-hint">{{ t('settings.idleHint') }}</p>
     <div class="field check">
+      <span class="field-label">{{ t('settings.pauseTracking') }}</span>
+      <ToggleSwitch v-model="trackingPaused" :label="t('settings.pauseTracking')" />
+    </div>
+    <p class="field-hint">{{ t('settings.pauseTrackingHint') }}</p>
+    <div class="field check">
       <span class="field-label">{{ t('settings.countAudio') }}</span>
       <ToggleSwitch v-model="audioEnabled" :label="t('settings.countAudio')" />
     </div>
@@ -519,6 +528,8 @@ async function confirmWipe() {
         </div>
       </div>
       <p class="rules-hint">{{ t('settings.importCsvHint') }}</p>
+      <p class="rules-hint">{{ t('settings.wrappedHint') }}</p>
+      <a class="btn btn-ghost btn-sm btn-block" :href="WRAPPED_URL" target="_blank" rel="noopener">{{ t('settings.openWrapped') }}</a>
       <input ref="fileInput" type="file" accept="application/json,.json" class="sr-only" aria-hidden="true" tabindex="-1" @change="onRestoreFile" />
       <input ref="csvInput" type="file" accept="text/csv,.csv" class="sr-only" aria-hidden="true" tabindex="-1" @change="onCsvFile" />
 
@@ -684,6 +695,9 @@ button:focus-visible {
   margin-top: var(--sp-2);
   padding-top: var(--sp-3);
   border-top: 1px solid var(--divider);
+}
+a.btn {
+  text-decoration: none;
 }
 .export-btns {
   display: flex;

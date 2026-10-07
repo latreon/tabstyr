@@ -78,8 +78,8 @@
         "body": "Day / week / month activity trends, plus this-week-vs-last-week by category."
       },
       {
-        "title": "Focus score",
-        "body": "Productive ÷ distracting, a daily streak, and a focus trend over time."
+        "title": "Focus measure",
+        "body": "Your own split of productive and distracting time. You choose which categories count and set your own target."
       },
       {
         "title": "Activity heatmap",
@@ -115,6 +115,24 @@
     ],
     "watchDemo": "Watch a 40-second demo",
     "videoAria": "TabStyr dashboard walkthrough"
+  },
+  "workLog": {
+    "eyebrow": "For freelancers, researchers and remote work",
+    "title": "What did I work on today?",
+    "sub": "TabStyr turns each day's browsing into a short report of the sites you used. Paste it into a standup, a timesheet or your research notes.",
+    "exampleAria": "Example daily work log",
+    "exampleLabel": "Example",
+    "exampleDay": "Today",
+    "exampleSummary": "— you spent 6h 10m across 4 sites.",
+    "copy": "Copy",
+    "copyTitle": "A daily report, ready to share",
+    "copyBody": "Open the dashboard at the end of the day and the list is already there. No timers to start or stop.",
+    "bullets": [
+      "Every site you used that day, with its category and active time",
+      "Copy it as plain text with one click",
+      "Export the day as CSV, or as a PNG report card",
+      "Go back to any of the last 90 days"
+    ]
   },
   "showcase": {
     "eyebrow": "Glance from anywhere",
@@ -200,7 +218,7 @@
     "supportCta": "Buy me a coffee"
   },
   "cta": {
-    "title": "Take back your browser time.",
+    "title": "Know where your browser time goes.",
     "sub": "Install in two clicks. Your browsing data never leaves the device. Uninstall removes everything.",
     "primary": "Add to Chrome — free",
     "comingSoon": "Coming soon to Chrome",
@@ -313,7 +331,9 @@
       "The idea form on this website sends your message, its type, and your email if you add one to Formspree, a form service, which passes it on to the maker.",
       "When you remove the extension, your browser opens this form on tabstyr.com. Sending it is optional.",
       "This website uses no analytics or tracking scripts."
-    ]
+    ],
+    "captchaNote": "When spam protection is on, the form also loads an hCaptcha check, which hCaptcha processes.",
+    "supportNote": "The “Buy me a coffee” link opens a Polar checkout page. If you choose to pay, Polar handles the payment."
   },
   "ideaPage": {
     "back": "← Back to site",
@@ -477,6 +497,7 @@
     "card": {
       "heading": "Browsing Wrapped",
       "shareKicker": "Your shareable card",
+      "hideSites": "Hide site names",
       "totalCaption": "total active browsing",
       "topSite": "Top site",
       "topCategory": "Top category",

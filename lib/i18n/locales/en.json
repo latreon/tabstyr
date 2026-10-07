@@ -69,7 +69,9 @@
     "dashboard": "Dashboard",
     "loadError": "Could not load stats — try reopening the popup.",
     "topSitesAria": "Top sites today",
-    "openAria": "Open {domain} — {time} today"
+    "openAria": "Open {domain} — {time} today",
+    "pauseTracking": "Pause tracking",
+    "resumeTracking": "Resume tracking"
   },
   "hero": {
     "todayActive": "Today · active",
@@ -236,6 +238,8 @@
     "language": "Language",
     "staleDays": "Stale after (days)",
     "idleSeconds": "Idle timeout (seconds)",
+    "pauseTracking": "Pause tracking",
+    "pauseTrackingHint": "Stops all tracking until you turn it back on. Recorded time stays.",
     "countAudio": "Count background audio",
     "save": "Save",
     "wipe": "Wipe all data",
@@ -252,6 +256,16 @@
     "ruleRemoveFailed": "Could not remove rule",
     "removeRuleAria": "Remove rule for {pattern}",
     "categoryForRuleAria": "Category for rule",
+    "excludedDomains": "Excluded sites",
+    "excludedDomainsHint": "Sites here are never tracked at all — no session, no entry anywhere in the dashboard. Unlike a category rule, this stops tracking rather than just changing how it's counted. Time already recorded stays. To remove it, use “Wipe all data” in Settings.",
+    "noExcludedDomains": "No excluded sites yet.",
+    "excludedDomainPlaceholder": "e.g. reddit.com",
+    "excludeExists": "That site is already excluded.",
+    "excludeInvalid": "Enter a site like reddit.com.",
+    "excludeAdded": "Site excluded",
+    "excludeAddFailed": "Could not exclude that site",
+    "excludeRemoveFailed": "Could not remove that exclusion",
+    "removeExcludedAria": "Stop excluding {domain}",
     "customCategories": "Custom categories",
     "customCategoriesHint": "Add your own categories on top of the built-in ones, then assign sites or rules to them. Built-in categories can't be renamed or removed.",
     "noCustomCategories": "No custom categories yet.",
@@ -333,6 +347,8 @@
     "merged": "Merged — {sessions} sessions combined.",
     "importCsv": "Import CSV",
     "importCsvHint": "Seed data from another tracker: a CSV with date, site and time columns (e.g. a RescueTime export). Imported time is shown as an estimate and never overwrites measured days.",
+    "wrappedHint": "Browsing Wrapped turns a backup into a shareable story. Export a backup above, then drop the file on the Wrapped page. The file is read in your browser and never uploaded.",
+    "openWrapped": "Create your Wrapped",
     "imported": "Imported {count} entries (estimated).",
     "importEmpty": "No usable rows found in that CSV.",
     "importInvalid": "Couldn't read that CSV — it needs date, site and time columns."
@@ -359,7 +375,9 @@
     "dismiss": "No thanks"
   },
   "dashboard": {
-    "statsAria": "Browser usage statistics"
+    "statsAria": "Browser usage statistics",
+    "trendsGroup": "Trends and patterns",
+    "settingsGroup": "Tabs, categories and settings"
   },
   "notification": {
     "stale": "{count} tabs untouched for {days}+ days",

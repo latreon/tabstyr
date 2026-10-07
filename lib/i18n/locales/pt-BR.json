@@ -69,7 +69,9 @@
     "dashboard": "Painel",
     "loadError": "Não foi possível carregar as estatísticas — tente reabrir o popup.",
     "topSitesAria": "Principais sites de hoje",
-    "openAria": "Abrir {domain} — {time} hoje"
+    "openAria": "Abrir {domain} — {time} hoje",
+    "pauseTracking": "Pausar rastreamento",
+    "resumeTracking": "Retomar rastreamento"
   },
   "hero": {
     "todayActive": "Hoje · ativo",
@@ -236,6 +238,8 @@
     "language": "Idioma",
     "staleDays": "Obsoleta após (dias)",
     "idleSeconds": "Tempo ocioso (segundos)",
+    "pauseTracking": "Pausar rastreamento",
+    "pauseTrackingHint": "Para todo o rastreamento até você ativá-lo de novo. O tempo registrado continua salvo.",
     "countAudio": "Contar áudio em segundo plano",
     "save": "Salvar",
     "wipe": "Apagar todos os dados",
@@ -252,6 +256,16 @@
     "ruleRemoveFailed": "Não foi possível remover a regra",
     "removeRuleAria": "Remover regra de {pattern}",
     "categoryForRuleAria": "Categoria da regra",
+    "excludedDomains": "Sites excluídos",
+    "excludedDomainsHint": "Os sites aqui nunca são rastreados — sem sessão, sem entrada em nenhum lugar do painel. Diferente de uma regra de categoria, isso interrompe o rastreamento em vez de apenas mudar como é contado. O tempo já registrado continua salvo. Para apagá-lo, use “Apagar todos os dados” nas configurações.",
+    "noExcludedDomains": "Ainda não há sites excluídos.",
+    "excludedDomainPlaceholder": "ex.: reddit.com",
+    "excludeExists": "Esse site já está excluído.",
+    "excludeInvalid": "Digite um site como reddit.com.",
+    "excludeAdded": "Site excluído",
+    "excludeAddFailed": "Não foi possível excluir esse site",
+    "excludeRemoveFailed": "Não foi possível remover essa exclusão",
+    "removeExcludedAria": "Parar de excluir {domain}",
     "customCategories": "Categorias personalizadas",
     "customCategoriesHint": "Adicione suas próprias categorias além das integradas e atribua sites ou regras a elas. As categorias integradas não podem ser renomeadas nem removidas.",
     "noCustomCategories": "Ainda não há categorias personalizadas.",
@@ -333,6 +347,8 @@
     "merged": "Mesclado — {sessions} sessões combinadas.",
     "importCsv": "Importar CSV",
     "importCsvHint": "Importe dados de outro rastreador: um CSV com colunas de data, site e tempo (ex.: uma exportação do RescueTime). O tempo importado aparece como estimativa e nunca sobrescreve dias medidos.",
+    "wrappedHint": "O Browsing Wrapped transforma um backup em uma história para compartilhar. Exporte um backup acima e solte o arquivo na página do Wrapped. O arquivo é lido no seu navegador e nunca é enviado.",
+    "openWrapped": "Criar seu Wrapped",
     "imported": "{count} entradas importadas (estimadas).",
     "importEmpty": "Nenhuma linha utilizável nesse CSV.",
     "importInvalid": "Não foi possível ler o CSV — precisa de colunas de data, site e tempo."
@@ -359,7 +375,9 @@
     "dismiss": "Não, obrigado"
   },
   "dashboard": {
-    "statsAria": "Estatísticas de uso do navegador"
+    "statsAria": "Estatísticas de uso do navegador",
+    "trendsGroup": "Tendências e padrões",
+    "settingsGroup": "Abas, categorias e configurações"
   },
   "notification": {
     "stale": "{count} abas sem uso por {days}+ dias",

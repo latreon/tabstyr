@@ -69,8 +69,8 @@
         "body": "Tendances d'activité par jour / semaine / mois, ainsi qu'une comparaison cette-semaine-vs-semaine-dernière par catégorie."
       },
       {
-        "title": "Score de concentration",
-        "body": "Productif ÷ distrayant, une série quotidienne et une tendance de concentration au fil du temps."
+        "title": "Mesure de concentration",
+        "body": "Votre propre répartition entre temps productif et distractions. Vous choisissez les catégories qui comptent et fixez votre objectif."
       },
       {
         "title": "Carte de chaleur d'activité",
@@ -106,6 +106,24 @@
     ],
     "watchDemo": "Voir la démo de 40 secondes",
     "videoAria": "Visite du tableau de bord TabStyr"
+  },
+  "workLog": {
+    "eyebrow": "Pour les freelances, la recherche et le télétravail",
+    "title": "Sur quoi ai-je travaillé aujourd'hui ?",
+    "sub": "TabStyr transforme chaque journée de navigation en un court rapport des sites utilisés. Collez-le dans un point d'équipe, une feuille de temps ou vos notes de recherche.",
+    "exampleAria": "Exemple de journal de travail quotidien",
+    "exampleLabel": "Exemple",
+    "exampleDay": "Aujourd'hui",
+    "exampleSummary": "— vous avez passé 6 h 10 min sur 4 sites.",
+    "copy": "Copier",
+    "copyTitle": "Un rapport quotidien, prêt à partager",
+    "copyBody": "Ouvrez le tableau de bord en fin de journée : la liste est déjà là. Aucun minuteur à lancer ou arrêter.",
+    "bullets": [
+      "Chaque site utilisé ce jour-là, avec sa catégorie et son temps actif",
+      "Copiez-le en texte en un clic",
+      "Exportez la journée en CSV ou en carte de rapport PNG",
+      "Revenez à n'importe lequel des 90 derniers jours"
+    ]
   },
   "showcase": {
     "eyebrow": "Un aperçu depuis n'importe où",
@@ -191,7 +209,7 @@
     "supportCta": "Offrez-moi un café"
   },
   "cta": {
-    "title": "Reprenez le contrôle de votre temps de navigation.",
+    "title": "Sachez où passe votre temps de navigation.",
     "sub": "Installation en deux clics. Vos données de navigation ne quittent jamais l'appareil. La désinstallation supprime tout.",
     "primary": "Ajouter à Chrome — gratuit",
     "comingSoon": "Bientôt disponible sur Chrome",
@@ -304,7 +322,9 @@
       "Le formulaire d'idées de ce site envoie votre message, son type et votre e-mail si vous l'ajoutez à Formspree, un service de formulaires qui le transmet au créateur.",
       "Quand vous supprimez l'extension, votre navigateur ouvre ce formulaire sur tabstyr.com. L'envoyer est facultatif.",
       "Ce site n'utilise aucun script d'analytique ou de suivi."
-    ]
+    ],
+    "captchaNote": "Quand la protection anti-spam est active, le formulaire charge aussi une vérification hCaptcha, traitée par hCaptcha.",
+    "supportNote": "Le lien « Buy me a coffee » ouvre une page de paiement Polar. Si vous choisissez de payer, Polar gère le paiement."
   },
   "ideaPage": {
     "back": "← Retour au site",
@@ -465,6 +485,7 @@
     "card": {
       "heading": "Rétro de navigation",
       "shareKicker": "Votre carte à partager",
+      "hideSites": "Masquer les noms des sites",
       "totalCaption": "navigation active totale",
       "topSite": "Site principal",
       "topCategory": "Catégorie principale",

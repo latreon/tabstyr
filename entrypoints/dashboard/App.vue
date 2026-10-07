@@ -43,6 +43,25 @@ const dayLabel = computed(() => {
   void activeLocale.value;
   return isTodaySelected.value ? undefined : longDateLabel(s.selectedDay.value);
 });
+// Deeper analysis and settings start collapsed; each group remembers its state on this device.
+type DashboardGroup = 'trends' | 'settings';
+const GROUPS_KEY = 'tabstyr:dashboardGroups';
+const openGroups = ref<Record<DashboardGroup, boolean>>(readOpenGroups());
+function readOpenGroups(): Record<DashboardGroup, boolean> {
+  try {
+    return { trends: false, settings: false, ...JSON.parse(localStorage.getItem(GROUPS_KEY) ?? '{}') };
+  } catch {
+    return { trends: false, settings: false };
+  }
+}
+function handleGroupToggle(group: DashboardGroup, event: Event) {
+  openGroups.value[group] = (event.target as HTMLDetailsElement).open;
+  try {
+    localStorage.setItem(GROUPS_KEY, JSON.stringify(openGroups.value));
+  } catch {
+    /* storage unavailable: the group just starts collapsed next time */
+  }
+}
 function showDay(day: string) {
   s.selectedDay.value = day;
   dayBar.value?.scrollIntoView({
@@ -260,18 +279,30 @@ onBeforeUnmount(() => {
       <TopSitesChart :domains="s.dayByDomain.value" :date-label="dayLabel" @select="openDetail" />
       <ProductivityTile id="focus" :summary="s.dayProductivity.value" :date-label="dayLabel" />
       <!-- full-width rows -->
-      <InsightsTile :insights="s.insights.value" />
-      <TrendChart :stats="s.activeStats.value" :now="loadedNow" :selected-day="s.selectedDay.value" @select-day="showDay" />
-      <FocusTrend :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :productivity="s.categoryProductivity.value" :custom="s.customCategories.value" :now="loadedNow" :target="s.productivity.value.focusTarget" />
-      <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :custom="s.customCategories.value" />
-      <HeatmapTile :data="s.heatmap.value" />
       <WorkLog :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :custom="s.customCategories.value" :now="loadedNow" @select="openDetail" @set-category="s.setCategoryOverride" />
-      <FocusCategoriesTile :productivity="s.categoryProductivity.value" :custom="s.customCategories.value" :budgets="s.categoryBudgets.value" @set="s.setCategoryProductivity" @set-custom="s.setCustomProductivity" @set-budget="s.setCategoryBudget" />
-      <!-- row: 2 + 1 — Open tabs by time beside Settings -->
-      <TabTable :rows="s.tabRows.value" />
-      <SettingsPanel @changed="() => reload({ silent: true })" />
-      <CustomizationPanel :custom="s.customCategories.value" :category-rules="s.categoryRules.value" @changed="() => reload({ silent: true })" />
       </section>
+
+      <details class="group" :open="openGroups.trends" @toggle="handleGroupToggle('trends', $event)">
+        <summary class="group-summary"><h2 class="label">{{ t('dashboard.trendsGroup') }}</h2></summary>
+        <section class="bento" :aria-label="t('dashboard.trendsGroup')">
+          <InsightsTile :insights="s.insights.value" />
+          <TrendChart :stats="s.activeStats.value" :now="loadedNow" :selected-day="s.selectedDay.value" @select-day="showDay" />
+          <FocusTrend :stats="s.activeStats.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :productivity="s.categoryProductivity.value" :custom="s.customCategories.value" :now="loadedNow" :target="s.productivity.value.focusTarget" />
+          <ComparisonTile :stats="s.activeStats.value" :today-key="s.todayKey.value" :overrides="s.overrides.value" :rules="s.categoryRules.value" :custom="s.customCategories.value" />
+          <HeatmapTile :data="s.heatmap.value" />
+        </section>
+      </details>
+
+      <details class="group" :open="openGroups.settings" @toggle="handleGroupToggle('settings', $event)">
+        <summary class="group-summary"><h2 class="label">{{ t('dashboard.settingsGroup') }}</h2></summary>
+        <section class="bento" :aria-label="t('dashboard.settingsGroup')">
+          <FocusCategoriesTile :productivity="s.categoryProductivity.value" :custom="s.customCategories.value" :budgets="s.categoryBudgets.value" @set="s.setCategoryProductivity" @set-custom="s.setCustomProductivity" @set-budget="s.setCategoryBudget" />
+          <!-- row: 2 + 1 — Open tabs by time beside Settings -->
+          <TabTable :rows="s.tabRows.value" />
+          <SettingsPanel @changed="() => reload({ silent: true })" />
+          <CustomizationPanel :custom="s.customCategories.value" :category-rules="s.categoryRules.value" :excluded-domains="s.excludedDomains.value" @changed="() => reload({ silent: true })" />
+        </section>
+      </details>
     </template>
   </main>
 
@@ -375,6 +406,43 @@ onBeforeUnmount(() => {
   flex-wrap: wrap;
   margin-bottom: var(--space);
   scroll-margin-top: var(--sp-4);
+}
+.group {
+  margin-top: var(--space);
+}
+.group-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  cursor: pointer;
+  list-style: none;
+}
+.group-summary::-webkit-details-marker {
+  display: none;
+}
+.group-summary::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  margin-left: auto;
+  border-right: 2px solid var(--text-3);
+  border-bottom: 2px solid var(--text-3);
+  transform: rotate(45deg);
+  transition: transform 160ms ease-out;
+}
+.group[open] > .group-summary::after {
+  transform: rotate(-135deg);
+}
+.group[open] > .group-summary {
+  margin-bottom: var(--space);
+}
+.group-summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 .day-bar-controls {
   display: flex;

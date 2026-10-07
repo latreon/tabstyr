@@ -69,8 +69,8 @@
         "body": "Tendencias de actividad por día / semana / mes, además de esta semana frente a la anterior por categoría."
       },
       {
-        "title": "Puntuación de enfoque",
-        "body": "Productivo ÷ distractor, una racha diaria y una tendencia de enfoque a lo largo del tiempo."
+        "title": "Medida de foco",
+        "body": "Tu propio reparto entre tiempo productivo y distracciones. Tú eliges qué categorías cuentan y fijas tu objetivo."
       },
       {
         "title": "Mapa de calor de actividad",
@@ -106,6 +106,24 @@
     ],
     "watchDemo": "Ver demo de 40 segundos",
     "videoAria": "Recorrido por el panel de TabStyr"
+  },
+  "workLog": {
+    "eyebrow": "Para freelancers, investigación y trabajo remoto",
+    "title": "¿En qué trabajé hoy?",
+    "sub": "TabStyr convierte cada día de navegación en un breve informe de los sitios que usaste. Pégalo en un standup, una hoja de horas o tus notas de investigación.",
+    "exampleAria": "Ejemplo de registro diario de trabajo",
+    "exampleLabel": "Ejemplo",
+    "exampleDay": "Hoy",
+    "exampleSummary": "— pasaste 6 h 10 min en 4 sitios.",
+    "copy": "Copiar",
+    "copyTitle": "Un informe diario, listo para compartir",
+    "copyBody": "Abre el panel al final del día y la lista ya está ahí. Sin temporizadores que iniciar o detener.",
+    "bullets": [
+      "Cada sitio que usaste ese día, con su categoría y tiempo activo",
+      "Cópialo como texto con un clic",
+      "Exporta el día como CSV o como tarjeta de informe PNG",
+      "Vuelve a cualquiera de los últimos 90 días"
+    ]
   },
   "showcase": {
     "eyebrow": "Echa un vistazo desde cualquier lugar",
@@ -191,7 +209,7 @@
     "supportCta": "Invítame a un café"
   },
   "cta": {
-    "title": "Recupera tu tiempo en el navegador.",
+    "title": "Sabe adónde va tu tiempo en el navegador.",
     "sub": "Se instala en dos clics. Tus datos de navegación nunca salen del dispositivo. Al desinstalar se borra todo.",
     "primary": "Añadir a Chrome — gratis",
     "comingSoon": "Próximamente en Chrome",
@@ -304,7 +322,9 @@
       "El formulario de ideas de este sitio envía tu mensaje, su tipo y, si lo añades, tu correo a Formspree, un servicio de formularios que lo hace llegar al creador.",
       "Al quitar la extensión, tu navegador abre este formulario en tabstyr.com. Enviarlo es opcional.",
       "Este sitio web no usa scripts de analítica ni de seguimiento."
-    ]
+    ],
+    "captchaNote": "Si la protección contra spam está activa, el formulario también carga una verificación de hCaptcha, que procesa hCaptcha.",
+    "supportNote": "El enlace «Buy me a coffee» abre una página de pago de Polar. Si decides pagar, Polar gestiona el pago."
   },
   "ideaPage": {
     "back": "← Volver al sitio",
@@ -465,6 +485,7 @@
     "card": {
       "heading": "Tu Resumen de Navegación",
       "shareKicker": "Tu tarjeta para compartir",
+      "hideSites": "Ocultar nombres de sitios",
       "totalCaption": "navegación activa total",
       "topSite": "Sitio favorito",
       "topCategory": "Categoría favorita",
