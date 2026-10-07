@@ -301,7 +301,7 @@
     "restoreReadFailed": "해당 파일을 읽을 수 없습니다.",
     "restoreTooLarge": "이 파일은 TabStyr 백업이라기에는 너무 큽니다.",
     "replaceTitle": "모든 데이터를 교체하시겠습니까?",
-    "replaceBody": "이 기기에 현재 저장된 데이터를 삭제하고 일별 기록 {days}개와 세션 {sessions}개{from}를 복원합니다. 되돌릴 수 없습니다.",
+    "replaceBody": "이 기기에 저장된 데이터를 삭제하고 일별 기록 {days}개와 세션 {sessions}개{from}를 복원합니다. 현재 데이터는 먼저 다운로드 폴더에 저장됩니다.",
     "replaceBodyFrom": " ({date} 백업에서)",
     "replaceData": "데이터 교체",
     "restoring": "복원 중…",
