@@ -261,6 +261,7 @@
     "noExcludedDomains": "Aucun site exclu pour le moment.",
     "excludedDomainPlaceholder": "ex. reddit.com",
     "excludeExists": "Ce site est déjà exclu.",
+    "excludeInvalid": "Saisissez un site comme reddit.com.",
     "excludeAdded": "Site exclu",
     "excludeAddFailed": "Impossible d'exclure ce site",
     "excludeRemoveFailed": "Impossible de supprimer cette exclusion",

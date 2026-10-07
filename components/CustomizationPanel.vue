@@ -3,6 +3,7 @@ import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { browser } from 'wxt/browser';
 import { broadcastSettingsChanged, getSettings, saveSettings } from '@/lib/settings';
+import { displayDomain, domainOf, isWebDomain } from '@/lib/domain';
 import {
   allCategoryIds,
   categoryColor,
@@ -184,9 +185,16 @@ async function removeRule(pattern: string) {
 }
 
 async function addExcludedDomain() {
-  const domain = newExcluded.value.trim().toLowerCase();
+  const input = newExcluded.value.trim().toLowerCase();
   excludeError.value = '';
-  if (!domain) return;
+  if (!input) return;
+  // Accept a pasted address too: keep only its host, without "www." so the entry
+  // also covers the bare domain and every subdomain.
+  const domain = displayDomain(domainOf(input.includes('://') ? input : `https://${input}`));
+  if (!isWebDomain(domain)) {
+    excludeError.value = t('settings.excludeInvalid');
+    return;
+  }
   if (excludedSites.value.includes(domain)) {
     excludeError.value = t('settings.excludeExists');
     return;

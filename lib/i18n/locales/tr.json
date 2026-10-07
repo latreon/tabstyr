@@ -261,6 +261,7 @@
     "noExcludedDomains": "Henüz hariç tutulan site yok.",
     "excludedDomainPlaceholder": "örn. reddit.com",
     "excludeExists": "Bu site zaten hariç tutuluyor.",
+    "excludeInvalid": "reddit.com gibi bir site girin.",
     "excludeAdded": "Site hariç tutuldu",
     "excludeAddFailed": "Bu site hariç tutulamadı",
     "excludeRemoveFailed": "Bu hariç tutma kaldırılamadı",

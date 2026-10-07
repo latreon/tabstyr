@@ -261,6 +261,7 @@
     "noExcludedDomains": "除外サイトはまだありません。",
     "excludedDomainPlaceholder": "例: reddit.com",
     "excludeExists": "そのサイトはすでに除外されています。",
+    "excludeInvalid": "reddit.com のようなサイトを入力してください。",
     "excludeAdded": "サイトを除外しました",
     "excludeAddFailed": "サイトを除外できませんでした",
     "excludeRemoveFailed": "除外を解除できませんでした",

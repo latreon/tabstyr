@@ -261,6 +261,7 @@
     "noExcludedDomains": "暂无排除的网站。",
     "excludedDomainPlaceholder": "例如 reddit.com",
     "excludeExists": "该网站已被排除。",
+    "excludeInvalid": "请输入网站，例如 reddit.com。",
     "excludeAdded": "已排除该网站",
     "excludeAddFailed": "无法排除该网站",
     "excludeRemoveFailed": "无法移除该排除项",

@@ -261,6 +261,7 @@
     "noExcludedDomains": "아직 제외된 사이트가 없습니다.",
     "excludedDomainPlaceholder": "예: reddit.com",
     "excludeExists": "이미 제외된 사이트입니다.",
+    "excludeInvalid": "reddit.com 같은 사이트를 입력하세요.",
     "excludeAdded": "사이트를 제외했습니다",
     "excludeAddFailed": "사이트를 제외할 수 없습니다",
     "excludeRemoveFailed": "제외를 해제할 수 없습니다",

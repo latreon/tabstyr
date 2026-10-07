@@ -261,6 +261,7 @@
     "noExcludedDomains": "Исключённых сайтов пока нет.",
     "excludedDomainPlaceholder": "напр. reddit.com",
     "excludeExists": "Этот сайт уже исключён.",
+    "excludeInvalid": "Введите сайт, например reddit.com.",
     "excludeAdded": "Сайт исключён",
     "excludeAddFailed": "Не удалось исключить этот сайт",
     "excludeRemoveFailed": "Не удалось убрать это исключение",

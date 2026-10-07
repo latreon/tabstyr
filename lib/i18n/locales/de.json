@@ -261,6 +261,7 @@
     "noExcludedDomains": "Noch keine ausgeschlossenen Seiten.",
     "excludedDomainPlaceholder": "z. B. reddit.com",
     "excludeExists": "Diese Seite ist bereits ausgeschlossen.",
+    "excludeInvalid": "Gib eine Website wie reddit.com ein.",
     "excludeAdded": "Seite ausgeschlossen",
     "excludeAddFailed": "Seite konnte nicht ausgeschlossen werden",
     "excludeRemoveFailed": "Ausschluss konnte nicht entfernt werden",
