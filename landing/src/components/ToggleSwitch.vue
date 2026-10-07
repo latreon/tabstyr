@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// Same switch as the extension's components/ui/ToggleSwitch.vue, using the site's tokens.
 defineProps<{ modelValue: boolean; label?: string }>();
 const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>();
 </script>
@@ -21,9 +22,9 @@ const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>();
 .toggle {
   position: relative;
   width: 44px;
-  height: 24px; /* WCAG 2.2 (2.5.8) minimum target height */
-  border: 1px solid var(--border);
-  background: var(--bar-track);
+  height: 24px;
+  border: 1px solid var(--border-hover);
+  background: var(--card-solid);
   border-radius: 16px;
   padding: 0;
   cursor: pointer;
@@ -31,13 +32,13 @@ const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>();
   flex: none;
 }
 .toggle.on {
-  background: var(--accent-gradient);
+  background: var(--accent-grad);
   border-color: transparent;
 }
 .toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .knob {
   position: absolute;
-  top: 1.5px;
+  top: 2.5px;
   left: 2px;
   width: 18px;
   height: 18px;

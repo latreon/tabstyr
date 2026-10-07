@@ -69,7 +69,9 @@
     "dashboard": "Dashboard",
     "loadError": "Statistiken konnten nicht geladen werden — Popup erneut öffnen.",
     "topSitesAria": "Top-Seiten heute",
-    "openAria": "{domain} öffnen — {time} heute"
+    "openAria": "{domain} öffnen — {time} heute",
+    "pauseTracking": "Tracking pausieren",
+    "resumeTracking": "Tracking fortsetzen"
   },
   "hero": {
     "todayActive": "Heute · aktiv",
@@ -236,6 +238,8 @@
     "language": "Sprache",
     "staleDays": "Veraltet nach (Tagen)",
     "idleSeconds": "Leerlauf-Zeitlimit (Sekunden)",
+    "pauseTracking": "Tracking pausieren",
+    "pauseTrackingHint": "Stoppt das gesamte Tracking, bis du es wieder einschaltest. Erfasste Zeit bleibt.",
     "countAudio": "Hintergrund-Audio zählen",
     "save": "Speichern",
     "wipe": "Alle Daten löschen",
@@ -252,6 +256,16 @@
     "ruleRemoveFailed": "Regel konnte nicht entfernt werden",
     "removeRuleAria": "Regel für {pattern} entfernen",
     "categoryForRuleAria": "Kategorie für Regel",
+    "excludedDomains": "Ausgeschlossene Seiten",
+    "excludedDomainsHint": "Seiten hier werden überhaupt nicht erfasst – keine Sitzung, kein Eintrag im Dashboard. Anders als eine Kategorie-Regel wird die Erfassung hier gestoppt statt nur anders gezählt. Bereits erfasste Zeit bleibt erhalten. Zum Entfernen nutze „Alle Daten löschen“ in den Einstellungen.",
+    "noExcludedDomains": "Noch keine ausgeschlossenen Seiten.",
+    "excludedDomainPlaceholder": "z. B. reddit.com",
+    "excludeExists": "Diese Seite ist bereits ausgeschlossen.",
+    "excludeInvalid": "Gib eine Website wie reddit.com ein.",
+    "excludeAdded": "Seite ausgeschlossen",
+    "excludeAddFailed": "Seite konnte nicht ausgeschlossen werden",
+    "excludeRemoveFailed": "Ausschluss konnte nicht entfernt werden",
+    "removeExcludedAria": "Ausschluss von {domain} aufheben",
     "customCategories": "Eigene Kategorien",
     "customCategoriesHint": "Füge eigene Kategorien zusätzlich zu den integrierten hinzu und weise ihnen Websites oder Regeln zu. Integrierte Kategorien können nicht umbenannt oder entfernt werden.",
     "noCustomCategories": "Noch keine eigenen Kategorien.",
@@ -333,6 +347,8 @@
     "merged": "Zusammengeführt — {sessions} Sitzungen kombiniert.",
     "importCsv": "CSV importieren",
     "importCsvHint": "Daten aus einem anderen Tracker laden: eine CSV mit Datum-, Website- und Zeitspalten (z. B. ein RescueTime-Export). Importierte Zeit wird als Schätzung angezeigt und überschreibt gemessene Tage nie.",
+    "wrappedHint": "Browsing Wrapped macht aus einer Sicherung eine teilbare Story. Exportiere oben eine Sicherung und zieh die Datei auf die Wrapped-Seite. Die Datei wird in deinem Browser gelesen und nie hochgeladen.",
+    "openWrapped": "Dein Wrapped erstellen",
     "imported": "{count} Einträge importiert (geschätzt).",
     "importEmpty": "Keine verwertbaren Zeilen in dieser CSV gefunden.",
     "importInvalid": "CSV konnte nicht gelesen werden – Datum-, Website- und Zeitspalten nötig."
@@ -359,7 +375,9 @@
     "dismiss": "Nein danke"
   },
   "dashboard": {
-    "statsAria": "Browser-Nutzungsstatistiken"
+    "statsAria": "Browser-Nutzungsstatistiken",
+    "trendsGroup": "Trends und Muster",
+    "settingsGroup": "Tabs, Kategorien und Einstellungen"
   },
   "notification": {
     "stale": "{count} Tabs seit über {days} Tagen unberührt",

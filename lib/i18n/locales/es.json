@@ -69,7 +69,9 @@
     "dashboard": "Panel",
     "loadError": "No se pudieron cargar las estadísticas: prueba a reabrir la ventana.",
     "topSitesAria": "Sitios principales de hoy",
-    "openAria": "Abrir {domain} — {time} hoy"
+    "openAria": "Abrir {domain} — {time} hoy",
+    "pauseTracking": "Pausar seguimiento",
+    "resumeTracking": "Reanudar seguimiento"
   },
   "hero": {
     "todayActive": "Hoy · activo",
@@ -236,6 +238,8 @@
     "language": "Idioma",
     "staleDays": "Obsoleta tras (días)",
     "idleSeconds": "Tiempo de inactividad (segundos)",
+    "pauseTracking": "Pausar seguimiento",
+    "pauseTrackingHint": "Detiene todo el seguimiento hasta que lo vuelvas a activar. El tiempo registrado se conserva.",
     "countAudio": "Contar audio en segundo plano",
     "save": "Guardar",
     "wipe": "Borrar todos los datos",
@@ -252,6 +256,16 @@
     "ruleRemoveFailed": "No se pudo eliminar la regla",
     "removeRuleAria": "Eliminar regla para {pattern}",
     "categoryForRuleAria": "Categoría para la regla",
+    "excludedDomains": "Sitios excluidos",
+    "excludedDomainsHint": "Los sitios aquí nunca se rastrean: sin sesión, sin entrada en ningún lugar del panel. A diferencia de una regla de categoría, esto detiene el seguimiento en vez de solo cambiar cómo se cuenta. El tiempo ya registrado se conserva. Para borrarlo, usa «Borrar todos los datos» en Ajustes.",
+    "noExcludedDomains": "Aún no hay sitios excluidos.",
+    "excludedDomainPlaceholder": "p. ej. reddit.com",
+    "excludeExists": "Ese sitio ya está excluido.",
+    "excludeInvalid": "Escribe un sitio como reddit.com.",
+    "excludeAdded": "Sitio excluido",
+    "excludeAddFailed": "No se pudo excluir ese sitio",
+    "excludeRemoveFailed": "No se pudo quitar esa exclusión",
+    "removeExcludedAria": "Dejar de excluir {domain}",
     "customCategories": "Categorías personalizadas",
     "customCategoriesHint": "Añade tus propias categorías además de las integradas y asígnales sitios o reglas. Las categorías integradas no se pueden renombrar ni eliminar.",
     "noCustomCategories": "Aún no hay categorías personalizadas.",
@@ -333,6 +347,8 @@
     "merged": "Combinado — {sessions} sesiones unidas.",
     "importCsv": "Importar CSV",
     "importCsvHint": "Carga datos de otro medidor: un CSV con columnas de fecha, sitio y tiempo (p. ej. una exportación de RescueTime). El tiempo importado se muestra como estimación y nunca sobrescribe días medidos.",
+    "wrappedHint": "Browsing Wrapped convierte una copia de seguridad en una historia para compartir. Exporta una copia arriba y suelta el archivo en la página de Wrapped. El archivo se lee en tu navegador y nunca se sube.",
+    "openWrapped": "Crear tu Wrapped",
     "imported": "{count} entradas importadas (estimadas).",
     "importEmpty": "No se encontraron filas utilizables en ese CSV.",
     "importInvalid": "No se pudo leer ese CSV: necesita columnas de fecha, sitio y tiempo."
@@ -359,7 +375,9 @@
     "dismiss": "No, gracias"
   },
   "dashboard": {
-    "statsAria": "Estadísticas de uso del navegador"
+    "statsAria": "Estadísticas de uso del navegador",
+    "trendsGroup": "Tendencias y patrones",
+    "settingsGroup": "Pestañas, categorías y ajustes"
   },
   "notification": {
     "stale": "{count} pestañas sin tocar durante más de {days} días",

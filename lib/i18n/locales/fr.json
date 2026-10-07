@@ -69,7 +69,9 @@
     "dashboard": "Tableau de bord",
     "loadError": "Impossible de charger les statistiques — essayez de rouvrir la fenêtre.",
     "topSitesAria": "Sites les plus visités aujourd'hui",
-    "openAria": "Ouvrir {domain} — {time} aujourd'hui"
+    "openAria": "Ouvrir {domain} — {time} aujourd'hui",
+    "pauseTracking": "Mettre le suivi en pause",
+    "resumeTracking": "Reprendre le suivi"
   },
   "hero": {
     "todayActive": "Aujourd'hui · actif",
@@ -236,6 +238,8 @@
     "language": "Langue",
     "staleDays": "Inactif après (jours)",
     "idleSeconds": "Délai d'inactivité (secondes)",
+    "pauseTracking": "Mettre le suivi en pause",
+    "pauseTrackingHint": "Arrête tout le suivi jusqu'à ce que vous le réactiviez. Le temps enregistré est conservé.",
     "countAudio": "Compter l'audio en arrière-plan",
     "save": "Enregistrer",
     "wipe": "Effacer toutes les données",
@@ -252,6 +256,16 @@
     "ruleRemoveFailed": "Impossible de supprimer la règle",
     "removeRuleAria": "Supprimer la règle pour {pattern}",
     "categoryForRuleAria": "Catégorie pour la règle",
+    "excludedDomains": "Sites exclus",
+    "excludedDomainsHint": "Les sites ici ne sont jamais suivis : aucune session, aucune entrée nulle part dans le tableau de bord. Contrairement à une règle de catégorie, cela arrête le suivi au lieu de simplement changer la façon dont il est compté. Le temps déjà enregistré est conservé. Pour le supprimer, utilisez « Effacer toutes les données » dans les réglages.",
+    "noExcludedDomains": "Aucun site exclu pour le moment.",
+    "excludedDomainPlaceholder": "ex. reddit.com",
+    "excludeExists": "Ce site est déjà exclu.",
+    "excludeInvalid": "Saisissez un site comme reddit.com.",
+    "excludeAdded": "Site exclu",
+    "excludeAddFailed": "Impossible d'exclure ce site",
+    "excludeRemoveFailed": "Impossible de supprimer cette exclusion",
+    "removeExcludedAria": "Ne plus exclure {domain}",
     "customCategories": "Catégories personnalisées",
     "customCategoriesHint": "Ajoutez vos propres catégories en plus de celles intégrées, puis attribuez-leur des sites ou des règles. Les catégories intégrées ne peuvent pas être renommées ni supprimées.",
     "noCustomCategories": "Aucune catégorie personnalisée pour l'instant.",
@@ -333,6 +347,8 @@
     "merged": "Fusionné — {sessions} sessions combinées.",
     "importCsv": "Importer un CSV",
     "importCsvHint": "Importez des données d'un autre outil : un CSV avec des colonnes date, site et temps (ex. un export RescueTime). Le temps importé est affiché comme une estimation et n'écrase jamais les jours mesurés.",
+    "wrappedHint": "Browsing Wrapped transforme une sauvegarde en récit à partager. Exportez une sauvegarde ci-dessus, puis déposez le fichier sur la page Wrapped. Le fichier est lu dans votre navigateur et n'est jamais envoyé.",
+    "openWrapped": "Créer votre Wrapped",
     "imported": "{count} entrées importées (estimées).",
     "importEmpty": "Aucune ligne exploitable dans ce CSV.",
     "importInvalid": "Impossible de lire ce CSV — colonnes date, site et temps requises."
@@ -359,7 +375,9 @@
     "dismiss": "Non merci"
   },
   "dashboard": {
-    "statsAria": "Statistiques d'utilisation du navigateur"
+    "statsAria": "Statistiques d'utilisation du navigateur",
+    "trendsGroup": "Tendances et habitudes",
+    "settingsGroup": "Onglets, catégories et réglages"
   },
   "notification": {
     "stale": "{count} onglets inactifs depuis plus de {days} jours",

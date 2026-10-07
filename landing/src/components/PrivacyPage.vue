@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import RingLogo from './RingLogo.vue';
 import { localizedPath, locale, useI18n } from '@/i18n';
+import { HCAPTCHA_SITEKEY, LINKS } from '@/site';
 
 const { t, tm } = useI18n();
 const home = computed(() => localizedPath(locale.value, ''));
@@ -10,7 +11,12 @@ const stores = computed(() => tm<{ label: string; body: string }[]>('privacyPage
 const notItems = computed(() => tm<string[]>('privacyPage.notItems'));
 const perms = computed(() => tm<{ perm: string; why: string }[]>('privacyPage.perms'));
 const controlItems = computed(() => tm<string[]>('privacyPage.controlItems'));
-const feedbackItems = computed(() => tm<string[]>('privacyPage.feedbackItems'));
+// The captcha and the support link exist only when configured at build time.
+const feedbackItems = computed(() => [
+  ...tm<string[]>('privacyPage.feedbackItems'),
+  ...(HCAPTCHA_SITEKEY ? [t('privacyPage.captchaNote')] : []),
+  ...(LINKS.coffee ? [t('privacyPage.supportNote')] : []),
+]);
 </script>
 
 <template>

@@ -14,6 +14,7 @@ import { addDays, dateKey } from '@/lib/time';
 import { monthKeyBefore } from '@/lib/monthly';
 import { toJsonBackup } from '@/lib/export';
 import { domainOf, isWebDomain, pageOf } from '@/lib/domain';
+import { isExcludedDomain } from '@/lib/excluded-domains';
 import { UNINSTALL_FEEDBACK_URL } from '@/lib/links';
 import { recordInstallDate } from '@/lib/review-prompt';
 import type { ClosedSession, EngineState, Session } from '@/lib/types';
@@ -235,10 +236,12 @@ export default defineBackground(() => {
 
   async function syncAudioSessions(eng: TrackerEngine, now: number): Promise<ClosedSession[]> {
     const settings = await getSettings();
-    if (!settings.audioEnabled) return eng.syncAudio([], now);
+    if (!settings.audioEnabled || settings.trackingPaused) return eng.syncAudio([], now);
     const audibleTabs = await browser.tabs.query({ audible: true });
     const audible = audibleTabs.flatMap((t) =>
-      t.id && t.url && !t.incognito ? [{ tabId: t.id, url: t.url }] : [],
+      t.id && t.url && !t.incognito && !isExcludedDomain(domainOf(t.url), settings.excludedDomains)
+        ? [{ tabId: t.id, url: t.url }]
+        : [],
     );
     return eng.syncAudio(audible, now);
   }
@@ -252,9 +255,13 @@ export default defineBackground(() => {
     if (!tab?.id) return;
     // Never persist anything about private windows.
     if (tab.incognito) return;
+    const domain = domainOf(tab.url ?? '');
     // Only record metadata for real web pages — internal pages aren't "sites" and
-    // shouldn't appear in the tab list or stale tracking.
-    if (!isWebDomain(domainOf(tab.url ?? ''))) return;
+    // shouldn't appear in the tab list or stale tracking. Same for a domain the
+    // user excluded: it must be as invisible as an internal page.
+    if (!isWebDomain(domain)) return;
+    const settings = await getSettings();
+    if (settings.trackingPaused || isExcludedDomain(domain, settings.excludedDomains)) return;
     const existing = await repo.getTabMeta(tab.id);
     await repo.upsertTabMeta({
       tabId: tab.id,
@@ -304,6 +311,14 @@ export default defineBackground(() => {
     ]);
     const liveIds = new Set(tabs.flatMap((t) => (t.id ? [t.id] : [])));
     const stale = findStale(metas.filter((m) => liveIds.has(m.tabId)), Date.now(), settings.staleDays);
+    // Paused overrides the stale count — it's the more important thing for the
+    // user to notice at a glance, and this is the only always-visible signal
+    // that nothing is being tracked right now.
+    if (settings.trackingPaused) {
+      await actionApi.setBadgeText({ text: '❚❚' });
+      await actionApi.setBadgeBackgroundColor({ color: '#6b7280' });
+      return;
+    }
     await actionApi.setBadgeText({ text: stale.length ? String(stale.length) : '' });
     await actionApi.setBadgeBackgroundColor({ color: '#b0552f' });
   }
@@ -468,7 +483,9 @@ export default defineBackground(() => {
       await persist(eng, []);
       return;
     }
-    const closed = eng.handleFocus(tabId, tab.url, now, !!tab.audible);
+    const settings = await getSettings();
+    const excluded = settings.trackingPaused || isExcludedDomain(domainOf(tab.url), settings.excludedDomains);
+    const closed = eng.handleFocus(tabId, tab.url, now, !!tab.audible, excluded);
     closed.push(...(await syncAudioSessions(eng, now)));
     await touchTab(tabId, now, tab);
     await persist(eng, closed);
@@ -500,7 +517,9 @@ export default defineBackground(() => {
       await persist(eng, closed);
       return;
     }
-    const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible);
+    const settings = await getSettings();
+    const excluded = settings.trackingPaused || isExcludedDomain(domainOf(tab.url), settings.excludedDomains);
+    const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible, excluded);
     closed.push(...(await syncAudioSessions(eng, now)));
     await touchTab(tab.id, now);
     await persist(eng, closed);
@@ -522,7 +541,9 @@ export default defineBackground(() => {
         await persist(eng, []);
         return;
       }
-      const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible);
+      const settings = await getSettings();
+      const excluded = settings.trackingPaused || isExcludedDomain(domainOf(tab.url), settings.excludedDomains);
+      const closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible, excluded);
       closed.push(...(await syncAudioSessions(eng, now))); // resume audio after idle
       await touchTab(tab.id, now);
       await persist(eng, closed);
@@ -542,6 +563,8 @@ export default defineBackground(() => {
     const now = Date.now();
     const closed: ClosedSession[] = [];
     if (changeInfo.url) {
+      const settings = await getSettings();
+      const excluded = settings.trackingPaused || isExcludedDomain(domainOf(changeInfo.url), settings.excludedDomains);
       const focusedTabId = eng.getState().focused?.tabId;
       // `tab.active` alone is per-window — require the genuinely focused window so
       // a background window's active tab can't hijack the focused session.
@@ -551,9 +574,9 @@ export default defineBackground(() => {
         // to a real web page. The engine isn't tracking it yet, and no onActivated
         // will fire for an in-tab navigation — so start the session here. Without
         // this, "open browser → type a URL → read it" records zero time.
-        closed.push(...eng.handleFocus(tabId, changeInfo.url, now, !!tab.audible));
+        closed.push(...eng.handleFocus(tabId, changeInfo.url, now, !!tab.audible, excluded));
       } else {
-        closed.push(...eng.handleUrlChange(tabId, changeInfo.url, now));
+        closed.push(...eng.handleUrlChange(tabId, changeInfo.url, now, excluded));
       }
       if (tab.active) await touchTab(tabId, now, tab);
     }
@@ -576,7 +599,8 @@ export default defineBackground(() => {
     if (state.focused?.tabId !== tabId) return; // only the focused, tracked tab
     const now = Date.now();
     const before = state.focused.url;
-    const closed = eng.handleUrlChange(tabId, url, now);
+    const settings = await getSettings();
+    const closed = eng.handleUrlChange(tabId, url, now, isExcludedDomain(domainOf(url), settings.excludedDomains));
     if (!closed.length && eng.getState().focused?.url === before) return; // nothing changed
     await touchTab(tabId, now);
     await persist(eng, closed);
@@ -744,9 +768,27 @@ export default defineBackground(() => {
       invalidateSettings(); // the dashboard just wrote new settings — drop stale cache
       const settings = await getSettings();
       browser.idle?.setDetectionInterval?.(settings.idleSeconds);
-      // Apply audio on/off immediately rather than waiting for the next heartbeat.
       const eng = await getEngine();
-      await persist(eng, await syncAudioSessions(eng, Date.now()));
+      const now = Date.now();
+      let closed: ClosedSession[] = [];
+      if (settings.trackingPaused) {
+        // Stop counting the instant the user pauses, rather than waiting for a
+        // tab switch or the next heartbeat to notice.
+        closed = eng.handleBlur(now);
+      } else {
+        // Resuming: re-focus whatever tab is actually active right now so
+        // un-pausing while staying on the same tab starts counting immediately
+        // instead of waiting for the next tab switch. A no-op if the engine was
+        // already tracking this exact tab+page (handleFocus's same-tab guard).
+        const [tab] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
+        if (tab?.id && tab.url && !tab.incognito) {
+          closed = eng.handleFocus(tab.id, tab.url, now, !!tab.audible, isExcludedDomain(domainOf(tab.url), settings.excludedDomains));
+          await touchTab(tab.id, now, tab);
+        }
+      }
+      // Apply audio on/off immediately rather than waiting for the next heartbeat.
+      closed.push(...(await syncAudioSessions(eng, now)));
+      await persist(eng, closed);
       await updateBadge();
     } else if (msg?.type === 'wipe-data') {
       await repo.wipeAll();

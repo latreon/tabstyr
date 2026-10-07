@@ -15,6 +15,8 @@ const test = base.extend<{ context: BrowserContext; extensionId: string }>({
       viewport: { width: 1280, height: 900 },
       args: [`--disable-extensions-except=${EXT_PATH}`, `--load-extension=${EXT_PATH}`],
     });
+    // These tests use tiles inside the collapsible dashboard groups, so start with them open.
+    await context.addInitScript(() => localStorage.setItem('tabstyr:dashboardGroups', JSON.stringify({ trends: true, settings: true })));
     await use(context);
     await context.close();
   },

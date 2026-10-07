@@ -10,6 +10,7 @@ import { renderWrappedCard, canvasToImageBlob, type WrappedCardContent } from '@
 import type { WrappedData } from '@ext/wrapped';
 import { faviconUrl } from '@/lib/favicon';
 import WrappedIcon from './WrappedIcon.vue';
+import ToggleSwitch from '../ToggleSwitch.vue';
 
 const props = defineProps<{ data: WrappedData; custom?: CustomCategory[] }>();
 const { t } = useI18n();
@@ -22,6 +23,8 @@ const saved = ref(false);
 // Real top-site favicon, preloaded CORS-clean so it can be drawn on the export
 // canvas; null until it loads (card falls back to a letter chip meanwhile/forever).
 const siteIcon = ref<HTMLImageElement | null>(null);
+// Leaves the top site off the card, the only place a site name appears on it.
+const hideSites = ref(false);
 
 // The encoded PNG is cached so repeated Save/Share clicks never re-encode the
 // 2160×3840 canvas; it's invalidated whenever the card is redrawn.
@@ -52,7 +55,7 @@ const peakLabel = computed(() => {
 const content = computed<WrappedCardContent>(() => {
   const d = props.data;
   const rows: WrappedCardContent['rows'] = [];
-  if (d.topSite)
+  if (d.topSite && !hideSites.value)
     rows.push({
       label: t('wrapped.card.topSite'),
       value: `${d.topSite.label} · ${formatDuration(d.topSite.seconds)}`,
@@ -219,7 +222,7 @@ const cardAria = computed(() => {
     t(`wrapped.persona.${d.persona.id}.title`),
     `${t('wrapped.card.totalCaption')}: ${formatDuration(d.totalSeconds)}`,
   ];
-  if (d.topSite) parts.push(`${t('wrapped.card.topSite')}: ${d.topSite.label} ${formatDuration(d.topSite.seconds)}`);
+  if (d.topSite && !hideSites.value) parts.push(`${t('wrapped.card.topSite')}: ${d.topSite.label} ${formatDuration(d.topSite.seconds)}`);
   if (d.topCategory) parts.push(`${t('wrapped.card.topCategory')}: ${categoryLabel(d.topCategory.category, t)} ${d.topCategory.pct}%`);
   parts.push(`${t('wrapped.card.focus')}: ${d.focusPct}%`);
   return parts.join('. ');
@@ -231,6 +234,10 @@ const cardAria = computed(() => {
     <p class="card-kicker">{{ t('wrapped.card.shareKicker') }}</p>
     <div class="card-frame">
       <canvas ref="canvas" class="card-canvas" :aria-label="cardAria" role="img" />
+    </div>
+    <div v-if="data.topSite" class="hide-sites">
+      <ToggleSwitch v-model="hideSites" :label="t('wrapped.card.hideSites')" />
+      <span aria-hidden="true" @click="hideSites = !hideSites">{{ t('wrapped.card.hideSites') }}</span>
     </div>
     <div class="card-actions">
       <button type="button" class="btn btn-primary" :class="{ ok: saved }" :disabled="preparing" @click="download">
@@ -282,6 +289,8 @@ const cardAria = computed(() => {
 .card-canvas { display: block; width: 100%; height: 100%; }
 
 .card-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.hide-sites { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: var(--text-2); }
+.hide-sites span { cursor: pointer; }
 .btn {
   display: inline-flex;
   align-items: center;

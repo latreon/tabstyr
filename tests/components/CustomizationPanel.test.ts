@@ -100,7 +100,7 @@ describe('CustomizationPanel: custom categories', () => {
 describe('CustomizationPanel: rules', () => {
   async function addRule(w: VueWrapper, pattern: string) {
     await ruleInput(w).setValue(pattern);
-    await w.findAll('form').at(-1)!.trigger('submit');
+    await w.findAll('form')[1].trigger('submit');
   }
 
   test('adding a rule persists it lowercased and trimmed', async () => {

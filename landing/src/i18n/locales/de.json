@@ -69,8 +69,8 @@
         "body": "Aktivitätstrends nach Tag / Woche / Monat, plus diese Woche gegen letzte Woche nach Kategorie."
       },
       {
-        "title": "Fokus-Score",
-        "body": "Produktiv ÷ ablenkend, eine tägliche Serie und ein Fokus-Trend über die Zeit."
+        "title": "Fokus-Anteil",
+        "body": "Dein eigener Anteil aus produktiver und ablenkender Zeit. Du legst fest, welche Kategorien zählen, und setzt dein eigenes Ziel."
       },
       {
         "title": "Aktivitäts-Heatmap",
@@ -106,6 +106,24 @@
     ],
     "watchDemo": "40-Sekunden-Demo ansehen",
     "videoAria": "TabStyr-Dashboard-Rundgang"
+  },
+  "workLog": {
+    "eyebrow": "Für Freelancer, Forschung und Remote-Arbeit",
+    "title": "Woran habe ich heute gearbeitet?",
+    "sub": "TabStyr macht aus deinem Surftag einen kurzen Bericht über die genutzten Websites. Füge ihn in ein Stand-up, eine Zeiterfassung oder deine Forschungsnotizen ein.",
+    "exampleAria": "Beispiel für ein tägliches Arbeitsprotokoll",
+    "exampleLabel": "Beispiel",
+    "exampleDay": "Heute",
+    "exampleSummary": "— du hast 6 Std. 10 Min. auf 4 Websites verbracht.",
+    "copy": "Kopieren",
+    "copyTitle": "Ein Tagesbericht, bereit zum Teilen",
+    "copyBody": "Öffne am Ende des Tages das Dashboard und die Liste ist schon da. Keine Timer zum Starten oder Stoppen.",
+    "bullets": [
+      "Jede Website des Tages mit Kategorie und aktiver Zeit",
+      "Mit einem Klick als Text kopieren",
+      "Den Tag als CSV oder als PNG-Berichtskarte exportieren",
+      "Zurück zu jedem der letzten 90 Tage"
+    ]
   },
   "showcase": {
     "eyebrow": "Von überall ein Blick",
@@ -191,7 +209,7 @@
     "supportCta": "Spendier mir einen Kaffee"
   },
   "cta": {
-    "title": "Hol dir deine Browser-Zeit zurück.",
+    "title": "Wisse, wohin deine Browserzeit geht.",
     "sub": "In zwei Klicks installiert. Deine Browserdaten verlassen nie das Gerät. Deinstallieren entfernt alles.",
     "primary": "Zu Chrome hinzufügen — kostenlos",
     "comingSoon": "Demnächst für Chrome",
@@ -304,7 +322,9 @@
       "Das Ideen-Formular auf dieser Website sendet deine Nachricht, ihren Typ und, falls angegeben, deine E-Mail an Formspree, einen Formulardienst, der sie an den Entwickler weiterleitet.",
       "Wenn du die Erweiterung entfernst, öffnet dein Browser dieses Formular auf tabstyr.com. Das Absenden ist freiwillig.",
       "Diese Website nutzt keine Analytics- oder Tracking-Skripte."
-    ]
+    ],
+    "captchaNote": "Wenn der Spamschutz aktiv ist, lädt das Formular zusätzlich eine hCaptcha-Prüfung, die hCaptcha verarbeitet.",
+    "supportNote": "Der Link „Buy me a coffee“ öffnet eine Polar-Bezahlseite. Wenn du zahlst, wickelt Polar die Zahlung ab."
   },
   "ideaPage": {
     "back": "← Zurück zur Seite",
@@ -468,6 +488,7 @@
     "card": {
       "heading": "Browsing Wrapped",
       "shareKicker": "Deine teilbare Karte",
+      "hideSites": "Website-Namen ausblenden",
       "totalCaption": "gesamtes aktives Browsing",
       "topSite": "Top-Seite",
       "topCategory": "Top-Kategorie",

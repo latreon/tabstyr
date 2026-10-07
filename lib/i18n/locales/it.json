@@ -69,7 +69,9 @@
     "dashboard": "Dashboard",
     "loadError": "Impossibile caricare le statistiche — prova a riaprire il popup.",
     "topSitesAria": "Siti principali di oggi",
-    "openAria": "Apri {domain} — {time} oggi"
+    "openAria": "Apri {domain} — {time} oggi",
+    "pauseTracking": "Metti in pausa il monitoraggio",
+    "resumeTracking": "Riprendi il monitoraggio"
   },
   "hero": {
     "todayActive": "Oggi · attivo",
@@ -236,6 +238,8 @@
     "language": "Lingua",
     "staleDays": "Obsoleta dopo (giorni)",
     "idleSeconds": "Timeout di inattività (secondi)",
+    "pauseTracking": "Metti in pausa il monitoraggio",
+    "pauseTrackingHint": "Ferma tutto il monitoraggio finché non lo riattivi. Il tempo registrato resta.",
     "countAudio": "Conta audio in background",
     "save": "Salva",
     "wipe": "Cancella tutti i dati",
@@ -252,6 +256,16 @@
     "ruleRemoveFailed": "Impossibile rimuovere la regola",
     "removeRuleAria": "Rimuovi regola per {pattern}",
     "categoryForRuleAria": "Categoria per la regola",
+    "excludedDomains": "Siti esclusi",
+    "excludedDomainsHint": "I siti qui non vengono mai monitorati: nessuna sessione, nessuna voce nella dashboard. A differenza di una regola di categoria, questo interrompe il monitoraggio invece di limitarsi a cambiarne il conteggio. Il tempo già registrato resta. Per eliminarlo, usa «Cancella tutti i dati» nelle impostazioni.",
+    "noExcludedDomains": "Ancora nessun sito escluso.",
+    "excludedDomainPlaceholder": "es. reddit.com",
+    "excludeExists": "Questo sito è già escluso.",
+    "excludeInvalid": "Inserisci un sito come reddit.com.",
+    "excludeAdded": "Sito escluso",
+    "excludeAddFailed": "Impossibile escludere questo sito",
+    "excludeRemoveFailed": "Impossibile rimuovere questa esclusione",
+    "removeExcludedAria": "Rimuovi l'esclusione di {domain}",
     "customCategories": "Categorie personalizzate",
     "customCategoriesHint": "Aggiungi le tue categorie oltre a quelle integrate, poi assegna loro siti o regole. Le categorie integrate non possono essere rinominate o rimosse.",
     "noCustomCategories": "Nessuna categoria personalizzata ancora.",
@@ -333,6 +347,8 @@
     "merged": "Uniti — {sessions} sessioni combinate.",
     "importCsv": "Importa CSV",
     "importCsvHint": "Carica dati da un altro tracker: un CSV con colonne data, sito e tempo (es. un export di RescueTime). Il tempo importato è mostrato come stima e non sovrascrive mai i giorni misurati.",
+    "wrappedHint": "Browsing Wrapped trasforma un backup in una storia da condividere. Esporta un backup qui sopra e trascina il file nella pagina Wrapped. Il file viene letto nel browser e mai caricato.",
+    "openWrapped": "Crea il tuo Wrapped",
     "imported": "{count} voci importate (stimate).",
     "importEmpty": "Nessuna riga utilizzabile in quel CSV.",
     "importInvalid": "Impossibile leggere il CSV — servono colonne data, sito e tempo."
@@ -359,7 +375,9 @@
     "dismiss": "No grazie"
   },
   "dashboard": {
-    "statsAria": "Statistiche di utilizzo del browser"
+    "statsAria": "Statistiche di utilizzo del browser",
+    "trendsGroup": "Tendenze e abitudini",
+    "settingsGroup": "Schede, categorie e impostazioni"
   },
   "notification": {
     "stale": "{count} schede non toccate da {days}+ giorni",

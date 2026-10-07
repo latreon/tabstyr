@@ -69,7 +69,9 @@
     "dashboard": "ダッシュボード",
     "loadError": "統計を読み込めませんでした — ポップアップを開き直してください。",
     "topSitesAria": "今日のトップサイト",
-    "openAria": "{domain}を開く — 今日{time}"
+    "openAria": "{domain}を開く — 今日{time}",
+    "pauseTracking": "トラッキングを一時停止",
+    "resumeTracking": "トラッキングを再開"
   },
   "hero": {
     "todayActive": "今日 · アクティブ",
@@ -236,6 +238,8 @@
     "language": "言語",
     "staleDays": "古いと見なすまで（日数）",
     "idleSeconds": "アイドルタイムアウト（秒）",
+    "pauseTracking": "トラッキングを一時停止",
+    "pauseTrackingHint": "再びオンにするまで、すべてのトラッキングを止めます。記録済みの時間は残ります。",
     "countAudio": "バックグラウンド音声をカウント",
     "save": "保存",
     "wipe": "すべてのデータを消去",
@@ -252,6 +256,16 @@
     "ruleRemoveFailed": "ルールを削除できませんでした",
     "removeRuleAria": "{pattern}のルールを削除",
     "categoryForRuleAria": "ルールのカテゴリ",
+    "excludedDomains": "除外サイト",
+    "excludedDomainsHint": "ここに追加したサイトは一切記録されません — セッションもダッシュボードへの表示もありません。カテゴリルールと違い、集計方法を変えるのではなく記録自体を止めます。 記録済みの時間は残ります。削除するには設定の「すべてのデータを消去」を使ってください。",
+    "noExcludedDomains": "除外サイトはまだありません。",
+    "excludedDomainPlaceholder": "例: reddit.com",
+    "excludeExists": "そのサイトはすでに除外されています。",
+    "excludeInvalid": "reddit.com のようなサイトを入力してください。",
+    "excludeAdded": "サイトを除外しました",
+    "excludeAddFailed": "サイトを除外できませんでした",
+    "excludeRemoveFailed": "除外を解除できませんでした",
+    "removeExcludedAria": "{domain} の除外を解除",
     "customCategories": "カスタムカテゴリ",
     "customCategoriesHint": "組み込みのカテゴリに加えて独自のカテゴリを追加し、サイトやルールを割り当てられます。組み込みカテゴリは名前の変更や削除はできません。",
     "noCustomCategories": "カスタムカテゴリはまだありません。",
@@ -333,6 +347,8 @@
     "merged": "マージしました — {sessions} 件のセッションを統合。",
     "importCsv": "CSVをインポート",
     "importCsvHint": "他のトラッカーのデータを取り込みます。日付・サイト・時間の列を持つCSV（例：RescueTimeのエクスポート）。取り込んだ時間は推定として表示され、計測済みの日を上書きしません。",
+    "wrappedHint": "Browsing Wrapped はバックアップを共有できるストーリーに変えます。上でバックアップをエクスポートし、Wrapped ページにファイルをドロップしてください。ファイルはブラウザ内で読み込まれ、アップロードされません。",
+    "openWrapped": "Wrapped を作成",
     "imported": "{count} 件をインポートしました（推定）。",
     "importEmpty": "このCSVに使える行が見つかりませんでした。",
     "importInvalid": "このCSVを読み取れませんでした — 日付・サイト・時間の列が必要です。"
@@ -359,7 +375,9 @@
     "dismiss": "いいえ結構です"
   },
   "dashboard": {
-    "statsAria": "ブラウザ使用統計"
+    "statsAria": "ブラウザ使用統計",
+    "trendsGroup": "推移とパターン",
+    "settingsGroup": "タブ、カテゴリ、設定"
   },
   "notification": {
     "stale": "{count} 個のタブが {days} 日以上未使用です",
