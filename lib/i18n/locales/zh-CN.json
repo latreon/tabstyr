@@ -374,7 +374,9 @@
     "dismiss": "不用了"
   },
   "dashboard": {
-    "statsAria": "浏览器使用统计"
+    "statsAria": "浏览器使用统计",
+    "trendsGroup": "趋势与规律",
+    "settingsGroup": "标签页、分类和设置"
   },
   "notification": {
     "stale": "{count} 个标签页已 {days} 天以上未使用",

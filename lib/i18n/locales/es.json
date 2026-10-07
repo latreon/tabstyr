@@ -374,7 +374,9 @@
     "dismiss": "No, gracias"
   },
   "dashboard": {
-    "statsAria": "Estadísticas de uso del navegador"
+    "statsAria": "Estadísticas de uso del navegador",
+    "trendsGroup": "Tendencias y patrones",
+    "settingsGroup": "Pestañas, categorías y ajustes"
   },
   "notification": {
     "stale": "{count} pestañas sin tocar durante más de {days} días",

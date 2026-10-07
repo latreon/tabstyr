@@ -374,7 +374,9 @@
     "dismiss": "괜찮습니다"
   },
   "dashboard": {
-    "statsAria": "브라우저 사용 통계"
+    "statsAria": "브라우저 사용 통계",
+    "trendsGroup": "추세와 패턴",
+    "settingsGroup": "탭, 카테고리, 설정"
   },
   "notification": {
     "stale": "{count}개 탭이 {days}일 이상 사용되지 않음",

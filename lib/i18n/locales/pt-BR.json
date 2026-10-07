@@ -374,7 +374,9 @@
     "dismiss": "Não, obrigado"
   },
   "dashboard": {
-    "statsAria": "Estatísticas de uso do navegador"
+    "statsAria": "Estatísticas de uso do navegador",
+    "trendsGroup": "Tendências e padrões",
+    "settingsGroup": "Abas, categorias e configurações"
   },
   "notification": {
     "stale": "{count} abas sem uso por {days}+ dias",

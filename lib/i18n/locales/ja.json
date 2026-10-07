@@ -374,7 +374,9 @@
     "dismiss": "いいえ結構です"
   },
   "dashboard": {
-    "statsAria": "ブラウザ使用統計"
+    "statsAria": "ブラウザ使用統計",
+    "trendsGroup": "推移とパターン",
+    "settingsGroup": "タブ、カテゴリ、設定"
   },
   "notification": {
     "stale": "{count} 個のタブが {days} 日以上未使用です",

@@ -374,7 +374,9 @@
     "dismiss": "Nein danke"
   },
   "dashboard": {
-    "statsAria": "Browser-Nutzungsstatistiken"
+    "statsAria": "Browser-Nutzungsstatistiken",
+    "trendsGroup": "Trends und Muster",
+    "settingsGroup": "Tabs, Kategorien und Einstellungen"
   },
   "notification": {
     "stale": "{count} Tabs seit über {days} Tagen unberührt",

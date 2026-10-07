@@ -374,7 +374,9 @@
     "dismiss": "No grazie"
   },
   "dashboard": {
-    "statsAria": "Statistiche di utilizzo del browser"
+    "statsAria": "Statistiche di utilizzo del browser",
+    "trendsGroup": "Tendenze e abitudini",
+    "settingsGroup": "Schede, categorie e impostazioni"
   },
   "notification": {
     "stale": "{count} schede non toccate da {days}+ giorni",

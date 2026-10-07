@@ -696,6 +696,9 @@ button:focus-visible {
   padding-top: var(--sp-3);
   border-top: 1px solid var(--divider);
 }
+a.btn {
+  text-decoration: none;
+}
 .export-btns {
   display: flex;
   flex-direction: column;

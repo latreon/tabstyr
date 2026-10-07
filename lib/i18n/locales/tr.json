@@ -374,7 +374,9 @@
     "dismiss": "Hayır, teşekkürler"
   },
   "dashboard": {
-    "statsAria": "Tarayıcı kullanım istatistikleri"
+    "statsAria": "Tarayıcı kullanım istatistikleri",
+    "trendsGroup": "Eğilimler ve kalıplar",
+    "settingsGroup": "Sekmeler, kategoriler ve ayarlar"
   },
   "notification": {
     "stale": "{count} sekme {days}+ gündür kullanılmadı",

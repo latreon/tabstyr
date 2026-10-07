@@ -374,7 +374,9 @@
     "dismiss": "Non merci"
   },
   "dashboard": {
-    "statsAria": "Statistiques d'utilisation du navigateur"
+    "statsAria": "Statistiques d'utilisation du navigateur",
+    "trendsGroup": "Tendances et habitudes",
+    "settingsGroup": "Onglets, catégories et réglages"
   },
   "notification": {
     "stale": "{count} onglets inactifs depuis plus de {days} jours",
