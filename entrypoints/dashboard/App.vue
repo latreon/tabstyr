@@ -270,7 +270,7 @@ onBeforeUnmount(() => {
       <!-- row: 2 + 1 — Open tabs by time beside Settings -->
       <TabTable :rows="s.tabRows.value" />
       <SettingsPanel @changed="() => reload({ silent: true })" />
-      <CustomizationPanel :custom="s.customCategories.value" :category-rules="s.categoryRules.value" @changed="() => reload({ silent: true })" />
+      <CustomizationPanel :custom="s.customCategories.value" :category-rules="s.categoryRules.value" :excluded-domains="s.excludedDomains.value" @changed="() => reload({ silent: true })" />
       </section>
     </template>
   </main>
