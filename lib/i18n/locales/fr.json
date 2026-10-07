@@ -346,6 +346,8 @@
     "merged": "Fusionné — {sessions} sessions combinées.",
     "importCsv": "Importer un CSV",
     "importCsvHint": "Importez des données d'un autre outil : un CSV avec des colonnes date, site et temps (ex. un export RescueTime). Le temps importé est affiché comme une estimation et n'écrase jamais les jours mesurés.",
+    "wrappedHint": "Browsing Wrapped transforme une sauvegarde en récit à partager. Exportez une sauvegarde ci-dessus, puis déposez le fichier sur la page Wrapped. Le fichier est lu dans votre navigateur et n'est jamais envoyé.",
+    "openWrapped": "Créer votre Wrapped",
     "imported": "{count} entrées importées (estimées).",
     "importEmpty": "Aucune ligne exploitable dans ce CSV.",
     "importInvalid": "Impossible de lire ce CSV — colonnes date, site et temps requises."

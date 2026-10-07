@@ -346,6 +346,8 @@
     "merged": "Birleştirildi — {sessions} oturum eklendi.",
     "importCsv": "CSV içe aktar",
     "importCsvHint": "Başka bir izleyiciden veri alın: tarih, site ve süre sütunları olan bir CSV (ör. RescueTime dışa aktarımı). İçe aktarılan süre tahmini olarak gösterilir ve ölçülen günlerin üzerine asla yazmaz.",
+    "wrappedHint": "Browsing Wrapped bir yedeği paylaşılabilir bir hikâyeye dönüştürür. Yukarıdan bir yedek dışa aktarın, sonra dosyayı Wrapped sayfasına bırakın. Dosya tarayıcınızda okunur ve asla yüklenmez.",
+    "openWrapped": "Wrapped'ını oluştur",
     "imported": "{count} kayıt içe aktarıldı (tahmini).",
     "importEmpty": "Bu CSV’de kullanılabilir satır bulunamadı.",
     "importInvalid": "CSV okunamadı — tarih, site ve süre sütunları gerekir."

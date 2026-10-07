@@ -468,6 +468,7 @@
     "card": {
       "heading": "브라우징 결산",
       "shareKicker": "공유할 수 있는 당신의 카드",
+      "hideSites": "사이트 이름 숨기기",
       "totalCaption": "총 활동 브라우징",
       "topSite": "최다 사이트",
       "topCategory": "최다 카테고리",

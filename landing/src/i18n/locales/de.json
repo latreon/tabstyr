@@ -468,6 +468,7 @@
     "card": {
       "heading": "Browsing Wrapped",
       "shareKicker": "Deine teilbare Karte",
+      "hideSites": "Website-Namen ausblenden",
       "totalCaption": "gesamtes aktives Browsing",
       "topSite": "Top-Seite",
       "topCategory": "Top-Kategorie",

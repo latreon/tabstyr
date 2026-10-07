@@ -346,6 +346,8 @@
     "merged": "マージしました — {sessions} 件のセッションを統合。",
     "importCsv": "CSVをインポート",
     "importCsvHint": "他のトラッカーのデータを取り込みます。日付・サイト・時間の列を持つCSV（例：RescueTimeのエクスポート）。取り込んだ時間は推定として表示され、計測済みの日を上書きしません。",
+    "wrappedHint": "Browsing Wrapped はバックアップを共有できるストーリーに変えます。上でバックアップをエクスポートし、Wrapped ページにファイルをドロップしてください。ファイルはブラウザ内で読み込まれ、アップロードされません。",
+    "openWrapped": "Wrapped を作成",
     "imported": "{count} 件をインポートしました（推定）。",
     "importEmpty": "このCSVに使える行が見つかりませんでした。",
     "importInvalid": "このCSVを読み取れませんでした — 日付・サイト・時間の列が必要です。"

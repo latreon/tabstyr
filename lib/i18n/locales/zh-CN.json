@@ -346,6 +346,8 @@
     "merged": "已合并 — 结合了 {sessions} 个会话。",
     "importCsv": "导入 CSV",
     "importCsvHint": "从其他追踪器导入数据：包含日期、站点和时间列的 CSV（如 RescueTime 导出）。导入的时间显示为估算值，绝不会覆盖已测量的日期。",
+    "wrappedHint": "Browsing Wrapped 可以把备份变成可分享的故事。先在上方导出备份，再把文件拖到 Wrapped 页面。文件只在你的浏览器中读取，绝不会上传。",
+    "openWrapped": "创建你的 Wrapped",
     "imported": "已导入 {count} 条（估算）。",
     "importEmpty": "该 CSV 中未找到可用行。",
     "importInvalid": "无法读取该 CSV — 需要日期、站点和时间列。"

@@ -346,6 +346,8 @@
     "merged": "Merged — {sessions} sessions combined.",
     "importCsv": "Import CSV",
     "importCsvHint": "Seed data from another tracker: a CSV with date, site and time columns (e.g. a RescueTime export). Imported time is shown as an estimate and never overwrites measured days.",
+    "wrappedHint": "Browsing Wrapped turns a backup into a shareable story. Export a backup above, then drop the file on the Wrapped page. The file is read in your browser and never uploaded.",
+    "openWrapped": "Create your Wrapped",
     "imported": "Imported {count} entries (estimated).",
     "importEmpty": "No usable rows found in that CSV.",
     "importInvalid": "Couldn't read that CSV — it needs date, site and time columns."

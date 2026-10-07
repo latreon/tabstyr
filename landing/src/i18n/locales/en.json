@@ -477,6 +477,7 @@
     "card": {
       "heading": "Browsing Wrapped",
       "shareKicker": "Your shareable card",
+      "hideSites": "Hide site names",
       "totalCaption": "total active browsing",
       "topSite": "Top site",
       "topCategory": "Top category",

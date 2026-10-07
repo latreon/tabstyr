@@ -10,6 +10,7 @@ import { SUPPORTED_LOCALES, resolveLocale } from '@/lib/i18n';
 import * as repo from '@/lib/db/repo';
 import { downloadFile, toJsonBackup } from '@/lib/export';
 import { encryptToEnvelope, isEncryptedEnvelope, decryptFromEnvelope, MIN_PASSPHRASE } from '@/lib/crypto';
+import { WRAPPED_URL } from '@/lib/links';
 import { parseBackup, restoreBackup, MAX_BACKUP_BYTES, type ParsedBackup } from '@/lib/restore';
 import { mergeBackup, mergeSettingsMaps } from '@/lib/merge';
 import { parseCsvImport } from '@/lib/import-csv';
@@ -527,6 +528,8 @@ async function confirmWipe() {
         </div>
       </div>
       <p class="rules-hint">{{ t('settings.importCsvHint') }}</p>
+      <p class="rules-hint">{{ t('settings.wrappedHint') }}</p>
+      <a class="btn btn-ghost btn-sm btn-block" :href="WRAPPED_URL" target="_blank" rel="noopener">{{ t('settings.openWrapped') }}</a>
       <input ref="fileInput" type="file" accept="application/json,.json" class="sr-only" aria-hidden="true" tabindex="-1" @change="onRestoreFile" />
       <input ref="csvInput" type="file" accept="text/csv,.csv" class="sr-only" aria-hidden="true" tabindex="-1" @change="onCsvFile" />
 

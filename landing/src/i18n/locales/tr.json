@@ -465,6 +465,7 @@
     "card": {
       "heading": "Tarama Özeti",
       "shareKicker": "Paylaşılabilir kartınız",
+      "hideSites": "Site adlarını gizle",
       "totalCaption": "toplam aktif tarama",
       "topSite": "En çok kullanılan site",
       "topCategory": "En çok kullanılan kategori",

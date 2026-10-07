@@ -468,6 +468,7 @@
     "card": {
       "heading": "Retrospectiva de Navegação",
       "shareKicker": "Seu cartão compartilhável",
+      "hideSites": "Ocultar nomes dos sites",
       "totalCaption": "navegação ativa total",
       "topSite": "Site principal",
       "topCategory": "Categoria principal",

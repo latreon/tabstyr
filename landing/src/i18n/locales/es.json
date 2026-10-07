@@ -465,6 +465,7 @@
     "card": {
       "heading": "Tu Resumen de Navegación",
       "shareKicker": "Tu tarjeta para compartir",
+      "hideSites": "Ocultar nombres de sitios",
       "totalCaption": "navegación activa total",
       "topSite": "Sitio favorito",
       "topCategory": "Categoría favorita",

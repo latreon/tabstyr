@@ -22,6 +22,8 @@ const saved = ref(false);
 // Real top-site favicon, preloaded CORS-clean so it can be drawn on the export
 // canvas; null until it loads (card falls back to a letter chip meanwhile/forever).
 const siteIcon = ref<HTMLImageElement | null>(null);
+// Leaves the top site off the card, the only place a site name appears on it.
+const hideSites = ref(false);
 
 // The encoded PNG is cached so repeated Save/Share clicks never re-encode the
 // 2160×3840 canvas; it's invalidated whenever the card is redrawn.
@@ -52,7 +54,7 @@ const peakLabel = computed(() => {
 const content = computed<WrappedCardContent>(() => {
   const d = props.data;
   const rows: WrappedCardContent['rows'] = [];
-  if (d.topSite)
+  if (d.topSite && !hideSites.value)
     rows.push({
       label: t('wrapped.card.topSite'),
       value: `${d.topSite.label} · ${formatDuration(d.topSite.seconds)}`,
@@ -219,7 +221,7 @@ const cardAria = computed(() => {
     t(`wrapped.persona.${d.persona.id}.title`),
     `${t('wrapped.card.totalCaption')}: ${formatDuration(d.totalSeconds)}`,
   ];
-  if (d.topSite) parts.push(`${t('wrapped.card.topSite')}: ${d.topSite.label} ${formatDuration(d.topSite.seconds)}`);
+  if (d.topSite && !hideSites.value) parts.push(`${t('wrapped.card.topSite')}: ${d.topSite.label} ${formatDuration(d.topSite.seconds)}`);
   if (d.topCategory) parts.push(`${t('wrapped.card.topCategory')}: ${categoryLabel(d.topCategory.category, t)} ${d.topCategory.pct}%`);
   parts.push(`${t('wrapped.card.focus')}: ${d.focusPct}%`);
   return parts.join('. ');
@@ -232,6 +234,10 @@ const cardAria = computed(() => {
     <div class="card-frame">
       <canvas ref="canvas" class="card-canvas" :aria-label="cardAria" role="img" />
     </div>
+    <label v-if="data.topSite" class="hide-sites">
+      <input v-model="hideSites" type="checkbox" />
+      {{ t('wrapped.card.hideSites') }}
+    </label>
     <div class="card-actions">
       <button type="button" class="btn btn-primary" :class="{ ok: saved }" :disabled="preparing" @click="download">
         <span class="ic">
@@ -282,6 +288,8 @@ const cardAria = computed(() => {
 .card-canvas { display: block; width: 100%; height: 100%; }
 
 .card-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.hide-sites { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--text-2); cursor: pointer; }
+.hide-sites input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
 .btn {
   display: inline-flex;
   align-items: center;

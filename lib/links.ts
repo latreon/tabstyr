@@ -4,6 +4,8 @@
 
 export const SITE_URL = 'https://tabstyr.com';
 
+export const WRAPPED_URL = `${SITE_URL}/wrapped`;
+
 // chrome.runtime.setUninstallURL opens this in the browser (not the extension)
 // right before uninstall completes — it's the only way to learn why someone
 // left. Routes to the same in-app "share an idea" form the rest of the site

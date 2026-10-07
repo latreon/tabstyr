@@ -346,6 +346,8 @@
     "merged": "Uniti — {sessions} sessioni combinate.",
     "importCsv": "Importa CSV",
     "importCsvHint": "Carica dati da un altro tracker: un CSV con colonne data, sito e tempo (es. un export di RescueTime). Il tempo importato è mostrato come stima e non sovrascrive mai i giorni misurati.",
+    "wrappedHint": "Browsing Wrapped trasforma un backup in una storia da condividere. Esporta un backup qui sopra e trascina il file nella pagina Wrapped. Il file viene letto nel browser e mai caricato.",
+    "openWrapped": "Crea il tuo Wrapped",
     "imported": "{count} voci importate (stimate).",
     "importEmpty": "Nessuna riga utilizzabile in quel CSV.",
     "importInvalid": "Impossibile leggere il CSV — servono colonne data, sito e tempo."

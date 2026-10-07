@@ -465,6 +465,7 @@
     "card": {
       "heading": "Browsing Wrapped",
       "shareKicker": "La tua scheda da condividere",
+      "hideSites": "Nascondi i nomi dei siti",
       "totalCaption": "navigazione attiva totale",
       "topSite": "Sito principale",
       "topCategory": "Categoria principale",

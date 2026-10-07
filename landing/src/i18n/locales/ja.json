@@ -465,6 +465,7 @@
     "card": {
       "heading": "Browsing Wrapped",
       "shareKicker": "シェアできるあなたのカード",
+      "hideSites": "サイト名を隠す",
       "totalCaption": "アクティブな閲覧時間の合計",
       "topSite": "トップサイト",
       "topCategory": "トップカテゴリ",

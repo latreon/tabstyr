@@ -346,6 +346,8 @@
     "merged": "Mesclado — {sessions} sessões combinadas.",
     "importCsv": "Importar CSV",
     "importCsvHint": "Importe dados de outro rastreador: um CSV com colunas de data, site e tempo (ex.: uma exportação do RescueTime). O tempo importado aparece como estimativa e nunca sobrescreve dias medidos.",
+    "wrappedHint": "O Browsing Wrapped transforma um backup em uma história para compartilhar. Exporte um backup acima e solte o arquivo na página do Wrapped. O arquivo é lido no seu navegador e nunca é enviado.",
+    "openWrapped": "Criar seu Wrapped",
     "imported": "{count} entradas importadas (estimadas).",
     "importEmpty": "Nenhuma linha utilizável nesse CSV.",
     "importInvalid": "Não foi possível ler o CSV — precisa de colunas de data, site e tempo."

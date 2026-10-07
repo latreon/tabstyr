@@ -346,6 +346,8 @@
     "merged": "Zusammengeführt — {sessions} Sitzungen kombiniert.",
     "importCsv": "CSV importieren",
     "importCsvHint": "Daten aus einem anderen Tracker laden: eine CSV mit Datum-, Website- und Zeitspalten (z. B. ein RescueTime-Export). Importierte Zeit wird als Schätzung angezeigt und überschreibt gemessene Tage nie.",
+    "wrappedHint": "Browsing Wrapped macht aus einer Sicherung eine teilbare Story. Exportiere oben eine Sicherung und zieh die Datei auf die Wrapped-Seite. Die Datei wird in deinem Browser gelesen und nie hochgeladen.",
+    "openWrapped": "Dein Wrapped erstellen",
     "imported": "{count} Einträge importiert (geschätzt).",
     "importEmpty": "Keine verwertbaren Zeilen in dieser CSV gefunden.",
     "importInvalid": "CSV konnte nicht gelesen werden – Datum-, Website- und Zeitspalten nötig."

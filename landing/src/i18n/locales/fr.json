@@ -465,6 +465,7 @@
     "card": {
       "heading": "Rétro de navigation",
       "shareKicker": "Votre carte à partager",
+      "hideSites": "Masquer les noms des sites",
       "totalCaption": "navigation active totale",
       "topSite": "Site principal",
       "topCategory": "Catégorie principale",

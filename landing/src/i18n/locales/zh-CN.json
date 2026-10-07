@@ -465,6 +465,7 @@
     "card": {
       "heading": "浏览年度回顾",
       "shareKicker": "你的可分享卡片",
+      "hideSites": "隐藏网站名称",
       "totalCaption": "活跃浏览总时长",
       "topSite": "热门网站",
       "topCategory": "热门类别",

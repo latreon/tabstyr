@@ -346,6 +346,8 @@
     "merged": "Combinado — {sessions} sesiones unidas.",
     "importCsv": "Importar CSV",
     "importCsvHint": "Carga datos de otro medidor: un CSV con columnas de fecha, sitio y tiempo (p. ej. una exportación de RescueTime). El tiempo importado se muestra como estimación y nunca sobrescribe días medidos.",
+    "wrappedHint": "Browsing Wrapped convierte una copia de seguridad en una historia para compartir. Exporta una copia arriba y suelta el archivo en la página de Wrapped. El archivo se lee en tu navegador y nunca se sube.",
+    "openWrapped": "Crear tu Wrapped",
     "imported": "{count} entradas importadas (estimadas).",
     "importEmpty": "No se encontraron filas utilizables en ese CSV.",
     "importInvalid": "No se pudo leer ese CSV: necesita columnas de fecha, sitio y tiempo."
