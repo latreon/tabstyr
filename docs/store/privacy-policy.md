@@ -52,6 +52,7 @@ trends. All of it stays on your device.
 | `webNavigation` | Detect in-page (SPA) route changes on the active tab so time is credited to the page you're actually on |
 | `downloads` | Optional scheduled backup export (off by default) — saves a JSON file to your device, never uploaded anywhere |
 | `favicon` (Chromium only) | Show site icons in lists |
+| `unlimitedStorage` (Chromium only) | Keep your history from being cleared by the browser when the disk runs low. Nothing is sent anywhere |
 
 No host permissions are requested; the extension cannot access the content of the
 pages you visit.

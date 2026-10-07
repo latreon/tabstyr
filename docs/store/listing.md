@@ -92,6 +92,7 @@ entirely on your own device, to help you understand and manage your browsing.
   so browsing time is attributed to the page actually viewed. Only the focused
   tab's top-frame URL is read; no page content is accessed.
 - favicon: Display website icons in lists (Chromium only).
+- unlimitedStorage: Keep the user's locally stored history from being evicted by the browser when disk space runs low. All data stays on the device; nothing is uploaded.
 
 ## Screenshots & promo images
 

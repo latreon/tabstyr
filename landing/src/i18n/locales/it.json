@@ -311,6 +311,10 @@
       {
         "perm": "favicon (Chromium)",
         "why": "Mostrare le icone dei siti negli elenchi."
+      },
+      {
+        "perm": "unlimitedStorage (Chromium)",
+        "why": "Protegge la tua cronologia: il browser non la cancellerà per liberare spazio su disco. Non viene inviato nulla."
       }
     ],
     "noHost": "Non viene richiesta alcuna autorizzazione host — l'estensione non può accedere al contenuto delle pagine che visiti.",

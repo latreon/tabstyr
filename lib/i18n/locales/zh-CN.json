@@ -301,7 +301,7 @@
     "restoreReadFailed": "无法读取该文件。",
     "restoreTooLarge": "该文件过大，不像是 TabStyr 备份。",
     "replaceTitle": "替换所有数据？",
-    "replaceBody": "这将删除当前存储在此设备上的数据，并恢复 {days} 条每日记录和 {sessions} 个会话{from}。此操作无法撤销。",
+    "replaceBody": "这会删除此设备上当前保存的数据，并恢复 {days} 条每日记录和 {sessions} 个会话{from}。你当前的数据会先保存到下载文件夹。",
     "replaceBodyFrom": "（来自日期为 {date} 的备份）",
     "replaceData": "替换数据",
     "restoring": "恢复中…",
