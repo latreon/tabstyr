@@ -206,7 +206,10 @@
     "ideaCta": "Formu aç",
     "supportTitle": "Projeyi destekleyin",
     "supportBody": "TabStyr ücretsiz ve açık kaynaktır. Küçük bir bahşiş devam etmesini sağlar.",
-    "supportCta": "Bana bir kahve ısmarla"
+    "supportCta": "Bana bir kahve ısmarla",
+    "sourceTitle": "Nasıl yapıldığını görün",
+    "sourceBody": "TabStyr açık kaynaklıdır (MIT). Kodu okuyun, gizlilik iddialarını kendiniz doğrulayın veya yeni sürümleri takip edin.",
+    "sourceCta": "GitHub'da görüntüle"
   },
   "cta": {
     "title": "Tarayıcı zamanınızın nereye gittiğini bilin.",

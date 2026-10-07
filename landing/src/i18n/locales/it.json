@@ -206,7 +206,10 @@
     "ideaCta": "Apri il modulo",
     "supportTitle": "Sostieni il progetto",
     "supportBody": "TabStyr è gratuito e open source. Una piccola offerta lo tiene in vita.",
-    "supportCta": "Offrimi un caffè"
+    "supportCta": "Offrimi un caffè",
+    "sourceTitle": "Guarda come è fatto",
+    "sourceBody": "TabStyr è open source (MIT). Leggi il codice, verifica tu stesso le promesse sulla privacy o segui le nuove versioni.",
+    "sourceCta": "Vedi su GitHub"
   },
   "cta": {
     "title": "Scopri dove va il tuo tempo nel browser.",
