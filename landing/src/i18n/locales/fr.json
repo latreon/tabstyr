@@ -1,12 +1,12 @@
 {
   "meta": {
     "title": "TabStyr — Suivi du temps de navigation privé",
-    "description": "Découvrez où passe vraiment votre temps de navigation — temps actif par site, tendances, cartes de chaleur, concentration et rappels d'onglets oubliés. 100% local. 0 octets ne quittent votre appareil.",
-    "ogDescription": "Temps actif par site, tendances, cartes de chaleur, concentration. 100% local — rien ne quitte votre appareil.",
+    "description": "Découvrez où passe vraiment votre temps de navigation : temps actif par site, tendances, cartes de chaleur, concentration et rappels d'onglets oubliés. 100 % local. Vos données de navigation ne quittent jamais votre appareil.",
+    "ogDescription": "Temps actif par site, tendances, cartes de chaleur, concentration. 100 % local : vos données de navigation ne quittent jamais votre appareil.",
     "privacyTitle": "Politique de confidentialité — TabStyr",
-    "privacyDescription": "TabStyr ne collecte rien. Aucun serveur, aucune analyse, aucun compte, aucune requête réseau. Tout reste sur votre appareil.",
+    "privacyDescription": "L'extension TabStyr ne collecte aucune donnée de navigation. Pas de serveurs, pas d'analytique, pas de comptes et aucune requête réseau de l'extension.",
     "ideasTitle": "Partager une idée — TabStyr",
-    "ideasDescription": "Proposez une fonctionnalité ou signalez un bug pour TabStyr. Aucun compte, aucun suivi — cela arrive directement au créateur.",
+    "ideasDescription": "Proposez une fonctionnalité ou signalez un bug dans TabStyr. Aucun compte requis. Votre message parvient au créateur via Formspree.",
     "wrappedTitle": "Rétro de navigation — TabStyr",
     "wrappedDescription": "Déposez votre export TabStyr et obtenez une Rétro de navigation magnifique et partageable — votre temps sur le web, calculé à 100% dans votre navigateur.",
     "changelogTitle": "Journal des modifications — TabStyr",
@@ -37,11 +37,11 @@
     "stats": [
       {
         "unit": "octets",
-        "label": "quittent votre appareil"
+        "label": "de données de navigation quittent votre appareil"
       },
       {
         "unit": "jours",
-        "label": "d'historique, élagué automatiquement"
+        "label": "d'historique détaillé"
       },
       {
         "unit": "langues",
@@ -51,7 +51,9 @@
         "unit": "%",
         "label": "local et ouvert par conception"
       }
-    ]
+    ],
+    "ctaFirefox": "Ajouter à Firefox — gratuit",
+    "alsoOn": "Aussi sur {browser}"
   },
   "features": {
     "eyebrow": "Ce qu'il fait",
@@ -91,7 +93,7 @@
     "steps": [
       {
         "title": "Ajoutez-le à votre navigateur",
-        "body": "Un clic depuis le Chrome Web Store. Pas d'inscription, aucune permission au-delà de l'onglet actif."
+        "body": "Un clic depuis le Chrome Web Store ou Firefox Add-ons. Pas d'inscription. Chaque permission est expliquée dans la politique de confidentialité, et aucune ne peut lire le contenu des pages."
       },
       {
         "title": "Naviguez comme d'habitude",
@@ -125,8 +127,8 @@
   "privacyBand": {
     "eyebrow": "La confidentialité, non comme une fonctionnalité — mais comme le fondement",
     "h2Num": "0 octets",
-    "h2Rest": "quittent votre appareil.",
-    "lede": "Vos données vivent dans la base de données propre à votre navigateur (IndexedDB), élaguée sur une fenêtre glissante de 90 jours. Vous pouvez les exporter, les restaurer ou les effacer — à tout moment, entièrement hors ligne.",
+    "h2Rest": "de données de navigation quittent votre appareil.",
+    "lede": "Vos données vivent dans la base de données de votre navigateur (IndexedDB). Les sessions et les totaux quotidiens sont supprimés après 90 jours, les totaux mensuels par site après 60 mois. Exportez, restaurez ou effacez-les à tout moment, hors ligne.",
     "points": [
       {
         "k": "Aucun serveur",
@@ -153,7 +155,7 @@
     "items": [
       {
         "q": "Mes données de navigation sont-elles vraiment privées ?",
-        "a": "Oui. TabStyr ne fait aucune requête réseau — sa politique de sécurité du contenu les bloque même. Tout est stocké localement dans votre navigateur et élagué après 90 jours. Vous pouvez les exporter ou les effacer à tout moment."
+        "a": "Oui. L'extension ne fait aucune requête réseau, et sa politique de sécurité du contenu les bloque même. Tout est stocké localement dans votre navigateur. Les sessions et les totaux quotidiens sont supprimés après 90 jours, les totaux mensuels par site après 60 mois. Vous pouvez tout exporter ou effacer à tout moment."
       },
       {
         "q": "Que suit-il exactement ?",
@@ -165,7 +167,7 @@
       },
       {
         "q": "Quels navigateurs sont pris en charge ?",
-        "a": "Chrome, Edge, Brave, Opera, Arc et les autres navigateurs Chromium entièrement. Firefox 115+ est pris en charge (les favicons s'affichent sous forme de pastilles de lettres). Safari fonctionne après une conversion via Xcode."
+        "a": "Installez-la depuis le Chrome Web Store pour Chrome, Brave, Opera, Arc et les autres navigateurs Chromium, ou depuis Firefox Add-ons pour Firefox 115+ (les favicons y apparaissent sous forme de pastilles de lettres). Edge n'a pas encore de fiche sur Edge Add-ons, mais il peut l'installer depuis le Chrome Web Store une fois les extensions d'autres boutiques autorisées. Safari n'a pas encore de version sur l'App Store ; les développeurs peuvent la compiler pour Safari à partir du code source."
       },
       {
         "q": "Est-il gratuit ? Open source ?",
@@ -180,7 +182,7 @@
   "feedback": {
     "eyebrow": "Retours et idées",
     "title": "Construit au grand jour — avec vous.",
-    "sub": "Aucun suivi, aucun widget de retour qui appelle la maison. Juste un formulaire simple — aucun compte, aucune connexion, et rien de stocké à votre sujet.",
+    "sub": "Aucun widget de retour qui appelle la maison. Juste un formulaire simple, sans compte ni connexion. Votre message, et votre e-mail si vous l'ajoutez, parviennent au créateur via Formspree.",
     "ideaTitle": "Partager une idée ou signaler un bug",
     "ideaBody": "Vous voulez une fonctionnalité, une nouvelle métrique, ou vous avez rencontré un problème ? Dites-le-moi ici même — aucun compte requis.",
     "ideaCta": "Ouvrir le formulaire",
@@ -190,15 +192,16 @@
   },
   "cta": {
     "title": "Reprenez le contrôle de votre temps de navigation.",
-    "sub": "Installez en deux clics. Vos données ne quittent jamais l'appareil. La désinstallation supprime tout.",
+    "sub": "Installation en deux clics. Vos données de navigation ne quittent jamais l'appareil. La désinstallation supprime tout.",
     "primary": "Ajouter à Chrome — gratuit",
     "comingSoon": "Bientôt disponible sur Chrome",
     "edge": "Modules Edge",
-    "edgeSoon": "Edge bientôt",
+    "edgeSoon": "Edge Add-ons bientôt",
     "firefox": "Firefox",
     "firefoxSoon": "Firefox bientôt",
     "safariSoon": "Safari bientôt",
-    "soonNote": "Les fiches sur les stores arrivent — mettez le dépôt en favori pour savoir quand elles sortent."
+    "soonNote": "Les fiches sur les stores arrivent — mettez le dépôt en favori pour savoir quand elles sortent.",
+    "primaryFirefox": "Ajouter à Firefox — gratuit"
   },
   "footer": {
     "tag": "Des analyses du temps de navigation privées et locales.",
@@ -211,17 +214,17 @@
     "shareIdea": "Partager une idée",
     "coffee": "Offrez-moi un café",
     "builtBy": "Créé par",
-    "badge": "0 octet ne quitte votre appareil"
+    "badge": "Vos données de navigation restent sur votre appareil"
   },
   "privacyPage": {
     "back": "← Retour au site",
     "backCta": "← Retour à TabStyr",
     "eyebrow": "Politique de confidentialité",
     "titleNum": "0 octets",
-    "titleRest": "quittent votre appareil.",
-    "updated": "Dernière mise à jour : 2026-06-12",
-    "leadStrong": "TabStyr ne collecte, ne transmet ni ne partage aucune donnée.",
-    "leadRest": "Tout ce qu'il enregistre reste sur votre appareil. Il n'y a aucun serveur, aucune analyse, aucun compte et aucune requête réseau d'aucune sorte.",
+    "titleRest": "de données de navigation quittent votre appareil.",
+    "updated": "Dernière mise à jour : 2026-10-06",
+    "leadStrong": "L'extension TabStyr ne collecte, ne transmet ni ne partage vos données de navigation.",
+    "leadRest": "Tout ce qu'elle enregistre reste sur votre appareil. Il n'y a ni serveurs, ni analytique, ni comptes, et l'extension ne fait aucune requête réseau.",
     "storesTitle": "Ce qu'il stocke (localement, dans l'IndexedDB de votre navigateur)",
     "stores": [
       {
@@ -233,6 +236,10 @@
         "body": "secondes par site par jour."
       },
       {
+        "label": "Totaux mensuels par domaine",
+        "body": "secondes par site et par mois, sans URL, horodatage ni détail de session."
+      },
+      {
         "label": "Métadonnées des onglets ouverts",
         "body": "titre, URL, heure de dernière activité, et un identifiant local aléatoire utilisé pour attribuer le temps."
       },
@@ -241,10 +248,10 @@
         "body": "seuil d'inactivité, délai d'inactivité, thème, comptage de l'audio, règles de catégorie."
       }
     ],
-    "retention": "Les données sont conservées sur une fenêtre glissante de 90 jours, puis élaguées automatiquement.",
+    "retention": "Les sessions et les totaux quotidiens sont conservés 90 jours, puis supprimés automatiquement. Les totaux mensuels par domaine sont conservés jusqu'à 60 mois pour les tendances à long terme.",
     "notTitle": "Ce qu'il ne fait PAS",
     "notItems": [
-      "N'envoie pas de données hors de votre appareil, et n'utilise ni serveurs, ni synchronisation cloud, ni analyse.",
+      "N'envoie aucune donnée de navigation hors de votre appareil et n'utilise ni serveurs, ni synchronisation cloud, ni analytique.",
       "Ne contient ni publicités ni traceurs.",
       "Ne lit pas le contenu des pages — uniquement les métadonnées des onglets (URL/titre) issues des API standard d'extension."
     ],
@@ -270,7 +277,15 @@
       },
       {
         "perm": "notifications",
-        "why": "Rappel facultatif d'onglet oublié, une fois par jour au maximum."
+        "why": "Rappels facultatifs pour les onglets oubliés, les limites quotidiennes par catégorie et les longues sessions, plus une alerte si le stockage est plein."
+      },
+      {
+        "perm": "webNavigation",
+        "why": "Détecter les changements de page au sein d'un site, comme la vidéo YouTube suivante, pour attribuer le temps à la page que vous regardez."
+      },
+      {
+        "perm": "downloads",
+        "why": "Enregistrer les sauvegardes programmées dans votre dossier de téléchargements. Les sauvegardes programmées sont désactivées par défaut."
       },
       {
         "perm": "favicon (Chromium)",
@@ -283,6 +298,12 @@
       "Exportez l'intégralité de votre historique au format JSON, chiffré par phrase secrète en option (AES-256-GCM).",
       "Restaurez depuis une sauvegarde sur cet appareil ou un autre.",
       "Effacez toutes les données en un clic ; supprimer l'extension supprime tout."
+    ],
+    "feedbackTitle": "Les retours que vous choisissez d'envoyer",
+    "feedbackItems": [
+      "Le formulaire d'idées de ce site envoie votre message, son type et votre e-mail si vous l'ajoutez à Formspree, un service de formulaires qui le transmet au créateur.",
+      "Quand vous supprimez l'extension, votre navigateur ouvre ce formulaire sur tabstyr.com. L'envoyer est facultatif.",
+      "Ce site n'utilise aucun script d'analytique ou de suivi."
     ]
   },
   "ideaPage": {
@@ -291,7 +312,7 @@
     "titleLead": "Que devrait faire",
     "titleAccent": "TabStyr",
     "titleTail": "ensuite ?",
-    "lead": "Demandes de fonctionnalités, idées en vrac, petits agacements — tout est le bienvenu. Cela arrive directement au créateur. Aucun compte, aucun suivi.",
+    "lead": "Demandes de fonctionnalités, idées en vrac, petits agacements : tout est bienvenu. Aucun compte requis. Votre message parvient au créateur via Formspree.",
     "thankYou": "Merci !",
     "successBody": "Votre idée est bien reçue — elle arrive directement au créateur. Si vous avez laissé un e-mail, vous aurez peut-être une réponse.",
     "sendAnother": "En envoyer une autre",

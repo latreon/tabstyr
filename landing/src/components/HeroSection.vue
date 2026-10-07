@@ -2,9 +2,17 @@
 import { computed } from 'vue';
 import { LINKS, STAT_VALUES, STORE_LIVE } from '@/site';
 import { useI18n } from '@/i18n';
+import { useIsFirefox } from '@/composables/useIsFirefox';
 import dashboardDark from '@/assets/dashboard-dark.webp';
 
 const { t, tm } = useI18n();
+const isFirefox = useIsFirefox();
+const isFirefoxStore = computed(() => isFirefox.value && STORE_LIVE.firefox);
+// The store not used by the main button, offered as a small link next to it.
+const otherStore = computed(() => {
+  if (isFirefoxStore.value) return STORE_LIVE.chrome ? { name: 'Chrome', url: LINKS.chrome } : null;
+  return STORE_LIVE.firefox ? { name: 'Firefox', url: LINKS.firefox } : null;
+});
 
 // Numeric values live in site.ts; their unit + label are translated. Zip them.
 const stats = computed(() =>
@@ -33,7 +41,8 @@ const stats = computed(() =>
       <p class="lede reveal">{{ t('hero.lede') }}</p>
 
       <div class="actions reveal">
-        <a v-if="STORE_LIVE.chrome" :href="LINKS.chrome" target="_blank" rel="noopener" class="btn btn-primary">
+        <a v-if="isFirefoxStore" :href="LINKS.firefox" target="_blank" rel="noopener" class="btn btn-primary">{{ t('hero.ctaFirefox') }}</a>
+        <a v-else-if="STORE_LIVE.chrome" :href="LINKS.chrome" target="_blank" rel="noopener" class="btn btn-primary">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3.2" /><path d="M12 3v6M21 12h-9M5 18l4.5-7" /></svg>
           {{ t('hero.ctaPrimary') }}
         </a>
@@ -41,6 +50,7 @@ const stats = computed(() =>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="3.2" /><path d="M12 3v6M21 12h-9M5 18l4.5-7" /></svg>
           {{ t('hero.ctaComingSoon') }}
         </span>
+        <a v-if="otherStore" :href="otherStore.url" target="_blank" rel="noopener" class="also">{{ t('hero.alsoOn', { browser: otherStore.name }) }}</a>
       </div>
 
       <p class="micro reveal">{{ t('hero.micro') }}</p>
@@ -112,6 +122,8 @@ const stats = computed(() =>
 }
 .actions { display: flex; gap: 14px; margin-top: 34px; flex-wrap: wrap; justify-content: center; }
 .is-soon { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
+.also { align-self: center; font-size: 14px; font-weight: 600; color: var(--text-2); transition: color 160ms ease; }
+.also:hover { color: var(--accent); }
 .micro { margin-top: 18px; font-size: 13px; color: var(--text-3); }
 
 .preview {

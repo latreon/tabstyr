@@ -10,6 +10,7 @@ const stores = computed(() => tm<{ label: string; body: string }[]>('privacyPage
 const notItems = computed(() => tm<string[]>('privacyPage.notItems'));
 const perms = computed(() => tm<{ perm: string; why: string }[]>('privacyPage.perms'));
 const controlItems = computed(() => tm<string[]>('privacyPage.controlItems'));
+const feedbackItems = computed(() => tm<string[]>('privacyPage.feedbackItems'));
 </script>
 
 <template>
@@ -57,6 +58,11 @@ const controlItems = computed(() => tm<string[]>('privacyPage.controlItems'));
         <h2>{{ t('privacyPage.controlTitle') }}</h2>
         <ul>
           <li v-for="(c, i) in controlItems" :key="i">{{ c }}</li>
+        </ul>
+
+        <h2>{{ t('privacyPage.feedbackTitle') }}</h2>
+        <ul>
+          <li v-for="(f, i) in feedbackItems" :key="i">{{ f }}</li>
         </ul>
       </div>
 
