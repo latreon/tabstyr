@@ -2,6 +2,48 @@
 
 All notable changes to TabStyr. Generated from [GitHub Releases](https://github.com/latreon/tabstyr/releases) — the release page is the source of truth; run `npm run changelog:fetch && node scripts/generate-changelog.mjs` to refresh this file after a new release.
 
+## v2.2.0 — 2026-10-07
+
+### TabStyr 2.2.0
+
+This release adds privacy controls, a calmer dashboard, and corrects what the website says about permissions, data, and supported browsers.
+
+#### New: privacy controls
+
+- **Pause tracking** with one click from the popup or Settings. The toolbar icon shows ❚❚ until you resume.
+- **Never-track sites**: sites on this list, and their subdomains, are never tracked. Paste a full address or type a domain; entries that are not sites are refused.
+- Both only stop future tracking. Time already recorded stays until you use **Wipe all data**.
+
+#### Dashboard
+
+- Today's view comes first. **Trends and patterns** and **Tabs, categories and settings** are collapsible groups that remember whether you left them open.
+- Settings links to **Browsing Wrapped** with a short how-to: export a backup, then drop it on the Wrapped page. The file is read in your browser and never uploaded.
+- Switch thumbs are now centered in their track.
+
+#### Website
+
+- **Hide site names** on the Wrapped share card removes the top site from the image.
+- New **"What did I work on today?"** section about the daily site report.
+- The privacy page lists all permissions, including `webNavigation` and `downloads`, and both retention periods: 90 days for sessions and daily totals, up to 60 months for monthly per-site totals.
+- "0 bytes leave your device" now says browsing data. The privacy page explains where idea-form messages go (Formspree).
+- Firefox visitors get an "Add to Firefox" button. The FAQ separates store availability from browser support.
+- The RescueTime / Toggl comparison is corrected (RescueTime has no free plan, only a 14-day trial), dated, sourced, and now covers ActivityWatch and Browlytics.
+- Blog posts and release notes are English only, so their translated URLs now point search engines to the English page.
+
+#### Store
+
+- The extension description is translated into all 11 languages, so the stores can list them.
+
+#### Verification
+
+- 794 unit tests across 71 test files.
+- TypeScript and ESLint checks pass.
+- Chromium, Firefox, and Safari production builds pass. Firefox build passes `web-ext lint` with 0 errors.
+- Playwright end-to-end scenarios pass in CI.
+- Landing site: 67 tests pass and the prerendered build passes.
+
+**Full changelog:** https://github.com/latreon/tabstyr/compare/v2.1.0...v2.2.0
+
 ## v2.1.0 — 2026-10-06
 
 ### TabStyr 2.1.0
