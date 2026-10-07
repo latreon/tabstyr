@@ -69,8 +69,8 @@
         "body": "Gün / hafta / ay aktivite eğilimleri, ayrıca kategoriye göre bu hafta ile geçen hafta karşılaştırması."
       },
       {
-        "title": "Odak puanı",
-        "body": "Verimli ÷ dikkat dağıtıcı, günlük bir seri ve zaman içindeki bir odak eğilimi."
+        "title": "Odak ölçüsü",
+        "body": "Verimli ve dikkat dağıtan zamanın size ait oranı. Hangi kategorilerin sayılacağını ve hedefinizi siz belirlersiniz."
       },
       {
         "title": "Aktivite ısı haritası",
@@ -106,6 +106,24 @@
     ],
     "watchDemo": "40 saniyelik demoyu izle",
     "videoAria": "TabStyr pano turu"
+  },
+  "workLog": {
+    "eyebrow": "Serbest çalışanlar, araştırmacılar ve uzaktan çalışma için",
+    "title": "Bugün ne üzerinde çalıştım?",
+    "sub": "TabStyr her günkü taramanızı kullandığınız sitelerin kısa bir raporuna dönüştürür. Bunu bir stand-up'a, mesai çizelgesine veya araştırma notlarınıza yapıştırın.",
+    "exampleAria": "Örnek günlük çalışma kaydı",
+    "exampleLabel": "Örnek",
+    "exampleDay": "Bugün",
+    "exampleSummary": "— 4 sitede 6 sa 10 dk geçirdiniz.",
+    "copy": "Kopyala",
+    "copyTitle": "Paylaşmaya hazır günlük rapor",
+    "copyBody": "Günün sonunda paneli açın, liste zaten hazır. Başlatıp durduracak zamanlayıcı yok.",
+    "bullets": [
+      "O gün kullandığınız her site, kategorisi ve aktif süresiyle",
+      "Tek tıkla düz metin olarak kopyalayın",
+      "Günü CSV olarak veya PNG rapor kartı olarak dışa aktarın",
+      "Son 90 günün herhangi birine dönün"
+    ]
   },
   "showcase": {
     "eyebrow": "Her yerden bir bakış",
@@ -191,7 +209,7 @@
     "supportCta": "Bana bir kahve ısmarla"
   },
   "cta": {
-    "title": "Tarayıcı zamanınızı geri alın.",
+    "title": "Tarayıcı zamanınızın nereye gittiğini bilin.",
     "sub": "İki tıkla yükleyin. Tarama verileriniz cihazdan asla çıkmaz. Kaldırınca her şey silinir.",
     "primary": "Chrome'a ekle — ücretsiz",
     "comingSoon": "Yakında Chrome'da",
@@ -304,7 +322,9 @@
       "Bu sitedeki fikir formu mesajınızı, türünü ve eklerseniz e-postanızı bir form hizmeti olan Formspree'ye gönderir; Formspree de bunu geliştiriciye iletir.",
       "Uzantıyı kaldırdığınızda tarayıcınız bu formu tabstyr.com'da açar. Göndermek isteğe bağlıdır.",
       "Bu web sitesi analiz veya izleme betiği kullanmaz."
-    ]
+    ],
+    "captchaNote": "Spam koruması açıkken form ayrıca bir hCaptcha doğrulaması yükler ve bunu hCaptcha işler.",
+    "supportNote": "“Buy me a coffee” bağlantısı bir Polar ödeme sayfası açar. Ödemeyi seçerseniz ödemeyi Polar yürütür."
   },
   "ideaPage": {
     "back": "← Siteye dön",

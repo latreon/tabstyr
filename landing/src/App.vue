@@ -14,6 +14,7 @@ import SiteNav from '@/components/SiteNav.vue';
 import HeroSection from '@/components/HeroSection.vue';
 import FeatureGrid from '@/components/FeatureGrid.vue';
 import HowItWorksSection from '@/components/HowItWorksSection.vue';
+import WorkLogSection from '@/components/WorkLogSection.vue';
 import ShowcaseSection from '@/components/ShowcaseSection.vue';
 import PrivacySection from '@/components/PrivacySection.vue';
 import FaqSection from '@/components/FaqSection.vue';
@@ -160,6 +161,7 @@ onBeforeUnmount(() => {
         <HeroSection />
         <FeatureGrid />
         <HowItWorksSection />
+        <WorkLogSection />
         <ShowcaseSection />
         <WrappedSection />
         <PrivacySection />

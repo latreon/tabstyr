@@ -69,8 +69,8 @@
         "body": "Andamenti di attività per giorno / settimana / mese, più il confronto questa-settimana-vs-scorsa per categoria."
       },
       {
-        "title": "Punteggio di focus",
-        "body": "Produttivo ÷ distraente, una serie giornaliera e l'andamento del focus nel tempo."
+        "title": "Misura di concentrazione",
+        "body": "La tua ripartizione tra tempo produttivo e distrazioni. Scegli tu quali categorie contano e fissi il tuo obiettivo."
       },
       {
         "title": "Mappa di calore delle attività",
@@ -106,6 +106,24 @@
     ],
     "watchDemo": "Guarda la demo di 40 secondi",
     "videoAria": "Tour della dashboard di TabStyr"
+  },
+  "workLog": {
+    "eyebrow": "Per freelance, ricerca e lavoro da remoto",
+    "title": "Su cosa ho lavorato oggi?",
+    "sub": "TabStyr trasforma ogni giornata di navigazione in un breve report dei siti usati. Incollalo in uno standup, in un foglio ore o nei tuoi appunti di ricerca.",
+    "exampleAria": "Esempio di registro di lavoro giornaliero",
+    "exampleLabel": "Esempio",
+    "exampleDay": "Oggi",
+    "exampleSummary": "— hai passato 6 h 10 min su 4 siti.",
+    "copy": "Copia",
+    "copyTitle": "Un report giornaliero, pronto da condividere",
+    "copyBody": "Apri la dashboard a fine giornata e l'elenco è già lì. Nessun timer da avviare o fermare.",
+    "bullets": [
+      "Ogni sito usato quel giorno, con categoria e tempo attivo",
+      "Copialo come testo con un clic",
+      "Esporta la giornata in CSV o come scheda report PNG",
+      "Torna a uno qualsiasi degli ultimi 90 giorni"
+    ]
   },
   "showcase": {
     "eyebrow": "Uno sguardo da ovunque",
@@ -191,7 +209,7 @@
     "supportCta": "Offrimi un caffè"
   },
   "cta": {
-    "title": "Riprenditi il tuo tempo nel browser.",
+    "title": "Scopri dove va il tuo tempo nel browser.",
     "sub": "Si installa in due clic. I tuoi dati di navigazione non lasciano mai il dispositivo. Disinstallando si elimina tutto.",
     "primary": "Aggiungi a Chrome — gratis",
     "comingSoon": "Presto su Chrome",
@@ -304,7 +322,9 @@
       "Il modulo per le idee su questo sito invia il tuo messaggio, il suo tipo e, se la aggiungi, la tua email a Formspree, un servizio di moduli che lo inoltra allo sviluppatore.",
       "Quando rimuovi l'estensione, il browser apre questo modulo su tabstyr.com. Inviarlo è facoltativo.",
       "Questo sito non usa script di analytics o di tracciamento."
-    ]
+    ],
+    "captchaNote": "Quando la protezione antispam è attiva, il modulo carica anche una verifica hCaptcha, gestita da hCaptcha.",
+    "supportNote": "Il link «Buy me a coffee» apre una pagina di pagamento Polar. Se scegli di pagare, il pagamento è gestito da Polar."
   },
   "ideaPage": {
     "back": "← Torna al sito",
