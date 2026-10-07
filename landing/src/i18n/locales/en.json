@@ -249,7 +249,7 @@
     "eyebrow": "Privacy policy",
     "titleNum": "0 bytes",
     "titleRest": "of browsing data leave your device.",
-    "updated": "Last updated: 2026-10-06",
+    "updated": "Last updated: 2026-10-07",
     "leadStrong": "The TabStyr extension does not collect, transmit, or share your browsing data.",
     "leadRest": "Everything it records stays on your device. There are no servers, no analytics, no accounts, and the extension makes no network requests.",
     "storesTitle": "What it stores (locally, in your browser's IndexedDB)",
@@ -322,6 +322,7 @@
     "noHost": "No host permissions are requested — the extension cannot access the content of the pages you visit.",
     "controlTitle": "Your control",
     "controlItems": [
+      "Pause tracking at any time, or add sites to a never-track list. Both stop future tracking only; time already recorded stays until you wipe it.",
       "Export your full history as JSON, optionally passphrase-encrypted (AES-256-GCM).",
       "Restore from a backup on this or another device.",
       "Wipe all data in one click; removing the extension deletes everything."

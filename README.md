@@ -61,18 +61,26 @@ network requests. Your data lives in your browser's database and never leaves it
   reported separately, never inflating your active total.
 - **Restart-safe** — per-tab totals use a stable identifier, so they survive the
   browser reassigning tab IDs after a restart.
+- **Pause tracking** — one click in the popup or Settings stops all tracking until
+  you turn it back on. The toolbar icon shows ❚❚ while paused.
+- **Never-track sites** — sites on this list (and their subdomains) never start a
+  session. Paste a full address or type a domain. Stopping tracking keeps time
+  already recorded; **Wipe all data** removes it.
 
 ### Dashboard
+- **Daily breakdown** — pick any of the last 90 days with ‹ date ›, or click a day
+  in the trend chart. Category, top sites, and focus follow the picked day.
 - **Today** — active time with a sparkline and a vs-weekly-average delta.
 - **Open / stale tab counts** — click either tile to open a tab manager (below).
 - **Trend** — day, week, and month views.
 - **This week vs last week** — period comparison (week or month) broken down by
   category, with per-category deltas.
 - **Activity heatmap** — which hours of which days you browse most.
-- **Today by category** — Work, Dev, Finance, Social, Media, News, Shopping, Other.
+- **By category** — Work, Dev, Finance, Social, Media, News, Shopping, Other.
   **Click any site's category dot to re-classify it instantly** (a quick colored
   picker); the change applies everywhere.
-- **Focus today** — a productive-vs-distracting ratio with a daily streak.
+- **Focus** — your own productive-vs-distracting split: you choose which categories
+  count and set the target. A daily streak shows for today.
 - **Top sites** with a per-domain detail view (its own trend, sessions, share,
   and heatmap).
 - **Open tabs by time** — for each site you have open, its total active time over
@@ -82,14 +90,19 @@ network requests. Your data lives in your browser's database and never leaves it
   last-active time. Jump to any tab, close one, or close them all — every close
   shows an **Undo** toast that reopens the tabs in their original window.
 - **What did I work on?** — pick any day and copy a clean site list for standups
-  or invoices.
+  or invoices, or export the day as CSV or a PNG report card.
+- **Compact layout** — today's view comes first; **Trends and patterns** and
+  **Tabs, categories and settings** are collapsible groups that remember whether
+  you left them open.
 
 ### Popup
 - Today's active total, top sites with favicons, and the stale-tab count. The
   stale count is a button that opens the dashboard's stale-tab manager directly.
+- A **pause / resume** button next to the theme toggle.
 
 ### Data
-- **Export** — full JSON backup, or CSV (daily totals or raw session log).
+- **Export** — full JSON backup (restorable), plus any single day's work log as CSV
+  or PNG.
 - **Scheduled backup** — optionally save a JSON backup to your downloads
   automatically (weekly / every 2 weeks / monthly). Off by default.
 - **Encrypted backup** — optional passphrase-protected export (AES-256-GCM,
@@ -97,8 +110,11 @@ network requests. Your data lives in your browser's database and never leaves it
 - **Restore / import** — load a JSON or encrypted backup on this or another device.
 - **One-click wipe** of all stored data.
 - **90-day rolling window** for raw sessions & daily totals, pruned automatically —
-  with a compact per-domain **monthly roll-up** (no URLs) kept longer so long-range
-  trends survive pruning.
+  with a compact per-domain **monthly roll-up** (no URLs) kept for up to 60 months
+  so long-range trends survive pruning.
+- **Browsing Wrapped** — Settings links to [tabstyr.com/wrapped](https://tabstyr.com/wrapped):
+  drop an exported backup there for a shareable story. The file is read in the
+  browser and never uploaded; the share card can hide site names.
 
 ### Look & feel
 - System-aware **dark / light** themes with a manual toggle.
@@ -148,8 +164,10 @@ without an account or your data leaving the device, that's what TabStyr is for.
 
 TabStyr collects **nothing** and sends **nothing**. All activity is stored locally
 in your browser's IndexedDB. Raw sessions and daily totals are pruned to a 90-day
-window; a compact per-domain monthly roll-up (no URLs, no timestamps) is retained
-longer so long-range trends survive pruning — and it never leaves your device either.
+window; a compact per-domain monthly roll-up (no URLs, no timestamps) is kept for up
+to 60 months so long-range trends survive pruning — and it never leaves your device
+either. When you remove the extension, the browser opens a feedback page on tabstyr.com;
+sending feedback there is optional.
 
 - No servers, no cloud sync, no accounts.
 - No analytics, no ads, no third-party code.
@@ -180,7 +198,7 @@ as an overlay (no new tab, no page navigation).
 | `storage` | Save your stats and settings locally |
 | `idle` | Pause tracking when you're away so totals stay accurate |
 | `alarms` | Periodic checkpoints + the once-daily maintenance task |
-| `notifications` | Optional, at-most-once-per-day stale-tab reminder |
+| `notifications` | Optional reminders: stale tabs, daily category limits, long sessions, and a storage-full warning |
 | `webNavigation` | Detect in-page (SPA) route changes on the active tab so time is credited to the right page |
 | `downloads` | Optional scheduled backup export (off by default) — saves a JSON file locally, no upload |
 | `favicon` (Chromium only) | Show site icons in lists |
@@ -191,7 +209,7 @@ No host permissions are requested — the extension cannot access page contents.
 
 | Browser | Status |
 |---|---|
-| Chrome, Edge, Brave, Opera, Vivaldi, Arc (Chromium, MV3) | ✅ Fully supported — install as-is |
+| Chrome, Edge, Brave, Opera, Vivaldi, Arc (Chromium, MV3) | ✅ Fully supported — install from the Chrome Web Store (Edge: allow extensions from other stores until an Edge Add-ons listing exists) |
 | Firefox 115+ (MV2 build) | ✅ Supported — favicons fall back to colored letter chips |
 | Safari 16.4+ | ⚠️ Works after an Xcode conversion, with reduced features (see [Safari](#safari)) |
 

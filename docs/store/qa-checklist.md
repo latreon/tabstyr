@@ -1,8 +1,9 @@
 # Release QA Checklist
 
-Automated Chromium end-to-end coverage runs via `npm run e2e` (8 tests: popup,
-dashboard tiles, analytics tiles, export buttons, theme toggle, live tracking,
-tab focus, screenshots). Run it on every release.
+Automated Chromium end-to-end coverage runs via `npm run e2e` (20 tests across
+4 files: popup, dashboard tiles, settings and backups, live and SPA tracking, tab
+focus, i18n overflow, screenshots). `npm run ci` runs it together with lint,
+typecheck, unit tests, all builds, and the landing site. Run it on every release.
 
 The items below must be checked **manually in each target browser**, because
 extension loading + the platform APIs can't be fully automated cross-browser.
@@ -15,7 +16,10 @@ Load the build (`dist/chrome-mv3`, or `dist/firefox-mv2` for Firefox), then:
 - [ ] Switch away / lock the screen → time stops accruing (idle).
 - [ ] Play background audio in another tab (audio counting on) → shows as `♪` separately; headline stays ≤ wall-clock.
 - [ ] **Popup** opens: today's active total, top sites, stale count.
-- [ ] **Dashboard** opens: every tile renders (hero, focus, category, top sites, trend, heatmap, work-log, tab table, settings).
+- [ ] **Dashboard** opens: today's view renders (day bar, hero, tab counts, category, top sites, focus, work log); **Trends and patterns** and **Tabs, categories and settings** start closed, open on click, and stay open after a reload.
+- [ ] **Daily breakdown**: ‹ › and the date picker switch category, top sites, and focus to that day; **Today** returns; clicking a day bar in the trend chart (Day view) selects that day.
+- [ ] **Pause**: the popup button and the Settings switch stop tracking; the toolbar shows ❚❚; resuming clears it and tracking restarts.
+- [ ] **Never-track sites**: add a site (or paste its address) → visiting it adds no time; other sites still count; past time for it stays; removing it resumes tracking.
 - [ ] Click a top-site → per-domain detail modal opens; Esc closes.
 - [ ] Change a site's category → category/focus update.
 - [ ] **Stale tabs**: badge shows the count; reminder fires at most once/day.

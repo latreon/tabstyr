@@ -240,7 +240,7 @@
     "eyebrow": "Datenschutzerklärung",
     "titleNum": "0 Bytes",
     "titleRest": "Browserdaten verlassen dein Gerät.",
-    "updated": "Zuletzt aktualisiert: 2026-10-06",
+    "updated": "Zuletzt aktualisiert: 2026-10-07",
     "leadStrong": "Die TabStyr-Erweiterung sammelt, überträgt und teilt keine Browserdaten.",
     "leadRest": "Alles, was sie aufzeichnet, bleibt auf deinem Gerät. Es gibt keine Server, keine Analytics, keine Konten, und die Erweiterung stellt keine Netzwerkanfragen.",
     "storesTitle": "Was es speichert (lokal, im IndexedDB deines Browsers)",
@@ -313,6 +313,7 @@
     "noHost": "Es werden keine Host-Berechtigungen angefordert — die Erweiterung kann nicht auf die Inhalte der Seiten zugreifen, die du besuchst.",
     "controlTitle": "Deine Kontrolle",
     "controlItems": [
+      "Pausiere das Tracking jederzeit oder setze Websites auf eine Nie-erfassen-Liste. Beides stoppt nur künftiges Tracking; bereits erfasste Zeit bleibt, bis du sie löschst.",
       "Exportiere deinen gesamten Verlauf als JSON, optional passwortverschlüsselt (AES-256-GCM).",
       "Stelle ihn aus einem Backup auf diesem oder einem anderen Gerät wieder her.",
       "Lösche alle Daten mit einem Klick; das Entfernen der Erweiterung löscht alles."

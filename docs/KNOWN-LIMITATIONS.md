@@ -29,6 +29,16 @@ so they aren't mistaken for defects during review or QA.
   stable per-tab key can be assigned to the wrong one of them. This only scrambles
   per-tab display attribution after a restart, not totals.
 
+## Privacy controls
+
+- **Never-track entries cover subdomains.** An entry for `reddit.com` also skips
+  `old.reddit.com`, but not `notreddit.com`. A pasted address is reduced to its
+  host without `www.`, so `https://www.reddit.com/r/all` becomes `reddit.com`.
+- **Stopping is not deleting.** Pause and the never-track list only stop future
+  tracking. Time already recorded for a site stays until it ages out (90 days for
+  sessions and daily totals, 60 months for monthly totals) or you use
+  **Wipe all data**. There is no per-site delete.
+
 ## Tab manager
 
 - **Undo reopens a fresh tab, not the original.** Closing a tab from the manager

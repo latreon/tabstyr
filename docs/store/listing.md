@@ -25,14 +25,18 @@ byte of it on your own machine.
 
 WHAT YOU GET
 • Today at a glance — active time, vs your weekly average, with a sparkline.
+• Any day, not just today — pick one of the last 90 days and see its categories,
+  top sites, and focus.
 • Trends — day, week, and month views.
 • Activity heatmap — see which hours of which days you browse most.
 • Time by category — Work, Dev, Finance, Social, Media, News, Shopping. Hundreds
   of sites recognized worldwide; re-classify any site or add your own rules.
-• Focus — a daily focus % (productive vs distracting time) and a streak.
+• Focus — your own split of productive vs distracting time. You choose which
+  categories count and set the target; a streak shows for today.
 • Top sites & per-tab table — with a detail view for any site.
 • "What did I work on?" — pick a day and copy a tidy list of sites, perfect for
-  standups and invoices.
+  standups and invoices, or export it as CSV or a PNG report card.
+• Pause tracking with one click, and keep chosen sites off the record entirely.
 • Stale-tab nudges — a badge count and an optional once-a-day reminder for tabs
   you've forgotten.
 • Tab manager — click the Open-tabs or Stale-tabs tile for a tidy, alphabetical
@@ -40,8 +44,9 @@ WHAT YOU GET
 • Week-over-week & month-over-month comparison, with per-category deltas.
 • Export — your full history as JSON, plus passphrase-encrypted backups you can restore on any device.
 
-PRIVACY FIRST — 0 BYTES LEAVE YOUR DEVICE
-• 100% local. Stored in your browser (IndexedDB), pruned to a 90-day window.
+PRIVACY FIRST — 0 BYTES OF BROWSING DATA LEAVE YOUR DEVICE
+• 100% local. Stored in your browser (IndexedDB). Detailed history is kept for
+  90 days; monthly per-site totals for up to 60 months.
 • No servers, no accounts, no analytics, no ads. The extension makes no automated
   network requests — the only outbound link is the optional "Buy me a coffee"
   button, which opens a Polar checkout page in a new tab when you choose to click it.
@@ -82,7 +87,7 @@ entirely on your own device, to help you understand and manage your browsing.
 - storage: Persist usage statistics and user settings locally.
 - idle: Pause time tracking when the user is away so totals stay accurate.
 - alarms: Run periodic checkpoints and a once-daily maintenance/notification task.
-- notifications: Show an optional, at-most-once-per-day stale-tab reminder.
+- notifications: Show optional reminders (stale tabs, daily category limits, long sessions) and a storage-full warning.
 - webNavigation: Detect in-page (single-page-app) route changes on the active tab
   so browsing time is attributed to the page actually viewed. Only the focused
   tab's top-frame URL is read; no page content is accessed.

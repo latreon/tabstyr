@@ -1,6 +1,6 @@
 # TabStyr — Privacy Policy
 
-_Last updated: 2026-06-12_
+_Last updated: 2026-10-07_
 
 ## Summary
 
@@ -48,7 +48,7 @@ trends. All of it stays on your device.
 | `storage` | Save your stats and settings locally |
 | `idle` | Pause tracking when you step away |
 | `alarms` | Periodic checkpoints and the daily maintenance/notification |
-| `notifications` | Optional once-a-day stale-tab reminder |
+| `notifications` | Optional reminders (stale tabs, daily category limits, long sessions) and a storage-full warning |
 | `webNavigation` | Detect in-page (SPA) route changes on the active tab so time is credited to the page you're actually on |
 | `downloads` | Optional scheduled backup export (off by default) — saves a JSON file to your device, never uploaded anywhere |
 | `favicon` (Chromium only) | Show site icons in lists |
@@ -58,6 +58,9 @@ pages you visit.
 
 ## Your control over your data
 
+- **Pause tracking** at any time from the popup or Settings, and add sites to a
+  never-track list. Both stop future tracking only; time already recorded stays
+  until you wipe it.
 - **Export** your full history any time (JSON) from Settings.
 - **Encrypted backup** — optionally protect a JSON backup with a passphrase
   (AES-256-GCM, key derived via PBKDF2). The passphrase never leaves your device
@@ -66,7 +69,8 @@ pages you visit.
   portability with no server involved.
 - **Wipe all data** with one click in Settings; this permanently deletes
   everything stored locally.
-- Removing the extension deletes its local storage.
+- Removing the extension deletes its local storage. The browser then opens a
+  feedback page on tabstyr.com; sending feedback there is optional.
 
 ## Contact
 
