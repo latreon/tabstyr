@@ -38,7 +38,7 @@ const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>();
 .toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .knob {
   position: absolute;
-  top: 1.5px;
+  top: 2.5px;
   left: 2px;
   width: 18px;
   height: 18px;

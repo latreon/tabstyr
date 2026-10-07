@@ -123,6 +123,7 @@ async function togglePause() {
       </span>
       <button
         class="pause-toggle tip-right"
+        :class="{ paused: trackingPaused }"
         :aria-label="t(trackingPaused ? 'popup.resumeTracking' : 'popup.pauseTracking')"
         :data-tip="trackingPaused ? undefined : t('popup.pauseTracking')"
         @click="togglePause"
@@ -260,6 +261,7 @@ async function togglePause() {
   fill: currentColor;
 }
 .pause-toggle:hover { border-color: var(--accent); color: var(--text); }
+.pause-toggle.paused:hover { border-color: var(--border); }
 .pause-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .stale-count {
   color: var(--warn);
