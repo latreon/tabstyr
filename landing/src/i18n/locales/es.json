@@ -240,7 +240,7 @@
     "eyebrow": "Política de privacidad",
     "titleNum": "0 bytes",
     "titleRest": "de datos de navegación salen de tu dispositivo.",
-    "updated": "Última actualización: 2026-10-06",
+    "updated": "Última actualización: 2026-10-07",
     "leadStrong": "La extensión TabStyr no recopila, transmite ni comparte tus datos de navegación.",
     "leadRest": "Todo lo que registra se queda en tu dispositivo. No hay servidores, analítica ni cuentas, y la extensión no hace solicitudes de red.",
     "storesTitle": "Qué almacena (localmente, en el IndexedDB de tu navegador)",
@@ -313,6 +313,7 @@
     "noHost": "No se solicitan permisos de host: la extensión no puede acceder al contenido de las páginas que visitas.",
     "controlTitle": "Tu control",
     "controlItems": [
+      "Pausa el seguimiento cuando quieras o añade sitios a una lista de no rastrear. Ambos solo detienen el seguimiento futuro; el tiempo ya registrado se conserva hasta que lo borres.",
       "Exporta todo tu historial en JSON, con la opción de cifrarlo con una contraseña (AES-256-GCM).",
       "Restaura desde una copia de seguridad en este u otro dispositivo.",
       "Borra todos los datos con un solo clic; al quitar la extensión se elimina todo."

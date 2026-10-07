@@ -240,7 +240,7 @@
     "eyebrow": "Gizlilik politikası",
     "titleNum": "0 bayt",
     "titleRest": "tarama verisi cihazınızdan çıkar.",
-    "updated": "Son güncelleme: 2026-10-06",
+    "updated": "Son güncelleme: 2026-10-07",
     "leadStrong": "TabStyr uzantısı tarama verilerinizi toplamaz, iletmez veya paylaşmaz.",
     "leadRest": "Kaydettiği her şey cihazınızda kalır. Sunucu, analiz ve hesap yoktur; uzantı ağ isteği göndermez.",
     "storesTitle": "Neyi saklar (yerel olarak, tarayıcınızın IndexedDB'sinde)",
@@ -313,6 +313,7 @@
     "noHost": "Hiçbir ana bilgisayar izni istenmez — uzantı ziyaret ettiğiniz sayfaların içeriğine erişemez.",
     "controlTitle": "Sizin kontrolünüz",
     "controlItems": [
+      "İzlemeyi istediğiniz zaman duraklatın ya da siteleri asla izlenmeyecekler listesine ekleyin. İkisi de yalnızca gelecekteki izlemeyi durdurur; kaydedilmiş süre siz silene kadar kalır.",
       "Tüm geçmişinizi JSON olarak, isteğe bağlı olarak parolayla şifrelenmiş (AES-256-GCM) şekilde dışa aktarın.",
       "Bu veya başka bir cihazda bir yedekten geri yükleyin.",
       "Tüm verileri tek tıkla silin; uzantıyı kaldırmak her şeyi siler."

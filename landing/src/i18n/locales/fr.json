@@ -240,7 +240,7 @@
     "eyebrow": "Politique de confidentialité",
     "titleNum": "0 octets",
     "titleRest": "de données de navigation quittent votre appareil.",
-    "updated": "Dernière mise à jour : 2026-10-06",
+    "updated": "Dernière mise à jour : 2026-10-07",
     "leadStrong": "L'extension TabStyr ne collecte, ne transmet ni ne partage vos données de navigation.",
     "leadRest": "Tout ce qu'elle enregistre reste sur votre appareil. Il n'y a ni serveurs, ni analytique, ni comptes, et l'extension ne fait aucune requête réseau.",
     "storesTitle": "Ce qu'il stocke (localement, dans l'IndexedDB de votre navigateur)",
@@ -313,6 +313,7 @@
     "noHost": "Aucune autorisation d'hôte n'est demandée — l'extension ne peut pas accéder au contenu des pages que vous visitez.",
     "controlTitle": "Votre contrôle",
     "controlItems": [
+      "Mettez le suivi en pause à tout moment ou ajoutez des sites à une liste à ne jamais suivre. Les deux n'arrêtent que le suivi futur ; le temps déjà enregistré reste jusqu'à ce que vous l'effaciez.",
       "Exportez l'intégralité de votre historique au format JSON, chiffré par phrase secrète en option (AES-256-GCM).",
       "Restaurez depuis une sauvegarde sur cet appareil ou un autre.",
       "Effacez toutes les données en un clic ; supprimer l'extension supprime tout."

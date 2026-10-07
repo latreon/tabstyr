@@ -240,7 +240,7 @@
     "eyebrow": "Informativa sulla privacy",
     "titleNum": "0 byte",
     "titleRest": "di dati di navigazione lasciano il tuo dispositivo.",
-    "updated": "Ultimo aggiornamento: 2026-10-06",
+    "updated": "Ultimo aggiornamento: 2026-10-07",
     "leadStrong": "L'estensione TabStyr non raccoglie, trasmette né condivide i tuoi dati di navigazione.",
     "leadRest": "Tutto ciò che registra resta sul tuo dispositivo. Non ci sono server, analytics o account, e l'estensione non fa richieste di rete.",
     "storesTitle": "Cosa memorizza (localmente, nell'IndexedDB del tuo browser)",
@@ -313,6 +313,7 @@
     "noHost": "Non viene richiesta alcuna autorizzazione host — l'estensione non può accedere al contenuto delle pagine che visiti.",
     "controlTitle": "Il tuo controllo",
     "controlItems": [
+      "Metti in pausa il monitoraggio quando vuoi o aggiungi siti a un elenco da non monitorare. Entrambi fermano solo il monitoraggio futuro; il tempo già registrato resta finché non lo cancelli.",
       "Esporta tutta la tua cronologia come JSON, con crittografia opzionale tramite passphrase (AES-256-GCM).",
       "Ripristina da un backup su questo o su un altro dispositivo.",
       "Cancella tutti i dati con un clic; rimuovere l'estensione elimina tutto."
