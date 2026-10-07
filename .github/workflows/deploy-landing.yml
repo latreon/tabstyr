@@ -77,7 +77,12 @@ jobs:
 
       # Also refreshes landing/src/data/changelog.json from GitHub Releases
       # (see landing/package.json), so a deploy always carries current notes.
+      # The VITE_ values are public and live in repository variables, the same
+      # keys as landing/.env. Without them the support links are left out.
       - run: npm run build
+        env:
+          VITE_POLAR_CHECKOUT_URL: ${{ vars.VITE_POLAR_CHECKOUT_URL }}
+          VITE_HCAPTCHA_SITEKEY: ${{ vars.VITE_HCAPTCHA_SITEKEY }}
 
       # --no-build: the site is built above, and netlify-cli would otherwise run its own build.
       - name: Publish to Netlify

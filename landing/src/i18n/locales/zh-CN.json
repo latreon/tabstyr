@@ -206,7 +206,10 @@
     "ideaCta": "打开表单",
     "supportTitle": "支持这个项目",
     "supportBody": "TabStyr 免费且开源。一份小小的赞赏让它得以延续。",
-    "supportCta": "请我喝杯咖啡"
+    "supportCta": "请我喝杯咖啡",
+    "sourceTitle": "看看它是怎么做的",
+    "sourceBody": "TabStyr 是开源项目（MIT）。你可以阅读代码、亲自核实隐私承诺，或关注新版本。",
+    "sourceCta": "在 GitHub 上查看"
   },
   "cta": {
     "title": "了解你的浏览器时间去了哪里。",

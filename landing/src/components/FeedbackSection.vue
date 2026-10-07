@@ -22,6 +22,14 @@ const cards = computed(() => [
     icon: 'heart',
     external: true,
   },
+  {
+    href: LINKS.github,
+    title: t('feedback.sourceTitle'),
+    body: t('feedback.sourceBody'),
+    cta: t('feedback.sourceCta'),
+    icon: 'code',
+    external: true,
+  },
 ]);
 </script>
 
@@ -45,7 +53,8 @@ const cards = computed(() => [
         >
           <span class="chip" aria-hidden="true">
             <svg v-if="c.icon === 'spark'" viewBox="0 0 24 24"><path d="M9.5 16.5h5M10 20h4M12 3a6 6 0 0 1 3.5 10.9c-.6.5-1 1.2-1 2H9.5c0-.8-.4-1.5-1-2A6 6 0 0 1 12 3Z" /></svg>
-            <svg v-else viewBox="0 0 24 24"><path d="M12 20s-7-4.3-9.3-8.5A4.7 4.7 0 0 1 12 6a4.7 4.7 0 0 1 9.3 5.5C19 15.7 12 20 12 20Z" /></svg>
+            <svg v-else-if="c.icon === 'heart'" viewBox="0 0 24 24"><path d="M12 20s-7-4.3-9.3-8.5A4.7 4.7 0 0 1 12 6a4.7 4.7 0 0 1 9.3 5.5C19 15.7 12 20 12 20Z" /></svg>
+            <svg v-else viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16" /></svg>
           </span>
           <h3 class="card-title">{{ c.title }}</h3>
           <p class="card-body">{{ c.body }}</p>
@@ -65,7 +74,8 @@ const cards = computed(() => [
 .h2 { font-size: clamp(1.8rem, 1.3rem + 2.2vw, 2.6rem); font-weight: 700; margin: 12px 0 0; }
 .sub { color: var(--text-2); margin: 14px 0 0; font-size: 16px; line-height: 1.6; }
 
-.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+/* Two or three cards, depending on which links the build has, always fill the row. */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
 
 .card {
   display: flex; flex-direction: column; align-items: flex-start;
@@ -89,5 +99,5 @@ const cards = computed(() => [
 .card:hover .link span { transform: translateX(3px); }
 .link span { transition: transform 200ms ease; }
 
-@media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+@media (max-width: 860px) { .grid { grid-template-columns: minmax(0, 1fr); } }
 </style>

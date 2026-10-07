@@ -206,7 +206,10 @@
     "ideaCta": "フォームを開く",
     "supportTitle": "プロジェクトを応援する",
     "supportBody": "TabStyr は無料でオープンソースです。ささやかな投げ銭が開発を続ける力になります。",
-    "supportCta": "コーヒーをおごる"
+    "supportCta": "コーヒーをおごる",
+    "sourceTitle": "中身を見る",
+    "sourceBody": "TabStyr はオープンソース（MIT）です。コードを読んだり、プライバシーの説明を自分で確かめたり、新しいリリースを追ったりできます。",
+    "sourceCta": "GitHub で見る"
   },
   "cta": {
     "title": "ブラウザの時間の行き先を知ろう。",

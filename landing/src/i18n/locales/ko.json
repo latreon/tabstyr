@@ -206,7 +206,10 @@
     "ideaCta": "양식 열기",
     "supportTitle": "프로젝트 후원하기",
     "supportBody": "TabStyr는 무료이자 오픈 소스입니다. 작은 후원이 프로젝트를 이어가게 합니다.",
-    "supportCta": "커피 한 잔 사주기"
+    "supportCta": "커피 한 잔 사주기",
+    "sourceTitle": "어떻게 만들었는지 보기",
+    "sourceBody": "TabStyr는 오픈 소스(MIT)입니다. 코드를 읽고, 개인정보 보호 약속을 직접 확인하거나 새 버전을 따라가 보세요.",
+    "sourceCta": "GitHub에서 보기"
   },
   "cta": {
     "title": "브라우저 시간이 어디로 가는지 알아보세요.",
