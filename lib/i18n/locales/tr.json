@@ -301,7 +301,7 @@
     "restoreReadFailed": "Bu dosya okunamadı.",
     "restoreTooLarge": "Bu dosya bir TabStyr yedeği olamayacak kadar büyük.",
     "replaceTitle": "Tüm veriler değiştirilsin mi?",
-    "replaceBody": "Bu, şu anda bu cihazda saklanan verileri siler ve {days} günlük kayıt ile {sessions} oturum{from} geri yükler. Geri alınamaz.",
+    "replaceBody": "Bu, cihazda kayıtlı verileri siler ve {days} günlük kaydı ile {sessions} oturumu{from} geri yükler. Mevcut verileriniz önce indirilenler klasörünüze kaydedilir.",
     "replaceBodyFrom": " ({date} tarihli yedekten)",
     "replaceData": "Verileri değiştir",
     "restoring": "Geri yükleniyor…",

@@ -202,6 +202,7 @@ as an overlay (no new tab, no page navigation).
 | `webNavigation` | Detect in-page (SPA) route changes on the active tab so time is credited to the right page |
 | `downloads` | Optional scheduled backup export (off by default) — saves a JSON file locally, no upload |
 | `favicon` (Chromium only) | Show site icons in lists |
+| `unlimitedStorage` (Chromium only) | Keep the history from being cleared by the browser when the disk runs low; no install warning |
 
 No host permissions are requested — the extension cannot access page contents.
 

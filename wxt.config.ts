@@ -41,7 +41,9 @@ export default defineConfig({
         'downloads',
         // `favicon` exists only on Chromium. Firefox & Safari fall back to the
         // letter-chip in FaviconChip.vue, so requesting it there would be invalid.
-        ...(chromium ? ['favicon'] : []),
+        // `unlimitedStorage` stops Chromium from evicting the history when the disk
+        // runs low. It shows no install warning there; Firefox would prompt for it.
+        ...(chromium ? ['favicon', 'unlimitedStorage'] : []),
       ],
       action: { default_title: 'TabStyr' },
       // Explicit, auditable CSP for extension pages. Tightens the secure MV3

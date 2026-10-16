@@ -159,20 +159,25 @@ async function replayOnboarding() {
 
 const exporting = ref(false);
 
+// Downloads everything stored on this device as a restorable JSON backup.
+async function downloadBackup(fileName: string, isEmptySkipped = false): Promise<void> {
+  const [dailyStats, monthlyStats, sessions, tabMeta, settings] = await Promise.all([
+    repo.getAllDailyStats(),
+    repo.getAllMonthlyStats(),
+    repo.getAllSessions(),
+    repo.getAllTabMeta(),
+    getSettings(),
+  ]);
+  if (isEmptySkipped && !dailyStats.length && !monthlyStats.length && !sessions.length) return;
+  const json = toJsonBackup({ dailyStats, monthlyStats, sessions, tabMeta, settings }, Date.now());
+  downloadFile(fileName, json, 'application/json');
+}
+
 async function exportData() {
   if (exporting.value) return;
   exporting.value = true;
   try {
-    const stamp = dateKey(Date.now());
-    const [dailyStats, monthlyStats, sessions, tabMeta, settings] = await Promise.all([
-      repo.getAllDailyStats(),
-      repo.getAllMonthlyStats(),
-      repo.getAllSessions(),
-      repo.getAllTabMeta(),
-      getSettings(),
-    ]);
-    const json = toJsonBackup({ dailyStats, monthlyStats, sessions, tabMeta, settings }, Date.now());
-    downloadFile(`tabstyr-backup-${stamp}.json`, json, 'application/json');
+    await downloadBackup(`tabstyr-backup-${dateKey(Date.now())}.json`);
     showToast(t('settings.exportedJson'));
   } catch (e) {
     console.error('[settings] export failed', e);
@@ -378,6 +383,9 @@ async function confirmRestore() {
   if (!pendingRestore.value || restoring.value) return;
   restoring.value = true;
   try {
+    // Replace deletes the current history. Save it first; if that fails, the
+    // restore below never runs.
+    await downloadBackup(`tabstyr-before-restore-${dateKey(Date.now())}.json`, true);
     const res = await restoreBackup(pendingRestore.value);
     pendingRestore.value = null;
     await broadcastSettingsChanged();

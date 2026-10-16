@@ -311,6 +311,10 @@
       {
         "perm": "favicon (Chromium)",
         "why": "Listelerde site simgelerini gösterme."
+      },
+      {
+        "perm": "unlimitedStorage (Chromium)",
+        "why": "Geçmişinizi korur: tarayıcı disk alanı açmak için onu silmez. Hiçbir şey bir yere gönderilmez."
       }
     ],
     "noHost": "Hiçbir ana bilgisayar izni istenmez — uzantı ziyaret ettiğiniz sayfaların içeriğine erişemez.",

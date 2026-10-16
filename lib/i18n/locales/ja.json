@@ -301,7 +301,7 @@
     "restoreReadFailed": "そのファイルを読み込めませんでした。",
     "restoreTooLarge": "このファイルは TabStyr のバックアップにしては大きすぎます。",
     "replaceTitle": "すべてのデータを置き換えますか？",
-    "replaceBody": "このデバイスに現在保存されているデータを削除し、{days}件の日別記録と{sessions}件のセッション{from}を復元します。この操作は取り消せません。",
+    "replaceBody": "この端末に保存されているデータを削除し、{days} 日分の記録と {sessions} 件のセッション{from}を復元します。現在のデータは先にダウンロードフォルダに保存されます。",
     "replaceBodyFrom": "（{date}付けのバックアップから）",
     "replaceData": "データを置き換える",
     "restoring": "復元中…",

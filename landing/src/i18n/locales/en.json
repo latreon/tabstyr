@@ -320,6 +320,10 @@
       {
         "perm": "favicon (Chromium)",
         "why": "Show site icons in lists."
+      },
+      {
+        "perm": "unlimitedStorage (Chromium)",
+        "why": "Keep your history safe: the browser won't clear it to free up disk space. Nothing is sent anywhere."
       }
     ],
     "noHost": "No host permissions are requested — the extension cannot access the content of the pages you visit.",

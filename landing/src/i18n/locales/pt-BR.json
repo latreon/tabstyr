@@ -311,6 +311,10 @@
       {
         "perm": "favicon (Chromium)",
         "why": "Exibir ícones dos sites nas listas."
+      },
+      {
+        "perm": "unlimitedStorage (Chromium)",
+        "why": "Protege seu histórico: o navegador não vai apagá-lo para liberar espaço em disco. Nada é enviado para lugar nenhum."
       }
     ],
     "noHost": "Nenhuma permissão de host é solicitada — a extensão não consegue acessar o conteúdo das páginas que você visita.",

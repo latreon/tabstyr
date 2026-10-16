@@ -301,7 +301,7 @@
     "restoreReadFailed": "Impossibile leggere quel file.",
     "restoreTooLarge": "Quel file è troppo grande per essere un backup di TabStyr.",
     "replaceTitle": "Sostituire tutti i dati?",
-    "replaceBody": "Questo elimina i dati attualmente memorizzati su questo dispositivo e ripristina {days} record giornalieri e {sessions} sessioni{from}. Non può essere annullato.",
+    "replaceBody": "Questo elimina i dati salvati su questo dispositivo e ripristina {days} record giornalieri e {sessions} sessioni{from}. Prima, i tuoi dati attuali vengono salvati nei download.",
     "replaceBodyFrom": " dal backup del {date}",
     "replaceData": "Sostituisci dati",
     "restoring": "Ripristino…",
