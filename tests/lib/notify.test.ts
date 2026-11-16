@@ -71,6 +71,23 @@ describe('notification interpolation', () => {
   });
 });
 
+describe('notification text matches the app catalogs', () => {
+  const catalogs = import.meta.glob<{ notification: Record<string, string>; categories: Record<string, string> }>('@/lib/i18n/locales/*.json', { eager: true, import: 'default' });
+  const catalogOf = (code: string) => Object.entries(catalogs).find(([path]) => path.endsWith(`/${code}.json`))![1];
+  const fill = (template: string, params: Record<string, string | number>) => template.replace(/\{(\w+)\}/g, (_, name: string) => String(params[name]));
+
+  function expectSameText(code: string) {
+    const { notification, categories } = catalogOf(code);
+    expect(staleNotification(code, 4, 3)).toBe(fill(notification.stale!, { count: 4, days: 3 }));
+    expect(sessionAlertNotification(code, 'reddit.com', 30)).toBe(fill(notification.sessionAlert!, { domain: 'reddit.com', minutes: 30 }));
+    for (const category of CATEGORIES) {
+      expect(budgetNotification(code, category)).toBe(fill(notification.budget!, { category: categories[category]! }));
+    }
+  }
+
+  test.each(CODES)('%s', expectSameText);
+});
+
 describe('notification language resolution', () => {
   test('an explicit preference wins over the browser UI language', () => {
     stubUiLanguage('de');

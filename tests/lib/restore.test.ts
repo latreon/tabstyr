@@ -6,6 +6,7 @@ import * as repo from '@/lib/db/repo';
 import { parseBackup, restoreBackup, MAX_BACKUP_BYTES } from '@/lib/restore';
 import { toJsonBackup } from '@/lib/export';
 import { DEFAULT_SETTINGS } from '@/lib/settings';
+import type { Session } from '@/lib/types';
 
 beforeEach(() => {
   globalThis.indexedDB = new IDBFactory();
@@ -224,5 +225,67 @@ describe('restoreBackup', () => {
     await expect(repo.restoreAll([dup as never, { ...dup } as never], [], [])).rejects.toBeTruthy();
     const stats = await repo.getAllDailyStats();
     expect(stats).toEqual([{ date: '2020-01-01', domain: 'old.com', seconds: 50, audioSeconds: 0 }]);
+  });
+});
+
+describe('backup files end to end', () => {
+  const session = (start: number, tabKey = 'k1') => ({ tabId: 1, tabKey, url: 'https://github.com/', domain: 'github.com', start, end: start + 60_000, audio: false });
+  const stat = { date: '2026-06-16', domain: 'github.com', seconds: 120, audioSeconds: 0 };
+
+  test('export then restore gives back exactly the stored data', async () => {
+    await repo.commitSessions([session(1_000), session(100_000)], [stat]);
+    await repo.upsertTabMeta({ tabId: 1, key: 'k1', url: 'https://github.com/', title: 'GH', lastActiveAt: 1, createdAt: 1 });
+    const before = { sessions: await repo.getAllSessions(), dailyStats: await repo.getAllDailyStats(), tabMeta: await repo.getAllTabMeta() };
+    const file = toJsonBackup({ ...before, monthlyStats: [], settings: DEFAULT_SETTINGS }, Date.now());
+
+    await repo.wipeAll();
+    await restoreBackup(parseBackup(file));
+
+    const strip = (rows: (Session & { id?: number })[]) => rows.map(({ id: _id, ...rest }) => rest);
+    expect(strip(await repo.getAllSessions())).toEqual(strip(before.sessions));
+    expect(await repo.getAllDailyStats()).toEqual(before.dailyStats);
+    expect(await repo.getAllTabMeta()).toEqual(before.tabMeta);
+  });
+
+  test('a v1 file (no monthly archive, sessions without a tab key) restores', async () => {
+    const v1 = {
+      app: 'tabstyr',
+      schemaVersion: 1,
+      exportedAt: '2026-06-16T10:00:00.000Z',
+      dailyStats: [stat],
+      sessions: [{ tabId: 1, url: 'https://github.com/', domain: 'github.com', start: 1_000, end: 61_000, audio: false }],
+      tabMeta: [],
+    };
+
+    const counts = await restoreBackup(parseBackup(JSON.stringify(v1)));
+
+    expect(counts).toEqual({ dailyStats: 1, monthlyStats: 0, sessions: 1, tabMeta: 0 });
+    expect(await repo.getAllMonthlyStats()).toEqual([]);
+  });
+
+  test('a file with only daily totals restores those and clears the rest', async () => {
+    await repo.commitSessions([session(1_000)], []);
+
+    await restoreBackup(parseBackup(JSON.stringify({ app: 'tabstyr', schemaVersion: 3, dailyStats: [stat] })));
+
+    expect(await repo.getAllDailyStats()).toEqual([stat]);
+    expect(await repo.getAllSessions()).toEqual([]);
+  });
+
+  test('a large file (100k sessions) parses in reasonable time', () => {
+    const sessions = Array.from({ length: 100_000 }, (_, i) => session(1_000 + i * 120_000, `k${i % 50}`));
+    const file = JSON.stringify({ app: 'tabstyr', schemaVersion: 3, sessions });
+
+    const startedAt = performance.now();
+    expect(parseBackup(file).sessions).toHaveLength(100_000);
+    expect(performance.now() - startedAt).toBeLessThan(5_000);
+  });
+
+  test('the same session listed twice is stored once', async () => {
+    const file = JSON.stringify({ app: 'tabstyr', schemaVersion: 3, sessions: [session(1_000), session(1_000)] });
+
+    await restoreBackup(parseBackup(file));
+
+    expect(await repo.getAllSessions()).toHaveLength(1);
   });
 });

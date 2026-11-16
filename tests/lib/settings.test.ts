@@ -480,4 +480,33 @@ describe('settings', () => {
       await expect(broadcastSettingsChanged()).resolves.toBeUndefined();
     });
   });
+
+  describe('write safety', () => {
+    test('two saves started together both land when Web Locks serialize them', async () => {
+      let chain: Promise<unknown> = Promise.resolve();
+      const locks = { request: (_name: string, run: () => Promise<unknown>) => (chain = chain.then(run)) };
+      vi.spyOn(navigator, 'locks', 'get').mockReturnValue(locks as never);
+
+      await Promise.all([saveSettings({ focusTarget: 70 }), saveSettings({ staleDays: 7 })]);
+      invalidateSettings();
+
+      expect(await getSettings()).toMatchObject({ focusTarget: 70, staleDays: 7 });
+    });
+
+    test('a failed write rejects and leaves the stored and cached settings unchanged', async () => {
+      await saveSettings({ focusTarget: 60 });
+      vi.spyOn(fakeBrowser.storage.local, 'set').mockRejectedValue(new Error('QUOTA_BYTES quota exceeded'));
+
+      await expect(saveSettings({ focusTarget: 80 })).rejects.toThrow('quota');
+
+      expect((await getSettings()).focusTarget).toBe(60);
+      invalidateSettings();
+      expect((await getSettings()).focusTarget).toBe(60);
+    });
+
+    test('a stored value of the wrong type entirely falls back to defaults', async () => {
+      await fakeBrowser.storage.local.set({ settings: 'corrupted' });
+      expect(await getSettings()).toEqual(DEFAULT_SETTINGS);
+    });
+  });
 });

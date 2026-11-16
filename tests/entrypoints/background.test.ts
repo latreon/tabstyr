@@ -1,6 +1,7 @@
 import 'fake-indexeddb/auto';
 import { IDBFactory } from 'fake-indexeddb';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import type { Browser } from 'wxt/browser';
 import { fakeBrowser } from 'wxt/testing/fake-browser';
 import { resetDBConnection } from '@/lib/db/db';
 import * as repo from '@/lib/db/repo';
@@ -461,6 +462,400 @@ describe('background: manual pause', () => {
 
     await vi.waitFor(async () => {
       expect((await repo.getAllSessions()).length).toBeGreaterThan(pausedSessions.length);
+    });
+  });
+});
+
+describe('background: browser events', () => {
+  const START = Date.parse('2026-07-15T10:00:00Z');
+  const MIN = 60_000;
+
+  async function trackedMs(domain?: string) {
+    const sessions = await repo.getAllSessions();
+    return sessions.filter((s) => !domain || s.domain === domain).reduce((sum, s) => sum + (s.end - s.start), 0);
+  }
+
+  // Focus a fresh web tab in a fresh worker, with the clock under test control.
+  async function startTracking(url = 'https://example.com/') {
+    const clock = vi.spyOn(Date, 'now').mockReturnValue(START);
+    focusWindow(0);
+    background.main();
+    const tab = await fakeBrowser.tabs.create({ url });
+    await fakeBrowser.tabs.onActivated.trigger({ tabId: tab.id!, windowId: tab.windowId! });
+    return { tab, clock };
+  }
+
+  async function heartbeat() {
+    await fakeBrowser.alarms.onAlarm.trigger({ name: 'heartbeat', scheduledTime: Date.now() });
+  }
+
+  // fake-browser can't mark a created tab as active, so answer the
+  // "active tab in the last focused window" query directly.
+  function stubActiveTab(tab: Browser.tabs.Tab) {
+    const realQuery = fakeBrowser.tabs.query.bind(fakeBrowser.tabs);
+    vi.spyOn(fakeBrowser.tabs, 'query').mockImplementation((q) =>
+      q?.active && q?.lastFocusedWindow ? Promise.resolve([tab]) : realQuery(q),
+    );
+  }
+
+  describe('tabs.onUpdated', () => {
+    test('typing a URL into the focused new-tab page starts counting', async () => {
+      const { tab, clock } = await startTracking('chrome://newtab/');
+      await fakeBrowser.tabs.onUpdated.trigger(tab.id!, { url: 'https://example.com/' }, { ...tab, url: 'https://example.com/', active: true });
+
+      clock.mockReturnValue(START + 3 * MIN);
+      await heartbeat();
+
+      expect(await trackedMs('example.com')).toBe(3 * MIN);
+    });
+
+    test('a navigation in a private window records nothing', async () => {
+      const { tab, clock } = await startTracking('chrome://newtab/');
+      const url = 'https://example.com/';
+      await fakeBrowser.tabs.onUpdated.trigger(tab.id!, { url }, { ...tab, url, active: true, incognito: true });
+
+      clock.mockReturnValue(START + 3 * MIN);
+      await heartbeat();
+
+      expect(await repo.getAllSessions()).toEqual([]);
+      expect(await repo.getTabMeta(tab.id!)).toBeUndefined();
+    });
+
+    test('a title-only update does not split the session', async () => {
+      const { tab, clock } = await startTracking();
+      await fakeBrowser.tabs.onUpdated.trigger(tab.id!, { title: 'New title' }, { ...tab, title: 'New title', active: true });
+
+      clock.mockReturnValue(START + 2 * MIN);
+      await heartbeat();
+
+      expect(await repo.getAllSessions()).toHaveLength(1);
+    });
+  });
+
+  test('closing the focused tab saves its time and forgets the tab', async () => {
+    const { tab, clock } = await startTracking();
+    clock.mockReturnValue(START + 2 * MIN);
+
+    await fakeBrowser.tabs.onRemoved.trigger(tab.id!, { windowId: tab.windowId!, isWindowClosing: false });
+
+    expect(await trackedMs()).toBe(2 * MIN);
+    expect(await repo.getTabMeta(tab.id!)).toBeUndefined();
+  });
+
+  test('switching to another app stops counting at once', async () => {
+    const { clock } = await startTracking();
+    clock.mockReturnValue(START + 2 * MIN);
+    await fakeBrowser.windows.onFocusChanged.trigger(-1);
+
+    clock.mockReturnValue(START + 10 * MIN);
+    await heartbeat();
+
+    expect(await trackedMs()).toBe(2 * MIN);
+  });
+
+  describe('idle.onStateChanged', () => {
+    let fireIdle: (state: string) => Promise<void>;
+    beforeEach(() => {
+      vi.mocked(fakeBrowser.idle.onStateChanged.addListener).mockImplementation((listener) => {
+        fireIdle = listener as never;
+      });
+    });
+
+    test('locking the screen stops counting', async () => {
+      const { clock } = await startTracking();
+      clock.mockReturnValue(START + 2 * MIN);
+      await fireIdle('locked');
+
+      clock.mockReturnValue(START + 10 * MIN);
+      await heartbeat();
+
+      expect(await trackedMs()).toBe(2 * MIN);
+    });
+
+    test('coming back from idle resumes counting on the active tab', async () => {
+      const { tab, clock } = await startTracking();
+      stubActiveTab(tab);
+      clock.mockReturnValue(START + 2 * MIN);
+      await fireIdle('idle');
+
+      clock.mockReturnValue(START + 5 * MIN);
+      await fireIdle('active');
+      clock.mockReturnValue(START + 7 * MIN);
+      await heartbeat();
+
+      expect(await trackedMs()).toBe(4 * MIN);
+    });
+  });
+
+  describe('SPA navigation (webNavigation)', () => {
+    // fakeBrowser.reset() keeps webNavigation listeners, so workers from earlier
+    // tests would still react to these events.
+    beforeEach(() => {
+      fakeBrowser.webNavigation.onHistoryStateUpdated.removeAllListeners();
+      fakeBrowser.webNavigation.onReferenceFragmentUpdated.removeAllListeners();
+    });
+
+    async function pages() {
+      return (await repo.getAllSessions()).map((s) => s.url);
+    }
+
+    test('a pushState route change splits time between the two pages', async () => {
+      const { tab, clock } = await startTracking();
+      clock.mockReturnValue(START + MIN);
+      await fakeBrowser.webNavigation.onHistoryStateUpdated.trigger({ tabId: tab.id!, frameId: 0, url: 'https://example.com/watch' } as never);
+      clock.mockReturnValue(START + 3 * MIN);
+      await heartbeat();
+
+      expect(await pages()).toEqual(['https://example.com/', 'https://example.com/watch']);
+      expect(await trackedMs()).toBe(3 * MIN);
+    });
+
+    test('a route change inside an iframe is ignored', async () => {
+      const { tab, clock } = await startTracking();
+      clock.mockReturnValue(START + MIN);
+      await fakeBrowser.webNavigation.onHistoryStateUpdated.trigger({ tabId: tab.id!, frameId: 3, url: 'https://example.com/embed' } as never);
+      clock.mockReturnValue(START + 3 * MIN);
+      await heartbeat();
+
+      expect(await pages()).toEqual(['https://example.com/']);
+    });
+
+    test('a #/ hash route splits, a token fragment does not', async () => {
+      const { tab, clock } = await startTracking();
+      clock.mockReturnValue(START + MIN);
+      await fakeBrowser.webNavigation.onReferenceFragmentUpdated.trigger({ tabId: tab.id!, frameId: 0, url: 'https://example.com/#access_token=abc' } as never);
+      clock.mockReturnValue(START + 2 * MIN);
+      await fakeBrowser.webNavigation.onReferenceFragmentUpdated.trigger({ tabId: tab.id!, frameId: 0, url: 'https://example.com/#/inbox' } as never);
+      clock.mockReturnValue(START + 3 * MIN);
+      await heartbeat();
+
+      expect(await pages()).toEqual(['https://example.com/', 'https://example.com/#/inbox']);
+    });
+
+    test('a duplicate event for the same route adds no extra session', async () => {
+      const { tab, clock } = await startTracking();
+      clock.mockReturnValue(START + MIN);
+      const event = { tabId: tab.id!, frameId: 0, url: 'https://example.com/watch' } as never;
+      await fakeBrowser.webNavigation.onHistoryStateUpdated.trigger(event);
+      await fakeBrowser.webNavigation.onHistoryStateUpdated.trigger(event);
+      await fakeBrowser.tabs.onUpdated.trigger(tab.id!, { url: 'https://example.com/watch' }, { ...tab, url: 'https://example.com/watch', active: true });
+      clock.mockReturnValue(START + 3 * MIN);
+      await heartbeat();
+
+      expect(await pages()).toEqual(['https://example.com/', 'https://example.com/watch']);
+    });
+
+    test('rapid route changes lose no time', async () => {
+      const { tab, clock } = await startTracking();
+      for (let i = 1; i <= 5; i++) {
+        clock.mockReturnValue(START + MIN + i * 100);
+        await fakeBrowser.webNavigation.onHistoryStateUpdated.trigger({ tabId: tab.id!, frameId: 0, url: `https://example.com/p${i}` } as never);
+      }
+      clock.mockReturnValue(START + 3 * MIN);
+      await heartbeat();
+
+      expect(await trackedMs()).toBe(3 * MIN);
+    });
+
+    test('a route change in a tab that is not focused is ignored', async () => {
+      const { clock } = await startTracking();
+      const other = await fakeBrowser.tabs.create({ url: 'https://other.com/' });
+      clock.mockReturnValue(START + MIN);
+      await fakeBrowser.webNavigation.onHistoryStateUpdated.trigger({ tabId: other.id!, frameId: 0, url: 'https://other.com/next' } as never);
+      clock.mockReturnValue(START + 3 * MIN);
+      await heartbeat();
+
+      expect(await pages()).toEqual(['https://example.com/']);
+    });
+  });
+
+  test('a replaced tab id keeps counting under the same stable key', async () => {
+    let replace: (added: number, removed: number) => Promise<void> = async () => {};
+    stubOnReplaced().mockImplementation((listener) => {
+      replace = listener as never;
+    });
+    const { tab, clock } = await startTracking();
+    const { key } = (await repo.getTabMeta(tab.id!))!;
+    vi.spyOn(fakeBrowser.tabs, 'query').mockResolvedValue([{ ...tab, id: 999 }] as never);
+
+    clock.mockReturnValue(START + MIN);
+    await replace(999, tab.id!);
+    clock.mockReturnValue(START + 3 * MIN);
+    await heartbeat();
+
+    expect(await repo.getTabMeta(tab.id!)).toBeUndefined();
+    expect((await repo.getTabMeta(999))?.key).toBe(key);
+    const sessions = await repo.getAllSessions();
+    expect(sessions.every((s) => s.tabKey === key)).toBe(true);
+    expect(await trackedMs()).toBe(3 * MIN);
+  });
+
+  test('on browser start, saved tabs are matched to the new tab ids by URL', async () => {
+    await repo.upsertTabMeta({ tabId: 50, key: 'kept-key', url: 'https://example.com/', title: 'Example', lastActiveAt: 1, createdAt: 1 });
+    background.main();
+    const live = await fakeBrowser.tabs.create({ url: 'https://example.com/?utm=1' });
+
+    await fakeBrowser.runtime.onStartup.trigger();
+
+    expect(await repo.getTabMeta(50)).toBeUndefined();
+    expect((await repo.getTabMeta(live.id!))?.key).toBe('kept-key');
+  });
+
+  test.each([
+    ['tab-time-budget', '#focus'],
+    ['tab-time-session', '#focus'],
+    ['tab-time-stale', '#stale'],
+    ['tab-time-storage-full', '#stale'],
+  ])('clicking the %s notification opens the dashboard at %s', async (id, hash) => {
+    const create = vi.spyOn(fakeBrowser.tabs, 'create');
+    background.main();
+    create.mockClear();
+
+    await fakeBrowser.notifications.onClicked.trigger(id);
+
+    expect(create).toHaveBeenCalledWith({ url: expect.stringMatching(new RegExp(`/dashboard\\.html${hash}$`)) });
+  });
+
+  describe('runtime.onMessage', () => {
+    test.each([[null], ['wipe-data'], [42], [[]], [{}], [{ type: 'unknown' }], [{ type: 7 }]])(
+      'ignores a malformed or unknown message %j and keeps working',
+      async (message) => {
+        await repo.upsertTabMeta({ tabId: 1, key: 'k1', url: 'https://a.com/', title: 'A', lastActiveAt: 1, createdAt: 1 });
+        const { clock } = await startTracking();
+
+        await expect(fakeBrowser.runtime.onMessage.trigger(message, { id: fakeBrowser.runtime.id }, () => {})).resolves.toBeDefined();
+        clock.mockReturnValue(START + 2 * MIN);
+        await heartbeat();
+
+        expect(await repo.getTabMeta(1)).toBeDefined();
+        expect(await trackedMs()).toBe(2 * MIN);
+      },
+    );
+
+    test('settings-changed applies the new idle timeout', async () => {
+      background.main();
+      await saveSettings({ idleSeconds: 300 });
+      await fakeBrowser.runtime.onMessage.trigger({ type: 'settings-changed' }, { id: fakeBrowser.runtime.id }, () => {});
+
+      expect(fakeBrowser.idle.setDetectionInterval).toHaveBeenLastCalledWith(300);
+    });
+  });
+
+  describe('continuous-session alert', () => {
+    async function browseFor(url: string, minutes: number) {
+      const { clock } = await startTracking(url);
+      for (let m = 1; m <= minutes; m += 10) {
+        clock.mockReturnValue(START + m * MIN);
+        await heartbeat();
+      }
+      return Object.keys(await fakeBrowser.notifications.getAll());
+    }
+
+    test('fires once a distracting site has been in view past the threshold', async () => {
+      await saveSettings({ notificationsEnabled: true, sessionAlertMinutes: 30 });
+      expect(await browseFor('https://www.reddit.com/', 41)).toContain('tab-time-session');
+    });
+
+    test('does not fire for a productive site', async () => {
+      await saveSettings({ notificationsEnabled: true, sessionAlertMinutes: 30 });
+      expect(await browseFor('https://github.com/', 41)).not.toContain('tab-time-session');
+    });
+
+    test('does not fire when notifications are off', async () => {
+      await saveSettings({ notificationsEnabled: false, sessionAlertMinutes: 30 });
+      expect(await browseFor('https://www.reddit.com/', 41)).not.toContain('tab-time-session');
+    });
+  });
+
+  describe('storage full', () => {
+    const quota = () => new DOMException('full', 'QuotaExceededError');
+
+    test('warns once a day and keeps the unsaved time for a later retry', async () => {
+      const commit = vi.spyOn(repo, 'commitSessions').mockRejectedValue(quota());
+      const { clock } = await startTracking();
+      clock.mockReturnValue(START + 2 * MIN);
+      await heartbeat();
+
+      expect((await fakeBrowser.storage.local.get('storageWarning')).storageWarning).toBe(true);
+      expect(Object.keys(await fakeBrowser.notifications.getAll())).toContain('tab-time-storage-full');
+
+      await fakeBrowser.notifications.clear('tab-time-storage-full');
+      clock.mockReturnValue(START + 3 * MIN);
+      await heartbeat();
+      expect(Object.keys(await fakeBrowser.notifications.getAll())).not.toContain('tab-time-storage-full');
+
+      commit.mockRestore();
+      clock.mockReturnValue(START + 4 * MIN);
+      await heartbeat();
+
+      expect((await fakeBrowser.storage.local.get('storageWarning')).storageWarning).toBe(false);
+      expect(await trackedMs()).toBe(4 * MIN);
+    });
+
+    test('a non-quota write error does not raise the storage warning', async () => {
+      vi.spyOn(repo, 'commitSessions').mockRejectedValue(new Error('disk gone'));
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+      const { clock } = await startTracking();
+      clock.mockReturnValue(START + 2 * MIN);
+      await heartbeat();
+
+      expect((await fakeBrowser.storage.local.get('storageWarning')).storageWarning).toBeUndefined();
+    });
+  });
+
+  test('the one-time key migration stamps old keyless history, then never runs again', async () => {
+    await repo.upsertTabMeta({ tabId: 7, url: 'https://a.com/', title: 'A', lastActiveAt: 1, createdAt: 1 } as never);
+    await repo.commitSessions([{ tabId: 7, url: 'https://a.com/', domain: 'a.com', start: 1_000, end: 61_000, audio: false } as never], []);
+
+    background.main();
+    await vi.waitFor(async () => expect((await fakeBrowser.storage.local.get('keyMigrationV2')).keyMigrationV2).toBe(true));
+
+    const { key } = (await repo.getTabMeta(7))!;
+    expect(key).toEqual(expect.any(String));
+    expect((await repo.getAllSessions())[0]!.tabKey).toBe(key);
+
+    const upsert = vi.spyOn(repo, 'upsertTabMeta');
+    background.main();
+    await new Promise((r) => setTimeout(r, 20));
+    expect(upsert).not.toHaveBeenCalled();
+  });
+
+  describe('worker restart', () => {
+    test('a fresh worker continues the open session from storage.session', async () => {
+      const { clock } = await startTracking();
+      clock.mockReturnValue(START + 30_000);
+      await heartbeat();
+
+      // The old worker is gone: only the new one may handle the next alarm.
+      fakeBrowser.alarms.onAlarm.removeAllListeners();
+      background.main();
+      clock.mockReturnValue(START + 3 * MIN);
+      await heartbeat();
+
+      expect(await trackedMs()).toBe(3 * MIN);
+    });
+
+    test('tracking still works where storage.session does not exist', async () => {
+      const session = fakeBrowser.storage.session;
+      (fakeBrowser.storage as { session?: unknown }).session = undefined;
+      try {
+        const { clock } = await startTracking();
+        clock.mockReturnValue(START + 2 * MIN);
+        await heartbeat();
+        expect(await trackedMs()).toBe(2 * MIN);
+      } finally {
+        fakeBrowser.storage.session = session;
+      }
+    });
+
+    test('a corrupted saved engine state does not stop tracking', async () => {
+      await fakeBrowser.storage.session.set({ engineState: { focused: null, audio: 'garbage', isIdle: false } });
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+      const { clock } = await startTracking();
+      clock.mockReturnValue(START + 2 * MIN);
+      await heartbeat();
+
+      expect(await trackedMs()).toBe(2 * MIN);
     });
   });
 });
