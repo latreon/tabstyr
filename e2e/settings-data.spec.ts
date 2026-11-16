@@ -1,44 +1,20 @@
-import { test as base, chromium, expect, type BrowserContext, type Page } from '@playwright/test';
-import path from 'node:path';
+import type { BrowserContext, Page } from '@playwright/test';
+import { dismissOnboarding, expect, test } from './fixtures';
 
 // The destructive / data-moving settings flows had no end-to-end cover at all —
 // backup restore, merge, CSV import and wipe are the paths where a bug costs a user
 // their history, so they are exactly the ones worth driving in a real browser.
 
-const EXT_PATH = path.resolve('dist/chrome-mv3');
-
-const test = base.extend<{ context: BrowserContext; extensionId: string }>({
-  // eslint-disable-next-line no-empty-pattern
-  context: async ({}, use) => {
-    const context = await chromium.launchPersistentContext('', {
-      channel: 'chromium',
-      viewport: { width: 1280, height: 900 },
-      args: [`--disable-extensions-except=${EXT_PATH}`, `--load-extension=${EXT_PATH}`],
-    });
-    // These tests use tiles inside the collapsible dashboard groups, so start with them open.
-    await context.addInitScript(() => localStorage.setItem('tabstyr:dashboardGroups', JSON.stringify({ trends: true, settings: true })));
-    await use(context);
-    await context.close();
-  },
-  extensionId: async ({ context }, use) => {
-    let [worker] = context.serviceWorkers();
-    if (!worker) worker = await context.waitForEvent('serviceworker');
-    await use(worker.url().split('/')[2]!);
-  },
+// These tests use tiles inside the collapsible dashboard groups, so start with them open.
+test.beforeEach(async ({ context }) => {
+  await context.addInitScript(() => localStorage.setItem('tabstyr:dashboardGroups', JSON.stringify({ trends: true, settings: true })));
 });
 
 async function openDashboard(context: BrowserContext, extensionId: string): Promise<Page> {
   const page = await context.newPage();
   await page.goto(`chrome-extension://${extensionId}/dashboard.html`);
   // Onboarding inerts the rest of the page until dismissed.
-  const dialog = page.getByRole('dialog');
-  try {
-    await dialog.waitFor({ state: 'visible', timeout: 5_000 });
-    await page.keyboard.press('Escape');
-    await dialog.waitFor({ state: 'detached' });
-  } catch {
-    /* already onboarded */
-  }
+  await dismissOnboarding(page);
   await expect(page.getByRole('button', { name: 'Export JSON', exact: true })).toBeVisible({ timeout: 10_000 });
   return page;
 }

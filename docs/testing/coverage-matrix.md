@@ -11,7 +11,7 @@ Last updated: Phase 2 (Chromium e2e), 2026-11-16, version 2.2.0.
 | Suite | Result |
 |---|---|
 | Vitest (happy-dom, WxtVitest, fakeBrowser) | 72 files, 912 tests, all pass |
-| Playwright e2e (Chromium, built `dist/chrome-mv3`) | 84 tests: 82 pass, 2 skipped (blocked worker-stop tests). The update test needs `E2E_OLD_EXTENSION` and skips without it. The old local-only `extension.spec.ts` screenshot capture visits real sites and can exceed 30 s. |
+| Playwright e2e (Chromium, built `dist/chrome-mv3`) | 80 tests: 77 pass, 3 skipped (2 blocked worker-stop tests, the local-only store screenshot tool). 3 of 3 runs green in CI mode. The update test needs `E2E_OLD_EXTENSION`. Only `e2e/store-screenshots.spec.ts` touches the network or sleeps; it is a capture tool for store images, skipped on CI. |
 | Firefox e2e | none |
 
 Coverage (v8, `lib/ composables/ components/ entrypoints/`):
@@ -199,7 +199,7 @@ IndexedDB stores: `sessions`, `dailyDomainStats`, `tabMeta`, `monthlyDomainStats
 | Unused keys | ✅ | n/a | n/a |
 | Hardcoded user-facing strings in templates | ✅ | n/a | n/a |
 | `public/_locales/*/messages.json` key parity + 132-char limit | ✅ | n/a | n/a |
-| No horizontal overflow (1440, 768, 380 px + popup) | n/a | ✅ (all 11) | ❌ |
+| No horizontal overflow (1440, 768, 380 px + popup) | n/a | ✅ (all 11; replaces the old 4-locale `i18n-overflow.spec.ts`) | ❌ |
 | All 11 locales render with no missing keys or vue-i18n warnings | ◐ (switch test) | ✅ | ❌ |
 | RTL layout | n/a (no RTL locale) | n/a | n/a |
 
@@ -216,13 +216,13 @@ IndexedDB stores: `sessions`, `dailyDomainStats`, `tabMeta`, `monthlyDomainStats
 | Bundle size budget | ❌ |
 | Coverage thresholds in Vitest config | ✅ |
 
-## Problems found in the current setup
+## Problems found in the Phase 0 setup
 
-1. CI e2e job has `continue-on-error: true`. A failing e2e run never blocks a merge.
-2. E2E tests depend on the real network: `extension.spec.ts` and `spa-live.spec.ts` open `https://example.com`.
-3. E2E uses fixed sleeps (`waitForTimeout`) in about 25 places.
-4. `e2e/__screenshots__` files are captures for store and review, not baselines. Nothing compares them.
-5. No coverage thresholds. Coverage can drop without failing CI.
+1. CI e2e job has `continue-on-error: true`. A failing e2e run never blocks a merge. (Phase 5)
+2. ~~E2E tests depended on the real network (`example.com`).~~ Fixed in Phase 2: all specs use the local `*.test` server, except the store screenshot tool.
+3. ~~E2E used about 25 fixed sleeps.~~ Fixed in Phase 2: all specs wait on real conditions, except the store screenshot tool.
+4. ~~`e2e/__screenshots__` were captures, not baselines.~~ Phase 2 added real baselines in `e2e/visual.spec.ts-snapshots/`.
+5. ~~No coverage thresholds.~~ Fixed in Phase 1.
 
 ## Bugs found by tests (all fixed)
 
