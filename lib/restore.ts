@@ -1,5 +1,6 @@
 import * as repo from './db/repo';
 import { SCHEMA_VERSION } from './export';
+import { mergeSessions } from './merge';
 import { getSettings, saveSettings } from './settings';
 import { domainOf, isWebDomain, pageOf } from './domain';
 import type { DailyStat, MonthlyStat, Session, Settings, TabMeta } from './types';
@@ -205,8 +206,10 @@ export async function restoreBackup(parsed: ParsedBackup): Promise<RestoreResult
   // restore the prior settings best-effort before surfacing the error.
   const previousSettings = data.settings ? await getSettings() : undefined;
   if (data.settings) await saveSettings(data.settings as Partial<Settings>);
+  // A hand-edited or combined file can list the same session twice.
+  const sessions = mergeSessions([], data.sessions);
   try {
-    await repo.restoreAll(data.sessions, data.dailyStats, data.tabMeta, data.monthlyStats);
+    await repo.restoreAll(sessions, data.dailyStats, data.tabMeta, data.monthlyStats);
   } catch (error) {
     if (previousSettings) await saveSettings(previousSettings);
     throw error;
@@ -214,7 +217,7 @@ export async function restoreBackup(parsed: ParsedBackup): Promise<RestoreResult
   return {
     dailyStats: data.dailyStats.length,
     monthlyStats: data.monthlyStats.length,
-    sessions: data.sessions.length,
+    sessions: sessions.length,
     tabMeta: data.tabMeta.length,
   };
 }

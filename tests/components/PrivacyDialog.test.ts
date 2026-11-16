@@ -94,3 +94,18 @@ describe('PrivacyDialog', () => {
     expect(w.emitted('close')).toBeUndefined();
   });
 });
+
+describe('PrivacyDialog permission table', () => {
+  test.each([
+    ['chrome', 3],
+    ['firefox', 2],
+  ] as const)('lists every permission the %s manifest requests', async (browser, manifestVersion) => {
+    const { default: config } = await import('@/wxt.config');
+    const manifest = (config.manifest as (env: { browser: string; manifestVersion: number }) => { permissions: string[] })({ browser, manifestVersion });
+    mountDialog();
+
+    const listed = [...panel().querySelectorAll('td code')].map((code) => code.textContent);
+
+    expect(listed).toEqual(expect.arrayContaining(manifest.permissions));
+  });
+});

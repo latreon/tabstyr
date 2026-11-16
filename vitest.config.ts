@@ -22,7 +22,9 @@ export default defineConfig({
       // separate landing package, generated output and the build scripts would
       // otherwise dilute the number into meaninglessness.
       include: ['lib/**', 'composables/**', 'components/**', 'entrypoints/**'],
-      exclude: ['**/*.d.ts'],
+      exclude: ['**/*.d.ts', '**/*.html'],
+      // Floors at the measured coverage. Raise them when coverage goes up, never lower.
+      thresholds: { lines: 89, statements: 88, functions: 84, branches: 82 },
     },
   },
 });

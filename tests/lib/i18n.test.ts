@@ -1,3 +1,6 @@
+import { readFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { parse } from 'vue/compiler-sfc';
 import { describe, expect, test } from 'vitest';
 import { russianPluralRule } from '@/lib/i18n';
 import en from '@/lib/i18n/locales/en.json';
@@ -64,6 +67,76 @@ describe('i18n catalogs', () => {
 
   test('en itself is internally consistent (no empty values)', () => {
     for (const [k, v] of Object.entries(enFlat)) expect(v, k).not.toBe('');
+  });
+
+  test('no locale has an empty translation', () => {
+    for (const [code, msgs] of Object.entries(LOCALES)) {
+      for (const [k, v] of Object.entries(flatten(msgs))) expect(v.trim(), `${code} ${k}`).not.toBe('');
+    }
+  });
+});
+
+// Source files that ship in the extension, read from disk.
+function sourceFiles(dir: string, ext: RegExp): string[] {
+  return readdirSync(dir, { recursive: true, encoding: 'utf8' })
+    .filter((f) => ext.test(f) && !f.includes('locales'))
+    .map((f) => join(dir, f));
+}
+const SOURCES = ['components', 'composables', 'entrypoints', 'lib'].flatMap((d) => sourceFiles(d, /\.(vue|ts)$/));
+
+describe('i18n key usage', () => {
+  // Keys built at runtime, e.g. t(`categories.${id}`).
+  // `notification.` is mirrored in lib/i18n/notify.ts and checked in notify.test.ts.
+  const DYNAMIC_PREFIXES = ['categories.', 'trend.', 'comparison.', 'onboarding.', 'productivity.', 'insights.', 'notification.'];
+
+  test('every en key is used somewhere in the code', () => {
+    const code = SOURCES.map((f) => readFileSync(f, 'utf8')).join('\n');
+    const unused = Object.keys(enFlat).filter(
+      (key) => !DYNAMIC_PREFIXES.some((prefix) => key.startsWith(prefix)) && !code.includes(`'${key}'`) && !code.includes(`"${key}"`),
+    );
+    expect(unused).toEqual([]);
+  });
+
+  test('templates have no hardcoded user-facing text', () => {
+    // Product and browser names, and API names shown inside <code>, stay untranslated.
+    const BRANDS = /TabStyr|Chromium/g;
+    const LABEL_ATTRS = new Set(['title', 'aria-label', 'placeholder', 'alt', 'label']);
+    const found: string[] = [];
+    type Node = { type: number; tag?: string; content?: string; loc: { start: { line: number } }; props?: { type: number; name: string; value?: { content: string } }[]; children?: Node[] };
+    const hasWords = (text: string) => /\p{L}{2,}/u.test(text.replace(BRANDS, ''));
+    for (const file of SOURCES.filter((f) => f.endsWith('.vue'))) {
+      const ast = parse(readFileSync(file, 'utf8')).descriptor.template?.ast as Node | undefined;
+      const walk = (node: Node) => {
+        if (node.tag === 'code') return;
+        if (node.type === 2 && hasWords(node.content!)) found.push(`${file}:${node.loc.start.line} ${node.content!.trim()}`);
+        for (const prop of node.props ?? []) {
+          if (prop.type === 6 && LABEL_ATTRS.has(prop.name) && prop.value && hasWords(prop.value.content)) found.push(`${file}:${node.loc.start.line} ${prop.name}="${prop.value.content}"`);
+        }
+        node.children?.forEach(walk);
+      };
+      if (ast) walk(ast);
+    }
+    expect(found).toEqual([]);
+  });
+});
+
+describe('store listing locales (public/_locales)', () => {
+  const read = (folder: string) => JSON.parse(readFileSync(`public/_locales/${folder}/messages.json`, 'utf8')) as Record<string, { message: string }>;
+  const enStore = read('en');
+
+  test('there is one store locale per app locale', () => {
+    const appCodes = ['en', ...Object.keys(LOCALES)].map((code) => code.replace('-', '_')).sort();
+    expect(readdirSync('public/_locales').sort()).toEqual(appCodes);
+  });
+
+  test.each(readdirSync('public/_locales'))('%s has the same keys as en and no empty message', (folder) => {
+    const messages = read(folder);
+    expect(Object.keys(messages).sort()).toEqual(Object.keys(enStore).sort());
+    for (const [key, { message }] of Object.entries(messages)) expect(message.trim(), key).not.toBe('');
+  });
+
+  test.each(readdirSync('public/_locales'))('%s extension description fits the 132-character store limit', (folder) => {
+    expect(read(folder).extDescription!.message.length).toBeLessThanOrEqual(132);
   });
 });
 

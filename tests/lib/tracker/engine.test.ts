@@ -80,6 +80,11 @@ describe('TrackerEngine state round-trip', () => {
     expect(closed).toHaveLength(1);
     expect(closed[0]!.tabId).toBe(1);
   });
+
+  test('a malformed saved state starts empty instead of throwing', () => {
+    const restored = new TrackerEngine({ focused: 'x', audio: [{ tabId: 'a' }, null], isIdle: 'yes' } as never);
+    expect(restored.getState()).toEqual({ focused: null, audio: [], isIdle: false });
+  });
 });
 
 describe('TrackerEngine reconcile', () => {

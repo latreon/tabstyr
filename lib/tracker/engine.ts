@@ -31,15 +31,28 @@ const ABSOLUTE_MAX_SESSION_MS = 24 * 60 * 60_000;
 const HEARTBEAT_MS = 60_000;
 const STALL_GRACE_MS = HEARTBEAT_MS;
 
+// The saved state comes back from storage.session, so check its shape before use.
+function isOpenSession(value: unknown): value is OpenSession {
+  const session = value as Partial<OpenSession> | null;
+  return (
+    !!session &&
+    typeof session === 'object' &&
+    Number.isFinite(session.tabId) &&
+    typeof session.url === 'string' &&
+    typeof session.domain === 'string' &&
+    Number.isFinite(session.start)
+  );
+}
+
 export class TrackerEngine {
   private focused: OpenSession | null;
   private audio: Map<number, OpenSession>;
   private idle: boolean;
 
   constructor(state?: EngineState | null) {
-    this.focused = state?.focused ? { ...state.focused } : null;
-    this.audio = new Map((state?.audio ?? []).map((s) => [s.tabId, { ...s }]));
-    this.idle = state?.isIdle ?? false;
+    this.focused = isOpenSession(state?.focused) ? { ...state.focused } : null;
+    this.audio = new Map((Array.isArray(state?.audio) ? state.audio : []).filter(isOpenSession).map((s) => [s.tabId, { ...s }]));
+    this.idle = state?.isIdle === true;
   }
 
   getState(): EngineState {
