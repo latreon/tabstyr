@@ -4,14 +4,14 @@ The checklist for the test work. Update it in the same PR as any test you add.
 
 Legend: ✅ covered · ◐ partly covered · ❌ not covered · n/a does not apply
 
-Last updated: Phase 1 (unit and integration gaps), 2026-11-16, version 2.2.0.
+Last updated: Phase 2 (Chromium e2e), 2026-11-16, version 2.2.0.
 
 ## Baseline
 
 | Suite | Result |
 |---|---|
-| Vitest (happy-dom, WxtVitest, fakeBrowser) | 72 files, 910 tests, all pass |
-| Playwright e2e (Chromium, built `dist/chrome-mv3`) | 20 tests, all pass (1 skipped on CI) |
+| Vitest (happy-dom, WxtVitest, fakeBrowser) | 72 files, 912 tests, all pass |
+| Playwright e2e (Chromium, built `dist/chrome-mv3`) | 84 tests: 82 pass, 2 skipped (blocked worker-stop tests). The update test needs `E2E_OLD_EXTENSION` and skips without it. The old local-only `extension.spec.ts` screenshot capture visits real sites and can exceed 30 s. |
 | Firefox e2e | none |
 
 Coverage (v8, `lib/ composables/ components/ entrypoints/`):
@@ -43,25 +43,41 @@ Files still under 80% branch coverage: `components/ui/ColorPicker.vue` (45), `co
 - Firefox add-on ID is already fixed: `tabstyr@latreon.github.io`.
 - 11 locales, none right-to-left: en, de, es, fr, it, ja, ko, pt-BR, ru, tr, zh-CN.
 
+## Tracking on local fixture sites (E2E Chromium)
+
+All `*.test` hosts resolve to a local server (`--host-resolver-rules`), so no test touches the network.
+
+| Page type | Status |
+|---|---|
+| Static page, time saved when the tab closes | ✅ |
+| Switching tabs splits time | ✅ |
+| SPA: pushState routes and Back | ✅ |
+| Route change inside an iframe ignored | ✅ |
+| Slow-loading page (1.5 s) | ✅ |
+| Page with `Content-Security-Policy: default-src 'none'` | ✅ |
+| Excluded site never tracked | ✅ |
+| Paused tracking records nothing | ✅ |
+| Content scripts | n/a (the extension has none) |
+
 ## Background events
 
 | Behaviour | Unit | E2E Chromium | E2E Firefox |
 |---|---|---|---|
-| `runtime.onInstalled` install: opens dashboard, records install date | ✅ | ❌ | ❌ |
-| `runtime.onInstalled` update: no new tab | ✅ | ❌ | ❌ |
+| `runtime.onInstalled` install: opens dashboard, records install date | ✅ | ✅ | ❌ |
+| `runtime.onInstalled` update: no new tab | ✅ | n/a (`--load-extension` reports `install` on every launch) | ❌ |
 | `runtime.setUninstallURL` | ✅ | ❌ | ❌ |
 | `runtime.onStartup`: re-match tab meta to live tabs by URL | ✅ | ❌ | ❌ |
 | `runtime.onSuspend`: flush open session | ✅ | ❌ | ❌ |
-| Worker restart: engine state restored from `storage.session` | ✅ | ❌ | ❌ |
+| Worker restart: engine state restored from `storage.session` | ✅ | ❌ blocked (see notes) | ❌ |
 | `tabs.onActivated` | ✅ | ✅ | ❌ |
-| `tabs.onUpdated` (URL, title, private window) | ✅ | ◐ | ❌ |
-| `tabs.onRemoved` | ✅ | ❌ | ❌ |
+| `tabs.onUpdated` (URL, title, private window) | ✅ | ✅ (slow page) | ❌ |
+| `tabs.onRemoved` | ✅ | ✅ | ❌ |
 | `tabs.onReplaced` | ✅ | ❌ | ❌ |
-| `windows.onFocusChanged` (blur on leaving the browser) | ✅ | ❌ | ❌ |
+| `windows.onFocusChanged` (blur on leaving the browser) | ✅ | ◐ (focus only) | ❌ |
 | `idle.onStateChanged` (idle, locked, active) | ✅ | ❌ | ❌ |
-| `webNavigation.onHistoryStateUpdated` (pushState/replaceState, iframes, duplicates, rapid changes, unfocused tab) | ✅ | ✅ (pushState) | ❌ |
+| `webNavigation.onHistoryStateUpdated` (pushState/replaceState, iframes, duplicates, rapid changes, unfocused tab) | ✅ | ✅ (pushState, iframe) | ❌ |
 | `webNavigation.onReferenceFragmentUpdated` (hash routes) | ✅ | ❌ | ❌ |
-| popstate / back-forward in an SPA (same event as pushState) | ◐ | ❌ | ❌ |
+| popstate / back-forward in an SPA (same event as pushState) | ◐ | ✅ | ❌ |
 | `notifications.onClicked` opens `#focus` or `#stale` | ✅ | ❌ | ❌ |
 | One-time `keyMigrationV2` backfill | ✅ | ❌ | ❌ |
 | IndexedDB upgrades v1, v2, v3 to v4 with data | ✅ | ❌ | ❌ |
@@ -74,7 +90,7 @@ Files still under 80% branch coverage: `components/ui/ColorPicker.vue` (45), `co
 |---|---|---|---|
 | `wipe-data` from own extension | ✅ | ✅ | ❌ |
 | `wipe-data` from another sender ignored | ✅ | n/a | n/a |
-| `settings-changed`: reload settings, pause/resume, idle interval | ✅ | ◐ | ❌ |
+| `settings-changed`: reload settings, pause/resume, idle interval | ✅ | ✅ | ❌ |
 | Unknown type / `null` / non-object payload ignored | ✅ | n/a | n/a |
 
 ## Alarms and notifications
@@ -100,23 +116,23 @@ IndexedDB stores: `sessions`, `dailyDomainStats`, `tabMeta`, `monthlyDomainStats
 
 | Area | Unit | E2E Chromium | E2E Firefox |
 |---|---|---|---|
-| Every setting default + sanitising | ✅ | ❌ | ❌ |
+| Every setting default + sanitising | ✅ | ✅ (defaults) | ❌ |
 | Settings from an older shape (legacy fields dropped) | ✅ | ❌ | ❌ |
 | Corrupt stored values fall back to defaults | ✅ | ❌ | ❌ |
 | Cross-context cache coherence | ✅ | ❌ | ❌ |
 | Concurrent `saveSettings` (Web Locks) | ✅ | ❌ | ❌ |
-| Settings persist after page reload | n/a | ❌ | ❌ |
-| Settings persist after browser restart | n/a | ❌ | ❌ |
+| Settings persist after page reload | n/a | ✅ | ❌ |
+| Settings persist after browser restart | n/a | ✅ | ❌ |
 | `storage.session` missing (older browsers) | ✅ | n/a | n/a |
 | Corrupted `engineState` in `storage.session` | ✅ | n/a | n/a |
 | Write failure / quota (settings, session commit, restore rollback) | ✅ | ❌ | ❌ |
-| Upgrade from an older extension build | ❌ | ❌ | ❌ |
+| Upgrade from an older extension build | ✅ (DB fixtures) | ✅ (v2.1.0 build, needs `E2E_OLD_EXTENSION`) | ❌ |
 
 ## Import and export
 
 | Feature | Unit | E2E Chromium | E2E Firefox |
 |---|---|---|---|
-| JSON backup export | ✅ | ◐ (buttons present) | ❌ |
+| JSON backup export (real download) | ✅ | ✅ | ❌ |
 | CSV export | ✅ | ◐ (buttons present) | ❌ |
 | Encrypted export + passphrase rules | ✅ | ✅ | ❌ |
 | Restore (replace) with confirmation / cancel | ✅ | ✅ | ❌ |
@@ -127,7 +143,8 @@ IndexedDB stores: `sessions`, `dailyDomainStats`, `tabMeta`, `monthlyDomainStats
 | Partial backup (daily totals only) | ✅ | ❌ | ❌ |
 | Duplicate sessions in a backup | ✅ | ❌ | ❌ |
 | CSV import (RescueTime style) | ✅ | ✅ | ❌ |
-| Export then import round-trip | ✅ | ❌ | ❌ |
+| Export then import round-trip (download, wipe, upload) | ✅ | ✅ (JSON + encrypted) | ❌ |
+| Safety download before replace-restore | ✅ | ✅ | ❌ |
 | Wipe all data with confirmation | ✅ | ✅ | ❌ |
 
 ## Dashboard and popup UI
@@ -136,9 +153,9 @@ IndexedDB stores: `sessions`, `dailyDomainStats`, `tabMeta`, `monthlyDomainStats
 |---|---|---|---|
 | Popup: total, top sites, open dashboard | ✅ | ✅ | ❌ |
 | Dashboard boot (`App.vue`) | ✅ | ✅ | ❌ |
-| Onboarding card first run + dismiss | ✅ | ❌ | ❌ |
+| Onboarding card first run + dismiss | ✅ | ✅ | ❌ |
 | Review prompt timing + dismiss | ✅ | ❌ | ❌ |
-| Privacy dialog (incl. every manifest permission listed) | ✅ | ❌ | ❌ |
+| Privacy dialog (incl. every manifest permission listed) | ✅ | ✅ (keyboard, axe) | ❌ |
 | Day navigation / date picker | ✅ | ❌ | ❌ |
 | Hero, stat, category, top sites tiles | ◐ | ✅ (render) | ❌ |
 | Productivity, focus trend, focus categories | ◐ | ✅ (render) | ❌ |
@@ -146,9 +163,9 @@ IndexedDB stores: `sessions`, `dailyDomainStats`, `tabMeta`, `monthlyDomainStats
 | Insights, trend chart, comparison, heatmap | ◐ | ✅ (render) | ❌ |
 | Tab table: click focuses tab | ✅ | ✅ | ❌ |
 | Stale tabs modal (close, snooze) | ✅ | ❌ | ❌ |
-| Domain detail modal | ◐ | ❌ | ❌ |
+| Domain detail modal | ◐ | ✅ (axe) | ❌ |
 | Wrapped / report card image | ✅ (lib) | ❌ | ❌ |
-| Theme toggle (system, light, dark) | ✅ | ✅ | ❌ |
+| Theme (system, light, dark), persists after restart | ✅ | ✅ | ❌ |
 | Empty state (no data) | ◐ | ❌ | ❌ |
 | Loading and error states, retry, storage-full banner | ✅ | ❌ | ❌ |
 
@@ -156,20 +173,20 @@ IndexedDB stores: `sessions`, `dailyDomainStats`, `tabMeta`, `monthlyDomainStats
 
 | Setting | Unit | E2E Chromium | E2E Firefox |
 |---|---|---|---|
-| staleDays, idleSeconds | ✅ | ❌ | ❌ |
-| audioEnabled | ✅ | ❌ | ❌ |
-| notificationsEnabled | ✅ | ❌ | ❌ |
-| sessionAlertMinutes | ✅ | ❌ | ❌ |
-| focusTarget | ✅ | ❌ | ❌ |
+| staleDays, idleSeconds (buttons and typing) | ✅ | ✅ | ❌ |
+| audioEnabled | ✅ | ✅ | ❌ |
+| notificationsEnabled | ✅ | ✅ | ❌ |
+| sessionAlertMinutes | ✅ | ✅ | ❌ |
+| focusTarget | ✅ | ✅ | ❌ |
 | categoryBudgets | ✅ | ❌ | ❌ |
 | categoryProductivity | ✅ | ❌ | ❌ |
 | customCategories | ✅ | ❌ | ❌ |
 | categoryOverrides, categoryRules | ✅ | ❌ | ❌ |
-| excludedDomains | ✅ | ❌ | ❌ |
-| trackingPaused | ✅ | ❌ | ❌ |
-| autoExportDays | ✅ | ❌ | ❌ |
+| excludedDomains | ✅ | ✅ (tracking) | ❌ |
+| trackingPaused | ✅ | ✅ | ❌ |
+| autoExportDays | ✅ | ✅ | ❌ |
 | language | ✅ | ◐ (set via storage) | ❌ |
-| scheduled backup interval | ✅ | ❌ | ❌ |
+| scheduled backup interval | ✅ | ✅ | ❌ |
 | show intro again | ✅ | ❌ | ❌ |
 
 ## i18n
@@ -182,18 +199,18 @@ IndexedDB stores: `sessions`, `dailyDomainStats`, `tabMeta`, `monthlyDomainStats
 | Unused keys | ✅ | n/a | n/a |
 | Hardcoded user-facing strings in templates | ✅ | n/a | n/a |
 | `public/_locales/*/messages.json` key parity + 132-char limit | ✅ | n/a | n/a |
-| No horizontal overflow | n/a | ◐ (de, ja, ru, tr) | ❌ |
-| All 11 locales render with no missing keys | ◐ (switch test) | ❌ | ❌ |
+| No horizontal overflow (1440, 768, 380 px + popup) | n/a | ✅ (all 11) | ❌ |
+| All 11 locales render with no missing keys or vue-i18n warnings | ◐ (switch test) | ✅ | ❌ |
 | RTL layout | n/a (no RTL locale) | n/a | n/a |
 
 ## Cross-cutting
 
 | Check | Status |
 |---|---|
-| Accessibility scan (axe) light + dark | ❌ |
-| Keyboard-only operation | ◐ (focus trap, pickers in unit tests) |
-| Visual regression (screenshot compare) | ❌ (screenshots are saved for review, not compared) |
-| Service worker killed mid-flow | ❌ |
+| Accessibility scan (axe) light + dark: popup, dashboard, dialogs, intro | ✅ Chromium, zero serious or critical violations |
+| Keyboard-only operation: every dashboard control reachable with a focus indicator, dialog focus trap and return, settings, popup | ✅ Chromium |
+| Visual regression: dashboard + popup, 11 locales × 2 themes, 1% tolerance | ◐ Chromium: macOS baselines only; Linux baselines come from CI in Phase 5 (the spec skips a platform with no baselines) |
+| Service worker killed mid-flow | ❌ blocked: stopping the worker closes Playwright's context (`e2e/lifecycle.spec.ts` is `fixme`); unit test covers restart |
 | `web-ext lint` | ❌ |
 | Manifest permission / version check | ◐ (`check:version` for README badge only) |
 | Bundle size budget | ❌ |
@@ -215,7 +232,24 @@ IndexedDB stores: `sessions`, `dailyDomainStats`, `tabMeta`, `monthlyDomainStats
 4. The privacy dialog did not list `webNavigation`, `downloads` and `unlimitedStorage`. Added in all 11 locales. Test: `PrivacyDialog.test.ts` "lists every permission the chrome/firefox manifest requests".
 5. `settings.save` was an unused translation key. Removed. Test: `i18n.test.ts` "every en key is used somewhere in the code".
 
+## Bugs found in Phase 2 (all fixed)
+
+6. Typing a number into a settings stepper did not stick: the input was re-rendered from the saved value whenever the typed digits reached the min or max. `NumberStepper` now shows the draft while typing. Tests: `NumberStepper.test.ts` "typed digits stay in the field", `e2e/settings.spec.ts` "a typed number is saved".
+7. The popup tab count had no plural forms ("1 tabs", "1 вкладок"). `popup.tabs` now has plural forms where the language needs them, and the popup passes the count as the plural choice. Test: `popup.test.ts` "the tab count uses the singular for one tab".
+8. Accessibility (axe, serious), now zero violations on every scanned page in both themes:
+   - A. Select boxes, the date picker and the color picker include their visible value in the accessible name ("Theme: Light"). Top-site and popup rows take their name from their visible text and keep the longer hint as `title`.
+   - B. The comparison bars and site-detail day bars got `role="img"`, which makes their `aria-label` valid.
+   - C. The solid red button uses a new `--negative-solid` token (#dc2626, 4.8:1 with white) in both themes.
+   - D. The privacy dialog's text is focusable (`tabindex="0"`) with a focus ring, so keyboard users can scroll it.
+
+Still open, found while fixing 7: English `worklog.moreSites` ("+1 more sites") and `settings.imported` ("Imported 1 entries") have the same missing-plural problem.
+
 ## Test setup notes
+
+- E2E: Playwright's browser window is not focused by the OS, and the tracker only counts the focused window. `focusTab()` in `e2e/fixtures.ts` activates the tab and focuses its window through the extension API, like a user click.
+- E2E: with no human at the keyboard the OS reports idle, and Chrome sends that once about a second after the worker starts. The fixture waits for it (`settleIdle`) before each test.
+- E2E: sessions under 250 ms are dropped by design. `dwell()` waits until the open session is old enough instead of sleeping.
+- E2E: extensions loaded with `--load-extension` get `onInstalled` with reason `install` on every launch.
 
 - `fakeBrowser.reset()` does not clear `webNavigation` listeners. Tests that fire those events clear them first.
 - fake-browser has no `idle.onStateChanged` or `tabs.onReplaced` implementation. Tests capture the listener through a spy instead.
