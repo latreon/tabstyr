@@ -165,6 +165,7 @@ onUnmounted(() => {
             :key="p.key"
             class="bar-col"
             tabindex="0"
+            role="img"
             :aria-label="`${p.label} — ${formatDuration(p.seconds)}`"
             @mouseenter="showTip($event, p.label, p.seconds)"
             @mouseleave="hideTip"

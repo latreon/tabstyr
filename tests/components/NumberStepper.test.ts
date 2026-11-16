@@ -26,6 +26,16 @@ describe('NumberStepper', () => {
     expect(w.emitted('update:modelValue')!.at(-1)).toEqual([180]);
   });
 
+  test('typed digits stay in the field even when they pass the min or max', async () => {
+    const w = mount(NumberStepper, { props: { modelValue: 3, min: 1, max: 60 } });
+    const input = w.get('input');
+    for (const value of ['1', '12', '999']) {
+      type(input, value);
+      await input.trigger('input');
+      expect((input.element as HTMLInputElement).value).toBe(value);
+    }
+  });
+
   test('clamps an out-of-range value on commit', async () => {
     const w = mount(NumberStepper, { props: { modelValue: 15, min: 15, max: 600 } });
     const input = w.get('input');

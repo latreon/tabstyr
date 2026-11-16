@@ -65,7 +65,7 @@
     "coffee": "Buy me a coffee"
   },
   "popup": {
-    "tabs": "{count} tabs",
+    "tabs": "{count} tab | {count} tabs",
     "stale": "{count} stale",
     "activeToday": "active today · vs weekly average",
     "noActivityToday": "No activity tracked yet today.",

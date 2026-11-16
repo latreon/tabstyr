@@ -65,7 +65,7 @@
     "coffee": "Offrimi un caffè"
   },
   "popup": {
-    "tabs": "{count} schede",
+    "tabs": "{count} scheda | {count} schede",
     "stale": "{count} obsolete",
     "activeToday": "attivo oggi · vs media settimanale",
     "noActivityToday": "Nessuna attività registrata oggi.",

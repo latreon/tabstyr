@@ -146,4 +146,12 @@ describe('popup', () => {
     await w.get('.cta').trigger('click');
     expect(String((create.mock.calls[0]![0] as { url: string }).url)).toContain('dashboard.html');
   });
+
+  test('the tab count uses the singular for one tab', async () => {
+    let w = await mountPopup([{ id: 1, url: 'https://a.com/' }]);
+    expect(w.get('.counts').text()).toBe('1 tab');
+    w.unmount();
+    w = await mountPopup([{ id: 1, url: 'https://a.com/' }, { id: 2, url: 'https://b.com/' }]);
+    expect(w.get('.counts').text()).toBe('2 tabs');
+  });
 });

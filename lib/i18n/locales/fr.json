@@ -65,7 +65,7 @@
     "coffee": "Offre-moi un café"
   },
   "popup": {
-    "tabs": "{count} onglets",
+    "tabs": "{count} onglet | {count} onglets",
     "stale": "{count} inactifs",
     "activeToday": "actif aujourd'hui · vs moyenne hebdomadaire",
     "noActivityToday": "Aucune activité suivie aujourd'hui.",

@@ -81,7 +81,7 @@ const dir = (pct: number | null) => (pct === null ? '' : pct > 0 ? 'up' : pct < 
         >
           <span class="dot" :style="{ background: categoryColor(c.category, custom) }" aria-hidden="true" />
           <span class="name">{{ categoryLabel(c.category, t) }}</span>
-          <span class="bars" :aria-label="`${categoryLabel(c.category, t)}: ${formatDuration(c.current)} / ${formatDuration(c.previous)}`">
+          <span class="bars" role="img" :aria-label="`${categoryLabel(c.category, t)}: ${formatDuration(c.current)} / ${formatDuration(c.previous)}`">
             <span class="bar now" :style="{ width: `${(c.current / maxCat) * 100}%`, background: categoryColor(c.category, custom) }" />
           </span>
           <span class="time">{{ formatDuration(c.current) }}</span>

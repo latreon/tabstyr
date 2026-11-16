@@ -65,7 +65,7 @@
     "coffee": "Invítame a un café"
   },
   "popup": {
-    "tabs": "{count} pestañas",
+    "tabs": "{count} pestaña | {count} pestañas",
     "stale": "{count} obsoletas",
     "activeToday": "activo hoy · frente al promedio semanal",
     "noActivityToday": "Aún no se ha registrado actividad hoy.",
