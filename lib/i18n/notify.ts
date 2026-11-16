@@ -66,14 +66,14 @@ const SESSION_ALERT: Record<string, string> & { en: string } = {
 // full catalogs. Keep in sync with each locale's `categories.*`.
 const CATEGORY_LABELS: Record<string, Record<string, string>> & { en: Record<string, string> } = {
   en: { Work: 'Work', Dev: 'Dev', Finance: 'Finance', Social: 'Social', Media: 'Media', News: 'News', Shopping: 'Shopping', Other: 'Other' },
-  es: { Work: 'Trabajo', Dev: 'Desarrollo', Finance: 'Finanzas', Social: 'Social', Media: 'Multimedia', News: 'Noticias', Shopping: 'Compras', Other: 'Otro' },
-  de: { Work: 'Arbeit', Dev: 'Dev', Finance: 'Finanzen', Social: 'Sozial', Media: 'Medien', News: 'Nachrichten', Shopping: 'Shopping', Other: 'Sonstiges' },
-  fr: { Work: 'Travail', Dev: 'Dev', Finance: 'Finance', Social: 'Social', Media: 'Médias', News: 'Actus', Shopping: 'Achats', Other: 'Autre' },
-  it: { Work: 'Lavoro', Dev: 'Dev', Finance: 'Finanza', Social: 'Social', Media: 'Media', News: 'Notizie', Shopping: 'Acquisti', Other: 'Altro' },
-  'pt-BR': { Work: 'Trabalho', Dev: 'Dev', Finance: 'Finanças', Social: 'Social', Media: 'Mídia', News: 'Notícias', Shopping: 'Compras', Other: 'Outro' },
-  ru: { Work: 'Работа', Dev: 'Разработка', Finance: 'Финансы', Social: 'Соцсети', Media: 'Медиа', News: 'Новости', Shopping: 'Покупки', Other: 'Другое' },
+  es: { Work: 'Trabajo', Dev: 'Desarrollo', Finance: 'Finanzas', Social: 'Social', Media: 'Multimedia', News: 'Noticias', Shopping: 'Compras', Other: 'Otros' },
+  de: { Work: 'Arbeit', Dev: 'Entwicklung', Finance: 'Finanzen', Social: 'Soziales', Media: 'Medien', News: 'Nachrichten', Shopping: 'Einkaufen', Other: 'Sonstiges' },
+  fr: { Work: 'Travail', Dev: 'Développement', Finance: 'Finance', Social: 'Réseaux sociaux', Media: 'Médias', News: 'Actualités', Shopping: 'Achats', Other: 'Autre' },
+  it: { Work: 'Lavoro', Dev: 'Sviluppo', Finance: 'Finanza', Social: 'Social', Media: 'Media', News: 'Notizie', Shopping: 'Acquisti', Other: 'Altro' },
+  'pt-BR': { Work: 'Trabalho', Dev: 'Desenvolvimento', Finance: 'Finanças', Social: 'Social', Media: 'Mídia', News: 'Notícias', Shopping: 'Compras', Other: 'Outros' },
+  ru: { Work: 'Работа', Dev: 'Разработка', Finance: 'Финансы', Social: 'Соцсети', Media: 'Медиа', News: 'Новости', Shopping: 'Покупки', Other: 'Прочее' },
   tr: { Work: 'İş', Dev: 'Geliştirme', Finance: 'Finans', Social: 'Sosyal', Media: 'Medya', News: 'Haberler', Shopping: 'Alışveriş', Other: 'Diğer' },
-  ja: { Work: '仕事', Dev: '開発', Finance: '金融', Social: 'ソーシャル', Media: 'メディア', News: 'ニュース', Shopping: '買い物', Other: 'その他' },
+  ja: { Work: '仕事', Dev: '開発', Finance: '金融', Social: 'ソーシャル', Media: 'メディア', News: 'ニュース', Shopping: 'ショッピング', Other: 'その他' },
   ko: { Work: '업무', Dev: '개발', Finance: '금융', Social: '소셜', Media: '미디어', News: '뉴스', Shopping: '쇼핑', Other: '기타' },
   'zh-CN': { Work: '工作', Dev: '开发', Finance: '财务', Social: '社交', Media: '媒体', News: '新闻', Shopping: '购物', Other: '其他' },
 };
