@@ -86,13 +86,13 @@ describe('OnboardingCard', () => {
     const first = focusables[0];
     const last = focusables[focusables.length - 1];
 
-    last.focus();
+    last!.focus();
     expect(document.activeElement).toBe(last);
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
     expect(document.activeElement).toBe(first);
 
     // Shift+Tab from the first wraps to the last.
-    first.focus();
+    first!.focus();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true }));
     expect(document.activeElement).toBe(last);
     w.unmount();

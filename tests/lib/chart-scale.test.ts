@@ -5,7 +5,7 @@ describe('yTicks', () => {
   test('returns 3 nice ticks whose top covers the max', () => {
     const ticks = yTicks(3600); // 1h max
     expect(ticks).toHaveLength(3);
-    expect(ticks[2].seconds).toBeGreaterThanOrEqual(3600);
+    expect(ticks[2]!.seconds).toBeGreaterThanOrEqual(3600);
     expect(ticks.map((t) => t.label)).toEqual(['30m', '1h', '1h 30m']);
   });
 
@@ -15,7 +15,7 @@ describe('yTicks', () => {
 
   test('handles huge maxima by falling back to whole hours', () => {
     const ticks = yTicks(20 * 3600);
-    expect(ticks[2].seconds).toBeGreaterThanOrEqual(20 * 3600);
+    expect(ticks[2]!.seconds).toBeGreaterThanOrEqual(20 * 3600);
   });
 });
 

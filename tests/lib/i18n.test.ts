@@ -43,14 +43,14 @@ describe('i18n catalogs', () => {
 
     test(`${code} uses the same placeholder variables per key`, () => {
       for (const key of Object.keys(enFlat)) {
-        expect({ key, tokens: placeholders(flat[key]) }).toEqual({ key, tokens: placeholders(enFlat[key]) });
+        expect({ key, tokens: placeholders(flat[key]!) }).toEqual({ key, tokens: placeholders(enFlat[key]!) });
       }
     });
 
     test(`${code} keeps at least the 3 plural forms en declares for worklog.summary`, () => {
       // A locale may add forms (Russian: zero|one|few|many) but never drop below the
       // zero/one/other split the English copy relies on.
-      expect(flat['worklog.summary'].split('|').length).toBeGreaterThanOrEqual(3);
+      expect(flat['worklog.summary']!.split('|').length).toBeGreaterThanOrEqual(3);
     });
   }
 
@@ -58,8 +58,8 @@ describe('i18n catalogs', () => {
   // built-in one/other split (see russianPluralRule).
   test('ru declares 4 plural forms for every pluralized key', () => {
     const flat = flatten(ru as Tree);
-    expect(flat['worklog.summary'].split('|')).toHaveLength(4);
-    expect(flat['tabs.closed'].split('|')).toHaveLength(4);
+    expect(flat['worklog.summary']!.split('|')).toHaveLength(4);
+    expect(flat['tabs.closed']!.split('|')).toHaveLength(4);
   });
 
   test('en itself is internally consistent (no empty values)', () => {
@@ -99,7 +99,7 @@ describe('russianPluralRule', () => {
   });
 
   test('resolves the real Russian catalog to grammatical strings', () => {
-    const forms = flatten(ru as Tree)['tabs.closed'].split(' | ');
+    const forms = flatten(ru as Tree)['tabs.closed']!.split(' | ');
     expect(forms[pick(1)]).toContain('вкладка');
     expect(forms[pick(3)]).toContain('вкладки');
     expect(forms[pick(7)]).toContain('вкладок');

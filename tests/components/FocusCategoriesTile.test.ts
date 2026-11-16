@@ -17,7 +17,7 @@ function makeWrapper(budgets: Record<string, number> = {}) {
 
 /** The budget stepper input for the nth row (built-ins first, then customs). */
 const budgetInput = (w: ReturnType<typeof makeWrapper>, row: number) =>
-  w.findAll('.prod-row')[row].get('.budget input');
+  w.findAll('.prod-row')[row]!.get('.budget input');
 
 describe('FocusCategoriesTile', () => {
   test('lists every built-in and custom category', () => {
@@ -29,9 +29,9 @@ describe('FocusCategoriesTile', () => {
     const w = makeWrapper({ Social: 45 });
     const social = CATEGORIES.indexOf('Social');
     expect((budgetInput(w, social).element as HTMLInputElement).value).toBe('45');
-    expect(w.findAll('.prod-row')[social].get('.budget-unit').text()).toBe('m');
+    expect(w.findAll('.prod-row')[social]!.get('.budget-unit').text()).toBe('m');
     // Work has no budget → shown as off.
-    expect(w.findAll('.prod-row')[CATEGORIES.indexOf('Work')].get('.budget-unit').text()).toBe('off');
+    expect(w.findAll('.prod-row')[CATEGORIES.indexOf('Work')]!.get('.budget-unit').text()).toBe('off');
   });
 
   test('setting a budget emits setBudget with the category and minutes', async () => {
@@ -47,7 +47,7 @@ describe('FocusCategoriesTile', () => {
     const w = makeWrapper({ Social: 15 });
     const social = CATEGORIES.indexOf('Social');
     // step is 15 and min is 0, so one press of − lands exactly on zero.
-    await w.findAll('.prod-row')[social].findAll('.budget button')[0].trigger('click');
+    await w.findAll('.prod-row')[social]!.findAll('.budget button')[0]!.trigger('click');
     expect(w.emitted('setBudget')?.at(-1)).toEqual(['Social', null]);
   });
 
@@ -63,12 +63,12 @@ describe('FocusCategoriesTile', () => {
   test('the productivity pickers still emit set / setCustom', async () => {
     const w = makeWrapper();
     const rows = w.findAll('.prod-row');
-    await rows[0].get('.trigger').trigger('click');
-    await rows[0].findAll('[role="option"]')[1].trigger('click');
+    await rows[0]!.get('.trigger').trigger('click');
+    await rows[0]!.findAll('[role="option"]')[1]!.trigger('click');
     expect(w.emitted('set')?.at(-1)?.[0]).toBe(CATEGORIES[0]);
 
-    await rows[CATEGORIES.length].get('.trigger').trigger('click');
-    await rows[CATEGORIES.length].findAll('[role="option"]')[1].trigger('click');
+    await rows[CATEGORIES.length]!.get('.trigger').trigger('click');
+    await rows[CATEGORIES.length]!.findAll('[role="option"]')[1]!.trigger('click');
     expect(w.emitted('setCustom')?.at(-1)?.[0]).toBe('Learning');
   });
 

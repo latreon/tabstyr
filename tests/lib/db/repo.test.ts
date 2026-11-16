@@ -96,7 +96,7 @@ describe('sessions + stats', () => {
     ]);
     const stats = await repo.getStatsRange('2026-06-05', '2026-06-30');
     expect(stats).toHaveLength(1);
-    expect(stats[0].date).toBe('2026-06-11');
+    expect(stats[0]!.date).toBe('2026-06-11');
   });
 
   test('getStatsRange from==to returns all domains for that single day', async () => {

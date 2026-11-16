@@ -35,8 +35,8 @@ describe('rematchTabMeta', () => {
     const metas = [meta({ tabId: 10, url: 'https://a.com' }), meta({ tabId: 11, url: 'https://gone.com' })];
     const out = rematchTabMeta(metas, [{ id: 5, url: 'https://a.com' }]);
     expect(out).toHaveLength(1);
-    expect(out[0].tabId).toBe(5);
-    expect(out[0].url).toBe('https://a.com');
+    expect(out[0]!.tabId).toBe(5);
+    expect(out[0]!.url).toBe('https://a.com');
   });
 
   test('duplicate urls match at most once', () => {
@@ -54,10 +54,10 @@ describe('rematchTabMeta', () => {
     // Test both orderings to prove the result is not order-dependent
     const outForward = rematchTabMeta([older, newer], [{ id: 5, url: 'https://a.com' }]);
     expect(outForward).toHaveLength(1);
-    expect(outForward[0].lastActiveAt).toBe(NOW - DAY);
+    expect(outForward[0]!.lastActiveAt).toBe(NOW - DAY);
     const outReverse = rematchTabMeta([newer, older], [{ id: 5, url: 'https://a.com' }]);
     expect(outReverse).toHaveLength(1);
-    expect(outReverse[0].lastActiveAt).toBe(NOW - DAY);
+    expect(outReverse[0]!.lastActiveAt).toBe(NOW - DAY);
   });
 
   test('falls back to a same-domain meta when the exact url drifted on restore', () => {
@@ -66,8 +66,8 @@ describe('rematchTabMeta', () => {
     const m = meta({ tabId: 10, key: 'kKeep', url: 'https://a.com/watch#t=5' });
     const out = rematchTabMeta([m], [{ id: 5, url: 'https://a.com/watch' }]);
     expect(out).toHaveLength(1);
-    expect(out[0].tabId).toBe(5);
-    expect(out[0].key).toBe('kKeep');
+    expect(out[0]!.tabId).toBe(5);
+    expect(out[0]!.key).toBe('kKeep');
   });
 
   test('exact-url match wins over domain fallback; no meta is claimed twice', () => {
@@ -100,7 +100,7 @@ describe('rematchTabMeta', () => {
     // distinct metas preserved (keys not collapsed onto one)
     expect(new Set(out.map((m) => m.key))).toEqual(new Set(['kOld', 'kNew']));
     // most-recent meta assigned to the first live tab
-    expect(out[0].key).toBe('kNew');
+    expect(out[0]!.key).toBe('kNew');
   });
 });
 

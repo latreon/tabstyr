@@ -96,7 +96,7 @@ describe('buildWrapped — sites', () => {
     const stats = Array.from({ length: 8 }, (_, i) => stat('2026-06-01', `site${i}.com`, (i + 1) * 10));
     const w = build({ dailyStats: stats })!;
     expect(w.topSites).toHaveLength(5);
-    expect(w.topSites[0].seconds).toBe(80); // site7 highest
+    expect(w.topSites[0]!.seconds).toBe(80); // site7 highest
   });
 });
 

@@ -20,7 +20,7 @@ describe('DatePicker', () => {
     await w.get('.trigger').trigger('click');
     const roving = w.findAll('.day').filter((d) => d.attributes('tabindex') === '0');
     expect(roving).toHaveLength(1);
-    expect(roving[0].attributes('data-key')).toBe('2026-06-16');
+    expect(roving[0]!.attributes('data-key')).toBe('2026-06-16');
   });
 
   test('arrow keys move the roving focus by day', async () => {

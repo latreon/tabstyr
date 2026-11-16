@@ -144,6 +144,6 @@ describe('popup', () => {
     const create = vi.spyOn(browser.tabs, 'create').mockResolvedValue({} as never);
     const w = await mountPopup();
     await w.get('.cta').trigger('click');
-    expect(String((create.mock.calls[0][0] as { url: string }).url)).toContain('dashboard.html');
+    expect(String((create.mock.calls[0]![0] as { url: string }).url)).toContain('dashboard.html');
   });
 });

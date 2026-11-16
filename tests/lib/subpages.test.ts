@@ -34,7 +34,7 @@ describe('topSubPages', () => {
   test('labels the bare root as "/"', () => {
     const { pages } = topSubPages([s('https://a.com/', 0, 10_000), s('https://a.com', 0, 5_000)]);
     expect(pages).toHaveLength(1);
-    expect(pages[0].path).toBe('/');
+    expect(pages[0]!.path).toBe('/');
   });
 
   test('caps at the limit and reports the remainder', () => {

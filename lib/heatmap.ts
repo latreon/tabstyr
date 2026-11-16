@@ -53,7 +53,7 @@ export function buildHourlyHeatmap(sessions: Array<{ start: number; end: number 
       // assignment below sets cursor past s.end and ends the loop.
       const segEnd = boundary > cursor ? Math.min(s.end, boundary) : s.end;
       const secs = (segEnd - cursor) / 1000;
-      grid[dow][hour] += secs;
+      grid[dow]![hour]! += secs;
       total += secs;
       cursor = segEnd;
     }
@@ -63,8 +63,9 @@ export function buildHourlyHeatmap(sessions: Array<{ start: number; end: number 
   let max = 0;
   for (const row of grid) {
     for (let h = 0; h < 24; h++) {
-      row[h] = Math.round(row[h]);
-      if (row[h] > max) max = row[h];
+      const seconds = Math.round(row[h]!);
+      row[h] = seconds;
+      if (seconds > max) max = seconds;
     }
   }
   return { grid, max: Math.max(1, max), total: Math.round(total) };
@@ -76,7 +77,8 @@ export function peakHour(data: HeatmapData): { day: number; hour: number; second
   let best = { day: 0, hour: 0, seconds: -1 };
   for (let day = 0; day < 7; day++) {
     for (let hour = 0; hour < 24; hour++) {
-      if (data.grid[day][hour] > best.seconds) best = { day, hour, seconds: data.grid[day][hour] };
+      const seconds = data.grid[day]![hour]!;
+      if (seconds > best.seconds) best = { day, hour, seconds };
     }
   }
   return best;

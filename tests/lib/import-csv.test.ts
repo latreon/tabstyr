@@ -16,8 +16,8 @@ describe('parseCsvImport', () => {
   });
 
   test('infers minutes / hours from the duration header', () => {
-    expect(parseCsvImport('day,site,minutes\n2026-06-10,a.com,30').stats[0].seconds).toBe(1800);
-    expect(parseCsvImport('day,site,hours\n2026-06-10,a.com,2').stats[0].seconds).toBe(7200);
+    expect(parseCsvImport('day,site,minutes\n2026-06-10,a.com,30').stats[0]!.seconds).toBe(1800);
+    expect(parseCsvImport('day,site,hours\n2026-06-10,a.com,2').stats[0]!.seconds).toBe(7200);
   });
 
   test('extracts the domain from a full URL and drops non-web activities', () => {
@@ -49,12 +49,12 @@ describe('parseCsvImport', () => {
 
   test('accepts MM/DD/YYYY dates and normalizes to YYYY-MM-DD', () => {
     const r = parseCsvImport('Date,Domain,Seconds\n06/10/2026,a.com,60');
-    expect(r.stats[0].date).toBe('2026-06-10');
+    expect(r.stats[0]!.date).toBe('2026-06-10');
   });
 
   test('caps a single (date, domain) at the daily ceiling', () => {
     const r = parseCsvImport('date,domain,seconds\n2026-06-10,a.com,999999');
-    expect(r.stats[0].seconds).toBe(90_000);
+    expect(r.stats[0]!.seconds).toBe(90_000);
   });
 
   test('throws on an empty file or missing columns', () => {
@@ -90,14 +90,14 @@ describe('parseCsvImport column detection', () => {
     ].join('\n');
     // 'duration' is tried before the looser 'time', and it is an exact header, so the
     // Duration column is the one claimed — unit falls back to seconds.
-    expect(parseCsvImport(csv).stats[0].seconds).toBe(999);
+    expect(parseCsvImport(csv).stats[0]!.seconds).toBe(999);
   });
 
   test('still infers the unit from the claimed duration column header', () => {
     const hours = parseCsvImport('Date,Domain,Hours\n2026-06-11,github.com,2');
-    expect(hours.stats[0].seconds).toBe(7200);
+    expect(hours.stats[0]!.seconds).toBe(7200);
     const minutes = parseCsvImport('Date,Domain,Minutes\n2026-06-11,github.com,2');
-    expect(minutes.stats[0].seconds).toBe(120);
+    expect(minutes.stats[0]!.seconds).toBe(120);
   });
 
   describe('clockface durations', () => {
@@ -105,25 +105,25 @@ describe('parseCsvImport column detection', () => {
     // to skip every row, so a perfectly good file imported as "empty".
     test('reads H:MM:SS', () => {
       const r = parseCsvImport('Date,Domain,Duration\n2026-06-11,github.com,1:30:15');
-      expect(r.stats[0].seconds).toBe(5415);
+      expect(r.stats[0]!.seconds).toBe(5415);
       expect(r.skipped).toBe(0);
     });
 
     test('reads H:MM as hours and minutes', () => {
-      expect(parseCsvImport('Date,Domain,Duration\n2026-06-11,github.com,1:30').stats[0].seconds).toBe(5400);
-      expect(parseCsvImport('Date,Domain,Duration\n2026-06-11,github.com,0:45').stats[0].seconds).toBe(2700);
+      expect(parseCsvImport('Date,Domain,Duration\n2026-06-11,github.com,1:30').stats[0]!.seconds).toBe(5400);
+      expect(parseCsvImport('Date,Domain,Duration\n2026-06-11,github.com,0:45').stats[0]!.seconds).toBe(2700);
     });
 
     test('a clock value carries its own unit and ignores the header unit', () => {
       // "Minutes" would otherwise multiply an already-absolute duration by 60.
-      expect(parseCsvImport('Date,Domain,Minutes\n2026-06-11,github.com,2:00').stats[0].seconds).toBe(7200);
+      expect(parseCsvImport('Date,Domain,Minutes\n2026-06-11,github.com,2:00').stats[0]!.seconds).toBe(7200);
     });
 
     test('aggregates clock and numeric rows for the same day+domain', () => {
       const r = parseCsvImport(
         ['Date,Domain,Seconds', '2026-06-11,github.com,0:01:00', '2026-06-11,github.com,30'].join('\n'),
       );
-      expect(r.stats[0].seconds).toBe(90);
+      expect(r.stats[0]!.seconds).toBe(90);
       expect(r.imported).toBe(2);
     });
 

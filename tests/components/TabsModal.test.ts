@@ -63,9 +63,9 @@ describe('TabsModal rendering and events', () => {
 
   test('renders a distinct relative last-active label per row', () => {
     makeWrapper('open', [
-      { ...ITEMS[0], title: 'Recent', lastActiveAt: NOW - 5 * 60_000 },
-      { ...ITEMS[1], title: 'Older', lastActiveAt: NOW - 3 * HOUR },
-      { ...ITEMS[2], title: 'Never', lastActiveAt: 0 },
+      { ...ITEMS[0]!, title: 'Recent', lastActiveAt: NOW - 5 * 60_000 },
+      { ...ITEMS[1]!, title: 'Older', lastActiveAt: NOW - 3 * HOUR },
+      { ...ITEMS[2]!, title: 'Never', lastActiveAt: 0 },
     ]);
     const times = texts('.row-time');
     expect(times.every((t) => t.length > 0)).toBe(true);
@@ -75,7 +75,7 @@ describe('TabsModal rendering and events', () => {
   test('row click emits goto, ✕ emits closeTab, close-all emits closeAll', async () => {
     const w = makeWrapper('stale', STALE);
     click(el('.row-main'));
-    expect(w.emitted('goto')?.[0]).toEqual([STALE[0].tabId]);
+    expect(w.emitted('goto')?.[0]).toEqual([STALE[0]!.tabId]);
 
     click(el('.row-close'));
     expect(w.emitted('closeTab')?.[0]?.[0]).toEqual(STALE[0]);
@@ -97,7 +97,7 @@ describe('TabsModal rendering and events', () => {
   });
 
   test('the bulk action is hidden for a single tab', () => {
-    makeWrapper('open', [ITEMS[0]]);
+    makeWrapper('open', [ITEMS[0]!]);
     expect(document.querySelector('.close-all')).toBeNull();
   });
 

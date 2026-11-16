@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { mount, type VueWrapper } from '@vue/test-utils';
-import { fakeBrowser } from 'wxt/testing';
+import { fakeBrowser } from 'wxt/testing/fake-browser';
 import CustomizationPanel from '@/components/CustomizationPanel.vue';
 import { getSettings, invalidateSettings, saveSettings } from '@/lib/settings';
 
@@ -26,12 +26,12 @@ async function panel(props: Record<string, unknown> = {}) {
 
 // The two text inputs are, in DOM order, the new-category name and the new-rule
 // pattern; each is followed by its own submit button.
-const catInput = (w: VueWrapper) => w.findAll('input[type="text"]')[0];
-const ruleInput = (w: VueWrapper) => w.findAll('input[type="text"]')[1];
+const catInput = (w: VueWrapper) => w.findAll('input[type="text"]')[0]!;
+const ruleInput = (w: VueWrapper) => w.findAll('input[type="text"]')[1]!;
 
 async function addCategory(w: VueWrapper, name: string) {
   await catInput(w).setValue(name);
-  await w.findAll('form')[0].trigger('submit'); // the category composer submits on Enter
+  await w.findAll('form')[0]!.trigger('submit'); // the category composer submits on Enter
 }
 
 describe('CustomizationPanel: custom categories', () => {
@@ -100,7 +100,7 @@ describe('CustomizationPanel: custom categories', () => {
 describe('CustomizationPanel: rules', () => {
   async function addRule(w: VueWrapper, pattern: string) {
     await ruleInput(w).setValue(pattern);
-    await w.findAll('form')[1].trigger('submit');
+    await w.findAll('form')[1]!.trigger('submit');
   }
 
   test('adding a rule persists it lowercased and trimmed', async () => {
@@ -144,14 +144,14 @@ describe('CustomizationPanel: staying in sync', () => {
     const w = await panel();
     await saveSettings({ categoryRules: [{ pattern: 'restored.example', category: 'Dev' }] });
     invalidateSettings();
-    await fakeBrowser.runtime.onMessage.trigger({ type: 'settings-changed' }, {});
+    await fakeBrowser.runtime.onMessage.trigger({ type: 'settings-changed' }, {}, () => {});
     await vi.waitFor(() => expect(w.text()).toContain('restored.example'));
   });
 
   test('ignores unrelated runtime messages', async () => {
     const w = await panel();
     const before = w.text();
-    await fakeBrowser.runtime.onMessage.trigger({ type: 'wipe-data' }, {});
+    await fakeBrowser.runtime.onMessage.trigger({ type: 'wipe-data' }, {}, () => {});
     await w.vm.$nextTick();
     expect(w.text()).toBe(before);
   });

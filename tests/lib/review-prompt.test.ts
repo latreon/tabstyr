@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from 'vitest';
-import { fakeBrowser } from 'wxt/testing';
+import { fakeBrowser } from 'wxt/testing/fake-browser';
 import { recordInstallDate, shouldShowReviewPrompt, dismissReviewPrompt } from '@/lib/review-prompt';
 
 const DAY_MS = 86_400_000;

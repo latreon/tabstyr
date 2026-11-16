@@ -12,7 +12,7 @@ describe('buildHourlyHeatmap', () => {
     const start = at(2026, 5, 11, 10, 15);
     const data = buildHourlyHeatmap([{ start, end: start + 30 * 60_000 }]);
     const d = new Date(start);
-    expect(data.grid[d.getDay()][10]).toBe(1800);
+    expect(data.grid[d.getDay()]![10]).toBe(1800);
     expect(data.total).toBe(1800);
     expect(data.max).toBe(1800);
   });
@@ -21,8 +21,8 @@ describe('buildHourlyHeatmap', () => {
     const start = at(2026, 5, 11, 10, 45);
     const data = buildHourlyHeatmap([{ start, end: start + 30 * 60_000 }]); // 10:45–11:15
     const dow = new Date(start).getDay();
-    expect(data.grid[dow][10]).toBe(900);
-    expect(data.grid[dow][11]).toBe(900);
+    expect(data.grid[dow]![10]).toBe(900);
+    expect(data.grid[dow]![11]).toBe(900);
     expect(data.total).toBe(1800);
   });
 
@@ -31,8 +31,8 @@ describe('buildHourlyHeatmap', () => {
     const data = buildHourlyHeatmap([{ start, end: start + 20 * 60_000 }]); // 23:50–00:10
     const dayA = new Date(start).getDay();
     const dayB = new Date(start + 20 * 60_000).getDay();
-    expect(data.grid[dayA][23]).toBe(600);
-    expect(data.grid[dayB][0]).toBe(600);
+    expect(data.grid[dayA]![23]).toBe(600);
+    expect(data.grid[dayB]![0]).toBe(600);
     expect(dayB).toBe((dayA + 1) % 7);
   });
 
@@ -43,7 +43,7 @@ describe('buildHourlyHeatmap', () => {
       { start: start + 20 * 60_000, end: start + 35 * 60_000 },
     ]);
     const dow = new Date(start).getDay();
-    expect(data.grid[dow][9]).toBe(1500); // 600 + 900
+    expect(data.grid[dow]![9]).toBe(1500); // 600 + 900
   });
 
   test('empty input yields a zeroed grid with a safe max', () => {

@@ -26,7 +26,7 @@ const STEPS = [
 const TOTAL_STEPS = STEPS.length;
 const currentStep = ref(0);
 const isLastStep = computed(() => currentStep.value === TOTAL_STEPS - 1);
-const step = computed(() => STEPS[currentStep.value]);
+const step = computed(() => STEPS[currentStep.value]!);
 
 function next() {
   if (isLastStep.value) close();

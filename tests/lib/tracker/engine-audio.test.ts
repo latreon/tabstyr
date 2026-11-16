@@ -55,7 +55,7 @@ describe('TrackerEngine.handleUrlChange', () => {
     e.handleFocus(1, 'https://github.com/a', T0);
     const closed = e.handleUrlChange(1, 'https://youtube.com/b', T0 + 60_000);
     expect(closed).toHaveLength(1);
-    expect(closed[0].domain).toBe('github.com');
+    expect(closed[0]!.domain).toBe('github.com');
     expect(e.getState().focused?.domain).toBe('youtube.com');
   });
 
@@ -82,7 +82,7 @@ describe('TrackerEngine.handleUrlChange', () => {
     e.handleFocus(1, 'https://mail.app/#/inbox', T0);
     const closed = e.handleUrlChange(1, 'https://mail.app/#/sent', T0 + 60_000);
     expect(closed).toHaveLength(1);
-    expect(closed[0].url).toBe('https://mail.app/#/inbox');
+    expect(closed[0]!.url).toBe('https://mail.app/#/inbox');
     expect(e.getState().focused?.url).toBe('https://mail.app/#/sent');
   });
 
@@ -101,8 +101,8 @@ describe('TrackerEngine.handleUrlChange', () => {
     const closed = e.handleUrlChange(2, 'https://ads.com/redirect', T0 + 45_000);
     expect(closed).toHaveLength(1);
     expect(closed[0]).toMatchObject({ tabId: 2, domain: 'spotify.com', audio: true });
-    expect(e.getState().audio[0].domain).toBe('ads.com');
-    expect(e.getState().audio[0].start).toBe(T0 + 45_000);
+    expect(e.getState().audio[0]!.domain).toBe('ads.com');
+    expect(e.getState().audio[0]!.start).toBe(T0 + 45_000);
   });
 
   test('same-domain navigation on audio tab does not split session', () => {
@@ -110,7 +110,7 @@ describe('TrackerEngine.handleUrlChange', () => {
     e.handleFocus(1, 'https://docs.com', T0);
     e.syncAudio([{ tabId: 2, url: 'https://spotify.com/a' }], T0);
     expect(e.handleUrlChange(2, 'https://spotify.com/b', T0 + 30_000)).toEqual([]);
-    expect(e.getState().audio[0].start).toBe(T0);
+    expect(e.getState().audio[0]!.start).toBe(T0);
   });
 
   test('focused navigation to an internal page closes tracking', () => {
@@ -118,7 +118,7 @@ describe('TrackerEngine.handleUrlChange', () => {
     e.handleFocus(1, 'https://github.com/a', T0);
     const closed = e.handleUrlChange(1, 'chrome://settings', T0 + 30_000);
     expect(closed).toHaveLength(1);
-    expect(closed[0].domain).toBe('github.com');
+    expect(closed[0]!.domain).toBe('github.com');
     expect(e.getState().focused).toBeNull();
   });
 

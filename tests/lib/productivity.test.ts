@@ -127,7 +127,7 @@ describe('buildFocusTrend', () => {
       NOW,
       { 'youtube.com': 'Work' },
     );
-    expect(out[9].focusPct).toBe(100);
+    expect(out[9]!.focusPct).toBe(100);
   });
 });
 

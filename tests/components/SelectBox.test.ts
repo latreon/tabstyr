@@ -27,13 +27,13 @@ describe('SelectBox', () => {
     expect(w.get('.trigger').attributes('aria-expanded')).toBe('true');
     const items = w.findAll('[role="option"]');
     expect(items).toHaveLength(3);
-    expect(items[0].attributes('aria-selected')).toBe('true'); // 'a' selected
+    expect(items[0]!.attributes('aria-selected')).toBe('true'); // 'a' selected
   });
 
   test('selecting an option emits update:modelValue and closes', async () => {
     const w = makeWrapper();
     await w.get('.trigger').trigger('click');
-    await w.findAll('[role="option"]')[2].trigger('click');
+    await w.findAll('[role="option"]')[2]!.trigger('click');
     expect(w.emitted('update:modelValue')?.[0]).toEqual(['c']);
     expect(w.find('.menu').exists()).toBe(false);
   });

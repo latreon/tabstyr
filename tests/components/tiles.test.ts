@@ -136,7 +136,7 @@ describe('TopSitesChart', () => {
     const w = mount(TopSitesChart, { props: { domains } });
     expect(w.text()).toContain('github.com');
     expect(w.text()).not.toContain('www.github.com');
-    await w.findAll('button')[0].trigger('click');
+    await w.findAll('button')[0]!.trigger('click');
     expect(w.emitted('select')?.[0]).toEqual(['www.github.com']);
   });
 

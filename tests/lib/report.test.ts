@@ -42,7 +42,7 @@ describe('buildReport', () => {
     const r = buildReport([stat('2026-06-11', 'youtube.com', 300)], '2026-06-11', '2026-06-11', {
       'youtube.com': 'Work',
     });
-    expect(r.domains[0].category).toBe('Work');
+    expect(r.domains[0]!.category).toBe('Work');
   });
 
   test('single-day range has span 1; reversed range has span 0', () => {

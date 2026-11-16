@@ -2,7 +2,7 @@
 // (which has no Vue runtime). Inlines ONLY the one string it needs per language —
 // importing the full JSON catalogs here would bundle ~60 KB into background.js for
 // a single key. Keep in sync with each locale's `notification.stale`.
-const STALE: Record<string, string> = {
+const STALE: Record<string, string> & { en: string } = {
   en: '{count} tabs untouched for {days}+ days',
   es: '{count} pestañas sin tocar durante más de {days} días',
   de: '{count} Tabs seit über {days} Tagen unberührt',
@@ -16,7 +16,7 @@ const STALE: Record<string, string> = {
   'zh-CN': '{count} 个标签页已 {days} 天以上未使用',
 };
 // Keep in sync with each locale's `notification.storageFull`.
-const STORAGE_FULL: Record<string, string> = {
+const STORAGE_FULL: Record<string, string> & { en: string } = {
   en: 'Storage is full — tracking paused. Open TabStyr to export a backup, then clear old data.',
   es: 'Almacenamiento lleno — seguimiento en pausa. Abre TabStyr para exportar una copia y borrar datos antiguos.',
   de: 'Speicher voll — Erfassung pausiert. Öffne TabStyr, um ein Backup zu exportieren und alte Daten zu löschen.',
@@ -31,7 +31,7 @@ const STORAGE_FULL: Record<string, string> = {
 };
 // Keep in sync with each locale's `notification.budget`. {category} is the
 // localized category name (from CATEGORY_LABELS below).
-const BUDGET: Record<string, string> = {
+const BUDGET: Record<string, string> & { en: string } = {
   en: 'Daily budget reached: {category}',
   es: 'Presupuesto diario alcanzado: {category}',
   de: 'Tagesbudget erreicht: {category}',
@@ -47,7 +47,7 @@ const BUDGET: Record<string, string> = {
 
 // Keep in sync with each locale's `notification.sessionAlert`. {domain} is the
 // raw hostname (not localized — a hostname reads the same in every language).
-const SESSION_ALERT: Record<string, string> = {
+const SESSION_ALERT: Record<string, string> & { en: string } = {
   en: "You've been on {domain} for {minutes}+ min",
   es: 'Llevas {minutes}+ min en {domain}',
   de: 'Du bist seit {minutes}+ Min. auf {domain}',
@@ -64,7 +64,7 @@ const SESSION_ALERT: Record<string, string> = {
 // Localized category names for the SW (which has no vue-i18n). Small, single-word
 // strings — same rationale as STALE/STORAGE_FULL: inline rather than bundle the
 // full catalogs. Keep in sync with each locale's `categories.*`.
-const CATEGORY_LABELS: Record<string, Record<string, string>> = {
+const CATEGORY_LABELS: Record<string, Record<string, string>> & { en: Record<string, string> } = {
   en: { Work: 'Work', Dev: 'Dev', Finance: 'Finance', Social: 'Social', Media: 'Media', News: 'News', Shopping: 'Shopping', Other: 'Other' },
   es: { Work: 'Trabajo', Dev: 'Desarrollo', Finance: 'Finanzas', Social: 'Social', Media: 'Multimedia', News: 'Noticias', Shopping: 'Compras', Other: 'Otro' },
   de: { Work: 'Arbeit', Dev: 'Dev', Finance: 'Finanzen', Social: 'Sozial', Media: 'Medien', News: 'Nachrichten', Shopping: 'Shopping', Other: 'Sonstiges' },

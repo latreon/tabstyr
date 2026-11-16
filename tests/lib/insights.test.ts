@@ -11,9 +11,9 @@ function heatmap(cells: Array<[day: number, hour: number, secs: number]> = []): 
   let total = 0;
   let max = 1;
   for (const [d, h, s] of cells) {
-    grid[d][h] += s;
+    grid[d]![h]! += s;
     total += s;
-    if (grid[d][h] > max) max = grid[d][h];
+    if (grid[d]![h]! > max) max = grid[d]![h]!;
   }
   return { grid, max, total };
 }

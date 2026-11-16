@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitest/config';
 import vue from '@vitejs/plugin-vue';
-import { WxtVitest } from 'wxt/testing';
+import { WxtVitest } from 'wxt/testing/vitest-plugin';
 
 export default defineConfig({
   // vue() compiles .vue SFCs for component tests; WxtVitest provides the

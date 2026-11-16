@@ -38,7 +38,7 @@ function busiestWeekday(data: HeatmapData): number | null {
   let best = -1;
   let bestSecs = -1;
   for (let day = 0; day < 7; day++) {
-    const sum = data.grid[day].reduce((a, b) => a + b, 0);
+    const sum = data.grid[day]!.reduce((a, b) => a + b, 0);
     if (sum > bestSecs) {
       bestSecs = sum;
       best = day;

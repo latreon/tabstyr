@@ -65,8 +65,8 @@ export function useFocusTrap(container: Ref<HTMLElement | null>, isActive?: Ref<
       e.preventDefault();
       return;
     }
-    const first = items[0];
-    const last = items[items.length - 1];
+    const first = items[0]!;
+    const last = items[items.length - 1]!;
     const active = document.activeElement as HTMLElement | null;
     const inside = !!active && root.contains(active);
     if (e.shiftKey) {
