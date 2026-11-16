@@ -352,7 +352,7 @@ export default defineBackground(() => {
       type: 'basic',
       iconUrl: browser.runtime.getURL('/icon/128.png'),
       title: 'TabStyr',
-      message: budgetNotification(settings.language, exceeded[0]),
+      message: budgetNotification(settings.language, exceeded[0]!),
     });
     await browser.storage.local.set({ budgetNotifyState: { lastDate: today, ids: exceeded } });
   }

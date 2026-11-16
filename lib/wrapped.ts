@@ -258,11 +258,11 @@ function buildCategories(sites: WrappedSite[], totalSeconds: number): WrappedCat
 function chronotypeOf(heatmap: HeatmapData): Chronotype {
   const hourly = new Array<number>(24).fill(0);
   for (let day = 0; day < 7; day++) {
-    for (let hour = 0; hour < 24; hour++) hourly[hour] += heatmap.grid[day][hour];
+    for (let hour = 0; hour < 24; hour++) hourly[hour]! += heatmap.grid[day]![hour]!;
   }
   const total = hourly.reduce((sum, v) => sum + v, 0);
   if (total <= 0) return 'allHours';
-  const sumBand = (hours: number[]) => hours.reduce((sum, h) => sum + hourly[h], 0);
+  const sumBand = (hours: number[]) => hours.reduce((sum, h) => sum + hourly[h]!, 0);
   const bands: Array<{ type: Chronotype; hours: number[] }> = [
     { type: 'earlyBird', hours: [5, 6, 7, 8, 9, 10] },
     { type: 'daytimer', hours: [11, 12, 13, 14, 15, 16, 17] },
@@ -333,8 +333,8 @@ export function buildWrapped(input: WrappedInput): WrappedData | null {
   // Set over every stat row.
   const byDate = aggregateByDate(stats, categoryOf, input.productivity ?? CATEGORY_PRODUCTIVITY, input.customCategories ?? []);
   const activeDates = [...byDate.keys()].sort();
-  const startDate = activeDates[0];
-  const endDate = activeDates[activeDates.length - 1];
+  const startDate = activeDates[0]!;
+  const endDate = activeDates[activeDates.length - 1]!;
   const daysCovered = activeDates.length;
   const spanDays = daySpan(startDate, endDate);
 

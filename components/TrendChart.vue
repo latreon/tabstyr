@@ -16,7 +16,7 @@ const MODES: TrendMode[] = ['day', 'week', 'month'];
 // dependency, so the chart's "today" would otherwise go stale past midnight.
 const points = computed(() => buildTrend(props.stats, mode.value, props.now));
 const ticks = computed(() => yTicks(Math.max(1, ...points.value.map((p) => p.seconds))));
-const chartMax = computed(() => ticks.value[2].seconds);
+const chartMax = computed(() => ticks.value[2]!.seconds);
 const labelEvery = computed(() => xTickEvery(mode.value));
 // Only day bars map to one day, which is why only they open a day breakdown.
 const isDayMode = computed(() => mode.value === 'day');

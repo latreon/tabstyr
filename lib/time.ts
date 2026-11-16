@@ -53,24 +53,24 @@ export function dateKey(ts: number): string {
 
 /** `key` must be a valid local YYYY-MM-DD string. */
 export function addDays(key: string, days: number): string {
-  const [y, m, d] = key.split('-').map(Number);
+  const [y, m, d] = key.split('-').map(Number) as [number, number, number];
   return dateKey(new Date(y, m - 1, d + days).getTime());
 }
 
 /** "Jun 11" from a YYYY-MM-DD key — compact axis label for day/week trend ticks. */
 export function dayLabel(key: string): string {
-  const [y, m, d] = key.split('-').map(Number);
+  const [y, m, d] = key.split('-').map(Number) as [number, number, number];
   return new Date(y, m - 1, d).toLocaleString(getDateLocale(), { month: 'short', day: 'numeric' });
 }
 
 /** "Jun" from a YYYY-MM key — axis label for month trend ticks. */
 export function monthLabel(monthKey: string): string {
-  const [y, m] = monthKey.split('-').map(Number);
+  const [y, m] = monthKey.split('-').map(Number) as [number, number];
   return new Date(y, m - 1, 1).toLocaleString(getDateLocale(), { month: 'short' });
 }
 
 /** "Mon, Jun 9" from a YYYY-MM-DD key — human day heading. */
 export function longDateLabel(key: string): string {
-  const [y, m, d] = key.split('-').map(Number);
+  const [y, m, d] = key.split('-').map(Number) as [number, number, number];
   return new Date(y, m - 1, d).toLocaleString(getDateLocale(), { weekday: 'short', month: 'short', day: 'numeric' });
 }

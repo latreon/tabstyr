@@ -31,8 +31,8 @@ function buildFrom(byDate: Map<string, number>, mode: TrendMode, today: string):
     for (let i = 0; i < days.length; i += 7) {
       const chunk = days.slice(i, i + 7);
       out.push({
-        key: chunk[0],
-        label: dayLabel(chunk[0]),
+        key: chunk[0]!,
+        label: dayLabel(chunk[0]!),
         seconds: chunk.reduce((sum, d) => sum + (byDate.get(d) ?? 0), 0),
       });
     }
@@ -41,8 +41,8 @@ function buildFrom(byDate: Map<string, number>, mode: TrendMode, today: string):
   const days = rangeDays(today, 60);
   // The oldest bucket only includes the tail of its month if the window didn't
   // start on the 1st; the newest bucket is the current month, still in progress.
-  const startPartial = !days[0].endsWith('-01');
-  const firstMonth = days[0].slice(0, 7);
+  const startPartial = !days[0]!.endsWith('-01');
+  const firstMonth = days[0]!.slice(0, 7);
   const lastMonth = today.slice(0, 7);
   const months = new Map<string, number>();
   for (const d of days) {

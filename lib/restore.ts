@@ -49,13 +49,13 @@ const isBoundedStr = (v: unknown, max: number): v is string => isStr(v) && v.len
 const isTs = (v: unknown): v is number => isNum(v) && v > 0 && v < MAX_TS;
 const isDateKey = (v: unknown): v is string => {
   if (!isBoundedStr(v, 10) || !DATE_RE.test(v)) return false;
-  const [y, m, d] = v.split('-').map(Number);
+  const [y, m, d] = v.split('-').map(Number) as [number, number, number];
   const actual = new Date(y, m - 1, d);
   return actual.getFullYear() === y && actual.getMonth() === m - 1 && actual.getDate() === d;
 };
 const isMonthKey = (v: unknown): v is string => {
   if (!isBoundedStr(v, 7) || !MONTH_RE.test(v)) return false;
-  const [y, m] = v.split('-').map(Number);
+  const [y, m] = v.split('-').map(Number) as [number, number];
   return y >= 1 && m >= 1 && m <= 12;
 };
 

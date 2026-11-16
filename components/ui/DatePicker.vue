@@ -36,7 +36,7 @@ const keyOf = (y: number, m: number, d: number) => `${y}-${pad(m + 1)}-${pad(d)}
 const clampKey = (key: string) => (key < props.min ? props.min : key > props.max ? props.max : key);
 
 function addDaysKey(key: string, days: number): string {
-  const [y, m, d] = key.split('-').map(Number);
+  const [y, m, d] = key.split('-').map(Number) as [number, number, number];
   const next = new Date(y, m - 1, d + days);
   return keyOf(next.getFullYear(), next.getMonth(), next.getDate());
 }
@@ -45,7 +45,7 @@ async function focusDay(key: string) {
   const clamped = clampKey(key);
   focusKey.value = clamped;
   // Switch the visible month if the target is outside it.
-  const [y, m] = clamped.split('-').map(Number);
+  const [y, m] = clamped.split('-').map(Number) as [number, number];
   if (y !== view.value.y || m - 1 !== view.value.m) view.value = { y, m: m - 1 };
   await nextTick();
   grid.value?.querySelector<HTMLButtonElement>(`[data-key="${clamped}"]`)?.focus();
@@ -57,7 +57,7 @@ function onGridKey(e: KeyboardEvent) {
   };
   if (e.key in deltas) {
     e.preventDefault();
-    void focusDay(addDaysKey(focusKey.value, deltas[e.key]));
+    void focusDay(addDaysKey(focusKey.value, deltas[e.key]!));
   } else if (e.key === 'Home') {
     e.preventDefault();
     void focusDay(props.min > focusKey.value ? props.min : keyOf(view.value.y, view.value.m, 1));
@@ -71,7 +71,7 @@ function onGridKey(e: KeyboardEvent) {
 // Month currently shown in the grid (independent of the selected day).
 const view = ref({ y: 2000, m: 0 });
 function syncView() {
-  const [y, m] = props.modelValue.split('-').map(Number);
+  const [y, m] = props.modelValue.split('-').map(Number) as [number, number];
   view.value = { y, m: m - 1 };
 }
 syncView();

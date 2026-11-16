@@ -34,7 +34,7 @@ export function useTheme() {
   }
 
   async function cycle() {
-    setting.value = CYCLE[(CYCLE.indexOf(setting.value) + 1) % CYCLE.length];
+    setting.value = CYCLE[(CYCLE.indexOf(setting.value) + 1) % CYCLE.length]!;
     // Apply in-session regardless; a storage failure shouldn't break the toggle.
     await persist(setting.value);
     apply();

@@ -16,7 +16,7 @@ const DATE = dateKey(T0);
 // (rather than committing empty deltas) is the point — it exercises the whole
 // shipped path, so a regression in rollup or in the merge-on-commit shows up.
 async function persist(closed: ClosedSession[], tabIdToKey: Record<number, string>) {
-  const sessions: Session[] = closed.map((s) => ({ ...s, tabKey: tabIdToKey[s.tabId] }));
+  const sessions: Session[] = closed.map((s) => ({ ...s, tabKey: tabIdToKey[s.tabId]! }));
   await repo.commitSessions(sessions, rollup(sessions));
 }
 

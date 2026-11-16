@@ -44,7 +44,7 @@ describe('CategoryPicker', () => {
     await openMenu(w);
     const checked = w.findAll('[role="menuitemradio"]').filter((i) => i.attributes('aria-checked') === 'true');
     expect(checked).toHaveLength(1);
-    expect(checked[0].text()).toContain('Media');
+    expect(checked[0]!.text()).toContain('Media');
   });
 
   test('choosing a different category emits it and closes the menu', async () => {
@@ -73,7 +73,7 @@ describe('CategoryPicker', () => {
     const menu = w.get('[role="menu"]');
     const items = menu.findAll('[role="menuitemradio"]').map((i) => i.element as HTMLButtonElement);
 
-    items[0].focus();
+    items[0]!.focus();
     await menu.trigger('keydown', { key: 'ArrowDown' });
     expect(document.activeElement).toBe(items[1]);
     await menu.trigger('keydown', { key: 'ArrowUp' });

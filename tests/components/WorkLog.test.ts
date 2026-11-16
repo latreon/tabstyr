@@ -25,8 +25,8 @@ function worklog(props: Partial<{ stats: DailyStat[]; now: number }> = {}) {
 }
 
 // The two chevrons are the first two buttons in the controls row.
-const prev = (w: VueWrapper) => w.findAll('.nav')[0];
-const next = (w: VueWrapper) => w.findAll('.nav')[1];
+const prev = (w: VueWrapper) => w.findAll('.nav')[0]!;
+const next = (w: VueWrapper) => w.findAll('.nav')[1]!;
 
 beforeEach(() => {
   vi.restoreAllMocks();
@@ -115,7 +115,7 @@ describe('WorkLog', () => {
       const copy = w.findAll('button').find((b) => b.text().match(/copy/i))!;
       await copy.trigger('click');
       expect(writeText).toHaveBeenCalledTimes(1);
-      const text = writeText.mock.calls[0][0] as string;
+      const text = writeText.mock.calls[0]![0] as string;
       expect(text).toContain('github.com');
       expect(text).toContain('1h');
       vi.unstubAllGlobals();

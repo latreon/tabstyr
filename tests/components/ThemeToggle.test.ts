@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { fakeBrowser } from 'wxt/testing';
+import { fakeBrowser } from 'wxt/testing/fake-browser';
 import ThemeToggle from '@/components/ThemeToggle.vue';
 import { invalidateSettings, saveSettings } from '@/lib/settings';
 

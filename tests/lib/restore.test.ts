@@ -83,8 +83,8 @@ describe('parseBackup', () => {
     });
     const parsed = parseBackup(text);
     expect(parsed.sessions).toHaveLength(2);
-    expect(parsed.sessions[0].tabKey).toBe('ok');
-    expect(parsed.sessions[1].tabKey).toBe('');
+    expect(parsed.sessions[0]!.tabKey).toBe('ok');
+    expect(parsed.sessions[1]!.tabKey).toBe('');
   });
 
   test('re-derives a session domain from its url so a spoofed domain cannot survive', () => {
@@ -97,8 +97,8 @@ describe('parseBackup', () => {
     });
     const parsed = parseBackup(text);
     expect(parsed.sessions).toHaveLength(1);
-    expect(parsed.sessions[0].domain).toBe('attacker.example'); // bound to the url, not the claim
-    expect(parsed.sessions[0].url).toBe('https://attacker.example/x');
+    expect(parsed.sessions[0]!.domain).toBe('attacker.example'); // bound to the url, not the claim
+    expect(parsed.sessions[0]!.url).toBe('https://attacker.example/x');
   });
 
   test('drops a session whose url is not a real web page even if domain claims otherwise', () => {
@@ -161,8 +161,8 @@ describe('parseBackup', () => {
       ],
     });
     const p = parseBackup(text);
-    expect(p.sessions[0].url).toBe('https://a.com/p');
-    expect(p.tabMeta[0].url).toBe('https://a.com/p');
+    expect(p.sessions[0]!.url).toBe('https://a.com/p');
+    expect(p.tabMeta[0]!.url).toBe('https://a.com/p');
   });
 
   test('rejects an oversized payload before parsing', () => {
@@ -212,7 +212,7 @@ describe('restoreBackup', () => {
     expect(monthly).toEqual([{ month: '2026-03', domain: 'github.com', seconds: 5000, audioSeconds: 0 }]);
     const metas = await repo.getAllTabMeta();
     expect(metas).toHaveLength(1);
-    expect(metas[0].key).toBe('k1');
+    expect(metas[0]!.key).toBe('k1');
   });
 
   test('rolls back and keeps existing data when a write fails mid-restore', async () => {

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { fakeBrowser } from 'wxt/testing';
+import { fakeBrowser } from 'wxt/testing/fake-browser';
 import { focusTab, openDomain, openPage } from '@/lib/navigate';
 
 // navigate.ts is the ONLY place the extension turns stored data (a domain string, a

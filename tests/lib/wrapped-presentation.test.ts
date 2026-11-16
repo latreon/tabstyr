@@ -56,7 +56,7 @@ describe('icon registry', () => {
       for (const d of def.paths) {
         expect(d, name).not.toBe('');
         // An SVG path always starts with a move command.
-        expect(d.trim()[0].toLowerCase(), `${name}: ${d}`).toBe('m');
+        expect(d.trim()[0]!.toLowerCase(), `${name}: ${d}`).toBe('m');
       }
     }
   });

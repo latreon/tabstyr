@@ -52,7 +52,7 @@ describe('buildComparison (week)', () => {
   test('respects category overrides', () => {
     const stats = [stat('2026-06-16', 'example.com', 100)];
     const c = buildComparison(stats, TODAY, 'week', { 'example.com': 'Work' });
-    expect(c.categories[0].category).toBe('Work');
+    expect(c.categories[0]!.category).toBe('Work');
   });
 });
 

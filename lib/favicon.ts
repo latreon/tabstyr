@@ -25,7 +25,7 @@ export function letterChip(domain: string): { letter: string; color: string } {
   const letter = (domain[0] ?? '?').toUpperCase();
   let hash = 0;
   for (const ch of domain) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
-  return { letter, color: CHIP_COLORS[hash % CHIP_COLORS.length] };
+  return { letter, color: CHIP_COLORS[hash % CHIP_COLORS.length]! };
 }
 
 // Above this average perceived luminance (0-255, opaque pixels only) a favicon
@@ -52,9 +52,9 @@ export function isLightFavicon(img: HTMLImageElement): boolean {
     let sum = 0;
     let opaque = 0;
     for (let i = 0; i < data.length; i += 4) {
-      const alpha = data[i + 3];
+      const alpha = data[i + 3]!;
       if (alpha < 16) continue; // ignore near-transparent pixels
-      sum += 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+      sum += 0.299 * data[i]! + 0.587 * data[i + 1]! + 0.114 * data[i + 2]!;
       opaque++;
     }
     if (opaque === 0) return false;

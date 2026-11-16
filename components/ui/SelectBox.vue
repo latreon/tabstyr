@@ -52,7 +52,7 @@ function onKeydown(e: KeyboardEvent) {
   if (e.key === 'Escape') { e.stopPropagation(); open.value = false; return; }
   if (e.key === 'ArrowDown') { e.preventDefault(); activeIndex.value = Math.min(props.options.length - 1, activeIndex.value + 1); }
   if (e.key === 'ArrowUp') { e.preventDefault(); activeIndex.value = Math.max(0, activeIndex.value - 1); }
-  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(props.options[activeIndex.value].value); }
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); const option = props.options[activeIndex.value]; if (option) choose(option.value); }
 }
 function onClickOutside(e: MouseEvent) {
   if (root.value && !root.value.contains(e.target as Node)) open.value = false;

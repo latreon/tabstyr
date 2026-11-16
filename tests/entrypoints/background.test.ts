@@ -1,7 +1,7 @@
 import 'fake-indexeddb/auto';
 import { IDBFactory } from 'fake-indexeddb';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { fakeBrowser } from 'wxt/testing';
+import { fakeBrowser } from 'wxt/testing/fake-browser';
 import { resetDBConnection } from '@/lib/db/db';
 import * as repo from '@/lib/db/repo';
 import { invalidateSettings, saveSettings } from '@/lib/settings';
@@ -65,7 +65,7 @@ afterEach(() => {
 describe('background: lifecycle', () => {
   test('fresh install opens the dashboard and records the install date', async () => {
     background.main();
-    await fakeBrowser.runtime.onInstalled.trigger({ reason: 'install', temporary: false });
+    await fakeBrowser.runtime.onInstalled.trigger({ reason: 'install' });
 
     await vi.waitFor(async () => {
       const tabs = await fakeBrowser.tabs.query({});
@@ -79,7 +79,7 @@ describe('background: lifecycle', () => {
 
   test('an update never reopens the dashboard tab or records a fresh install date', async () => {
     background.main();
-    await fakeBrowser.runtime.onInstalled.trigger({ reason: 'update', temporary: false });
+    await fakeBrowser.runtime.onInstalled.trigger({ reason: 'update' });
 
     const tabs = await fakeBrowser.tabs.query({});
     expect(tabs.some((t) => t.url?.includes('/dashboard.html'))).toBe(false);
@@ -237,7 +237,7 @@ describe('background: daily maintenance', () => {
 
 describe('background: scheduled export', () => {
   test('does nothing when autoExportDays is 0 (the default)', async () => {
-    const download = vi.spyOn(fakeBrowser.downloads, 'download').mockResolvedValue(1);
+    const download = vi.spyOn(fakeBrowser.downloads, 'download').mockResolvedValue(undefined);
     background.main();
     await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
     await new Promise((r) => setTimeout(r, 20));
@@ -246,12 +246,12 @@ describe('background: scheduled export', () => {
 
   test('downloads a backup on the first due daily check', async () => {
     await saveSettings({ autoExportDays: 7 });
-    const download = vi.spyOn(fakeBrowser.downloads, 'download').mockResolvedValue(1);
+    const download = vi.spyOn(fakeBrowser.downloads, 'download').mockResolvedValue(undefined);
     background.main();
     await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
     await vi.waitFor(() => expect(download).toHaveBeenCalledTimes(1));
 
-    const [opts] = download.mock.calls[0];
+    const [opts] = download.mock.calls[0]!;
     expect(opts.filename).toMatch(/^tabstyr-backup-\d{4}-\d{2}-\d{2}\.json$/);
     expect(opts.url).toMatch(/^data:application\/json;base64,/);
     expect(opts.saveAs).toBe(false);
@@ -263,7 +263,7 @@ describe('background: scheduled export', () => {
   test('does not re-download before the interval has elapsed', async () => {
     await saveSettings({ autoExportDays: 7 });
     await fakeBrowser.storage.local.set({ autoExportState: { lastExportAt: Date.now() - 2 * DAY_MS } });
-    const download = vi.spyOn(fakeBrowser.downloads, 'download').mockResolvedValue(1);
+    const download = vi.spyOn(fakeBrowser.downloads, 'download').mockResolvedValue(undefined);
     background.main();
     await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
     await new Promise((r) => setTimeout(r, 20));
@@ -273,7 +273,7 @@ describe('background: scheduled export', () => {
   test('downloads again once the interval has elapsed', async () => {
     await saveSettings({ autoExportDays: 7 });
     await fakeBrowser.storage.local.set({ autoExportState: { lastExportAt: Date.now() - 8 * DAY_MS } });
-    const download = vi.spyOn(fakeBrowser.downloads, 'download').mockResolvedValue(1);
+    const download = vi.spyOn(fakeBrowser.downloads, 'download').mockResolvedValue(undefined);
     background.main();
     await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
     await vi.waitFor(() => expect(download).toHaveBeenCalledTimes(1));
@@ -282,12 +282,12 @@ describe('background: scheduled export', () => {
   test('the exported backup contains the actual stored data', async () => {
     await saveSettings({ autoExportDays: 1 });
     await repo.upsertTabMeta({ tabId: 1, key: 'k1', url: 'https://a.com', title: 'A', lastActiveAt: Date.now(), createdAt: Date.now() });
-    const download = vi.spyOn(fakeBrowser.downloads, 'download').mockResolvedValue(1);
+    const download = vi.spyOn(fakeBrowser.downloads, 'download').mockResolvedValue(undefined);
     background.main();
     await fakeBrowser.alarms.onAlarm.trigger({ name: 'daily', scheduledTime: Date.now() });
     await vi.waitFor(() => expect(download).toHaveBeenCalledTimes(1));
 
-    const [opts] = download.mock.calls[0];
+    const [opts] = download.mock.calls[0]!;
     const base64 = opts.url.slice('data:application/json;base64,'.length);
     const parsed = JSON.parse(Buffer.from(base64, 'base64').toString('utf8'));
     expect(parsed.app).toBe('tabstyr');
@@ -301,7 +301,7 @@ describe('background: onMessage', () => {
     await repo.upsertTabMeta({ tabId: 1, key: 'k1', url: 'https://a.com', title: 'A', lastActiveAt: Date.now(), createdAt: Date.now() });
     background.main();
 
-    await fakeBrowser.runtime.onMessage.trigger({ type: 'wipe-data' }, { id: fakeBrowser.runtime.id });
+    await fakeBrowser.runtime.onMessage.trigger({ type: 'wipe-data' }, { id: fakeBrowser.runtime.id }, () => {});
 
     await vi.waitFor(async () => {
       expect(await repo.getAllTabMeta()).toEqual([]);
@@ -312,7 +312,7 @@ describe('background: onMessage', () => {
     await repo.upsertTabMeta({ tabId: 1, key: 'k1', url: 'https://a.com', title: 'A', lastActiveAt: Date.now(), createdAt: Date.now() });
     background.main();
 
-    await fakeBrowser.runtime.onMessage.trigger({ type: 'wipe-data' }, { id: 'some-other-extension' });
+    await fakeBrowser.runtime.onMessage.trigger({ type: 'wipe-data' }, { id: 'some-other-extension' }, () => {});
 
     await new Promise((r) => setTimeout(r, 20));
     expect(await repo.getAllTabMeta()).toHaveLength(1);
@@ -438,7 +438,7 @@ describe('background: manual pause', () => {
 
     clock.mockReturnValue(start + 2 * 60_000); // 2 minutes tracked before pausing
     await saveSettings({ trackingPaused: true });
-    await fakeBrowser.runtime.onMessage.trigger({ type: 'settings-changed' }, { id: fakeBrowser.runtime.id });
+    await fakeBrowser.runtime.onMessage.trigger({ type: 'settings-changed' }, { id: fakeBrowser.runtime.id }, () => {});
 
     await vi.waitFor(async () => {
       expect(await repo.getAllSessions()).not.toEqual([]);
@@ -455,7 +455,7 @@ describe('background: manual pause', () => {
 
     // Unpausing while still on the same tab starts counting again immediately.
     await saveSettings({ trackingPaused: false });
-    await fakeBrowser.runtime.onMessage.trigger({ type: 'settings-changed' }, { id: fakeBrowser.runtime.id });
+    await fakeBrowser.runtime.onMessage.trigger({ type: 'settings-changed' }, { id: fakeBrowser.runtime.id }, () => {});
     clock.mockReturnValue(start + 8 * 60_000);
     await fakeBrowser.alarms.onAlarm.trigger({ name: 'heartbeat', scheduledTime: Date.now() });
 

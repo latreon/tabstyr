@@ -19,7 +19,7 @@ describe('buildWorkLog', () => {
     const log = buildWorkLog(STATS, '2026-06-11');
     expect(log.total).toBe(6000); // 3600 + 1800 + 600, chrome excluded
     expect(log.domains.map((d) => d.domain)).toEqual(['github.com', 'youtube.com', 'gitlab.com']);
-    expect(log.domains[0].category).toBe('Dev');
+    expect(log.domains[0]!.category).toBe('Dev');
   });
 
   test('groups categories (Dev = github + gitlab) and sorts them', () => {

@@ -130,13 +130,13 @@ export function buildFocusTrend(
         p += f?.productive ?? 0;
         dist += f?.distracting ?? 0;
       }
-      out.push({ key: chunk[0], label: dayLabel(chunk[0]), ...scoreFocus(p, dist) });
+      out.push({ key: chunk[0]!, label: dayLabel(chunk[0]!), ...scoreFocus(p, dist) });
     }
     return out;
   }
   const days = focusRangeDays(today, 60);
-  const startPartial = !days[0].endsWith('-01');
-  const firstMonth = days[0].slice(0, 7);
+  const startPartial = !days[0]!.endsWith('-01');
+  const firstMonth = days[0]!.slice(0, 7);
   const lastMonth = today.slice(0, 7);
   const months = new Map<string, { p: number; dist: number }>();
   for (const d of days) {

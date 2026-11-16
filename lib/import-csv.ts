@@ -143,7 +143,7 @@ export function parseCsvImport(text: string): CsvImportResult {
   const lines = splitRecords(text);
   if (lines.length < 2) throw new Error('empty');
 
-  const header = splitLine(lines[0]).map((h) => h.toLowerCase());
+  const header = splitLine(lines[0]!).map((h) => h.toLowerCase());
   // Claim in order of how specific the needles are, so the greediest role ('time')
   // can't steal a column another role needs more.
   const claimed = new Set<number>();
@@ -157,7 +157,7 @@ export function parseCsvImport(text: string): CsvImportResult {
   const domainIdx = claim(['domain', 'activity', 'site', 'host', 'url']);
   if (dateIdx < 0 || domainIdx < 0 || timeIdx < 0) throw new Error('columns');
 
-  const unitHeader = header[timeIdx];
+  const unitHeader = header[timeIdx]!;
   const unit = unitHeader.includes('hour') ? 3600 : unitHeader.includes('minute') ? 60 : 1;
 
   const byKey = new Map<string, DailyStat>();
@@ -165,7 +165,7 @@ export function parseCsvImport(text: string): CsvImportResult {
   let skipped = 0;
   const rows = Math.min(lines.length - 1, MAX_ROWS);
   for (let i = 1; i <= rows; i++) {
-    const cols = splitLine(lines[i]);
+    const cols = splitLine(lines[i]!);
     const date = toDateKey(cols[dateIdx] ?? '');
     const domain = extractDomain(cols[domainIdx] ?? '');
     const value = parseDurationCell(cols[timeIdx] ?? '', unit);

@@ -48,7 +48,7 @@ function hideTip() {
 // Keyboard access: the grid is a roving-tabindex group — one cell is in the tab
 // order at a time, arrow keys move focus between cells (so a screen-reader /
 // keyboard user can inspect every hour, not just hover with a mouse).
-const activeDay = ref<(typeof WEEK_ORDER)[number]>(WEEK_ORDER[0]);
+const activeDay = ref<(typeof WEEK_ORDER)[number]>(WEEK_ORDER[0]!);
 const activeHour = ref(0);
 function isActive(day: number, hour: number): boolean {
   return day === activeDay.value && hour === activeHour.value;
@@ -65,7 +65,7 @@ function moveFocus(e: KeyboardEvent) {
   else if (e.key === 'ArrowDown') row = Math.min(WEEK_ORDER.length - 1, row + 1);
   else if (e.key === 'Home') h = 0;
   else if (e.key === 'End') h = 23;
-  activeDay.value = WEEK_ORDER[row];
+  activeDay.value = WEEK_ORDER[row]!;
   activeHour.value = h;
   const grid = e.currentTarget as HTMLElement;
   void nextTick(() => {
@@ -95,7 +95,7 @@ const cellStyles = computed(() => {
     for (let hour = 0; hour < 24; hour++) {
       const sec = props.data.grid[day]?.[hour] ?? 0;
       const pct = sec ? Math.max(12, Math.round(Math.sqrt(sec / props.data.max) * 100)) : 0;
-      out[day][hour] = sec ? { background: `color-mix(in oklab, var(--accent) ${pct}%, transparent)` } : {};
+      out[day]![hour] = sec ? { background: `color-mix(in oklab, var(--accent) ${pct}%, transparent)` } : {};
     }
   }
   return out;
@@ -126,7 +126,7 @@ const LEGEND = [0, 25, 50, 75, 100];
             :key="`${day}-${h}`"
             type="button"
             class="hm-cell"
-            :style="cellStyles[day][h]"
+            :style="cellStyles[day]?.[h]"
             :aria-label="cellLabel(day, h)"
             :tabindex="isActive(day, h) ? 0 : -1"
             :data-cell="`${day}-${h}`"

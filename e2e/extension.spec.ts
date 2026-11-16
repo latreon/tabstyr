@@ -24,7 +24,7 @@ const test = base.extend<{ context: BrowserContext; extensionId: string }>({
   extensionId: async ({ context }, use) => {
     let [worker] = context.serviceWorkers();
     if (!worker) worker = await context.waitForEvent('serviceworker');
-    await use(worker.url().split('/')[2]);
+    await use(worker.url().split('/')[2]!);
   },
 });
 

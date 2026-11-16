@@ -26,7 +26,7 @@ describe('ColorPicker', () => {
     const w = makeWrapper('#6366f1');
     await w.get('.trigger').trigger('click');
     const presets = w.findAll('.preset');
-    await presets[2].trigger('click'); // '#10b981'
+    await presets[2]!.trigger('click'); // '#10b981'
     expect(w.emitted('update:modelValue')?.[0]).toEqual(['#10b981']);
   });
 

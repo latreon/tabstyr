@@ -18,7 +18,7 @@ describe('TrackerEngine focus/blur', () => {
     e.handleFocus(1, 'https://github.com/a', T0);
     const closed = e.handleBlur(T0 + 30_000);
     expect(closed).toHaveLength(1);
-    expect(closed[0].end - closed[0].start).toBe(30_000);
+    expect(closed[0]!.end - closed[0]!.start).toBe(30_000);
     expect(e.handleBlur(T0 + 40_000)).toEqual([]); // already blurred — no-op
   });
 
@@ -29,7 +29,7 @@ describe('TrackerEngine focus/blur', () => {
     // 500ms IS a real (if brief) visit and is now recorded rather than thrown away.
     const closed = e.handleFocus(3, 'https://c.com', T0 + 600);
     expect(closed).toHaveLength(1);
-    expect(closed[0].end - closed[0].start).toBe(500);
+    expect(closed[0]!.end - closed[0]!.start).toBe(500);
   });
 
   test('redundant re-focus of the same tab+page keeps the session, loses no time', () => {
@@ -43,7 +43,7 @@ describe('TrackerEngine focus/blur', () => {
     expect(e.getState().focused?.audible).toBe(true); // media flag refreshed
     // The full minute is still counted on the next real switch (not T0+5 → ...).
     const next = e.handleFocus(2, 'https://b.com', T0 + 60_000);
-    expect(next[0].end - next[0].start).toBe(60_000);
+    expect(next[0]!.end - next[0]!.start).toBe(60_000);
   });
 });
 
@@ -66,7 +66,7 @@ describe('TrackerEngine checkpoint', () => {
     e.handleFocus(1, 'https://a.com', T0);
     const closed = e.checkpoint(T0 + 60_000);
     expect(closed).toHaveLength(1);
-    expect(closed[0].end).toBe(T0 + 60_000);
+    expect(closed[0]!.end).toBe(T0 + 60_000);
     expect(e.getState().focused?.start).toBe(T0 + 60_000);
   });
 });
@@ -78,7 +78,7 @@ describe('TrackerEngine state round-trip', () => {
     const restored = new TrackerEngine(e.getState());
     const closed = restored.handleBlur(T0 + 10_000);
     expect(closed).toHaveLength(1);
-    expect(closed[0].tabId).toBe(1);
+    expect(closed[0]!.tabId).toBe(1);
   });
 });
 
@@ -96,7 +96,7 @@ describe('TrackerEngine reconcile', () => {
     e.handleFocus(1, 'https://a.com', T0);
     const closed = e.reconcile(new Set([1]), T0 + 5_000);
     expect(closed).toHaveLength(1);
-    expect(closed[0].end).toBe(T0 + 5_000);
+    expect(closed[0]!.end).toBe(T0 + 5_000);
     expect(e.getState().focused?.tabId).toBe(1);
     expect(e.getState().focused?.start).toBe(T0 + 5_000);
   });
@@ -113,7 +113,7 @@ describe('TrackerEngine reconcile', () => {
     expect(closed).toHaveLength(1);
     // Over the cap ⇒ the heartbeat was missed, so only one heartbeat of grace is
     // credited (NOT the 30-minute cap, which was 30 min of phantom time per wake).
-    expect(closed[0].end).toBe(T0 + 60_000);
+    expect(closed[0]!.end).toBe(T0 + 60_000);
     expect(e.getState().focused?.start).toBe(T0 + 8 * 3_600_000);
   });
 
@@ -125,7 +125,7 @@ describe('TrackerEngine reconcile', () => {
     });
     const closed = e.reconcile(new Set([1]), T0 + 8 * 3_600_000);
     expect(closed).toHaveLength(1);
-    expect(closed[0].end).toBe(T0 + 60_000); // one heartbeat of grace, not start + 8h
+    expect(closed[0]!.end).toBe(T0 + 60_000); // one heartbeat of grace, not start + 8h
     expect(e.getState().audio).toEqual([]);
   });
 });
@@ -143,7 +143,7 @@ describe('TrackerEngine boundary safety', () => {
     const e = new TrackerEngine();
     e.syncAudio([{ tabId: 2, url: 'https://music.example/song' }], T0);
     const state = e.getState();
-    state.audio[0].start = 0;
+    state.audio[0]!.start = 0;
     state.audio.push({ tabId: 3, url: 'https://fake.example', domain: 'fake.example', start: 0, audio: true });
     expect(e.getState().audio).toEqual([
       { tabId: 2, url: 'https://music.example/song', domain: 'music.example', start: T0, audio: true },
@@ -153,15 +153,15 @@ describe('TrackerEngine boundary safety', () => {
   test('accepts exactly the minimum duration and exact caps without clipping', () => {
     const brief = new TrackerEngine();
     brief.handleFocus(1, 'https://a.com', T0);
-    expect(brief.handleBlur(T0 + 250)[0].end - T0).toBe(250);
+    expect(brief.handleBlur(T0 + 250)[0]!.end - T0).toBe(250);
 
     const regular = new TrackerEngine();
     regular.handleFocus(1, 'https://a.com', T0);
-    expect(regular.handleBlur(T0 + 30 * 60_000)[0].end - T0).toBe(30 * 60_000);
+    expect(regular.handleBlur(T0 + 30 * 60_000)[0]!.end - T0).toBe(30 * 60_000);
 
     const media = new TrackerEngine();
     media.handleFocus(1, 'https://video.example/watch', T0, true);
-    expect(media.handleBlur(T0 + 24 * 60 * 60_000)[0].end - T0).toBe(24 * 60 * 60_000);
+    expect(media.handleBlur(T0 + 24 * 60 * 60_000)[0]!.end - T0).toBe(24 * 60 * 60_000);
   });
 
   test('checkpoint keeps sub-minimum elapsed time instead of discarding it', () => {
@@ -171,7 +171,7 @@ describe('TrackerEngine boundary safety', () => {
     expect(e.getState().focused?.start).toBe(T0); // start NOT reset
     const closed = e.checkpoint(T0 + 1500);
     expect(closed).toHaveLength(1);
-    expect(closed[0].start).toBe(T0); // full elapsed window kept
+    expect(closed[0]!.start).toBe(T0); // full elapsed window kept
   });
 
   test('records a brief sub-second visit instead of dropping it', () => {
@@ -193,7 +193,7 @@ describe('TrackerEngine boundary safety', () => {
     e.handleFocus(2, 'https://a.com', T0);
     const closed = e.handleFocus(3, 'chrome://newtab', T0 + 60_000);
     expect(closed).toHaveLength(1);
-    expect(closed[0].domain).toBe('a.com');
+    expect(closed[0]!.domain).toBe('a.com');
     expect(e.getState().focused).toBeNull();
   });
 
@@ -206,7 +206,7 @@ describe('TrackerEngine boundary safety', () => {
     e.handleFocus(2, 'https://a.com', T0);
     const closed = e.handleFocus(3, 'https://reddit.com/r/all', T0 + 60_000, false, true);
     expect(closed).toHaveLength(1);
-    expect(closed[0].domain).toBe('a.com');
+    expect(closed[0]!.domain).toBe('a.com');
     expect(e.getState().focused).toBeNull();
   });
 
@@ -215,7 +215,7 @@ describe('TrackerEngine boundary safety', () => {
     e.handleFocus(1, 'https://a.com', T0);
     const closed = e.handleUrlChange(1, 'https://reddit.com/r/all', T0 + 60_000, true);
     expect(closed).toHaveLength(1);
-    expect(closed[0].domain).toBe('a.com');
+    expect(closed[0]!.domain).toBe('a.com');
     expect(e.getState().focused).toBeNull();
   });
 
@@ -224,14 +224,14 @@ describe('TrackerEngine boundary safety', () => {
     e.handleFocus(1, 'https://a.com', T0); // not audible
     const closed = e.handleBlur(T0 + 8 * 60 * 60_000); // "focused" across an 8h sleep
     expect(closed).toHaveLength(1);
-    expect(closed[0].end - closed[0].start).toBe(60_000); // not 8 hours, and not 30 min
+    expect(closed[0]!.end - closed[0]!.start).toBe(60_000); // not 8 hours, and not 30 min
   });
 
   test('a normal close well inside the cap keeps its real duration', () => {
     const e = new TrackerEngine();
     e.handleFocus(1, 'https://a.com', T0);
     const closed = e.handleBlur(T0 + 12 * 60_000); // 12 real minutes of reading
-    expect(closed[0].end - closed[0].start).toBe(12 * 60_000); // grace never clips real time
+    expect(closed[0]!.end - closed[0]!.start).toBe(12 * 60_000); // grace never clips real time
   });
 
   test('counts a long video watched without input in full (audible, uncapped)', () => {
@@ -239,7 +239,7 @@ describe('TrackerEngine boundary safety', () => {
     e.handleFocus(1, 'https://youtube.com/watch', T0, true); // audible = playing media
     const closed = e.handleBlur(T0 + 2 * 60 * 60_000); // a 2h movie, no events in between
     expect(closed).toHaveLength(1);
-    expect(closed[0].end - closed[0].start).toBe(2 * 60 * 60_000); // full 2 hours
+    expect(closed[0]!.end - closed[0]!.start).toBe(2 * 60 * 60_000); // full 2 hours
   });
 
   test('caps even a media session at the 24h absolute ceiling (forward clock jump)', () => {
@@ -249,7 +249,7 @@ describe('TrackerEngine boundary safety', () => {
     const closed = e.handleBlur(T0 + 3 * 24 * 60 * 60_000);
     expect(closed).toHaveLength(1);
     // Past the 24h ceiling the timestamp is bogus, so credit grace only.
-    expect(closed[0].end - closed[0].start).toBe(60_000); // not 3 days of bogus time
+    expect(closed[0]!.end - closed[0]!.start).toBe(60_000); // not 3 days of bogus time
   });
 
   test('drops a session when the clock jumps backward (now < start)', () => {
@@ -283,7 +283,7 @@ describe('TrackerEngine boundary safety', () => {
     // No heartbeat for 4h means the worker was stalled (system slept), not 4h of
     // real listening — credit one heartbeat of grace instead of booking 4h.
     const closed = e.checkpoint(T0 + 4 * 60 * 60_000);
-    expect(closed[0].end - closed[0].start).toBe(60_000);
+    expect(closed[0]!.end - closed[0]!.start).toBe(60_000);
   });
 
   test('lock/sleep caps everything, even media sessions', () => {
@@ -312,7 +312,7 @@ describe('TrackerEngine boundary safety', () => {
     });
     const closed = e.handleFocus(2, 'https://yt.com/v', T0 + 60_000);
     expect(closed).toHaveLength(1);
-    expect(closed[0].audio).toBe(true);
+    expect(closed[0]!.audio).toBe(true);
     expect(e.getState().audio).toEqual([]);
     expect(e.getState().focused?.tabId).toBe(2);
   });
@@ -336,11 +336,11 @@ describe('TrackerEngine boundary safety', () => {
     e.handleFocus(1, 'https://a.com', T0); // non-media
     const closed = e.checkpoint(T0 + 45 * 60_000);
     expect(closed).toHaveLength(1);
-    expect(closed[0].end - closed[0].start).toBe(60_000);
+    expect(closed[0]!.end - closed[0]!.start).toBe(60_000);
     expect(e.getState().focused?.start).toBe(T0 + 45 * 60_000); // start advanced to now
     // The next minute then accrues normally from the new start.
     const next = e.checkpoint(T0 + 46 * 60_000);
-    expect(next[0].end - next[0].start).toBe(60_000);
+    expect(next[0]!.end - next[0]!.start).toBe(60_000);
   });
 });
 
@@ -353,8 +353,8 @@ describe('TrackerEngine onReplaced (tabId remap)', () => {
     // Closing later credits the FULL duration to the new id, uninterrupted.
     const closed = e.handleTabRemoved(99, T0 + 60_000);
     expect(closed).toHaveLength(1);
-    expect(closed[0].tabId).toBe(99);
-    expect(closed[0].end - closed[0].start).toBe(60_000);
+    expect(closed[0]!.tabId).toBe(99);
+    expect(closed[0]!.end - closed[0]!.start).toBe(60_000);
   });
 
   test('remaps a background-audio session to the new id', () => {

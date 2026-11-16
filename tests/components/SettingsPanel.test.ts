@@ -75,7 +75,7 @@ describe('SettingsPanel does not save on mount', () => {
       expect(sendMessage).not.toHaveBeenCalled(); // still quiet after mount
 
       // Bump the stale-days stepper (the first NumberStepper in the panel).
-      await wrapper.findAllComponents({ name: 'NumberStepper' })[0].findAll('button')[1].trigger('click');
+      await wrapper.findAllComponents({ name: 'NumberStepper' })[0]!.findAll('button')[1]!.trigger('click');
       await settleAutoSave();
 
       const types = sendMessage.mock.calls.map((a) => (a[0] as { type?: string })?.type);

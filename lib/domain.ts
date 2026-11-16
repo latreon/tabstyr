@@ -13,7 +13,7 @@ export function displayDomain(domain: string): string {
  */
 function hashRoute(hash: string): string {
   if (!hash.startsWith('#/')) return '';
-  return hash.split('?')[0];
+  return hash.split('?')[0]!;
 }
 
 // Stand-in for a path segment that looks like a secret. ASCII and URL-unreserved
@@ -161,7 +161,7 @@ function isPrivateIpv4(domain: string): boolean {
   if (!IPV4_RE.test(domain)) return false;
   const octets = domain.split('.').map(Number);
   if (octets.some((n) => n > 255)) return false;
-  const [a, b] = octets;
+  const [a, b] = octets as [number, number, number, number];
   return (
     a === 127 || // loopback 127.0.0.0/8
     a === 10 || // private 10.0.0.0/8

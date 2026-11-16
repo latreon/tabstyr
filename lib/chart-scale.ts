@@ -39,11 +39,11 @@ export function trendTooltip(
   const partialLabel = partial ? ` · ${t ? t('trend.partial') : 'partial'}` : '';
   const suffix = `${formatDuration(seconds)}${partialLabel}`;
   if (mode === 'month') {
-    const [y, m] = key.split('-').map(Number);
+    const [y, m] = key.split('-').map(Number) as [number, number];
     const name = new Date(y, m - 1, 1).toLocaleString(locale, { month: 'long' });
     return `${name} ${y} — ${suffix}`;
   }
-  const [y, m, d] = key.split('-').map(Number);
+  const [y, m, d] = key.split('-').map(Number) as [number, number, number];
   const human = new Date(y, m - 1, d).toLocaleString(locale, {
     weekday: 'short',
     month: 'short',

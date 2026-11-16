@@ -41,7 +41,7 @@ export function rematchTabMeta(metas: TabMeta[], liveTabs: Array<{ id: number; u
     if (!m) {
       // Take the next unclaimed meta on the same domain, if any.
       const pool = byDomain.get(domainOf(tab.url));
-      while (pool?.length && claimed.has(pool[0])) pool.shift();
+      while (pool?.length && claimed.has(pool[0]!)) pool.shift();
       m = pool?.shift();
       if (m) claimed.add(m);
     }
