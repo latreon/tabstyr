@@ -33,7 +33,7 @@ onUnmounted(() => {
         <button ref="closeBtn" class="close" :aria-label="t('domainDetail.close')" @click="emit('close')">✕</button>
       </header>
 
-      <div class="content">
+      <div class="content" tabindex="0">
         <p><strong>{{ t('privacy.intro1') }}</strong> {{ t('privacy.intro2') }}</p>
 
         <h3>{{ t('privacy.storesTitle') }}</h3>
@@ -127,6 +127,10 @@ onUnmounted(() => {
   height: 30px;
   cursor: pointer;
   font-size: var(--text-sm);
+}
+.content:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 .close:focus-visible {
   outline: 2px solid var(--accent);

@@ -34,7 +34,7 @@ const max = computed(() => Math.max(1, ...top.value.map((d) => d.seconds + d.aud
       v-for="d in top"
       :key="d.domain"
       class="row"
-      :aria-label="dateLabel
+      :title="dateLabel
         ? t('topSites.viewDetailsAriaOn', { domain: displayDomain(d.domain), time: formatDuration(d.seconds), date: dateLabel })
         : t('topSites.viewDetailsAria', { domain: displayDomain(d.domain), time: formatDuration(d.seconds) })"
       @click="emit('select', d.domain)"

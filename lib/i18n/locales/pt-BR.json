@@ -65,7 +65,7 @@
     "coffee": "Me pague um café"
   },
   "popup": {
-    "tabs": "{count} abas",
+    "tabs": "{count} aba | {count} abas",
     "stale": "{count} obsoletas",
     "activeToday": "ativo hoje · vs média semanal",
     "noActivityToday": "Nenhuma atividade registrada hoje.",

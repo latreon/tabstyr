@@ -118,7 +118,7 @@ async function togglePause() {
     <header class="head">
       <span class="brand"><RingLogo :size="18" /> TabStyr</span>
       <span class="counts">
-        {{ t('popup.tabs', { count: tabCount }) }}
+        {{ t('popup.tabs', { count: tabCount }, tabCount) }}
         <template v-if="staleCount"> · <span class="stale-count">{{ t('popup.stale', { count: staleCount }) }}</span></template>
       </span>
       <button
@@ -162,7 +162,7 @@ async function togglePause() {
 
       <ul v-if="topDomains.length" class="sites" :aria-label="t('popup.topSitesAria')">
         <li v-for="d in topDomains" :key="d.domain">
-          <button class="site-row" :aria-label="t('popup.openAria', { domain: displayDomain(d.domain), time: formatDuration(d.seconds) })" @click="openDomain(d.domain)">
+          <button class="site-row" :title="t('popup.openAria', { domain: displayDomain(d.domain), time: formatDuration(d.seconds) })" @click="openDomain(d.domain)">
             <FaviconChip :domain="d.domain" />
             <span class="site-main">
               <span class="site-line">

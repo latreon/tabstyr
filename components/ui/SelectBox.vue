@@ -76,7 +76,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside));
     <button
       type="button"
       class="trigger"
-      :aria-label="label"
+      :aria-label="selected ? `${label}: ${selected.label}` : label"
       :aria-expanded="open"
       aria-haspopup="listbox"
       :aria-controls="open ? `${uid}-list` : undefined"

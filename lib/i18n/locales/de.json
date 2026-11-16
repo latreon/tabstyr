@@ -65,7 +65,7 @@
     "coffee": "Spendier mir einen Kaffee"
   },
   "popup": {
-    "tabs": "{count} Tabs",
+    "tabs": "{count} Tab | {count} Tabs",
     "stale": "{count} veraltet",
     "activeToday": "heute aktiv · vs. Wochendurchschnitt",
     "noActivityToday": "Heute noch keine Aktivität erfasst.",

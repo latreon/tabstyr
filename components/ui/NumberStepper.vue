@@ -79,7 +79,7 @@ function onInput(e: Event) {
     <input
       ref="input"
       type="number"
-      :value="modelValue"
+      :value="draft ?? modelValue"
       :min="min"
       :max="max"
       :step="step"

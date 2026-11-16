@@ -174,7 +174,7 @@ const hueThumbStyle = computed(() => ({ left: `${(hsv.value.h / 360) * 100}%` })
     <button
       type="button"
       class="trigger"
-      :aria-label="label"
+      :aria-label="`${label}: ${safeValue.toUpperCase()}`"
       :aria-expanded="open"
       aria-haspopup="dialog"
       :aria-controls="`${uid}-panel`"

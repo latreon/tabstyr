@@ -149,7 +149,7 @@ onBeforeUnmount(() => {
       class="trigger"
       :aria-expanded="open"
       aria-haspopup="true"
-      :aria-label="t('datePicker.pickDay')"
+      :aria-label="`${t('datePicker.pickDay')}: ${triggerLabel}`"
       @click="toggle"
     >
       <svg class="cal-icon" viewBox="0 0 24 24" aria-hidden="true">
